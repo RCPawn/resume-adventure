@@ -1,6 +1,8 @@
 <template>
   <div class="top-right-buttons">
     <a href="https://github.com/RCPawn?tab=repositories" target="_blank" class="top-btn github-btn">
+      <!-- 使用 Ant Design 的 GitHub 图标 -->
+      <GithubOutlined />
       GitHub
     </a>
     <button class="top-btn language-btn" @click="toggleLanguage">
@@ -13,31 +15,33 @@
 </template>
 
 <script setup>
-import { useI18n } from 'vue-i18n'
-import { enable as enableDarkMode, disable as disableDarkMode } from 'darkreader'
+import { useI18n } from 'vue-i18n';
+import { enable as enableDarkMode, disable as disableDarkMode } from 'darkreader';
+// 引入 Ant Design 的 GitHub 图标
+import { GithubOutlined } from '@ant-design/icons-vue';
 
-const { locale } = useI18n()
+const { locale } = useI18n();
 
 // 切换语言
 const toggleLanguage = () => {
-  locale.value = locale.value === 'en' ? 'cn' : 'en'
-}
+  locale.value = locale.value === 'en' ? 'cn' : 'en';
+};
 
 // 切换主题
 const toggleTheme = () => {
-  const isDarkMode = localStorage.getItem('theme') === 'dark'
+  const isDarkMode = localStorage.getItem('theme') === 'dark';
   if (isDarkMode) {
-    disableDarkMode()
-    localStorage.setItem('theme', 'light')
+    disableDarkMode();
+    localStorage.setItem('theme', 'light');
   } else {
     enableDarkMode({
       brightness: 100,
       contrast: 90,
       sepia: 10,
-    })
-    localStorage.setItem('theme', 'dark')
+    });
+    localStorage.setItem('theme', 'dark');
   }
-}
+};
 </script>
 
 <style scoped>
@@ -59,6 +63,9 @@ const toggleTheme = () => {
   font-weight: bold;
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* 让内容在按钮内居中 */
 }
 
 .top-btn:hover {
@@ -71,6 +78,14 @@ const toggleTheme = () => {
   color: #fff;
   text-decoration: none;
 }
+
+.github-btn {
+  display: flex;
+  align-items: center; /* 垂直居中 */
+  justify-content: center; /* 水平居中 */
+  gap: 0.5rem; /* 设置图标和文字之间的间距 */
+}
+
 
 .language-btn,
 .theme-btn {

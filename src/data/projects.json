@@ -1,0 +1,38 @@
+[
+  {
+    "name": "全栈开发 -- 园区资产管理",
+    "description": "全栈开发项目：园区资产管理系统，集成前后端功能，实现资产信息管理、报表生成、权限管理等功能。",
+    "image": "/images/work.png",
+    "link": "/projects/asset-management"
+  },
+  {
+    "name": "Unity -- 简历冒险小游戏",
+    "description": "Unity 小游戏项目：简历冒险小游戏，结合互动剧情与动作玩法，生动展示个人技能与创意。",
+    "image": "/images/Car.png",
+    "link": "/projects/resume-adventure"
+  },
+  {
+    "name": "Blender -- 3D 互动展示",
+    "description": "Blender 项目：利用 3D 建模和渲染技术，创建交互式 3D 展示平台，呈现作品与设计理念。",
+    "image": "/images/work.png",
+    "link": "/projects/interactive-3d"
+  },
+  {
+    "name": "深度学习 -- PyTorch 学习成果展示",
+    "description": "深度学习项目：通过 PyTorch 展示模型训练、数据处理与可视化成果，展现对 AI 技术的掌握。",
+    "image": "/images/work.png",
+    "link": "/projects/pytorch-demo"
+  },
+  {
+    "name": "开源贡献 -- 我的 GitHub 仓库",
+    "description": "开源贡献：整合并展示我在 GitHub 上的开源项目与代码贡献，彰显技术实力与社区参与。",
+    "image": "/images/work.png",
+    "link": "/projects/github"
+  },
+  {
+    "name": "我的技能路线图",
+    "description": "技能路线图：详细展示个人从基础到进阶的技能成长历程，涵盖全栈开发、游戏开发、3D 建模、深度学习等多领域。",
+    "image": "/images/work.png",
+    "link": "/projects/skill-map"
+  }
+]
