@@ -20,9 +20,14 @@ const router = createRouter({
       component: () => import('../views/GatewayView.vue'),
     },
     {
-      path: '/gateway/adventure',
+      path: '/projects/adventure',
       name: 'adventure',
       component: () => import('../views/GameView.vue'),
+    },
+    {
+      path: '/projects/github',
+      name: 'github',
+      component: () => import('../views/GitHubView.vue'),
     },
     {
       path: '/about',

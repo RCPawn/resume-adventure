@@ -1,25 +1,25 @@
 <template>
   <div class="projects-wrapper">
     <!-- 顶部右侧按钮组件 -->
-    <TopRightButtons class="top-right-buttons" />
+    <TopRightButtons class="top-right-buttons"/>
 
     <!-- 页面标题 -->
     <h1 class="section-title">My Projects</h1>
 
     <!-- 根据当前布局显示不同组件 -->
-    <MasonryLayout v-if="layoutMode === 'masonry'" :projects="projects" />
-    <RingCarousel v-else :projects="projects" />
+    <MasonryLayout v-if="layoutMode === 'masonry'" :projects="projects"/>
+    <RingCarousel v-else :projects="projects"/>
 
     <!-- 返回按钮 -->
-    <GoBackButton />
+    <GoBackButton/>
 
     <!-- 布局切换按钮 -->
-    <LayoutToggleButton :currentMode="layoutMode" @toggle="toggleLayout" />
+    <LayoutToggleButton :currentMode="layoutMode" @toggle="toggleLayout"/>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import {ref} from 'vue';
 import TopRightButtons from '@/components/TopRightButtons.vue';
 import GoBackButton from '@/components/GoBackButton.vue';
 import LayoutToggleButton from '@/components/LayoutToggleButton.vue';

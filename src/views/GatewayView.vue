@@ -102,7 +102,7 @@ const particleStyle = (p) => ({
 
 // 导航逻辑
 const navigateToGame = () => {
-  router.push('/gateway/adventure')
+  router.push('/projects/adventure')
 }
 
 const navigateToProjects = () => {

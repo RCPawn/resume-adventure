@@ -4,19 +4,20 @@ export function useRingRotation(projects) {
     const rotation = ref(0);
     const intervalId = ref(null);
     const radius = ref(300);
-    const initialDragRotation = ref(0);
-    const initialMouseX = ref(0);
 
+    // 每个卡片占据的角度
     const rotationStep = computed(() => 360 / projects.length);
 
+    // 计算正对前方的卡片索引
     const activeIndex = computed(() => {
         let normalizedRotation = ((-rotation.value) % 360 + 360) % 360;
         return Math.round(normalizedRotation / rotationStep.value) % projects.length;
     });
     const indicatorActiveIndex = computed(() => activeIndex.value);
 
+    // 每个卡片的样式
     const itemStyle = (index) => {
-        const angle = (360 / projects.length) * index;
+        const angle = rotationStep.value * index;
         return {
             transform: `rotateY(${angle}deg) translateZ(${radius.value}px)`,
             filter: index === activeIndex.value ? 'brightness(1.2)' : 'brightness(0.9)',
@@ -24,6 +25,7 @@ export function useRingRotation(projects) {
         };
     };
 
+    // 启动自动旋转
     const startAutoRotation = () => {
         if (intervalId.value) return;
         intervalId.value = setInterval(() => {
@@ -31,36 +33,16 @@ export function useRingRotation(projects) {
         }, 30);
     };
 
+    // 停止自动旋转
     const stopAutoRotation = () => {
         clearInterval(intervalId.value);
         intervalId.value = null;
     };
 
-    const startDrag = (e) => {
-        stopAutoRotation();
-        initialDragRotation.value = rotation.value;
-        initialMouseX.value = e.clientX;
-        document.addEventListener('mousemove', drag);
-        document.addEventListener('mouseup', stopDrag);
-    };
-
-    const drag = (e) => {
-        const deltaX = e.clientX - initialMouseX.value;
-        rotation.value = initialDragRotation.value - (deltaX * 0.1);
-    };
-
-    const stopDrag = () => {
-        document.removeEventListener('mousemove', drag);
-        document.removeEventListener('mouseup', stopDrag);
-        startAutoRotation();
-    };
-
+    // 点击指示器时，直接对齐到目标卡片，并停止自动旋转
     const goToIndex = (indicatorIndex) => {
         stopAutoRotation();
         rotation.value = -indicatorIndex * rotationStep.value;
-        setTimeout(() => {
-            startAutoRotation();
-        }, 1000);
     };
 
     onMounted(() => {
@@ -73,9 +55,6 @@ export function useRingRotation(projects) {
     return {
         rotation,
         itemStyle,
-        startDrag,
-        drag,
-        stopDrag,
         startAutoRotation,
         stopAutoRotation,
         goToIndex,

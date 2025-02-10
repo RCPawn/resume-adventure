@@ -1,8 +1,6 @@
-<!-- src/components/RingCarousel.vue -->
 <template>
   <div class="ring-wrapper">
     <div class="ring-container"
-         @mousedown="startDrag" @mousemove="drag" @mouseup="stopDrag"
          @mouseenter="stopAutoRotation" @mouseleave="startAutoRotation">
       <div class="ring" :style="{ transform: 'rotateY(' + rotation + 'deg)' }">
         <div v-for="(project, index) in projects" :key="index" class="ring-item" :style="itemStyle(index)">
@@ -15,7 +13,7 @@
         </div>
       </div>
     </div>
-    <!-- 将指示器区域放在外层容器中，使其显示在卡片下方 -->
+    <!-- 指示器区域放置在外层容器中，显示在卡片下方 -->
     <div class="indicator-wrapper">
       <div class="indicators">
         <span v-for="(project, index) in projects" :key="index" class="indicator"
@@ -40,9 +38,6 @@ const props = defineProps({
 const {
   rotation,
   itemStyle,
-  startDrag,
-  drag,
-  stopDrag,
   startAutoRotation,
   stopAutoRotation,
   goToIndex,
@@ -123,7 +118,7 @@ const {
   color: #333;
 }
 
-/* 指示器区域：由于放在 .ring-wrapper 内部，所以自然位于卡片（ring-container）下方 */
+/* 指示器区域：放在 .ring-wrapper 内部，位于卡片（ring-container）下方 */
 .indicator-wrapper {
   margin-top: 0.3rem;
   display: flex;
