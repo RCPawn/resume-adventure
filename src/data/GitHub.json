@@ -1,24 +1,33 @@
 [
   {
     "id": 1,
-    "title": "深度学习项目",
-    "description": "这个项目使用深度学习算法解决实际问题，展示了我的机器学习能力。",
-    "techStack": ["Python", "TensorFlow", "Keras"],
-    "image": "/images/DeepLearning.webp",
-    "timeline": [
-      { "date": "2023-03", "event": "核心算法突破", "code": "model.py#L32" },
-      { "date": "2023-06", "event": "部署优化", "code": "deploy/" }
+    "repoName": "✨ LeetCode Solutions",
+    "repoDescription": "使用 Python 解决 LeetCode 问题，含详细注释与思路。",
+    "repoReadme": "## 这里是仓库 README 示例\n\n- **主要语言**：Python\n- **适用范围**：刷题 & 学习\n\n> 欢迎在面试时查看我的思路与代码风格！ 🚀",
+    "screenshots": [
+      {
+        "id": 1,
+        "src": "/images/DeepLearning.webp",
+        "alt": "LeetCode Repo Screenshot 1"
+      },
+      {
+        "id": 2,
+        "src": "/images/DeepLearning.webp",
+        "alt": "LeetCode Repo Screenshot 2"
+      }
     ]
   },
   {
     "id": 2,
-    "title": "计算机视觉项目",
-    "description": "一个利用计算机视觉进行图像识别的项目，体现了我的算法和前端能力。",
-    "techStack": ["Python", "OpenCV", "PyTorch"],
-    "image": "/images/DeepLearning.webp",
-    "timeline": [
-      { "date": "2023-01", "event": "图像处理模块开发", "code": "image.js#L45" },
-      { "date": "2023-04", "event": "算法优化", "code": "vision.py#L50" }
+    "repoName": "🎉 Another Awesome Project",
+    "repoDescription": "这里介绍另一个非常棒的项目，用于展示多种编程技巧。",
+    "repoReadme": "## 另一个项目的 README\n\n- **技术栈**：Vue3 + Node.js\n- **特点**：响应式、可扩展\n\n> Star 一下，给我鼓励吧！ ⭐",
+    "screenshots": [
+      {
+        "id": 1,
+        "src": "/images/DeepLearning.webp",
+        "alt": "Another Repo Screenshot 1"
+      }
     ]
   }
 ]
