@@ -7,12 +7,17 @@
     "screenshots": [
       {
         "id": 1,
-        "src": "/images/DeepLearning.webp",
+        "src": "/images/github.png",
         "alt": "LeetCode Repo Screenshot 1"
       },
       {
         "id": 2,
         "src": "/images/DeepLearning.webp",
+        "alt": "LeetCode Repo Screenshot 2"
+      },
+      {
+        "id": 3,
+        "src": "/images/work.png",
         "alt": "LeetCode Repo Screenshot 2"
       }
     ]
@@ -25,7 +30,7 @@
     "screenshots": [
       {
         "id": 1,
-        "src": "/images/DeepLearning.webp",
+        "src": "/images/github.png",
         "alt": "Another Repo Screenshot 1"
       }
     ]
