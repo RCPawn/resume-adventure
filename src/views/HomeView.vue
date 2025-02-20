@@ -29,14 +29,14 @@
     </div>
 
     <!-- 右上角按钮组件 -->
-    <TopRightButtons />
+    <TopRightButtons/>
   </div>
 </template>
 
 <script setup>
-import { onMounted, onUnmounted } from 'vue'
+import {onMounted, onUnmounted} from 'vue'
 import TopRightButtons from '@/components/TopRightButtons.vue'
-import { enable as enableDarkMode } from 'darkreader'
+import {enable as enableDarkMode} from 'darkreader'
 
 onMounted(() => {
   // 锁定页面滚动
@@ -66,7 +66,6 @@ onUnmounted(() => {
   min-height: 100vh;
   /* 增加顶部内边距，使内容整体向下移动 */
   padding: 4rem 4rem 2rem 4rem;
-  background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
   font-family: 'Helvetica Neue', sans-serif;
   color: #2d3436;
   position: relative;
@@ -119,7 +118,7 @@ onUnmounted(() => {
   font-size: 1.2rem;
   background: #fff;
   border: 2px solid #2d3436;
-  border-radius: 8px;
+  border-radius: 10px;
   text-decoration: none;
   color: #2d3436;
   font-weight: bold;

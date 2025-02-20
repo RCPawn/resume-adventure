@@ -18,6 +18,7 @@
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "@heroicons/vue": "^2.2.0",
     "@vueuse/core": "^12.5.0",
+    "ant-design-vue": "^4.2.6",
     "darkreader": "^4.9.96",
     "dompurify": "^3.2.4",
     "marked": "^15.0.7",

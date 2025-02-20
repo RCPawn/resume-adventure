@@ -4,9 +4,9 @@
     <h1>建设中...</h1>
     <p>抱歉，该页面还在开发中，敬请期待！</p>
     <!-- 如果你使用 vue-router，推荐使用 router-link -->
-<!--    <router-link to="/" class="btn">返回主页</router-link>-->
+    <!--    <router-link to="/" class="btn">返回主页</router-link>-->
     <!-- 如果没使用 vue-router，可换成普通按钮绑定返回事件 -->
-     <button class="btn" @click="goBack">返回</button>
+    <button class="btn" @click="goBack">返回</button>
   </div>
 </template>
 
@@ -49,9 +49,15 @@ export default {
 }
 
 @keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 h1 {
