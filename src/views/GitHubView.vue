@@ -1,8 +1,6 @@
 <template>
-
-  <GoBackButton/>
-
-  <TopRightButtons/>
+  <GoBackButton />
+  <TopRightButtons />
 
   <section class="github-view">
     <h1 class="page-title">我的 GitHub 仓库展示</h1>
@@ -50,48 +48,48 @@
 </template>
 
 <script setup>
-import {ref, onMounted} from 'vue'
-import {marked} from 'marked'
-import DOMPurify from 'dompurify'
-import githubData from '@/data/GitHub.json'
+import { ref, onMounted } from "vue";
+import { marked } from "marked";
+import DOMPurify from "dompurify";
+import githubData from "@/data/GitHub.json";
 import GoBackButton from "@/components/GoBackButton.vue";
-import TopRightButtons from '@/components/TopRightButtons.vue';
+import TopRightButtons from "@/components/TopRightButtons.vue";
 
 // 在 setup 内同步注册 onMounted
 onMounted(() => {
-  console.log('组件已挂载')
-})
+  console.log("组件已挂载");
+});
 
 // 因为你的 JSON 文件内容即为一个数组，所以直接赋值
-const repositories = ref(githubData || [])
-const activeRepo = ref(repositories.value.length ? repositories.value[0] : null)
-const currentSlide = ref(0)
+const repositories = ref(githubData || []);
+const activeRepo = ref(repositories.value.length ? repositories.value[0] : null);
+const currentSlide = ref(0);
 
 // 切换选中仓库
 const selectRepo = (repo) => {
-  activeRepo.value = repo
-  currentSlide.value = 0
-}
+  activeRepo.value = repo;
+  currentSlide.value = 0;
+};
 
 // 下一张截图
 const nextSlide = () => {
   if (activeRepo.value && activeRepo.value.screenshots && activeRepo.value.screenshots.length) {
-    currentSlide.value = (currentSlide.value + 1) % activeRepo.value.screenshots.length
+    currentSlide.value = (currentSlide.value + 1) % activeRepo.value.screenshots.length;
   }
-}
+};
 
 // 上一张截图
 const prevSlide = () => {
   if (activeRepo.value && activeRepo.value.screenshots && activeRepo.value.screenshots.length) {
-    currentSlide.value = (currentSlide.value - 1 + activeRepo.value.screenshots.length) % activeRepo.value.screenshots.length
+    currentSlide.value = (currentSlide.value - 1 + activeRepo.value.screenshots.length) % activeRepo.value.screenshots.length;
   }
-}
+};
 
 // 使用 marked 渲染 Markdown，再用 DOMPurify 进行安全处理
 const renderMarkdown = (content) => {
-  const html = marked.parse(content || '')
-  return DOMPurify.sanitize(html)
-}
+  const html = marked.parse(content || "");
+  return DOMPurify.sanitize(html);
+};
 </script>
 
 <style scoped>
@@ -99,7 +97,7 @@ const renderMarkdown = (content) => {
   padding: 2rem;
   max-width: 1400px;
   margin: 0 auto;
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
 }
 
 .page-title {

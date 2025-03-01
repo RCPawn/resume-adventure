@@ -2,19 +2,19 @@
   <div class="top-right-buttons">
     <!-- GitHub 按钮 -->
     <a href="https://github.com/RCPawn?tab=repositories" target="_blank" class="top-btn github-btn">
-      <GithubOutlined class="btn-icon" />
+      <GithubOutlined class="btn-icon"/>
       <span>GitHub</span>
     </a>
 
     <!-- 语言切换按钮 -->
     <button class="top-btn language-btn" @click="toggleLanguage">
-      <GlobalOutlined class="btn-icon" />
+      <GlobalOutlined class="btn-icon"/>
       <span>{{ locale === 'en' ? '中文' : 'English' }}</span>
     </button>
 
     <!-- 主题切换按钮 -->
     <button class="top-btn theme-btn" @click="toggleTheme">
-      <BulbOutlined class="btn-icon" />
+      <BulbOutlined class="btn-icon"/>
       <span>{{ isDarkMode ? 'Light' : 'Dark' }}</span>
     </button>
   </div>

@@ -2,7 +2,7 @@
   {
     "name": "全栈开发 -- 园区资产管理",
     "description": "全栈开发项目：园区资产管理系统，集成前后端功能，实现资产信息管理、报表生成、权限管理等功能。",
-    "image": "/images/AssetsManager.webp",
+    "image": "/images/skillmap.webp",
     "link": "/coming-soon"
   },
   {
@@ -20,19 +20,19 @@
   {
     "name": "深度学习 -- PyTorch 学习成果展示",
     "description": "深度学习项目：通过 PyTorch 展示模型训练、数据处理与可视化成果，展现对 AI 技术的掌握。",
-    "image": "/images/DeepLearning.webp",
+    "image": "/images/skillmap.webp",
     "link": "/coming-soon"
   },
   {
     "name": "开源贡献 -- 我的 GitHub 仓库",
     "description": "开源贡献：整合并展示我在 GitHub 上的开源项目与代码贡献，彰显技术实力与社区参与。",
-    "image": "/images/github.png",
+    "image": "/images/skillmap.webp",
     "link": "/projects/github"
   },
   {
     "name": "我的技能路线图",
     "description": "技能路线图：详细展示个人从基础到进阶的技能成长历程，涵盖全栈开发、游戏开发、3D 建模、深度学习等多领域。",
-    "image": "/images/work.png",
+    "image": "/images/skillmap.webp",
     "link": "/coming-soon"
   }
 ]
