@@ -12,7 +12,7 @@
       },
       {
         "id": 2,
-        "src": "/images/DeepLearning.webp",
+        "src": "/images/skillmap.webp",
         "alt": "LeetCode Repo Screenshot 2"
       },
       {
@@ -23,21 +23,8 @@
     ]
   },
   {
-    "id": 2,
-    "repoName": "🎉 Another Awesome Project",
-    "repoDescription": "这里介绍另一个非常棒的项目，用于展示多种编程技巧。",
-    "repoReadme": "## 另一个项目的 README\n\n- **技术栈**：Vue3 + Node.js\n- **特点**：响应式、可扩展\n\n> Star 一下，给我鼓励吧！ ⭐",
-    "screenshots": [
-      {
-        "id": 1,
-        "src": "/images/github.png",
-        "alt": "Another Repo Screenshot 1"
-      }
-    ]
-  },
-  {
     "id": 3,
-    "repoName": "RCPawn/pytorch-full-course",
+    "repoName": "pytorch-full-course",
     "repoDescription": "A comprehensive PyTorch course covering deep learning techniques.",
     "repoReadme": "This repository contains all the materials for the PyTorch full course including tutorials and exercises.",
     "screenshots": [
@@ -50,7 +37,7 @@
   },
   {
     "id": 4,
-    "repoName": "RCPawn/myday-leetcode",
+    "repoName": "myday-leetcode",
     "repoDescription": "Leetcode solutions categorized by difficulty level.",
     "repoReadme": "This repository includes my personal solutions to Leetcode problems sorted by difficulty.",
     "screenshots": [
@@ -63,14 +50,14 @@
   },
   {
     "id": 5,
-    "repoName": "RCPawn/LeetCode-Python",
+    "repoName": "LeetCode-Python",
     "repoDescription": "Python-based solutions for various Leetcode challenges.",
     "repoReadme": "A collection of solutions for Leetcode problems using Python.",
     "screenshots": []
   },
   {
     "id": 6,
-    "repoName": "RCPawn/resume-adventure",
+    "repoName": "resume-adventure",
     "repoDescription": "A Unity 3D game that showcases my GitHub projects.",
     "repoReadme": "This project is an interactive Unity 3D game where users can explore my GitHub repositories.",
     "screenshots": [
@@ -83,21 +70,21 @@
   },
   {
     "id": 7,
-    "repoName": "RCPawn/MayDay-LeetCode-2.0",
+    "repoName": "MayDay-LeetCode-2.0",
     "repoDescription": "An updated version of MayDay LeetCode repository.",
     "repoReadme": "An improved version with more optimized solutions and explanations.",
     "screenshots": []
   },
   {
     "id": 8,
-    "repoName": "RCPawn/rcpawn",
+    "repoName": "rcpawn",
     "repoDescription": "My personal GitHub profile repository.",
     "repoReadme": "This is the main repository for my personal GitHub profile.",
     "screenshots": []
   },
   {
     "id": 9,
-    "repoName": "RCPawn/sky-take-out",
+    "repoName": "sky-take-out",
     "repoDescription": "A project for managing an online food delivery service.",
     "repoReadme": "A simple system for managing an online food ordering and delivery service.",
     "screenshots": [
@@ -110,35 +97,35 @@
   },
   {
     "id": 10,
-    "repoName": "RCPawn/Python-Full-Course-Study",
+    "repoName": "Python-Full-Course-Study",
     "repoDescription": "A study project for learning Python.",
     "repoReadme": "This repository contains various study resources and exercises for mastering Python.",
     "screenshots": []
   },
   {
     "id": 11,
-    "repoName": "RCPawn/machine-management",
+    "repoName": "machine-management",
     "repoDescription": "A system for managing machines in a factory.",
     "repoReadme": "This project aims to manage the operational status and maintenance of factory machines.",
     "screenshots": []
   },
   {
     "id": 12,
-    "repoName": "RCPawn/some-cpp-code",
+    "repoName": "some-cpp-code",
     "repoDescription": "A collection of C++ code samples and exercises.",
     "repoReadme": "A repository of C++ code snippets and algorithms.",
     "screenshots": []
   },
   {
     "id": 13,
-    "repoName": "RCPawn/spring-ai",
+    "repoName": "spring-ai",
     "repoDescription": "A Spring-based framework for AI applications.",
     "repoReadme": "A project showcasing AI capabilities integrated with Spring framework.",
     "screenshots": []
   },
   {
     "id": 14,
-    "repoName": "RCPawn/JavaSE-Study",
+    "repoName": "JavaSE-Study",
     "repoDescription": "A repository for studying Java SE.",
     "repoReadme": "A collection of resources and exercises for learning Java Standard Edition.",
     "screenshots": []

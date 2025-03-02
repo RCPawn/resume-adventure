@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import {ref} from 'vue';
+import {ref, onMounted} from 'vue';
 import TopRightButtons from '@/components/TopRightButtons.vue';
 import GoBackButton from '@/components/GoBackButton.vue';
 import LayoutToggleButton from '@/components/LayoutToggleButton.vue';
@@ -27,10 +27,12 @@ import MasonryLayout from '@/components/MasonryLayout.vue';
 import RingCarousel from '@/components/RingCarousel.vue';
 import projectsData from '@/data/projects.json';
 
-const layoutMode = ref('ring');
+// 初始化时尝试从 localStorage 读取布局状态，若无则默认为 'ring'
+const layoutMode = ref(localStorage.getItem('layoutMode') || 'ring');
 
 const toggleLayout = () => {
   layoutMode.value = layoutMode.value === 'masonry' ? 'ring' : 'masonry';
+  localStorage.setItem('layoutMode', layoutMode.value);
 };
 
 const projects = ref(projectsData);
