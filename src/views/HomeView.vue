@@ -34,9 +34,9 @@
 </template>
 
 <script setup>
-import {onMounted, onUnmounted} from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 import TopRightButtons from '@/components/TopRightButtons.vue'
-import {enable as enableDarkMode} from 'darkreader'
+import { enable as enableDarkMode } from 'darkreader'
 
 onMounted(() => {
   // 锁定页面滚动
@@ -61,43 +61,46 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-/* 页面基础样式 */
+/* 基础样式采用全流式布局，使用 vw 单位和 clamp() 动态调整 */
 .container {
+  width: 100%;
   min-height: 100vh;
-  /* 增加顶部内边距，使内容整体向下移动 */
-  padding: 4rem 4rem 2rem 4rem;
+  padding: 4vw;
   font-family: 'Helvetica Neue', sans-serif;
   color: #2d3436;
   position: relative;
+  box-sizing: border-box;
 }
 
 .header {
-  margin-bottom: 4rem;
+  margin-bottom: 4vw;
   text-align: center;
 }
 
 .title-en {
-  font-size: 3rem;
+  /* 随屏幕扩大最大可达 4rem，最小 2rem */
+  font-size: clamp(2rem, 6vw, 4rem);
   font-weight: 700;
   animation: fade-in 1s ease;
 }
 
 .title-fr {
-  font-size: 1.8rem;
+  font-size: clamp(1.5rem, 4vw, 3rem);
   font-weight: 400;
   animation: slide-up 1.5s ease;
 }
 
 .profession {
-  margin: 4rem 0;
+  margin: 4vw 0;
 }
 
 .profession-line {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
-  margin: 1rem 0;
+  /* 字体最大可达 2.5rem */
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  margin: 2vw 0;
 }
 
 .highlight {
@@ -107,15 +110,17 @@ onUnmounted(() => {
 
 .actions {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  gap: 2rem;
-  margin: 3rem 0;
+  gap: 2vw;
+  margin: 4vw 0;
 }
 
 .action-btn {
   position: relative;
-  padding: 1rem 2rem;
-  font-size: 1.2rem;
+  /* 使用 clamp() 让内边距随屏幕变大，保证大屏时按钮不会显得过小 */
+  padding: clamp(0.8rem, 2vw, 1.2rem) clamp(1.5rem, 3vw, 2rem);
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
   background: #fff;
   border: 2px solid #2d3436;
   border-radius: 10px;
@@ -124,6 +129,8 @@ onUnmounted(() => {
   font-weight: bold;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   animation: bounce 2s infinite;
+  min-width: clamp(120px, 10vw, 150px);
+  box-sizing: border-box;
 }
 
 .action-btn:hover {
@@ -147,60 +154,27 @@ onUnmounted(() => {
 
 /* 动画效果 */
 @keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes slide-up {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 @keyframes slide-left {
-  from {
-    transform: translateX(-20px);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
+  from { transform: translateX(-20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
 }
 
 @keyframes slide-right {
-  from {
-    transform: translateX(20px);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
+  from { transform: translateX(20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
 }
 
 @keyframes bounce {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-10px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 </style>

@@ -9,7 +9,7 @@
     <!-- 语言切换按钮 -->
     <button class="top-btn language-btn" @click="toggleLanguage">
       <GlobalOutlined class="btn-icon"/>
-      <span>{{ locale === 'en' ? '中文' : 'English' }}</span>
+      <span>{{ locale === 'cn' ? 'English' : '中文' }}</span>
     </button>
 
     <!-- 主题切换按钮 -->
@@ -24,7 +24,7 @@
 import {useI18n} from 'vue-i18n';
 import {enable as enableDarkMode, disable as disableDarkMode} from 'darkreader';
 import {GithubOutlined, GlobalOutlined, BulbOutlined} from '@ant-design/icons-vue';
-import {ref, computed} from 'vue';
+import {ref} from 'vue';
 
 const {locale} = useI18n();
 const isDarkMode = ref(localStorage.getItem('theme') === 'dark');
@@ -50,25 +50,25 @@ const toggleTheme = () => {
 <style scoped>
 .top-right-buttons {
   position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
+  top: clamp(1rem, 3vw, 2rem);
+  right: clamp(1rem, 3vw, 2rem);
   display: flex;
-  gap: 0.75rem;
+  gap: clamp(0.5rem, 1vw, 1rem);
 }
 
 /* 通用按钮样式 */
 .top-btn {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.6rem 1rem;
-  font-size: 1rem;
+  gap: clamp(0.3rem, 0.8vw, 0.5rem);
+  padding: clamp(0.5rem, 1vw, 0.75rem) clamp(0.8rem, 1.5vw, 1rem);
+  font-size: clamp(0.8rem, 1.5vw, 1rem);
   font-weight: bold;
-  border-radius: 10px;
+  border-radius: clamp(5px, 1vw, 10px);
   border: 2px solid transparent;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 clamp(2px, 0.5vw, 4px) clamp(4px, 1vw, 6px) rgba(0, 0, 0, 0.1);
 }
 
 /* GitHub 按钮 */
@@ -94,14 +94,14 @@ const toggleTheme = () => {
   color: #2d3436;
 }
 
-/* 统一悬停效果 */
+/* 悬停效果 */
 .top-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(clamp(1px, 2vw, 3px));
+  box-shadow: 0 clamp(3px, 1vw, 6px) clamp(6px, 1.5vw, 10px) rgba(0, 0, 0, 0.2);
 }
 
-/* 图标 */
+/* 图标大小 */
 .btn-icon {
-  font-size: 1.2rem;
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
 }
 </style>
