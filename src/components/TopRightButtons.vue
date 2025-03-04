@@ -21,12 +21,12 @@
 </template>
 
 <script setup>
-import {useI18n} from 'vue-i18n';
-import {enable as enableDarkMode, disable as disableDarkMode} from 'darkreader';
-import {GithubOutlined, GlobalOutlined, BulbOutlined} from '@ant-design/icons-vue';
-import {ref} from 'vue';
+import { useI18n } from 'vue-i18n';
+import { enable as enableDarkMode, disable as disableDarkMode } from 'darkreader';
+import { GithubOutlined, GlobalOutlined, BulbOutlined } from '@ant-design/icons-vue';
+import { ref } from 'vue';
 
-const {locale} = useI18n();
+const { locale } = useI18n();
 const isDarkMode = ref(localStorage.getItem('theme') === 'dark');
 
 // 切换语言
@@ -38,7 +38,7 @@ const toggleLanguage = () => {
 const toggleTheme = () => {
   isDarkMode.value = !isDarkMode.value;
   if (isDarkMode.value) {
-    enableDarkMode({brightness: 100, contrast: 90, sepia: 10});
+    enableDarkMode({ brightness: 100, contrast: 90, sepia: 10 });
     localStorage.setItem('theme', 'dark');
   } else {
     disableDarkMode();
@@ -54,6 +54,7 @@ const toggleTheme = () => {
   right: clamp(1rem, 3vw, 2rem);
   display: flex;
   gap: clamp(0.5rem, 1vw, 1rem);
+  z-index: 100;
 }
 
 /* 通用按钮样式 */
@@ -103,5 +104,20 @@ const toggleTheme = () => {
 /* 图标大小 */
 .btn-icon {
   font-size: clamp(1rem, 1.5vw, 1.2rem);
+}
+
+/* 移动端优化：将按钮组作为顶部固定导航栏展示 */
+@media (max-width: 600px) {
+  .top-right-buttons {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 0.5rem clamp(1rem, 3vw, 2rem);
+    background-color: rgba(255, 255, 255, 0.95);
+    justify-content: flex-end;
+    gap: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
 }
 </style>

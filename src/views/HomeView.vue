@@ -39,7 +39,7 @@ import TopRightButtons from '@/components/TopRightButtons.vue'
 import { enable as enableDarkMode } from 'darkreader'
 
 onMounted(() => {
-  // 锁定页面滚动
+  // 锁定页面滚动（可根据实际需求调整）
   document.body.style.overflow = 'hidden'
   document.documentElement.style.overflow = 'hidden'
 
@@ -61,7 +61,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-/* 基础样式采用全流式布局，使用 vw 单位和 clamp() 动态调整 */
+/* 全流式布局，使用 vw 单位和 clamp() 动态调整 */
 .container {
   width: 100%;
   min-height: 100vh;
@@ -72,13 +72,13 @@ onUnmounted(() => {
   box-sizing: border-box;
 }
 
+/* header 部分 */
 .header {
   margin-bottom: 4vw;
   text-align: center;
 }
 
 .title-en {
-  /* 随屏幕扩大最大可达 4rem，最小 2rem */
   font-size: clamp(2rem, 6vw, 4rem);
   font-weight: 700;
   animation: fade-in 1s ease;
@@ -90,6 +90,7 @@ onUnmounted(() => {
   animation: slide-up 1.5s ease;
 }
 
+/* 专业介绍区域 */
 .profession {
   margin: 4vw 0;
 }
@@ -98,7 +99,6 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* 字体最大可达 2.5rem */
   font-size: clamp(1.5rem, 5vw, 2.5rem);
   margin: 2vw 0;
 }
@@ -108,6 +108,7 @@ onUnmounted(() => {
   font-weight: bold;
 }
 
+/* 按钮区域 */
 .actions {
   display: flex;
   flex-wrap: wrap;
@@ -118,7 +119,6 @@ onUnmounted(() => {
 
 .action-btn {
   position: relative;
-  /* 使用 clamp() 让内边距随屏幕变大，保证大屏时按钮不会显得过小 */
   padding: clamp(0.8rem, 2vw, 1.2rem) clamp(1.5rem, 3vw, 2rem);
   font-size: clamp(1rem, 2.5vw, 1.5rem);
   background: #fff;
@@ -176,5 +176,22 @@ onUnmounted(() => {
 @keyframes bounce {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
+}
+
+/* 针对竖屏手机优化：增大上下间距，保证整体居中显示 */
+@media (max-width: 600px) and (orientation: portrait) {
+  .container {
+    padding: 6vw;
+  }
+  .header {
+    margin-bottom: 6vw;
+  }
+  .profession {
+    margin: 6vw 0;
+  }
+  .actions {
+    margin: 6vw 0;
+    gap: 3vw;
+  }
 }
 </style>
