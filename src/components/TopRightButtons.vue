@@ -21,12 +21,12 @@
 </template>
 
 <script setup>
-import { useI18n } from 'vue-i18n';
-import { enable as enableDarkMode, disable as disableDarkMode } from 'darkreader';
-import { GithubOutlined, GlobalOutlined, BulbOutlined } from '@ant-design/icons-vue';
-import { ref } from 'vue';
+import {useI18n} from 'vue-i18n';
+import {enable as enableDarkMode, disable as disableDarkMode} from 'darkreader';
+import {GithubOutlined, GlobalOutlined, BulbOutlined} from '@ant-design/icons-vue';
+import {ref, computed} from 'vue';
 
-const { locale } = useI18n();
+const {locale} = useI18n();
 const isDarkMode = ref(localStorage.getItem('theme') === 'dark');
 
 // 切换语言
@@ -38,7 +38,7 @@ const toggleLanguage = () => {
 const toggleTheme = () => {
   isDarkMode.value = !isDarkMode.value;
   if (isDarkMode.value) {
-    enableDarkMode({ brightness: 100, contrast: 90, sepia: 10 });
+    enableDarkMode({brightness: 100, contrast: 90, sepia: 10});
     localStorage.setItem('theme', 'dark');
   } else {
     disableDarkMode();
@@ -50,26 +50,25 @@ const toggleTheme = () => {
 <style scoped>
 .top-right-buttons {
   position: absolute;
-  top: clamp(1rem, 3vw, 2rem);
-  right: clamp(1rem, 3vw, 2rem);
+  top: 1.5rem;
+  right: 1.5rem;
   display: flex;
-  gap: clamp(0.5rem, 1vw, 1rem);
-  z-index: 100;
+  gap: 0.75rem;
 }
 
 /* 通用按钮样式 */
 .top-btn {
   display: flex;
   align-items: center;
-  gap: clamp(0.3rem, 0.8vw, 0.5rem);
-  padding: clamp(0.5rem, 1vw, 0.75rem) clamp(0.8rem, 1.5vw, 1rem);
-  font-size: clamp(0.8rem, 1.5vw, 1rem);
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
   font-weight: bold;
-  border-radius: clamp(5px, 1vw, 10px);
+  border-radius: 10px;
   border: 2px solid transparent;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
-  box-shadow: 0 clamp(2px, 0.5vw, 4px) clamp(4px, 1vw, 6px) rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* GitHub 按钮 */
@@ -95,29 +94,14 @@ const toggleTheme = () => {
   color: #2d3436;
 }
 
-/* 悬停效果 */
+/* 统一悬停效果 */
 .top-btn:hover {
-  transform: translateY(clamp(1px, 2vw, 3px));
-  box-shadow: 0 clamp(3px, 1vw, 6px) clamp(6px, 1.5vw, 10px) rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* 图标大小 */
+/* 图标 */
 .btn-icon {
-  font-size: clamp(1rem, 1.5vw, 1.2rem);
-}
-
-/* 移动端优化：将按钮组作为顶部固定导航栏展示 */
-@media (max-width: 600px) {
-  .top-right-buttons {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    padding: 0.5rem clamp(1rem, 3vw, 2rem);
-    background-color: rgba(255, 255, 255, 0.95);
-    justify-content: flex-end;
-    gap: 0.5rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
+  font-size: 1.2rem;
 }
 </style>
