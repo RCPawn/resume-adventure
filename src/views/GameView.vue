@@ -1,12 +1,11 @@
 <template>
-  <GoBackButton />
   <div class="container">
     <iframe src="/WebGL Builds/index.html" class="iframe" frameborder="0"></iframe>
   </div>
 </template>
 
 <script setup>
-import GoBackButton from '@/components/GoBackButton.vue';
+
 </script>
 
 <style scoped>
