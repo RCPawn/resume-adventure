@@ -14,11 +14,6 @@ const router = createRouter({
     //   name: 'projects',
     //   component: () => import('../views/ProjectsView.vue'),
     // },
-    // {
-    //   path: '/gateway',
-    //   name: 'gateway',
-    //   component: () => import('../views/GatewayView.vue'),
-    // },
     {
       path: '/projects/adventure',
       name: 'adventure',
@@ -29,11 +24,11 @@ const router = createRouter({
     //   name: 'github',
     //   component: () => import('../views/GitHubView.vue'),
     // },
-    // {
-    //   path: '/coming-soon',
-    //   name: 'coming-soon',
-    //   component: () => import('../views/ComingSoon.vue'),
-    // },
+    {
+      path: '/coming-soon',
+      name: 'coming-soon',
+      component: () => import('../views/ComingSoon.vue'),
+    },
     // {
     //   path: '/about',
     //   name: 'about',

@@ -3,7 +3,7 @@
     <!-- RCPAWN Logo -->
     <div class="napkin-logo">{{ t('nav.logo') }}</div>
     <div class="napkin-nav-links">
-      <a href="#home" class="napkin-nav-link">{{ t('nav.home') }}</a>
+      <a href="#hero" class="napkin-nav-link">{{ t('nav.home') }}</a>
       <a href="#projects" class="napkin-nav-link">{{ t('nav.projects') }}</a>
       <a href="#gallery" class="napkin-nav-link">{{ t('nav.gallery') }}</a>
       <a href="#about" class="napkin-nav-link">{{ t('nav.about') }}</a>
@@ -106,7 +106,7 @@ const toggleTheme = () => {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: var(--background-color);
+  background-color: #ffffff; /* 纯白色背景，完全遮挡下方内容 */
   border-bottom: 1px solid var(--border-color);
   position: sticky;
   top: 0;

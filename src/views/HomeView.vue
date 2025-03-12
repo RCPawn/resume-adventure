@@ -1,8 +1,8 @@
 <template>
   <div class="napkin-container napkin-background" :class="{ 'dark-mode': isDarkMode }">
-    <NavBar @toggleLanguage="toggleLanguage" @toggleTheme="toggleTheme"/>
+    <NavBar />
     <HeroSection/>
-     <ProjectsSection />
+    <ProjectsSection/>
     <!-- <GallerySection :gallery="gallery" /> -->
     <!-- <AboutSection /> -->
     <!-- <AssistantSection /> -->
@@ -20,19 +20,6 @@ import GallerySection from '@/components/GallerySection.vue';
 import AssistantSection from '@/components/AssistantSection.vue';
 import FooterSection from '@/components/FooterSection.vue';
 
-// Theme and language state
-const isDarkMode = ref(false);
-const currentLanguage = ref('zh'); // 默认中文
-
-// Theme toggle function
-const toggleTheme = () => {
-  isDarkMode.value = !isDarkMode.value;
-};
-
-// Language toggle function
-const toggleLanguage = () => {
-  currentLanguage.value = currentLanguage.value === 'zh' ? 'en' : 'zh';
-};
 </script>
 
 <style>

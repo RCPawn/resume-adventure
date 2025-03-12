@@ -1,25 +1,22 @@
 <template>
-  <div class="container">
+  <div class="sketch-container">
     <div class="emoji">🚧</div>
-    <h1>建设中...</h1>
-    <p>抱歉，该页面还在开发中，敬请期待！</p>
-    <!-- 如果你使用 vue-router，推荐使用 router-link -->
-    <!--    <router-link to="/" class="btn">返回主页</router-link>-->
-    <!-- 如果没使用 vue-router，可换成普通按钮绑定返回事件 -->
-    <button class="btn" @click="goBack">返回</button>
+    <h1 class="sketch-title">{{ t('stuffs.building') }}</h1>
+    <p class="sketch-text">{{ t('stuffs.developing') }}</p>
+    <button class="sketch-btn" @click="goBack">{{ t('stuffs.back') }}</button>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'UnderDevelopment',
-  // 如果你没使用 vue-router，可以通过 window.history 返回上一页
-  methods: {
-    goBack() {
-      window.history.back();
-    }
-  }
-}
+<script setup>
+import {useRouter} from 'vue-router';
+import {useI18n} from 'vue-i18n'
+
+const {t} = useI18n()
+const router = useRouter();
+
+const goBack = () => {
+  router.go(-1);
+};
 </script>
 
 <style scoped>
@@ -30,62 +27,114 @@ export default {
   box-sizing: border-box;
 }
 
-.container {
+@font-face {
+  font-family: 'Sketchy';
+  src: url('https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Architects_Daughter/ArchitectsDaughter-Regular.ttf') format('truetype');
+}
+
+.sketch-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #ece9e6, #ffffff);
+  background-color: #f9f6f0;
+  background-image: url("data:image/svg+xml,%3Csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='pattern' width='40' height='40' patternUnits='userSpaceOnUse'%3E%3Cpath d='M0 20 L40 20 M20 0 L20 40' stroke='%23e0e0e0' stroke-width='0.5' fill='none'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23pattern)'/%3E%3C/svg%3E");
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 20px;
-  font-family: 'Arial', sans-serif;
+  font-family: 'Sketchy', 'Comic Sans MS', cursive;
   text-align: center;
 }
 
 .emoji {
-  font-size: 4rem;
-  margin-bottom: 20px;
-  animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.2);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-h1 {
-  font-size: 2rem;
-  margin-bottom: 10px;
-  color: #333;
-}
-
-p {
-  font-size: 1.2rem;
-  color: #555;
+  font-size: 5rem;
   margin-bottom: 30px;
+  animation: wobble 2s infinite;
+  filter: drop-shadow(3px 3px 2px rgba(0,0,0,0.2));
 }
 
-.btn {
+@keyframes wobble {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+}
+
+.sketch-title {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  color: #333;
+  text-shadow: 2px 2px 0px #fff;
+  position: relative;
   display: inline-block;
-  padding: 12px 25px;
-  background-color: #3498db;
-  color: #fff;
-  text-decoration: none;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
 }
 
-.btn:hover {
-  background-color: #2980b9;
-  transform: translateY(-3px);
+.sketch-title::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-image: url("data:image/svg+xml,%3Csvg width='100%25' height='3' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,1 Q5,3 10,1 Q15,-1 20,1 Q25,3 30,1 Q35,-1 40,1 Q45,3 50,1 Q55,-1 60,1 Q65,3 70,1 Q75,-1 80,1 Q85,3 90,1 Q95,-1 100,1' stroke='%23333' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+  background-size: 100px 3px;
+  background-repeat: repeat-x;
+}
+
+.sketch-text {
+  font-size: 1.4rem;
+  color: #555;
+  margin-bottom: 40px;
+  max-width: 80%;
+  line-height: 1.5;
+  position: relative;
+  display: inline-block;
+}
+
+.sketch-btn {
+  display: inline-block;
+  padding: 12px 30px;
+  background-color: #fff;
+  color: #333;
+  text-decoration: none;
+  border: 2px solid #333;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'Sketchy', 'Comic Sans MS', cursive;
+  font-size: 1.2rem;
+  font-weight: bold;
+  position: relative;
+  transition: transform 0.2s;
+  box-shadow: 3px 3px 0 #333;
+}
+
+.sketch-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 #333;
+}
+
+.sketch-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 #333;
+}
+
+/* 添加一些手绘元素 */
+.sketch-container::before {
+  content: "";
+  position: absolute;
+  top: 10%;
+  right: 15%;
+  width: 100px;
+  height: 100px;
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10,10 Q30,5 50,30 T90,40 Q75,60 80,80 T20,90 Q10,60 10,10 Z' stroke='%23ddd' stroke-width='2' fill='none' stroke-dasharray='5,5'/%3E%3C/svg%3E");
+  opacity: 0.5;
+}
+
+.sketch-container::after {
+  content: "";
+  position: absolute;
+  bottom: 10%;
+  left: 10%;
+  width: 150px;
+  height: 80px;
+  background-image: url("data:image/svg+xml,%3Csvg width='150' height='80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10,40 Q40,10 70,40 T140,40' stroke='%23ddd' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+  opacity: 0.5;
 }
 </style>

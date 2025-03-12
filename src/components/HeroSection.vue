@@ -1,5 +1,5 @@
 <template>
-  <section class="napkin-hero">
+  <section id="hero" class="napkin-hero">
 
     <!-- 草稿纸背景 -->
     <div class="napkin-paper-background">

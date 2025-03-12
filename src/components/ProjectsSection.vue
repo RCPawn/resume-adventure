@@ -20,12 +20,12 @@
         <!-- 手绘装饰元素 -->
         <div class="napkin-arrow napkin-arrow-top">
           <svg width="24" height="12" viewBox="0 0 24 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2 10C8 4 16 2 22 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M2 10C8 4 16 2 22 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
           </svg>
         </div>
         <div class="napkin-arrow napkin-arrow-bottom">
           <svg width="24" height="12" viewBox="0 0 24 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2 2C8 8 16 10 22 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M2 2C8 8 16 10 22 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
           </svg>
         </div>
       </div>
@@ -36,7 +36,7 @@
             v-for="(project, index) in projects"
             :key="project.name"
             class="napkin-project-card"
-            :class="{ 'active': activeIndex === index }"
+            :class="{ active: activeIndex === index }"
             :style="{ transform: `translateY(${(index - activeIndex) * 100}%)` }"
         >
           <div class="project-content">
@@ -51,10 +51,11 @@
             <div class="project-info">
               <h3 class="project-title">{{ project.name }}</h3>
               <p class="project-description">{{ project.description }}</p>
-              <a :href="project.link" class="napkin-button">
+              <a :href="getProjectLink(index)" class="napkin-button">
                 {{ t('projects.viewDetails') }}
                 <svg width="20" height="12" viewBox="0 0 20 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M1 6H19M19 6L14 1M19 6L14 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M1 6H19M19 6L14 1M19 6L14 11" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round"/>
                 </svg>
               </a>
             </div>
@@ -65,12 +66,14 @@
         <div class="napkin-nav-buttons">
           <button @click="prevProject" class="napkin-nav-button">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round"/>
             </svg>
           </button>
           <button @click="nextProject" class="napkin-nav-button">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round"/>
             </svg>
           </button>
         </div>
@@ -80,86 +83,56 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, onBeforeUnmount } from 'vue';
-import { useI18n } from 'vue-i18n';
+import {ref, onMounted, computed, onBeforeUnmount} from 'vue';
+import {useI18n} from 'vue-i18n';
+// 根据你的项目配置调整导入路径
+import projectsData from '@/data/projects.json';
 
-const { t } = useI18n();
+const {t, locale} = useI18n();
+
 const activeIndex = ref(0);
 const projectsContainer = ref(null);
 const showcaseContainer = ref(null);
 const isScrolling = ref(false);
 const scrollTimeout = ref(null);
 
-// 从i18n中获取项目数据
+// 通过 i18n 处理 JSON 文件中配置的 key 值
 const projects = computed(() => {
-  // 这里应该从i18n文件中获取项目数据
-  // 注意：实际使用时应该替换为从i18n中获取的数据
-  return [
-    {
-      "name": t('projects.items.0.name'),
-      "description": t('projects.items.0.description'),
-      "image": "/images/skillmap.webp",
-      "link": "/coming-soon"
-    },
-    {
-      "name": t('projects.items.1.name'),
-      "description": t('projects.items.1.description'),
-      "image": "/images/Car.png",
-      "link": "/projects/adventure"
-    },
-    {
-      "name": t('projects.items.2.name'),
-      "description": t('projects.items.2.description'),
-      "image": "/images/donuts.png",
-      "link": "/coming-soon"
-    },
-    {
-      "name": t('projects.items.3.name'),
-      "description": t('projects.items.3.description'),
-      "image": "/images/skillmap.webp",
-      "link": "/coming-soon"
-    },
-    {
-      "name": t('projects.items.4.name'),
-      "description": t('projects.items.4.description'),
-      "image": "/images/github.webp",
-      "link": "/projects/github"
-    },
-    {
-      "name": t('projects.items.5.name'),
-      "description": t('projects.items.5.description'),
-      "image": "/images/skillmap.webp",
-      "link": "/coming-soon"
-    }
-  ];
+  return projectsData.map(project => ({
+    name: t(project.nameKey),
+    description: t(project.descriptionKey),
+    image: project.image,
+    link: project.link
+  }));
 });
 
-// 设置当前项目
+// 设置当前激活项目
 const setActiveProject = (index) => {
   if (isScrolling.value) return;
-
   isScrolling.value = true;
   activeIndex.value = index;
-
-  // 添加过渡结束后的防抖
   clearTimeout(scrollTimeout.value);
   scrollTimeout.value = setTimeout(() => {
     isScrolling.value = false;
-  }, 800); // 略长于过渡时间
+  }, 800);
 };
 
-// 下一个项目
+// 获取项目链接 - 仅索引为1的项目使用原始链接，其他项目使用 "/coming-soon"
+const getProjectLink = (index) => {
+  if (index === 1) {
+    return "/projects/adventure";
+  }
+  return "/coming-soon";
+};
+
 const nextProject = () => {
   if (isScrolling.value) return;
-
   const nextIndex = (activeIndex.value + 1) % projects.value.length;
   setActiveProject(nextIndex);
 };
 
-// 上一个项目
 const prevProject = () => {
   if (isScrolling.value) return;
-
   const prevIndex = (activeIndex.value - 1 + projects.value.length) % projects.value.length;
   setActiveProject(prevIndex);
 };
@@ -167,11 +140,7 @@ const prevProject = () => {
 // 处理鼠标滚轮事件
 const handleWheel = (e) => {
   if (isScrolling.value) return;
-
-  // 防止滚动事件传播
   e.preventDefault();
-
-  // 确定滚动方向
   if (e.deltaY > 0) {
     nextProject();
   } else {
@@ -188,42 +157,31 @@ const handleKeyNavigation = (e) => {
   }
 };
 
-// 检查组件是否在视口内
+// 检查组件是否在视口内以触发动画
 const checkVisibility = () => {
   if (!showcaseContainer.value) return;
-
   const rect = showcaseContainer.value.getBoundingClientRect();
-  const isVisible =
-      rect.top < window.innerHeight &&
-      rect.bottom > 0;
-
+  const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
   if (isVisible) {
     document.querySelector('.napkin-heading').classList.add('visible');
   }
 };
 
-// 监听组件可见性，触发动画
 onMounted(() => {
   window.addEventListener('keydown', handleKeyNavigation);
   window.addEventListener('scroll', checkVisibility);
-
-  // 初始检查可见性
   setTimeout(checkVisibility, 100);
-
-  // 添加滚动事件监听
   if (projectsContainer.value) {
-    projectsContainer.value.addEventListener('wheel', handleWheel, { passive: false });
+    projectsContainer.value.addEventListener('wheel', handleWheel, {passive: false});
   }
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleKeyNavigation);
   window.removeEventListener('scroll', checkVisibility);
-
   if (projectsContainer.value) {
     projectsContainer.value.removeEventListener('wheel', handleWheel);
   }
-
   clearTimeout(scrollTimeout.value);
 });
 </script>
@@ -235,10 +193,15 @@ onBeforeUnmount(() => {
   font-family: 'Inter', sans-serif;
   position: relative;
   margin-top: -2rem; /* 减少与上方组件的距离 */
+  --napkin-primary: #ffffff; /* 主色 */
+  --napkin-secondary: #f1f1f1; /* 次要色 */
+  --napkin-accent: #333333; /* 强调色 */
+  --napkin-shadow: rgba(0, 0, 0, 0.15);
+  color: var(--napkin-accent);
 }
 
 .napkin-heading {
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   font-weight: 700;
   margin-bottom: 2.5rem;
   text-align: center;
@@ -246,6 +209,8 @@ onBeforeUnmount(() => {
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: 'Comic Sans MS', cursive, sans-serif; /* 增加手绘风格 */
+  letter-spacing: 1px;
 }
 
 .napkin-heading.visible {
@@ -259,22 +224,29 @@ onBeforeUnmount(() => {
   bottom: -10px;
   left: 50%;
   transform: translateX(-50%);
-  width: 80px;
+  width: 100px;
   height: 3px;
-  background: currentColor;
+  background: var(--napkin-accent);
   border-radius: 3px;
+  /* 手绘风格的波浪线 */
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='3' viewBox='0 0 100 3' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 1.5C5 0.5 10 2.5 15 1.5C20 0.5 25 2.5 30 1.5C35 0.5 40 2.5 45 1.5C50 0.5 55 2.5 60 1.5C65 0.5 70 2.5 75 1.5C80 0.5 85 2.5 90 1.5C95 0.5 100 2.5 105 1.5' stroke='%23333333' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
 }
 
+/* Updated background - replaced checkerboard with paper texture */
 .napkin-showcase-container {
   display: flex;
   max-width: 1200px;
   margin: 0 auto;
-  height: 500px; /* 增加高度以提供更多内容展示空间 */
+  height: 650px; /* 增加高度，更好地展示图片 */
   position: relative;
-  background: repeating-linear-gradient(45deg, rgba(255,255,255,0.03), rgba(255,255,255,0.03) 10px, rgba(0,0,0,0.01) 10px, rgba(0,0,0,0.01) 20px);
-  border: 2px solid;
+  background: var(--napkin-primary);
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23f1f1f1' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E"),
+  linear-gradient(to bottom, #ffffff, #fcfcfc);
+  border: 2px solid var(--napkin-accent);
   border-radius: 12px;
-  box-shadow: 6px 6px 0 rgba(0,0,0,0.1);
+  box-shadow: 8px 8px 0 var(--napkin-shadow);
   overflow: hidden;
 }
 
@@ -285,9 +257,10 @@ onBeforeUnmount(() => {
   left: 10px;
   right: 10px;
   bottom: 10px;
-  border: 1px dashed rgba(0,0,0,0.1);
+  border: 1px dashed var(--napkin-accent);
   border-radius: 8px;
   pointer-events: none;
+  opacity: 0.3;
 }
 
 /* 左侧指示器 */
@@ -298,15 +271,16 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   position: relative;
-  border-right: 2px dashed rgba(0,0,0,0.1);
+  border-right: 2px dashed rgba(0, 0, 0, 0.2);
   padding: 2rem 0;
+  background: rgba(255, 255, 255, 0.6);
 }
 
 .napkin-indicator {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 0.75rem 0;
+  margin: 1rem 0;
   cursor: pointer;
   position: relative;
   transition: all 0.3s ease;
@@ -316,36 +290,60 @@ onBeforeUnmount(() => {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  border: 2px solid;
+  border: 2px solid var(--napkin-accent);
   background: transparent;
   transition: all 0.3s ease;
   position: relative;
+  box-shadow: 2px 2px 0 var(--napkin-shadow);
 }
 
 .napkin-indicator.active .indicator-dot {
-  background: currentColor;
+  background: var(--napkin-accent);
   transform: scale(1.3);
 }
 
 .indicator-line {
   width: 2px;
   height: 30px;
-  border-left: 2px dashed;
+  border-left: 2px dashed var(--napkin-accent);
   margin-top: 4px;
+  opacity: 0.6;
 }
 
 .napkin-arrow {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+  color: var(--napkin-accent);
+  opacity: 0.7;
 }
 
 .napkin-arrow-top {
   top: 15px;
+  animation: bounceUp 2s infinite;
 }
 
 .napkin-arrow-bottom {
   bottom: 15px;
+  animation: bounceDown 2s infinite;
+}
+
+@keyframes bounceUp {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-5px);
+  }
+}
+
+@keyframes bounceDown {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(5px);
+  }
 }
 
 /* 项目展示区 */
@@ -356,6 +354,7 @@ onBeforeUnmount(() => {
   cursor: ns-resize; /* 添加滚动光标提示 */
 }
 
+/* Updated project card styles */
 .napkin-project-card {
   position: absolute;
   top: 0;
@@ -363,35 +362,44 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 100%;
   padding: 2rem;
-  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1); /* 更流畅的动画曲线 */
-  will-change: transform; /* 性能优化 */
+  padding-top: 4rem; /* Add more padding at the top */
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
 }
 
+/* Updated project content for better vertical centering */
 .project-content {
   display: flex;
   height: 100%;
-  gap: 2rem;
-  padding: 1rem;
+  gap: 2.5rem;
+  padding: 1.5rem;
+  align-items: center;
+  justify-content: center; /* Ensure horizontal centering */
+  transform: translateY(-5%); /* Move content up slightly */
 }
 
+/* Updated project image styles */
 .project-image {
-  width: 40%;
+  width: 45%; /* Slightly reduced width */
+  height: 75%; /* Slightly reduced from 80% */
+  margin-top: -2rem; /* Move up a bit */
   position: relative;
-  border: 2px solid;
-  border-radius: 8px;
+  border: 3px solid var(--napkin-accent);
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+  box-shadow: 6px 6px 0 var(--napkin-shadow);
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: rotate(-1deg); /* 略微倾斜，增加手绘感 */
 }
 
 .napkin-project-card.active .project-image {
-  transform: scale(1.02);
+  transform: rotate(-1deg) scale(1.02);
 }
 
 .project-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover; /* 保持图片比例填充容器 */
   transition: transform 1.2s ease;
 }
 
@@ -401,46 +409,89 @@ onBeforeUnmount(() => {
 
 .image-corner {
   position: absolute;
-  top: -2px;
-  right: -2px;
-  width: 20px;
-  height: 20px;
-  border-top: 2px solid;
-  border-right: 2px solid;
-  transform: rotate(45deg) translate(10px, -10px);
+  top: -5px;
+  right: -5px;
+  width: 25px;
+  height: 25px;
+  border-top: 3px solid var(--napkin-accent);
+  border-right: 3px solid var(--napkin-accent);
+  transform: rotate(45deg) translate(8px, -8px);
 }
 
 .image-pin {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  width: 10px;
-  height: 10px;
+  top: 15px;
+  left: 15px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  background: currentColor;
-  box-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+  background: var(--napkin-accent);
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
+/* 添加额外的大头针 */
+.project-image::after {
+  content: '';
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--napkin-accent);
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Updated project info styles */
 .project-info {
   flex: 1;
+  margin-top: -2rem; /* Move up to match the image */
+  max-height: 75%; /* Control maximum height */
+  overflow-y: auto; /* Add scrolling if needed */
   display: flex;
   flex-direction: column;
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 12px;
+  border: 2px solid var(--napkin-accent);
+  box-shadow: 4px 4px 0 var(--napkin-shadow);
+  position: relative;
+  background-image: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.03) 1px, transparent 1px, transparent 30px);
+  transform: rotate(1deg); /* 与图片反向倾斜 */
+}
+
+/* 添加手绘装饰 */
+.project-info::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 20px;
+  width: 40px;
+  height: 20px;
+  background: var(--napkin-primary);
+  border: 2px solid var(--napkin-accent);
+  border-bottom: none;
+  border-radius: 50% 50% 0 0;
+  transform: rotate(-5deg);
+  z-index: -1;
 }
 
 .napkin-project-card.active .project-info {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) rotate(1deg);
 }
 
 .project-title {
-  font-size: 1.75rem;
+  font-size: 2rem;
   font-weight: 700;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   position: relative;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.75rem;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  color: var(--napkin-accent);
 }
 
 .project-title::after {
@@ -448,17 +499,26 @@ onBeforeUnmount(() => {
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 60px;
-  height: 2px;
-  background: currentColor;
+  width: 80px;
+  height: 3px;
+  background: var(--napkin-accent);
   border-radius: 2px;
+  opacity: 0.7;
+  /* 手绘下划线 */
+  background-image: url("data:image/svg+xml,%3Csvg width='80' height='3' viewBox='0 0 80 3' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 1.5C4 0.5 8 2.5 12 1.5C16 0.5 20 2.5 24 1.5C28 0.5 32 2.5 36 1.5C40 0.5 44 2.5 48 1.5C52 0.5 56 2.5 60 1.5C64 0.5 68 2.5 72 1.5C76 0.5 80 2.5 84 1.5' stroke='%23333333' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
 }
 
 .project-description {
-  font-size: 1rem;
-  line-height: 1.6;
-  margin-bottom: 2rem;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin-bottom: 2.5rem;
   flex: 1;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  font-style: italic;
+  letter-spacing: 0.5px;
 }
 
 .napkin-button {
@@ -466,17 +526,21 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  border: 2px solid;
-  border-radius: 8px;
+  padding: 0.85rem 1.75rem;
+  border: 2.5px solid var(--napkin-accent);
+  border-radius: 30px;
   font-weight: 600;
+  font-size: 1rem;
   text-decoration: none;
-  color: inherit;
-  background: transparent;
+  color: var(--napkin-accent);
+  background: var(--napkin-primary);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  box-shadow: 3px 3px 0 rgba(0,0,0,0.1);
+  box-shadow: 4px 4px 0 var(--napkin-shadow);
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  border-style: solid;
+  border-color: var(--napkin-accent);
 }
 
 .napkin-button::before {
@@ -486,46 +550,50 @@ onBeforeUnmount(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: currentColor;
+  background: var(--napkin-accent);
   opacity: 0.1;
   transform: translateX(-100%);
   transition: transform 0.3s ease;
 }
 
 .napkin-button:hover {
-  transform: translate(-3px, -3px);
-  box-shadow: 6px 6px 0 rgba(0,0,0,0.1);
+  transform: translate(-4px, -4px);
+  box-shadow: 8px 8px 0 var(--napkin-shadow);
 }
 
 .napkin-button:hover::before {
   transform: translateX(0);
 }
 
-/* 导航按钮 */
+/* Updated navigation buttons position */
 .napkin-nav-buttons {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: 1rem; /* Move up slightly */
+  right: 1.5rem;
   display: flex;
-  gap: 0.5rem;
+  gap: 1rem;
+  z-index: 5;
 }
 
 .napkin-nav-button {
-  width: 40px;
-  height: 40px;
-  border: 2px solid;
+  width: 48px;
+  height: 48px;
+  border: 2.5px solid var(--napkin-accent);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: transparent;
+  background: var(--napkin-primary);
   cursor: pointer;
   transition: all 0.3s ease;
+  color: var(--napkin-accent);
+  box-shadow: 3px 3px 0 var(--napkin-shadow);
 }
 
 .napkin-nav-button:hover {
-  background: rgba(0,0,0,0.05);
-  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.9);
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 5px 5px 0 var(--napkin-shadow);
 }
 
 /* 添加滚动提示 */
@@ -535,10 +603,10 @@ onBeforeUnmount(() => {
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  width: 30px;
-  height: 50px;
-  border: 2px solid currentColor;
-  border-radius: 15px;
+  width: 36px;
+  height: 60px;
+  border: 3px solid var(--napkin-accent);
+  border-radius: 18px;
   opacity: 0.5;
   animation: fadeInOut 2s infinite;
   pointer-events: none;
@@ -547,13 +615,13 @@ onBeforeUnmount(() => {
 .napkin-projects-display::before {
   content: '';
   position: absolute;
-  bottom: 40px;
+  bottom: 50px;
   left: 50%;
   transform: translateX(-50%);
-  width: 6px;
-  height: 10px;
-  background: currentColor;
-  border-radius: 3px;
+  width: 8px;
+  height: 12px;
+  background: var(--napkin-accent);
+  border-radius: 4px;
   opacity: 0.5;
   animation: scrollDown 2s infinite;
   z-index: 1;
@@ -561,30 +629,124 @@ onBeforeUnmount(() => {
 }
 
 @keyframes fadeInOut {
-  0%, 100% { opacity: 0.2; }
-  50% { opacity: 0.7; }
+  0%, 100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }
 
 @keyframes scrollDown {
-  0% { transform: translateY(-5px) translateX(-50%); opacity: 0; }
-  50% { opacity: 0.5; }
-  100% { transform: translateY(15px) translateX(-50%); opacity: 0; }
+  0% {
+    transform: translateY(-10px) translateX(-50%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(20px) translateX(-50%);
+    opacity: 0;
+  }
 }
 
 /* 响应式布局 */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .napkin-showcase-container {
-    height: 600px;
+    height: 700px;
   }
 
   .project-content {
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    transform: translateY(-3%);
+  }
+
+  .project-image,
+  .project-info {
+    margin-top: -1rem;
+  }
+
+  .project-image {
+    width: 85%;
+    height: 50%;
+  }
+
+  .project-info {
+    width: 90%;
+  }
+
+  .napkin-project-card {
+    padding-top: 3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .napkin-showcase-container {
+    height: 750px;
+  }
+
+  .napkin-heading {
+    font-size: 2.2rem;
+  }
+
+  .project-content {
+    transform: translateY(-2%);
   }
 
   .project-image {
     width: 100%;
-    height: 200px;
-    margin-bottom: 1rem;
+    height: 45%;
+  }
+
+  .project-title {
+    font-size: 1.6rem;
+  }
+
+  .project-description {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .napkin-button {
+    padding: 0.7rem 1.4rem;
+    font-size: 0.95rem;
+  }
+
+  .napkin-project-card {
+    padding-top: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .napkin-showcase-container {
+    height: 650px;
+  }
+
+  .napkin-indicators {
+    width: 60px;
+  }
+
+  .project-content {
+    padding: 0.75rem;
+  }
+
+  .project-image {
+    height: 40%;
+  }
+
+  .napkin-nav-buttons {
+    top: auto;
+    bottom: 1rem;
+    right: 1rem;
+  }
+
+  .napkin-nav-button {
+    width: 40px;
+    height: 40px;
   }
 }
 </style>
