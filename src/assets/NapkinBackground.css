@@ -1,0 +1,40 @@
+/* 全局草稿纸背景样式 */
+.napkin-background {
+    position: relative;
+    background-color: #fff;
+    overflow: hidden;
+}
+
+/* 草稿纸背景 */
+.napkin-paper-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.6;
+}
+
+.napkin-paper-lines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(#e1e8ed 1px, transparent 1px);
+    background-size: 100% 72px; /* 将原来的48px改为72px，使线条更稀疏 */
+    z-index: 1;
+}
+
+/* 深色模式背景 */
+.dark-mode .napkin-background {
+    background-color: #1a1a1a;
+    color: #e1e8ed;
+}
+
+.dark-mode .napkin-paper-lines {
+    background-image: linear-gradient(rgba(225, 232, 237, 0.1) 1px, transparent 1px);
+    background-size: 100% 72px; /* 同样调整深色模式下的行间距 */
+}

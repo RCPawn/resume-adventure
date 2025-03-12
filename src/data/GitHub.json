@@ -7,7 +7,7 @@
     "screenshots": [
       {
         "id": 1,
-        "src": "/images/github.png",
+        "src": "/images/github.webp",
         "alt": "LeetCode Repo Screenshot 1"
       },
       {
@@ -17,7 +17,7 @@
       },
       {
         "id": 3,
-        "src": "/images/skillmap.webp",
+        "src": "/images/github.webp",
         "alt": "LeetCode Repo Screenshot 3"
       }
     ]
@@ -30,7 +30,7 @@
     "screenshots": [
       {
         "id": 1,
-        "src": "/images/github.png",
+        "src": "/images/github.webp",
         "alt": "PyTorch Course Screenshot"
       }
     ]
@@ -43,7 +43,7 @@
     "screenshots": [
       {
         "id": 1,
-        "src": "/images/github.png",
+        "src": "/images/github.webp",
         "alt": "Leetcode MyDay Screenshot"
       }
     ]
@@ -63,7 +63,7 @@
     "screenshots": [
       {
         "id": 1,
-        "src": "/images/github.png",
+        "src": "/images/github.webp",
         "alt": "Resume Adventure Screenshot"
       }
     ]
@@ -90,7 +90,7 @@
     "screenshots": [
       {
         "id": 1,
-        "src": "/images/github.png",
+        "src": "/images/github.webp",
         "alt": "Sky Take Out Screenshot"
       }
     ]
