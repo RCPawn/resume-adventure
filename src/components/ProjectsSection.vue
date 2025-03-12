@@ -51,13 +51,13 @@
             <div class="project-info">
               <h3 class="project-title">{{ project.name }}</h3>
               <p class="project-description">{{ project.description }}</p>
-              <a :href="getProjectLink(index)" class="napkin-button">
+              <router-link :to="getProjectLink(index)" class="napkin-button">
                 {{ t('projects.viewDetails') }}
                 <svg width="20" height="12" viewBox="0 0 20 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M1 6H19M19 6L14 1M19 6L14 11" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round"/>
                 </svg>
-              </a>
+              </router-link>
             </div>
           </div>
         </div>
@@ -120,9 +120,9 @@ const setActiveProject = (index) => {
 // 获取项目链接 - 仅索引为1的项目使用原始链接，其他项目使用 "/coming-soon"
 const getProjectLink = (index) => {
   if (index === 1) {
-    return "/projects/adventure";
+    return { path: "/projects/adventure" };
   }
-  return "/coming-soon";
+  return { path: "/coming-soon" };
 };
 
 const nextProject = () => {
@@ -361,8 +361,8 @@ onBeforeUnmount(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  padding: 2rem;
-  padding-top: 4rem; /* Add more padding at the top */
+  /* Add more padding at the top */
+  padding: 4rem 2rem 2rem;
   transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform;
 }
@@ -451,15 +451,13 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   opacity: 0;
-  transform: translateY(20px);
   transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.7);
   border-radius: 12px;
   border: 2px solid var(--napkin-accent);
   box-shadow: 4px 4px 0 var(--napkin-shadow);
   position: relative;
-  background-image: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.03) 1px, transparent 1px, transparent 30px);
+  background: rgba(255, 255, 255, 0.7) repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.03) 1px, transparent 1px, transparent 30px);
   transform: rotate(1deg); /* 与图片反向倾斜 */
 }
 
@@ -539,7 +537,6 @@ onBeforeUnmount(() => {
   overflow: hidden;
   box-shadow: 4px 4px 0 var(--napkin-shadow);
   font-family: 'Comic Sans MS', cursive, sans-serif;
-  border-style: solid;
   border-color: var(--napkin-accent);
 }
 
@@ -578,7 +575,7 @@ onBeforeUnmount(() => {
 .napkin-nav-button {
   width: 48px;
   height: 48px;
-  border: 2.5px solid var(--napkin-accent);
+  border: 2px solid var(--napkin-accent);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -601,7 +598,7 @@ onBeforeUnmount(() => {
   content: '';
   position: absolute;
   bottom: 20px;
-  left: 50%;
+  left: 95%;
   transform: translateX(-50%);
   width: 36px;
   height: 60px;
@@ -616,7 +613,7 @@ onBeforeUnmount(() => {
   content: '';
   position: absolute;
   bottom: 50px;
-  left: 50%;
+  left: 95%;
   transform: translateX(-50%);
   width: 8px;
   height: 12px;
