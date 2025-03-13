@@ -34,8 +34,6 @@ const goBack = () => {
 
 .sketch-container {
   min-height: 100vh;
-  background-color: #f9f6f0;
-  background-image: url("data:image/svg+xml,%3Csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='pattern' width='40' height='40' patternUnits='userSpaceOnUse'%3E%3Cpath d='M0 20 L40 20 M20 0 L20 40' stroke='%23e0e0e0' stroke-width='0.5' fill='none'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23pattern)'/%3E%3C/svg%3E");
   display: flex;
   flex-direction: column;
   justify-content: center;
