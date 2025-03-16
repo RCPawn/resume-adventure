@@ -19,32 +19,26 @@ const goBack = () => {
 
 <style scoped>
 .sketchy-back-btn {
-  display: inline-flex;
-  align-items: center;
   padding: 10px 20px;
   background-color: #fff;
-  color: #333;
-  text-decoration: none;
   border: 2px solid #333;
   border-radius: 8px;
-  cursor: pointer;
   font-family: 'Sketchy', 'Comic Sans MS', cursive;
-  font-size: 1.2rem;
-  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
   position: relative;
-  transition: transform 0.2s;
-  box-shadow: 3px 3px 0 #333;
-  margin: 15px;
+  box-shadow: 4px 4px 0 #333;
+  transition: all 0.2s ease;
 }
 
 .sketchy-back-btn:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0 #333;
+  box-shadow: 2px 2px 0 #333;
+  transform: translate(2px, 2px);
 }
 
 .sketchy-back-btn:active {
-  transform: translate(1px, 1px);
-  box-shadow: 2px 2px 0 #333;
+  box-shadow: none;
+  transform: translate(4px, 4px);
 }
 
 .arrow-icon {

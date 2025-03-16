@@ -1,24 +1,25 @@
 <template>
   <div class="napkin-container napkin-background" :class="{ 'dark-mode': isDarkMode }">
-    <NavBar />
+    <NavBar/>
+    <Chatbot/>
     <HeroSection/>
+    <!--    <SkillsSection/>-->
     <ProjectsSection/>
-    <!-- <GallerySection :gallery="gallery" /> -->
-    <!-- <AboutSection /> -->
-    <!-- <AssistantSection /> -->
-    <!-- <FooterSection /> -->
+    <!--    <ExperienceSection/>-->
+    <!--    <AboutSection/>-->
+    <!--    <FooterSection/>-->
   </div>
 </template>
 
 <script setup>
-import {ref} from 'vue';
 import NavBar from '@/components/NavBar.vue';
 import HeroSection from '@/components/HeroSection.vue';
+import SkillsSection from "@/components/SkillsSection.vue";
 import ProjectsSection from '@/components/ProjectsSection.vue';
+import ExperienceSection from "@/components/ExperienceSection.vue";
 import AboutSection from '@/components/AboutSection.vue';
-import GallerySection from '@/components/GallerySection.vue';
-import AssistantSection from '@/components/AssistantSection.vue';
 import FooterSection from '@/components/FooterSection.vue';
+import Chatbot from "@/components/chatbot/Chatbot.vue";
 
 </script>
 

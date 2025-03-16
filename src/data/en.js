@@ -4,10 +4,11 @@ export default {
     nav: {
         logo: 'RCPAWN',
         home: 'Home',
-        about: 'About',
+        skill: 'Skills',
         projects: 'Projects',
-        gallery: 'Gallery',
-        assistant: 'Assistant'
+        experience: 'Experience',
+        about: 'About & Contact',
+        footer: 'Footer'
     },
     title: 'HEY, I AM RCPAWN',
     subtitle: 'A SOFTWARE ENGINEERING STUDENT',
@@ -42,7 +43,9 @@ export default {
                 name: "Future Project",
                 description: "A project coming soon to revolutionize the field."
             }
-        ]
+        ],
+        title: 'PROJECTS',
+        viewDetails: 'View Details'
     },
     stuffs:{
         back: 'Back',

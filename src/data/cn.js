@@ -4,10 +4,11 @@ export default {
     nav: {
         logo: '过河卒',
         home: '主页',
-        about: '关于',
+        skill: '技术栈',
         projects: '项目',
-        gallery: '画廊',
-        assistant: '小助手'
+        experience: '经历',
+        about: '关于 & 联系',
+        footer: '页脚'
     },
     title: '嘿，我是过河卒',
     subtitle: '一名软件工程专业的学生',
@@ -42,7 +43,9 @@ export default {
                 name: "未来项目",
                 description: "即将推出，颠覆领域的新项目。"
             }
-        ]
+        ],
+        title: '我的项目',
+        viewDetails: '查看详情'
     },
     stuffs:{
         back: '返回',

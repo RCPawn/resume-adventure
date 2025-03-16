@@ -3,12 +3,12 @@
     <!-- RCPAWN Logo -->
     <div class="napkin-logo">{{ t('nav.logo') }}</div>
     <div class="napkin-nav-links">
-      <a href="#hero" class="napkin-nav-link">{{ t('nav.home') }}</a>
+      <a href="javascript:void(0);" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });" class="napkin-nav-link">{{ t('nav.home') }}</a>
+      <a href="#skills" class="napkin-nav-link">{{ t('nav.skill') }}</a>
       <a href="#projects" class="napkin-nav-link">{{ t('nav.projects') }}</a>
-      <a href="#gallery" class="napkin-nav-link">{{ t('nav.gallery') }}</a>
+      <a href="#experience" class="napkin-nav-link">{{ t('nav.experience') }}</a>
       <a href="#about" class="napkin-nav-link">{{ t('nav.about') }}</a>
-      <!-- Assistant 链接 -->
-      <a href="#assistant" class="napkin-nav-link assistant">{{ t('nav.assistant') }}</a>
+      <a href="#footer" class="napkin-nav-link">{{ t('nav.footer') }}</a>
     </div>
     <div class="napkin-controls">
       <!-- GitHub 按钮 -->
@@ -63,9 +63,38 @@ onMounted(() => {
   if (savedLanguage) {
     locale.value = savedLanguage
   }
+
+  // 添加平滑滚动导航功能
+  document.querySelectorAll('.napkin-nav-link').forEach(link => {
+    link.addEventListener('click', handleNavLinkClick)
+  })
 })
 
+// 处理导航链接点击
+const handleNavLinkClick = (e) => {
+  e.preventDefault()
+  const targetId = e.currentTarget.getAttribute('href')
+  const targetElement = document.querySelector(targetId)
+
+  if (targetElement) {
+    // 计算顶部偏移量，考虑导航栏高度
+    const navHeight = document.querySelector('.napkin-nav').offsetHeight
+    const elementPosition = targetElement.getBoundingClientRect().top
+    const offsetPosition = elementPosition + window.pageYOffset - navHeight
+
+    // 平滑滚动到目标位置
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    })
+
+    // 更新 URL hash 而不引起页面跳动
+    history.pushState(null, null, targetId)
+  }
+}
+
 const toggleLanguage = () => {
+  // 保持原有代码
   document.body.classList.add('language-transition')
   locale.value = locale.value === 'en' ? 'cn' : 'en'
   localStorage.setItem('language', locale.value)
@@ -75,6 +104,7 @@ const toggleLanguage = () => {
 }
 
 const toggleTheme = () => {
+  // 保持原有代码
   isDarkMode.value = !isDarkMode.value
   if (isDarkMode.value) {
     enableDarkMode({brightness: 100, contrast: 90, sepia: 10})
@@ -133,6 +163,11 @@ const toggleTheme = () => {
   gap: 2rem;
 }
 
+/* 添加平滑滚动效果 */
+html {
+  scroll-behavior: smooth;
+}
+
 .napkin-nav-link {
   color: var(--text-color);
   text-decoration: none;
@@ -148,10 +183,24 @@ const toggleTheme = () => {
   transform: scale(1.05);
 }
 
-/* Assistant 链接 */
-.napkin-nav-link.assistant {
-  font-weight: 600;
-  color: var(--primary-color);
+.napkin-nav-link:active {
+  transform: scale(0.98); /* 点击时轻微收缩效果 */
+}
+
+/* 点击动画效果 */
+.napkin-nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--primary-color);
+  transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.napkin-nav-link:hover::after {
+  width: 100%;
 }
 
 /* 控制按钮 */

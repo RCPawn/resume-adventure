@@ -1,34 +1,41 @@
 <template>
-  <div class="sketchy-game-container">
-    <GoBackButton class="sketchy-back-button"/>
-    <div class="sketchy-frame">
-      <div class="sketchy-frame-corner top-left"></div>
-      <div class="sketchy-frame-corner top-right"></div>
-      <div class="sketchy-frame-corner bottom-left"></div>
-      <div class="sketchy-frame-corner bottom-right"></div>
-      <iframe :src="gameUrl" class="sketchy-iframe" border="0"></iframe>
+  <div class="game-container">
+    <div class="back-button-area">
+      <GoBackButton />
     </div>
-    <div class="sketchy-controls">
-      <button class="sketchy-btn" @click="toggleFullscreen">全屏</button>
-      <button class="sketchy-btn" @click="reloadGame">重新开始</button>
+
+    <div class="game-area">
+      <div class="game-frame">
+        <iframe ref="gameIframe" :src="gameUrl" class="game-iframe"></iframe>
+      </div>
+
+      <div class="game-controls">
+        <button class="hand-drawn-btn" @click="toggleFullscreen">
+          <span class="btn-icon">⛶</span>
+          <span class="btn-text">全屏</span>
+        </button>
+        <button class="hand-drawn-btn" @click="reloadGame">
+          <span class="btn-icon">↻</span>
+          <span class="btn-text">重新开始</span>
+        </button>
+      </div>
     </div>
-    <div class="sketchy-decoration dot-1"></div>
-    <div class="sketchy-decoration dot-2"></div>
-    <div class="sketchy-decoration squiggle-1"></div>
-    <div class="sketchy-decoration squiggle-2"></div>
-    <div class="sketchy-decoration star"></div>
+
+    <!-- 简约手绘装饰元素 -->
+    <div class="doodle top-right"></div>
+    <div class="doodle bottom-left"></div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import GoBackButton from "@/components/GoBackButton.vue";
 
 const gameUrl = ref('/WebGL Builds/index.html');
-const iframeElement = ref(null);
+const gameIframe = ref(null);
 
 function toggleFullscreen() {
-  const iframe = document.querySelector('.sketchy-iframe');
+  const iframe = gameIframe.value;
   if (iframe) {
     if (iframe.requestFullscreen) {
       iframe.requestFullscreen();
@@ -41,162 +48,137 @@ function toggleFullscreen() {
 }
 
 function reloadGame() {
-  const iframe = document.querySelector('.sketchy-iframe');
+  const iframe = gameIframe.value;
   if (iframe) {
     iframe.src = iframe.src;
   }
 }
 
+// 调整游戏尺寸
+function adjustGameSize() {
+  const iframe = gameIframe.value;
+  if (!iframe) return;
+
+  const wrapper = document.querySelector('.game-frame');
+  const aspectRatio = 16 / 9;
+
+  const maxWidth = wrapper.clientWidth;
+  const maxHeight = wrapper.clientHeight;
+
+  let width = maxWidth;
+  let height = width / aspectRatio;
+
+  if (height > maxHeight) {
+    height = maxHeight;
+    width = height * aspectRatio;
+  }
+
+  iframe.style.width = `${width}px`;
+  iframe.style.height = `${height}px`;
+}
+
 onMounted(() => {
-  // 添加窗口大小调整时的事件监听器
   window.addEventListener('resize', adjustGameSize);
-  // 初始化时调整一次
-  adjustGameSize();
+  setTimeout(adjustGameSize, 200);
 });
 
-function adjustGameSize() {
-  const container = document.querySelector('.sketchy-frame');
-  const iframe = document.querySelector('.sketchy-iframe');
-
-  if (container && iframe) {
-    // 根据容器大小自动调整iframe大小
-    const aspectRatio = 960 / 600; // 原始游戏宽高比
-    const containerWidth = container.clientWidth;
-    const containerHeight = container.clientHeight;
-
-    // 确保iframe保持正确的宽高比
-    if (containerWidth / containerHeight > aspectRatio) {
-      iframe.style.height = '100%';
-      iframe.style.width = `${containerHeight * aspectRatio}px`;
-    } else {
-      iframe.style.width = '100%';
-      iframe.style.height = `${containerWidth / aspectRatio}px`;
-    }
-  }
-}
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', adjustGameSize);
+});
 </script>
 
 <style scoped>
+/* 手绘风格字体 */
 @font-face {
-  font-family: 'Sketchy';
+  font-family: 'HandDrawn';
   src: url('https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Architects_Daughter/ArchitectsDaughter-Regular.ttf') format('truetype');
 }
 
-body {
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  overflow: hidden;
-  background-color: #f8f4e8;
-  font-family: 'Sketchy', 'Comic Sans MS', cursive;
 }
 
-.sketchy-game-container {
-  width: 100vw;
+html, body {
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+}
+
+.game-container {
+  width: 100%;
   height: 100vh;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'HandDrawn', cursive;
+  /* 镜面设计背景 */
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background-image:
+      linear-gradient(45deg, rgba(255,255,255,.2) 25%, transparent 25%, transparent 50%,
+      rgba(255,255,255,.2) 50%, rgba(255,255,255,.2) 75%, transparent 75%, transparent);
+  background-size: 100px 100px;
+}
+
+.back-button-area {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 50;
+}
+
+.game-area {
+  width: 92%;
+  height: 88%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   position: relative;
-  overflow: hidden;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23bbb' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
 }
 
-.sketchy-back-button {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  z-index: 10;
-}
-
-.sketchy-frame {
-  width: 95%;
-  height: 85%;
-  max-width: 1280px;
-  max-height: 800px;
-  position: relative;
-  border: 3px solid #333;
-  border-radius: 12px;
-  background-color: white;
-  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.6);
+.game-frame {
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  animation: gentle-float 6s ease-in-out infinite;
+  position: relative;
+  /* 镜面效果 */
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-@keyframes gentle-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-.sketchy-frame::before {
-  content: "";
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  bottom: -8px;
-  left: -8px;
-  border: 2px dashed #aaa;
-  border-radius: 16px;
-  z-index: -1;
-}
-
-.sketchy-frame-corner {
-  position: absolute;
-  width: 28px;
-  height: 28px;
-  background-color: transparent;
-  z-index: 5;
-}
-
-.top-left {
-  top: -8px;
-  left: -8px;
-  border-top: 4px solid #333;
-  border-left: 4px solid #333;
-  transform: rotate(-10deg);
-}
-
-.top-right {
-  top: -8px;
-  right: -8px;
-  border-top: 4px solid #333;
-  border-right: 4px solid #333;
-  transform: rotate(10deg);
-}
-
-.bottom-left {
-  bottom: -8px;
-  left: -8px;
-  border-bottom: 4px solid #333;
-  border-left: 4px solid #333;
-  transform: rotate(10deg);
-}
-
-.bottom-right {
-  bottom: -8px;
-  right: -8px;
-  border-bottom: 4px solid #333;
-  border-right: 4px solid #333;
-  transform: rotate(-10deg);
-}
-
-.sketchy-iframe {
-  width: 100%;
-  height: 100%;
+.game-iframe {
   border: none;
   border-radius: 8px;
-  display: block;
+  background-color: rgba(246, 246, 246, 0.8);
+  transition: all 0.3s ease;
+  /* 手绘边框效果 */
+  box-shadow:
+      0 4px 8px rgba(0, 0, 0, 0.08),
+      0 0 0 2px #f1f1f1,
+      0 0 0 4px #e6e6e6;
 }
 
-.sketchy-controls {
-  margin-top: 20px;
+.game-controls {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
   display: flex;
   gap: 15px;
+  padding: 8px;
+  z-index: 10;
 }
 
-.sketchy-btn {
+/* 手绘风格按钮 */
+.hand-drawn-btn {
   padding: 10px 20px;
   background-color: #fff;
   border: 2px solid #333;
@@ -209,121 +191,72 @@ body {
   transition: all 0.2s ease;
 }
 
-.sketchy-btn:hover {
+/* 鼠标悬停时向下移动效果 */
+.hand-drawn-btn:hover {
   box-shadow: 2px 2px 0 #333;
   transform: translate(2px, 2px);
 }
 
-.sketchy-btn:active {
+.hand-drawn-btn:active {
   box-shadow: none;
   transform: translate(4px, 4px);
 }
 
-/* 装饰元素 */
-.sketchy-decoration {
+.btn-icon {
+  font-size: 18px;
+}
+
+/* 手绘装饰元素 */
+.doodle {
   position: absolute;
-  opacity: 0.4;
-  z-index: -1;
+  pointer-events: none;
+  opacity: 0.5;
+  z-index: 1;
 }
 
-.dot-1 {
-  top: 15%;
-  right: 8%;
-  width: 50px;
-  height: 50px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='15' fill='none' stroke='%23333' stroke-width='2' stroke-dasharray='4,3'/%3E%3C/svg%3E");
-  animation: spin 15s linear infinite;
-}
-
-.dot-2 {
-  bottom: 15%;
-  left: 8%;
-  width: 70px;
-  height: 70px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'%3E%3Ccircle cx='30' cy='30' r='25' fill='none' stroke='%23333' stroke-width='2' stroke-dasharray='5,3'/%3E%3C/svg%3E");
-  animation: spin 20s linear infinite reverse;
-}
-
-.squiggle-1 {
-  top: 80%;
-  right: 12%;
-  width: 120px;
-  height: 30px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 30'%3E%3Cpath d='M0,15 Q15,5 30,15 T60,15 T90,15' fill='none' stroke='%23333' stroke-width='2'/%3E%3C/svg%3E");
-  animation: float 8s ease-in-out infinite;
-}
-
-.squiggle-2 {
-  top: 20%;
-  left: 12%;
+.top-right {
+  top: 30px;
+  right: 30px;
   width: 100px;
-  height: 30px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 30'%3E%3Cpath d='M0,15 Q15,25 30,15 T60,15 T90,15' fill='none' stroke='%23333' stroke-width='2'/%3E%3C/svg%3E");
-  animation: float 10s ease-in-out infinite;
+  height: 100px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M20,50 C20,50 40,30 50,50 C60,70 80,50 80,50' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-dasharray='1,3'/%3E%3C/svg%3E");
 }
 
-.star {
-  bottom: 25%;
-  right: 15%;
-  width: 60px;
-  height: 60px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50'%3E%3Cpath d='M25,1 L31,17 L47,17 L34,28 L40,45 L25,35 L10,45 L16,28 L3,17 L19,17 Z' fill='none' stroke='%23333' stroke-width='2'/%3E%3C/svg%3E");
-  animation: pulse 4s ease-in-out infinite;
+.bottom-left {
+  bottom: 30px;
+  left: 30px;
+  width: 120px;
+  height: 120px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-dasharray='2,4'/%3E%3C/svg%3E");
+  animation: gentle-rotate 50s linear infinite;
 }
 
-@keyframes spin {
+@keyframes gentle-rotate {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-15px); }
-}
-
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-}
-
-/* 响应式设计 */
-@media (max-width: 1024px) {
-  .sketchy-frame {
-    width: 90%;
-    height: 75%;
-  }
-}
-
+/* 响应式调整 */
 @media (max-width: 768px) {
-  .sketchy-frame {
+  .game-area {
     width: 95%;
-    height: 70%;
+    height: 85%;
   }
 
-  .sketchy-decoration {
-    opacity: 0.2;
-  }
-}
-
-@media (max-width: 480px) {
-  .sketchy-frame {
-    width: 95%;
-    height: 60%;
-    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.6);
+  .game-controls {
+    bottom: 20px;
+    right: 50%;
+    transform: translateX(50%);
   }
 
-  .sketchy-back-button {
-    top: 10px;
-    left: 10px;
-  }
-
-  .sketchy-controls {
-    margin-top: 15px;
-  }
-
-  .sketchy-btn {
-    padding: 8px 16px;
+  .hand-drawn-btn {
+    padding: 8px 14px;
     font-size: 14px;
+  }
+
+  .doodle {
+    opacity: 0.3;
+    transform: scale(0.7);
   }
 }
 </style>

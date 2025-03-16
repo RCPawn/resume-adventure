@@ -104,13 +104,13 @@ const goBack = () => {
 }
 
 .sketch-btn:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0 #333;
+  box-shadow: 2px 2px 0 #333;
+  transform: translate(2px, 2px);
 }
 
 .sketch-btn:active {
-  transform: translate(1px, 1px);
-  box-shadow: 2px 2px 0 #333;
+  box-shadow: none;
+  transform: translate(4px, 4px);
 }
 
 /* 添加一些手绘元素 */
