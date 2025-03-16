@@ -7,7 +7,15 @@
          ref="header"
          @mousedown="startDrag"
          @dblclick="toggleMaximize">
-      <div class="chat-title">rcpawn's echo</div>
+
+      <!-- 动态岛替代顶部横线 -->
+      <div class="dynamic-island">
+        <div class="dynamic-island-inner">
+          <div class="dynamic-island-camera"></div>
+          <div class="dynamic-island-sensor"></div>
+        </div>
+      </div>
+
       <div class="chat-controls">
         <button class="control-button" @click.stop.prevent="minimize">–</button>
         <button class="control-button" @click.stop.prevent="toggleMaximize">□</button>
@@ -45,12 +53,12 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref, watch, nextTick, onMounted, onUnmounted } from 'vue';
+import {defineProps, defineEmits, ref, watch, nextTick, onMounted, onUnmounted} from 'vue';
 
 const props = defineProps({
-  isOpen: { type: Boolean, required: true },
-  messages: { type: Array, required: true },
-  userInput: { type: String, required: true }
+  isOpen: {type: Boolean, required: true},
+  messages: {type: Array, required: true},
+  userInput: {type: String, required: true}
 });
 
 const emit = defineEmits(['update:userInput', 'sendMessage', 'close', 'minimize']);
@@ -58,8 +66,8 @@ const emit = defineEmits(['update:userInput', 'sendMessage', 'close', 'minimize'
 // 窗口状态
 const isMaximized = ref(false);
 const previousState = ref(null);
-const position = ref({ x: window.innerWidth - 370, y: window.innerHeight - 580 });
-const windowSize = ref({ width: 350, height: 500 });
+const position = ref({x: window.innerWidth - 370, y: window.innerHeight - 580});
+const windowSize = ref({width: 350, height: 500});
 
 // DOM 引用
 const chatBody = ref(null);
@@ -68,7 +76,7 @@ const inputField = ref(null);
 
 // 拖动状态
 const isDragging = ref(false);
-const dragOffset = ref({ x: 0, y: 0 });
+const dragOffset = ref({x: 0, y: 0});
 
 // 格式化时间
 const formatTime = (timestamp) => {
@@ -93,8 +101,8 @@ const handleSend = () => {
 
 // 关闭聊天，同时重置状态为默认小窗口
 const closeChat = () => {
-  windowSize.value = { width: 350, height: 500 };
-  position.value = { x: window.innerWidth - 370, y: window.innerHeight - 580 };
+  windowSize.value = {width: 350, height: 500};
+  position.value = {x: window.innerWidth - 370, y: window.innerHeight - 580};
   isMaximized.value = false;
   emit('close');
 };
@@ -112,11 +120,11 @@ const toggleMaximize = () => {
     isMaximized.value = false;
   } else {
     previousState.value = {
-      size: { ...windowSize.value },
-      position: { ...position.value }
+      size: {...windowSize.value},
+      position: {...position.value}
     };
-    windowSize.value = { width: window.innerWidth * 0.8, height: window.innerHeight * 0.8 };
-    position.value = { x: window.innerWidth * 0.1, y: window.innerHeight * 0.1 };
+    windowSize.value = {width: window.innerWidth * 0.8, height: window.innerHeight * 0.8};
+    position.value = {x: window.innerWidth * 0.1, y: window.innerHeight * 0.1};
     isMaximized.value = true;
   }
 };
@@ -125,7 +133,7 @@ const toggleMaximize = () => {
 const startDrag = (e) => {
   if (isMaximized.value) return;
   isDragging.value = true;
-  dragOffset.value = { x: e.clientX - position.value.x, y: e.clientY - position.value.y };
+  dragOffset.value = {x: e.clientX - position.value.x, y: e.clientY - position.value.y};
   document.addEventListener('mousemove', handleDrag);
   document.addEventListener('mouseup', stopDrag);
   document.body.style.cursor = 'grabbing';
@@ -165,8 +173,8 @@ watch(() => props.isOpen, (newValue) => {
 // 窗口大小变化时重新计算
 const handleWindowResize = () => {
   if (isMaximized.value) {
-    windowSize.value = { width: window.innerWidth * 0.8, height: window.innerHeight * 0.8 };
-    position.value = { x: window.innerWidth * 0.1, y: window.innerHeight * 0.1 };
+    windowSize.value = {width: window.innerWidth * 0.8, height: window.innerHeight * 0.8};
+    position.value = {x: window.innerWidth * 0.1, y: window.innerHeight * 0.1};
   } else {
     position.value.x = Math.min(position.value.x, window.innerWidth - windowSize.value.width);
     position.value.y = Math.min(position.value.y, window.innerHeight - windowSize.value.height);
@@ -180,7 +188,7 @@ const scrollToBottom = async () => {
 };
 
 // 监听消息更新，滚动到底部
-watch(() => props.messages, scrollToBottom, { deep: true });
+watch(() => props.messages, scrollToBottom, {deep: true});
 
 // 组件挂载和卸载
 onMounted(() => {
@@ -209,8 +217,11 @@ onUnmounted(() => {
   transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-/* 标题栏：精简设计 */
 .chat-header {
+  position: relative;
+  z-index: 10;
+  flex-shrink: 0;
+  height: 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -218,9 +229,25 @@ onUnmounted(() => {
   background: #000;
   cursor: grab;
   user-select: none;
-  position: relative;
-  height: 44px;
 }
+
+.chat-body {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 0 12px;
+  background-color: #000;
+  background-image: linear-gradient(to bottom, rgba(40, 40, 40, 0.2), rgba(20, 20, 20, 0.4));
+}
+
+.chat-input {
+  flex-shrink: 0;
+  padding: 12px 14px;
+  background-color: #000;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+}
+
 
 /* 状态栏指示器 */
 .chat-header::before {
@@ -235,18 +262,47 @@ onUnmounted(() => {
   border-radius: 3px;
 }
 
-/* 标题样式 */
-.chat-title {
-  font-size: 16px;
-  font-weight: 500;
-  color: #fff;
-  letter-spacing: -0.4px;
+/* 动态岛设计 */
+.dynamic-island {
   position: absolute;
+  top: 8px;
   left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  white-space: nowrap;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 28px;
+  background: #000;
+  border-radius: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
+.dynamic-island-inner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.dynamic-island-camera {
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  position: absolute;
+  left: 30px;
+}
+
+.dynamic-island-sensor {
+  width: 10px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  position: absolute;
+  right: 30px;
 }
 
 /* 控制按钮容器 */
@@ -274,19 +330,12 @@ onUnmounted(() => {
   justify-content: center;
   transition: background-color 0.2s;
   cursor: pointer;
+  position: relative;
+  top: -1px;
 }
 
 .control-button:hover {
   background-color: rgba(255, 255, 255, 0.25);
-}
-
-/* 聊天区域：iOS暗色背景 */
-.chat-body {
-  flex-grow: 1;
-  overflow-y: auto;
-  padding: 16px 12px;
-  background-color: #000;
-  background-image: linear-gradient(to bottom, rgba(40, 40, 40, 0.2), rgba(20, 20, 20, 0.4));
 }
 
 /* 消息动画和间距 */
@@ -298,8 +347,14 @@ onUnmounted(() => {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* 用户消息（右侧，iOS暗色主题蓝色气泡） */
@@ -345,15 +400,6 @@ onUnmounted(() => {
   color: rgba(255, 255, 255, 0.5);
   text-align: right;
   margin-top: 3px;
-}
-
-/* 输入区域：iOS暗色主题输入区 */
-.chat-input {
-  padding: 12px 14px;
-  background-color: #000;
-  border-top: 0.5px solid rgba(255, 255, 255, 0.1);
-  display: flex;
-  align-items: center;
 }
 
 textarea {
