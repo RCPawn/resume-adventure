@@ -6,7 +6,7 @@ export default {
         home: '主页',
         skill: '技术栈',
         projects: '项目',
-        experience: '经历',
+        experience: '画廊',
         about: '关于 & 联系',
         footer: '页脚'
     },

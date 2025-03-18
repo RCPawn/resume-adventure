@@ -6,7 +6,7 @@ export default {
         home: 'Home',
         skill: 'Skills',
         projects: 'Projects',
-        experience: 'Experience',
+        experience: 'Gallery',
         about: 'About & Contact',
         footer: 'Footer'
     },

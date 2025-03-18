@@ -3,9 +3,9 @@
     <NavBar/>
     <Chatbot/>
     <HeroSection/>
-    <!--    <SkillsSection/>-->
+    <SkillsSection/>
     <ProjectsSection/>
-    <!--    <ExperienceSection/>-->
+    <ExperienceSection/>
     <!--    <AboutSection/>-->
     <!--    <FooterSection/>-->
   </div>
@@ -13,13 +13,13 @@
 
 <script setup>
 import NavBar from '@/components/NavBar.vue';
+import Chatbot from "@/components/chatbot/Chatbot.vue";
 import HeroSection from '@/components/HeroSection.vue';
 import SkillsSection from "@/components/SkillsSection.vue";
 import ProjectsSection from '@/components/ProjectsSection.vue';
-import ExperienceSection from "@/components/ExperienceSection.vue";
+import ExperienceSection from "@/components/GallerySection.vue";
 import AboutSection from '@/components/AboutSection.vue';
 import FooterSection from '@/components/FooterSection.vue';
-import Chatbot from "@/components/chatbot/Chatbot.vue";
 
 </script>
 

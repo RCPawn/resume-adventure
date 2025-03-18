@@ -1,7 +1,8 @@
 <template>
   <div v-if="isOpen"
        class="chat-window"
-       :style="{ width: `${windowSize.width}px`, height: `${windowSize.height}px`, top: `${position.y}px`, left: `${position.x}px` }">
+       :class="{ 'maximized': isMaximized }"
+       :style="windowStyle">
     <!-- 拖动区域（标题栏） -->
     <div class="chat-header"
          ref="header"
@@ -14,12 +15,6 @@
           <div class="dynamic-island-camera"></div>
           <div class="dynamic-island-sensor"></div>
         </div>
-      </div>
-
-      <div class="chat-controls">
-        <button class="control-button" @click.stop.prevent="minimize">–</button>
-        <button class="control-button" @click.stop.prevent="toggleMaximize">□</button>
-        <button class="control-button" @click.stop.prevent="closeChat">×</button>
       </div>
     </div>
 
@@ -53,7 +48,7 @@
 </template>
 
 <script setup>
-import {defineProps, defineEmits, ref, watch, nextTick, onMounted, onUnmounted} from 'vue';
+import {defineProps, defineEmits, ref, watch, nextTick, onMounted, onUnmounted, computed} from 'vue';
 
 const props = defineProps({
   isOpen: {type: Boolean, required: true},
@@ -68,6 +63,29 @@ const isMaximized = ref(false);
 const previousState = ref(null);
 const position = ref({x: window.innerWidth - 370, y: window.innerHeight - 580});
 const windowSize = ref({width: 350, height: 500});
+
+// 计算窗口样式，最大化时使用自适应宽度
+const windowStyle = computed(() => {
+  if (isMaximized.value) {
+    // 计算最大化时的宽度 - 使用最大宽度800px或屏幕宽度的80%，取较小值
+    const maxWidth = Math.min(800, window.innerWidth * 0.8);
+    // 计算居中位置
+    const centeredX = (window.innerWidth - maxWidth) / 2;
+    return {
+      width: `${maxWidth}px`,
+      height: `${window.innerHeight * 0.8}px`,
+      top: `${window.innerHeight * 0.1}px`,
+      left: `${centeredX}px`
+    };
+  } else {
+    return {
+      width: `${windowSize.value.width}px`,
+      height: `${windowSize.value.height}px`,
+      top: `${position.value.y}px`,
+      left: `${position.value.x}px`
+    };
+  }
+});
 
 // DOM 引用
 const chatBody = ref(null);
@@ -99,19 +117,6 @@ const handleSend = () => {
   }
 };
 
-// 关闭聊天，同时重置状态为默认小窗口
-const closeChat = () => {
-  windowSize.value = {width: 350, height: 500};
-  position.value = {x: window.innerWidth - 370, y: window.innerHeight - 580};
-  isMaximized.value = false;
-  emit('close');
-};
-
-// 最小化聊天
-const minimize = () => {
-  emit('minimize');
-};
-
 // 窗口最大化/还原
 const toggleMaximize = () => {
   if (isMaximized.value) {
@@ -123,41 +128,69 @@ const toggleMaximize = () => {
       size: {...windowSize.value},
       position: {...position.value}
     };
-    windowSize.value = {width: window.innerWidth * 0.8, height: window.innerHeight * 0.8};
-    position.value = {x: window.innerWidth * 0.1, y: window.innerHeight * 0.1};
     isMaximized.value = true;
   }
 };
 
-// 开始拖动
+// 开始拖动 - 更平滑的拖动
 const startDrag = (e) => {
   if (isMaximized.value) return;
   isDragging.value = true;
   dragOffset.value = {x: e.clientX - position.value.x, y: e.clientY - position.value.y};
-  document.addEventListener('mousemove', handleDrag);
-  document.addEventListener('mouseup', stopDrag);
+  // 使用 requestAnimationFrame 使拖动更平滑
+  window.addEventListener('mousemove', handleDrag, {passive: true});
+  window.addEventListener('mouseup', stopDrag);
   document.body.style.cursor = 'grabbing';
   e.preventDefault();
 };
 
-// 处理拖动
+// 处理拖动 - 使用 requestAnimationFrame 提高平滑度
+let lastDragEvent = null;
+let animationFrameId = null;
+
 const handleDrag = (e) => {
-  if (isDragging.value) {
+  if (!isDragging.value) return;
+  // 存储最后一次事件
+  lastDragEvent = e;
+
+  // 如果没有动画帧请求，则请求一个
+  if (!animationFrameId) {
+    animationFrameId = requestAnimationFrame(updatePosition);
+  }
+};
+
+const updatePosition = () => {
+  animationFrameId = null;
+
+  if (lastDragEvent && isDragging.value) {
     position.value = {
-      x: e.clientX - dragOffset.value.x,
-      y: e.clientY - dragOffset.value.y
+      x: lastDragEvent.clientX - dragOffset.value.x,
+      y: lastDragEvent.clientY - dragOffset.value.y
     };
+
+    // 边界检查
     position.value.x = Math.max(0, Math.min(position.value.x, window.innerWidth - windowSize.value.width));
     position.value.y = Math.max(0, Math.min(position.value.y, window.innerHeight - windowSize.value.height));
+
+    // 如果还在拖动，继续请求动画帧
+    if (isDragging.value) {
+      animationFrameId = requestAnimationFrame(updatePosition);
+    }
   }
 };
 
 // 停止拖动
 const stopDrag = () => {
   isDragging.value = false;
-  document.removeEventListener('mousemove', handleDrag);
-  document.removeEventListener('mouseup', stopDrag);
+  window.removeEventListener('mousemove', handleDrag);
+  window.removeEventListener('mouseup', stopDrag);
   document.body.style.cursor = 'default';
+
+  // 取消任何未完成的动画帧
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId);
+    animationFrameId = null;
+  }
 };
 
 // 自动聚焦输入框
@@ -173,8 +206,7 @@ watch(() => props.isOpen, (newValue) => {
 // 窗口大小变化时重新计算
 const handleWindowResize = () => {
   if (isMaximized.value) {
-    windowSize.value = {width: window.innerWidth * 0.8, height: window.innerHeight * 0.8};
-    position.value = {x: window.innerWidth * 0.1, y: window.innerHeight * 0.1};
+    // 不需要在这里设置大小，因为使用了计算属性
   } else {
     position.value.x = Math.min(position.value.x, window.innerWidth - windowSize.value.width);
     position.value.y = Math.min(position.value.y, window.innerHeight - windowSize.value.height);
@@ -197,8 +229,13 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('resize', handleWindowResize);
-  document.removeEventListener('mousemove', handleDrag);
-  document.removeEventListener('mouseup', stopDrag);
+  window.removeEventListener('mousemove', handleDrag);
+  window.removeEventListener('mouseup', stopDrag);
+
+  // 确保取消任何未完成的动画帧
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId);
+  }
 });
 </script>
 
@@ -214,7 +251,13 @@ onUnmounted(() => {
   overflow: hidden;
   z-index: 9998;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
-  transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* 最大化时的样式 */
+.chat-window.maximized {
+  border-radius: 28px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
 }
 
 .chat-header {
@@ -237,6 +280,7 @@ onUnmounted(() => {
   padding: 0 12px;
   background-color: #000;
   background-image: linear-gradient(to bottom, rgba(40, 40, 40, 0.2), rgba(20, 20, 20, 0.4));
+  will-change: transform; /* 性能优化 */
 }
 
 .chat-input {
@@ -246,20 +290,6 @@ onUnmounted(() => {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
-}
-
-
-/* 状态栏指示器 */
-.chat-header::before {
-  content: "";
-  position: absolute;
-  top: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 5px;
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 3px;
 }
 
 /* 动态岛设计 */
@@ -303,39 +333,6 @@ onUnmounted(() => {
   border-radius: 50%;
   position: absolute;
   right: 30px;
-}
-
-/* 控制按钮容器 */
-.chat-controls {
-  display: flex;
-  gap: 8px;
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-/* 控制按钮：iOS暗色主题风格 */
-.control-button {
-  width: 24px;
-  height: 24px;
-  border: none;
-  background-color: rgba(255, 255, 255, 0.15);
-  color: rgba(255, 255, 255, 0.9);
-  border-radius: 50%;
-  font-size: 12px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.2s;
-  cursor: pointer;
-  position: relative;
-  top: -1px;
-}
-
-.control-button:hover {
-  background-color: rgba(255, 255, 255, 0.25);
 }
 
 /* 消息动画和间距 */

@@ -6,7 +6,7 @@
       <a href="javascript:void(0);" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });" class="napkin-nav-link">{{ t('nav.home') }}</a>
       <a href="#skills" class="napkin-nav-link">{{ t('nav.skill') }}</a>
       <a href="#projects" class="napkin-nav-link">{{ t('nav.projects') }}</a>
-      <a href="#experience" class="napkin-nav-link">{{ t('nav.experience') }}</a>
+      <a href="#gallery" class="napkin-nav-link">{{ t('nav.experience') }}</a>
       <a href="#about" class="napkin-nav-link">{{ t('nav.about') }}</a>
       <a href="#footer" class="napkin-nav-link">{{ t('nav.footer') }}</a>
     </div>
