@@ -247,7 +247,7 @@ onBeforeUnmount(() => {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background-color: #ffffff;
   color: #333;
-  max-width: 1400px;
+  max-width: 1450px;
   margin: 0 auto;
 }
 
@@ -337,7 +337,7 @@ onBeforeUnmount(() => {
 
 .project-image-container {
   position: relative;
-  flex: 1;
+  flex: 1.8;
   overflow: hidden;
 }
 
@@ -358,7 +358,8 @@ onBeforeUnmount(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.4), transparent);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.3) 20%, transparent 80%);
+  mix-blend-mode: multiply; /* 更自然的混合效果 */
 }
 
 .project-info {
@@ -542,7 +543,16 @@ onBeforeUnmount(() => {
   }
 
   .project-image-container {
-    height: 40%;
+    height: 55% !important; /* 增加移动端图片高度 */
+  }
+
+  .image-overlay {
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.2) 10%, transparent 50%);
+  }
+
+  /* 调整激活状态缩放 */
+  .project-card.active .project-image {
+    transform: scale(1.02); /* 减小缩放幅度 */
   }
 
   .project-info {

@@ -167,7 +167,7 @@ onUnmounted(() => {
 /* Base layout - iOS inspired clean design */
 .gallery-section {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1180px;
   margin: 0 auto;
   padding: 4rem 1.5rem;
   overflow: hidden;
@@ -182,11 +182,15 @@ onUnmounted(() => {
 }
 
 .gallery-title {
-  font-size: 2.2rem;
+  font-size: 3rem;
   font-weight: 700;
-  margin-bottom: 0.5rem;
-  color: #1d1d1f;
-  letter-spacing: -0.02em;
+  margin-bottom: 3rem;
+  text-align: center;
+  background: #333;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: #333;
+  letter-spacing: -0.5px;
 }
 
 .gallery-subtitle {
