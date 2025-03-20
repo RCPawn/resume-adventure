@@ -17,9 +17,9 @@ const globalState = reactive({
     updateTheme() {
         if (this.isDark) {
             DarkReader.enable({
-                brightness: 100,
+                brightness: 95,
                 contrast: 90,
-                sepia: 10,
+                sepia: 0,
             })
             localStorage.setItem('theme', 'dark') // 保存状态到 localStorage
         } else {
@@ -30,13 +30,13 @@ const globalState = reactive({
 })
 
 // 在 Vue 完全挂载后启用暗黑模式（如果需要）
-onMounted(() => {
+/*onMounted(() => {
     nextTick(() => {
         if (globalState.isDark) {
             globalState.updateTheme()
         }
     })
-})
+})*/
 
 // 将全局状态提供给所有组件
 app.provide('globalState', globalState)

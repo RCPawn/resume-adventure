@@ -489,10 +489,6 @@ ul li::before {
   position: relative;
 }
 
-.resume-content.full-width {
-  padding-left: 40px; /* 为按钮留出空间 */
-}
-
 /* 响应式调整 */
 @media (max-width: 768px) {
   .sidebar-toggle-button {

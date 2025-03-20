@@ -65,7 +65,7 @@
 <script setup>
 import {ref, onMounted} from 'vue'
 import {useI18n} from 'vue-i18n'
-import {enable as enableDarkMode, disable as disableDarkMode} from 'darkreader'
+import {enable as enableDarkMode, disable as disableDarkMode, setFetchMethod} from 'darkreader'
 import AboutSection from '@/components/ResumeSection.vue'
 // 新增导入
 import {onClickOutside} from '@vueuse/core'
@@ -133,16 +133,23 @@ const toggleLanguage = () => {
   }, 300)
 }
 
+// Set the fetch method once, preferably during app initialization
+setFetchMethod(window.fetch);
+
 const toggleTheme = () => {
-  isDarkMode.value = !isDarkMode.value
+  isDarkMode.value = !isDarkMode.value;
   if (isDarkMode.value) {
-    enableDarkMode({brightness: 100, contrast: 90, sepia: 10})
-    localStorage.setItem('theme', 'dark')
+    enableDarkMode({
+      brightness: 100,
+      contrast: 90,
+      sepia: 10,
+    });
+    localStorage.setItem('theme', 'dark');
   } else {
-    disableDarkMode()
-    localStorage.setItem('theme', 'light')
+    disableDarkMode();
+    localStorage.setItem('theme', 'light');
   }
-}
+};
 </script>
 
 <style scoped>
