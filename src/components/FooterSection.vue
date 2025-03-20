@@ -2,16 +2,24 @@
   <footer id="footer" class="footer-section">
     <div class="footer-container">
       <div class="footer-logo">
-        <h2>{{ appName }}</h2>
-        <p class="tagline">{{ tagline }}</p>
+        <h2>{{ t('footer.appName') }}</h2>
+        <p class="tagline">{{ t('footer.tagline') }}</p>
+        <div class="social-links">
+          <a v-for="(social, index) in tm('footer.socialLinks')" :key="index" :href="social.url" class="social-link"
+             target="_blank" rel="noopener noreferrer">
+            <i :class="social.icon"></i>
+          </a>
+        </div>
       </div>
 
       <div class="footer-links">
-        <div v-for="(group, index) in linkGroups" :key="index" class="link-group">
+        <div v-for="(group, index) in tm('footer.linkGroups')" :key="index" class="link-group">
           <h3>{{ group.title }}</h3>
           <ul>
             <li v-for="(link, linkIndex) in group.links" :key="linkIndex">
-              <a :href="link.url">{{ link.text }}</a>
+              <router-link :to="link.url" @click="handleLinkClick(link)">
+                {{ link.text }}
+              </router-link>
             </li>
           </ul>
         </div>
@@ -19,66 +27,19 @@
     </div>
 
     <div class="footer-bottom">
-      <p class="copyright">&copy; {{ new Date().getFullYear() }} {{ appName }}. All rights reserved.</p>
-      <div class="social-links">
-        <a v-for="(social, index) in socialLinks" :key="index" :href="social.url" class="social-link">
-          <i :class="social.icon"></i>
-        </a>
-      </div>
+      <p class="copyright">{{ t('footer.copyright', {year: new Date().getFullYear()}) }}</p>
+      <p class="made-with">{{ t('footer.madeWith') }} <span class="heart">❤</span></p>
     </div>
   </footer>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-// Props definition with default values
-const props = defineProps({
-  appName: {
-    type: String,
-    default: 'YourApp'
-  },
-  tagline: {
-    type: String,
-    default: 'A simple but powerful solution'
-  }
-});
+const { t, tm } = useI18n();
 
 // Emits
 const emit = defineEmits(['linkClicked']);
-
-// Reactive data
-const socialLinks = ref([
-  { url: 'https://twitter.com/', icon: 'icon-twitter' },
-  { url: 'https://github.com/', icon: 'icon-github' },
-  { url: 'https://discord.com/', icon: 'icon-discord' }
-]);
-
-const linkGroups = ref([
-  {
-    title: 'Product',
-    links: [
-      { text: 'Features', url: '/features' },
-      { text: 'Pricing', url: '/pricing' },
-      { text: 'Docs', url: '/docs' }
-    ]
-  },
-  {
-    title: 'Company',
-    links: [
-      { text: 'About', url: '/about' },
-      { text: 'Blog', url: '/blog' },
-      { text: 'Careers', url: '/careers' }
-    ]
-  },
-  {
-    title: 'Legal',
-    links: [
-      { text: 'Privacy', url: '/privacy' },
-      { text: 'Terms', url: '/terms' }
-    ]
-  }
-]);
 
 // Methods
 const handleLinkClick = (link) => {
@@ -88,37 +49,62 @@ const handleLinkClick = (link) => {
 
 <style scoped>
 .footer-section {
-  padding: 4rem 2rem 2rem;
-  background-color: #f8f8f8;
-  font-family: 'Inter', sans-serif;
-  border-top: 1px solid #eaeaea;
+  padding: 3.5rem 2rem 1.5rem;
+  background-color: #fafafa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  border-top: 1px solid #f0f0f0;
 }
 
 .footer-container {
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
   display: flex;
   flex-wrap: wrap;
-  gap: 3rem;
+  gap: 2.5rem;
 }
 
 .footer-logo {
   flex: 1;
-  min-width: 240px;
+  min-width: 220px;
 }
 
 .footer-logo h2 {
-  font-size: 1.8rem;
-  font-weight: 700;
+  font-size: 1.6rem;
+  font-weight: 600;
   margin: 0 0 0.5rem;
   color: #333;
 }
 
 .tagline {
   color: #666;
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 400;
+  margin: 0 0 1.5rem;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.social-links {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.social-link {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #555;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.social-link:hover {
+  transform: translateY(-3px);
+  background-color: #4087DC;
+  color: white;
 }
 
 .footer-links {
@@ -130,14 +116,14 @@ const handleLinkClick = (link) => {
 
 .link-group {
   flex: 1;
-  min-width: 140px;
+  min-width: 120px;
 }
 
 .link-group h3 {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   margin: 0 0 1rem;
-  color: #333;
+  color: #444;
 }
 
 .link-group ul {
@@ -147,25 +133,43 @@ const handleLinkClick = (link) => {
 }
 
 .link-group li {
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.7rem;
 }
 
 .link-group a {
   text-decoration: none;
   color: #666;
   font-size: 0.9rem;
-  transition: color 0.2s ease;
+  transition: all 0.2s ease;
+  position: relative;
+  display: inline-block;
 }
 
 .link-group a:hover {
-  color: #333;
+  color: #4087DC;
+  transform: translateX(2px);
+}
+
+.link-group a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background-color: #4087DC;
+  transition: width 0.3s ease;
+}
+
+.link-group a:hover::after {
+  width: 100%;
 }
 
 .footer-bottom {
-  max-width: 1200px;
-  margin: 3rem auto 0;
+  max-width: 1100px;
+  margin: 2.5rem auto 0;
   padding-top: 1.5rem;
-  border-top: 1px solid #eaeaea;
+  border-top: 1px solid #f0f0f0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -175,30 +179,32 @@ const handleLinkClick = (link) => {
 
 .copyright {
   color: #999;
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   margin: 0;
 }
 
-.social-links {
-  display: flex;
-  gap: 1rem;
-}
-
-.social-link {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background-color: #f0f0f0;
+.made-with {
+  color: #999;
+  font-size: 0.85rem;
+  margin: 0;
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: #666;
-  transition: all 0.2s ease;
+  gap: 0.3rem;
 }
 
-.social-link:hover {
-  background-color: #333;
-  color: white;
+.heart {
+  color: #FF6B6B;
+  display: inline-block;
+  animation: heartbeat 1.5s ease infinite;
+}
+
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
 }
 
 @media (max-width: 768px) {
@@ -214,6 +220,7 @@ const handleLinkClick = (link) => {
   .footer-bottom {
     flex-direction: column;
     text-align: center;
+    gap: 0.5rem;
   }
 }
 </style>

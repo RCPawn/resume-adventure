@@ -48,7 +48,7 @@
 </template>
 
 <script setup>
-import {defineProps, defineEmits, ref, watch, nextTick, onMounted, onUnmounted, computed} from 'vue';
+import {ref, watch, nextTick, onMounted, onUnmounted, computed} from 'vue';
 
 const props = defineProps({
   isOpen: {type: Boolean, required: true},

@@ -12,13 +12,10 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue';
-
-const props = defineProps({
+defineProps({
   position: { type: Object, required: true }, // Button position (x, y)
   isOpen: { type: Boolean, required: true }   // Chat window open state
 });
-
 const emit = defineEmits(['startDrag', 'toggleChatWindow']);
 
 let hasDragged = false;

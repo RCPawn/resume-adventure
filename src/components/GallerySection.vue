@@ -1,53 +1,49 @@
 <template>
   <section id="gallery" class="gallery-section">
-    <!-- 标题与说明文字 -->
-    <h2 class="gallery-title">Gallery</h2>
-    <p class="gallery-subtitle">Here are a few visuals created on Napkin</p>
+    <!-- Gallery Header -->
+    <div class="gallery-header">
+      <h2 class="gallery-title">Gallery</h2>
+      <p class="gallery-subtitle">Some of my works</p>
+    </div>
 
-    <!-- 第一行（大卡片） - 向左滚动 -->
+    <!-- First row - scrolling left -->
     <div class="scroll-container row-one">
       <div
           class="scroll-track"
           :style="{ transform: `translateX(${rowOneScrollPosition}px)` }"
+          @mouseenter="pauseAnimation(1)"
+          @mouseleave="resumeAnimation(1)"
       >
         <div
             class="gallery-card"
             v-for="(item, idx) in rowOneDuplicated"
             :key="`row1-${idx}`"
+            :style="{ animationDelay: `${idx * 0.1}s` }"
+            @mouseenter="scaleUp($event)"
+            @mouseleave="scaleDown($event)"
         >
-          <img
-              :src="item.imageUrl"
-              :alt="item.title"
-              class="gallery-image"
-          />
-          <div class="gallery-content">
-            <h3>{{ item.title }}</h3>
-            <p>{{ item.description }}</p>
-          </div>
+          <img :src="item.imageUrl" :alt="`Gallery image ${idx}`" class="gallery-image" />
         </div>
       </div>
     </div>
 
-    <!-- 第二行（小卡片） - 向右滚动 -->
+    <!-- Second row - scrolling right -->
     <div class="scroll-container row-two">
       <div
           class="scroll-track"
           :style="{ transform: `translateX(${rowTwoScrollPosition}px)` }"
+          @mouseenter="pauseAnimation(2)"
+          @mouseleave="resumeAnimation(2)"
       >
         <div
             class="gallery-card"
             v-for="(item, idx) in rowTwoDuplicated"
             :key="`row2-${idx}`"
+            :style="{ animationDelay: `${idx * 0.1}s` }"
+            @mouseenter="scaleUp($event)"
+            @mouseleave="scaleDown($event)"
         >
-          <img
-              :src="item.imageUrl"
-              :alt="item.title"
-              class="gallery-image"
-          />
-          <div class="gallery-content">
-            <h3>{{ item.title }}</h3>
-            <p>{{ item.description }}</p>
-          </div>
+          <img :src="item.imageUrl" :alt="`Gallery image ${idx}`" class="gallery-image" />
         </div>
       </div>
     </div>
@@ -57,130 +53,75 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 
-/*
-  ======================
-   1. 第一行数据
-  ======================
-*/
+// First row data - larger images
 const rowOneItems = [
-  {
-    title: "Implement Robotics",
-    description: "Transform manufacturing with robotics",
-    imageUrl: "/images/placeholder.webp"
-  },
-  {
-    title: "Credit Score",
-    description: "An overview of credit components",
-    imageUrl: "/images/placeholder.webp"
-  },
-  {
-    title: "Hydrogen Fuel",
-    description: "Future energy solutions at a glance",
-    imageUrl: "/images/placeholder.webp"
-  },
-  {
-    title: "National Distribution",
-    description: "A global user distribution chart",
-    imageUrl: "/images/placeholder.webp"
-  },
+  { imageUrl: "/images/placeholder.webp" },
+  { imageUrl: "/images/placeholder.webp" },
+  { imageUrl: "/images/placeholder.webp" },
+  { imageUrl: "/images/placeholder.webp" },
+  { imageUrl: "/images/placeholder.webp" },
+  { imageUrl: "/images/placeholder.webp" },
 ];
 
-/*
-  ======================
-   2. 第二行数据
-  ======================
-*/
+// Second row data - smaller images
 const rowTwoItems = [
-  {
-    title: "Different Metaphors",
-    description: "Exploring metaphors for interviews",
-    imageUrl: "/images/placeholder.webp"
-  },
-  {
-    title: "Automated Testing",
-    description: "Next-gen testing pipelines",
-    imageUrl: "/images/placeholder.webp"
-  },
-  {
-    title: "Social Media Insights",
-    description: "Analyzing engagement across platforms",
-    imageUrl: "/images/placeholder.webp"
-  },
-  {
-    title: "VR/AR Overview",
-    description: "Trends in immersive technologies",
-    imageUrl: "/images/placeholder.webp"
-  },
+  { imageUrl: "/images/placeholder.webp" },
+  { imageUrl: "/images/placeholder.webp" },
+  { imageUrl: "/images/placeholder.webp" },
+  { imageUrl: "/images/placeholder.webp" },
+  { imageUrl: "/images/placeholder.webp" },
+  { imageUrl: "/images/placeholder.webp" },
 ];
 
-/*
-  ======================
-   3. 数据重复 - 无缝滚动
-  ======================
-   多倍复制，避免滚动时出现空白
-*/
+// Duplicate items for seamless scrolling
 const rowOneDuplicated = computed(() => [
   ...rowOneItems,
   ...rowOneItems,
   ...rowOneItems
 ]);
+
 const rowTwoDuplicated = computed(() => [
   ...rowTwoItems,
   ...rowTwoItems,
   ...rowTwoItems
 ]);
 
-/*
-  ======================
-   4. 第一行滚动逻辑
-  ======================
-   - 向左滚动 => scrollPosition 递减
-   - 若 <= -单组宽度 => 加回单组宽度
-*/
+// Row 1 scrolling logic (left)
 const rowOneScrollPosition = ref(0);
-const rowOneSpeed = 2; // 可自行调整速度
+const rowOneSpeed = ref(1); // Adjusted for smoother animation
+const rowOneBaseSpeed = 1;
 
-/* 第一行卡片宽度和间距，需要与CSS中 row-one .gallery-card 保持一致 */
+// Row 1 dimensions
 const rowOneCardWidth = 360;
 const rowOneCardGap = 24;
 const rowOneSingleSetWidth = computed(() => {
   return rowOneItems.length * (rowOneCardWidth + rowOneCardGap);
 });
 
-/*
-  ======================
-   5. 第二行滚动逻辑
-  ======================
-   - 向右滚动 => scrollPosition 递增
-   - 一开始设为 -单组宽度，这样一开始就能看到“中间那组”，不会左边空白
-   - 若 >= 0 => 减去单组宽度
-*/
+// Row 2 scrolling logic (right)
 const rowTwoScrollPosition = ref(0);
-const rowTwoSpeed = 2; // 可自行调整速度
+const rowTwoSpeed = ref(1.2);
+const rowTwoBaseSpeed = 1.2;
 
-/* 第二行卡片宽度和间距，需要与CSS中 row-two .gallery-card 保持一致 */
+// Row 2 dimensions
 const rowTwoCardWidth = 280;
 const rowTwoCardGap = 20;
 const rowTwoSingleSetWidth = computed(() => {
   return rowTwoItems.length * (rowTwoCardWidth + rowTwoCardGap);
 });
 
-/*
-  ======================
-   6. 动画循环
-  ======================
-   同一个动画帧里同时更新两行滚动位置
-*/
+// Animation frame
 let animationFrameId;
+
 const animate = () => {
-  // 第一行：向左滚动
-  rowOneScrollPosition.value -= rowOneSpeed;
+  // Row 1: Left scroll
+  rowOneScrollPosition.value -= rowOneSpeed.value;
   if (rowOneScrollPosition.value <= -rowOneSingleSetWidth.value) {
     rowOneScrollPosition.value += rowOneSingleSetWidth.value;
   }
 
-  // 第二行：向右滚动
-  rowTwoScrollPosition.value += rowTwoSpeed;
+  // Row 2: Right scroll
+  rowTwoScrollPosition.value += rowTwoSpeed.value;
   if (rowTwoScrollPosition.value >= 0) {
     rowTwoScrollPosition.value -= rowTwoSingleSetWidth.value;
   }
@@ -188,10 +129,30 @@ const animate = () => {
   animationFrameId = requestAnimationFrame(animate);
 };
 
+// Hover effects
+const pauseAnimation = (row) => {
+  if (row === 1) rowOneSpeed.value = 0;
+  if (row === 2) rowTwoSpeed.value = 0;
+};
+
+const resumeAnimation = (row) => {
+  if (row === 1) rowOneSpeed.value = rowOneBaseSpeed;
+  if (row === 2) rowTwoSpeed.value = rowTwoBaseSpeed;
+};
+
+const scaleUp = (event) => {
+  event.currentTarget.classList.add('scaled');
+};
+
+const scaleDown = (event) => {
+  event.currentTarget.classList.remove('scaled');
+};
+
 onMounted(() => {
-  // 让第二行一开始就从「-单组宽度」处开始，避免左边空白
+  // Initialize row positions
   rowTwoScrollPosition.value = -rowTwoSingleSetWidth.value;
 
+  // Start animation
   animationFrameId = requestAnimationFrame(animate);
 });
 
@@ -203,117 +164,163 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-/* ======================
-   1. 整体布局
-   ====================== */
+/* Base layout - iOS inspired clean design */
 .gallery-section {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 1rem;
-  font-family: 'Inter', sans-serif;
+  padding: 4rem 1.5rem;
   overflow: hidden;
+  background: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* Gallery header */
+.gallery-header {
   text-align: center;
+  margin-bottom: 3.5rem;
 }
 
 .gallery-title {
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
+  color: #1d1d1f;
+  letter-spacing: -0.02em;
 }
 
 .gallery-subtitle {
   font-size: 1.2rem;
-  color: #666;
-  margin-bottom: 2rem;
+  color: #86868b;
+  font-weight: 400;
 }
 
-/* ======================
-   2. 通用滚动容器
-   ====================== */
+/* Scroll container with increased spacing between rows */
 .scroll-container {
   width: 100%;
   overflow: hidden;
   position: relative;
-  margin-bottom: 3rem; /* 两行之间留一些间距 */
+  margin-bottom: 5rem; /* Increased spacing between rows */
 }
 
-/* 滚动轨道，不加 transition，瞬时回退 */
 .scroll-track {
   display: flex;
   will-change: transform;
+  transition: transform 0.2s ease-out;
 }
 
-/* ======================
-   3. 第一行 (row-one)
-   ======================
-   - 卡片更大
-   - 与 JS 中 rowOneCardWidth、rowOneCardGap 保持一致
-*/
+/* Row 1 styles - larger cards */
 .row-one .gallery-card {
-  width: 360px;        /* JS: rowOneCardWidth */
-  margin-right: 24px;  /* JS: rowOneCardGap */
+  width: 360px;
+  height: 220px;
+  margin-right: 24px;
+  border-radius: 14px;
 }
 
-/* ======================
-   4. 第二行 (row-two)
-   ======================
-   - 卡片更小
-   - 与 JS 中 rowTwoCardWidth、rowTwoCardGap 保持一致
-*/
+/* Row 2 styles - smaller cards */
 .row-two .gallery-card {
-  width: 280px;        /* JS: rowTwoCardWidth */
-  margin-right: 20px;  /* JS: rowTwoCardGap */
+  width: 280px;
+  height: 180px;
+  margin-right: 20px;
+  border-radius: 12px;
 }
 
-/* ======================
-   5. 卡片样式
-   ====================== */
+/* Card base styles - iOS inspired with subtle shadows */
 .gallery-card {
   flex-shrink: 0;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  position: relative;
   overflow: hidden;
-  text-align: left; /* 卡片内部左对齐 */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation: fadeIn 0.8s ease-out forwards;
+  background-color: #f5f5f7;
+  transform-origin: center;
 }
 
 .gallery-image {
   width: 100%;
-  height: 180px; /* 可自行调整图片高度 */
+  height: 100%;
   object-fit: cover;
+  transition: transform 0.4s ease-out;
 }
 
-.gallery-content {
-  padding: 1rem;
+/* Card hover effects - iOS inspired subtlety */
+.gallery-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
 }
 
-.gallery-content h3 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.2rem;
-  font-weight: 600;
+.gallery-card.scaled {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
 }
 
-.gallery-content p {
-  margin: 0;
-  color: #555;
-  font-size: 0.95rem;
+.gallery-card:hover .gallery-image {
+  transform: scale(1.05);
 }
 
-/* ======================
-   6. 响应式
-   ====================== */
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjustments */
 @media (max-width: 768px) {
+  .gallery-section {
+    padding: 3rem 1rem;
+  }
+
+  .gallery-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .gallery-title {
+    font-size: 1.8rem;
+  }
+
+  .gallery-subtitle {
+    font-size: 1rem;
+  }
+
+  .scroll-container {
+    margin-bottom: 3rem;
+  }
+
   .row-one .gallery-card {
     width: 300px;
+    height: 180px;
     margin-right: 16px;
   }
+
   .row-two .gallery-card {
     width: 220px;
+    height: 140px;
+    margin-right: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery-title {
+    font-size: 1.6rem;
+  }
+
+  .row-one .gallery-card {
+    width: 240px;
+    height: 160px;
     margin-right: 12px;
   }
-  .gallery-image {
-    height: 140px;
+
+  .row-two .gallery-card {
+    width: 180px;
+    height: 120px;
+    margin-right: 12px;
   }
 }
 </style>

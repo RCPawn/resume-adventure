@@ -1,5 +1,6 @@
 // data/i18n/en.js
 // 英文语言包
+import '@/assets/leetcodeIcon.css';
 export default {
     nav: {
         logo: 'RCPAWN',
@@ -17,6 +18,41 @@ export default {
         'Deep Learning Enthusiast',
         'Passionate About 3D and Interactive Design'
     ],
+    skills: {
+        title: 'Professional Skills',
+        items: [
+            {
+                name: 'Full Stack Development',
+                desc: 'Proficient in Java, Spring, Vue and related technologies, delivering complete solutions from frontend to backend',
+                icon: 'fas fa-laptop-code',
+                level: 90
+            },
+            {
+                name: 'Database Design & Optimization',
+                desc: 'Expert in MySQL architecture design, complex SQL queries and performance tuning for efficient system operation',
+                icon: 'fas fa-database',
+                level: 85
+            },
+            {
+                name: 'Game & 3D Development',
+                desc: 'Skilled with Unity engine and Blender for 3D modeling, capable of creating game prototypes and basic 3D assets',
+                icon: 'fas fa-gamepad',
+                level: 75
+            },
+            {
+                name: 'AI & Machine Learning',
+                desc: 'Competent in Python data analysis and foundational machine learning applications with strong learning potential',
+                icon: 'fas fa-brain',
+                level: 70
+            },
+            {
+                name: 'Version Control & Collaboration',
+                desc: 'Expert in Git workflow, team collaboration and active open-source community contribution',
+                icon: 'fab fa-github',
+                level: 95
+            }
+        ]
+    },
     projects: {
         items: [
             {
@@ -44,7 +80,7 @@ export default {
                 description: "A project coming soon to revolutionize the field."
             }
         ],
-        title: 'PROJECTS',
+        title: 'Projects Experience',
         viewDetails: 'View Details'
     },
     stuffs: {
@@ -164,5 +200,42 @@ export default {
                 "Problem Solving: When facing technical challenges, capable of consulting documentation, analyzing source code, and proposing solutions"
             ]
         }
+    },
+    footer: {
+        appName: 'Dev Space',
+        tagline: 'Where code meets creativity',
+        copyright: '© {year} Dev Space. All rights reserved.',
+        madeWith: 'Made with passion & code',
+        socialLinks: [
+            { url: 'https://github.com/RCPawn', icon: 'fab fa-github' },
+            { url: 'https://www.douyin.com/user/self?from_tab_name=main', icon: 'fab fa-tiktok' },
+            { url: 'https://leetcode.cn/u/guo-he-zu-ew/', icon: 'icon-leetcode' }
+        ],
+        linkGroups: [
+            {
+                title: 'Projects',
+                links: [
+                    { text: 'Full Stack Apps', url: '/coming-soon' },
+                    { text: 'Game Dev', url: '/coming-soon' },
+                    { text: 'AI Lab', url: '/coming-soon' }
+                ]
+            },
+            {
+                title: 'Tech Stack',
+                links: [
+                    { text: 'Java & Spring', url: '/coming-soon' },
+                    { text: 'Vue & Frontend', url: '/coming-soon' },
+                    { text: 'Unity & Blender', url: '/coming-soon' }
+                ]
+            },
+            {
+                title: 'About',
+                links: [
+                    { text: 'Bio', url: '/coming-soon' },
+                    { text: 'Contact', url: '/coming-soon' },
+                    { text: 'Blog', url: '/coming-soon' }
+                ]
+            }
+        ]
     }
 }

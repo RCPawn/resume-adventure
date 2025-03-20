@@ -1,5 +1,6 @@
 // data/i18n/cn.js
 // 中文语言包
+import '@/assets/leetcodeIcon.css';
 export default {
     nav: {
         logo: '过河卒',
@@ -17,6 +18,41 @@ export default {
         '深度学习爱好者',
         '热衷于3D和互动设计'
     ],
+    skills: {
+        title: '专业技能',
+        items: [
+            {
+                name: '全栈开发',
+                desc: '精通Java, Spring, Vue等技术栈，从前端到后端，从设计到实现，提供完整的解决方案',
+                icon: 'fas fa-laptop-code',
+                level: 90
+            },
+            {
+                name: '数据库设计与优化',
+                desc: '熟练掌握MySQL架构设计，精通复杂SQL查询和性能优化，确保系统高效运行',
+                icon: 'fas fa-database',
+                level: 85
+            },
+            {
+                name: '游戏与3D开发',
+                desc: 'Unity游戏引擎和Blender 3D建模双修，能独立完成游戏原型和简单3D资源创建',
+                icon: 'fas fa-gamepad',
+                level: 75
+            },
+            {
+                name: '人工智能与机器学习',
+                desc: '掌握Python数据分析和基础机器学习应用，具备AI领域的探索和学习能力',
+                icon: 'fas fa-brain',
+                level: 70
+            },
+            {
+                name: '版本控制与协作',
+                desc: '精通Git工作流程，擅长团队协作开发，热衷参与开源社区贡献',
+                icon: 'fab fa-github',
+                level: 95
+            }
+        ]
+    },
     projects: {
         items: [
             {
@@ -44,7 +80,7 @@ export default {
                 description: "即将推出，颠覆领域的新项目。"
             }
         ],
-        title: '我的项目',
+        title: '项目经历',
         viewDetails: '查看详情'
     },
     stuffs: {
@@ -162,6 +198,42 @@ export default {
                 "问题解决：面对技术难题，能够查阅文档、分析源码并提出解决方案"
             ]
         }
+    },
+    footer: {
+        appName: '开发者空间',
+        tagline: '让编码创造更多可能',
+        copyright: '© {year} 开发者空间. 保留所有权利.',
+        madeWith: '用热爱和代码精心制作',
+        socialLinks: [
+            { url: 'https://github.com/RCPawn', icon: 'fab fa-github' },
+            { url: 'https://www.douyin.com/user/self?from_tab_name=main', icon: 'fab fa-tiktok' },
+            { url: 'https://leetcode.cn/u/guo-he-zu-ew/', icon: 'icon-leetcode' }
+        ],
+        linkGroups: [
+            {
+                title: '项目',
+                links: [
+                    { text: '全栈应用', url: '/coming-soon' },
+                    { text: '游戏作品', url: '/coming-soon' },
+                    { text: 'AI实验室', url: '/coming-soon' }
+                ]
+            },
+            {
+                title: '技术栈',
+                links: [
+                    { text: 'Java & Spring', url: '/coming-soon' },
+                    { text: 'Vue & 前端', url: '/coming-soon' },
+                    { text: 'Unity & Blender', url: '/coming-soon' }
+                ]
+            },
+            {
+                title: '关于我',
+                links: [
+                    { text: '个人简介', url: '/coming-soon' },
+                    { text: '联系方式', url: '//coming-soon' },
+                    { text: '博客文章', url: '/coming-soon' }
+                ]
+            }
+        ]
     }
-
 }
