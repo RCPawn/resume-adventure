@@ -6,8 +6,7 @@
     <SkillsSection/>
     <ProjectsSection/>
     <ExperienceSection/>
-    <!--    <AboutSection/>-->
-    <!--    <FooterSection/>-->
+    <FooterSection/>
   </div>
 </template>
 
@@ -18,7 +17,6 @@ import HeroSection from '@/components/HeroSection.vue';
 import SkillsSection from "@/components/SkillsSection.vue";
 import ProjectsSection from '@/components/ProjectsSection.vue';
 import ExperienceSection from "@/components/GallerySection.vue";
-import AboutSection from '@/components/AboutSection.vue';
 import FooterSection from '@/components/FooterSection.vue';
 
 </script>

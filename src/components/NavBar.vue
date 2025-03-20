@@ -3,11 +3,14 @@
     <!-- RCPAWN Logo -->
     <div class="napkin-logo">{{ t('nav.logo') }}</div>
     <div class="napkin-nav-links">
-      <a href="javascript:void(0);" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });" class="napkin-nav-link">{{ t('nav.home') }}</a>
+      <a href="javascript:void(0);" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });" class="napkin-nav-link">{{
+          t('nav.home')
+        }}</a>
       <a href="#skills" class="napkin-nav-link">{{ t('nav.skill') }}</a>
       <a href="#projects" class="napkin-nav-link">{{ t('nav.projects') }}</a>
       <a href="#gallery" class="napkin-nav-link">{{ t('nav.experience') }}</a>
-      <a href="#about" class="napkin-nav-link">{{ t('nav.about') }}</a>
+      <!-- 修改为点击后弹出 About 模态框 -->
+      <a href="javascript:void(0);" @click="toggleAboutModal" class="napkin-nav-link">{{ t('nav.resume') }}</a>
       <a href="#footer" class="napkin-nav-link">{{ t('nav.footer') }}</a>
     </div>
     <div class="napkin-controls">
@@ -40,15 +43,46 @@
       </button>
     </div>
   </nav>
+
+  <!-- 模态框 -->
+  <teleport to="body">
+    <transition name="modal-fade">
+      <div v-if="showAboutModal" class="modal-mask">
+        <div class="modal-wrapper">
+          <div ref="modalRef" class="modal-container">
+            <button class="modal-close" @click="toggleAboutModal">&times;</button>
+            <AboutSection
+                :isVisible="showAboutModal"
+                @close="showAboutModal = false"
+            />
+          </div>
+        </div>
+      </div>
+    </transition>
+  </teleport>
 </template>
 
 <script setup>
 import {ref, onMounted} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {enable as enableDarkMode, disable as disableDarkMode} from 'darkreader'
-
+import AboutSection from '@/components/ResumeSection.vue'
+// 新增导入
+import {onClickOutside} from '@vueuse/core'
+// 新增模态框状态
+const showAboutModal = ref(false)
+const modalRef = ref(null)
 const {locale, t} = useI18n()
 const isDarkMode = ref(false)
+
+// 切换 About 模态框的显示状态
+const toggleAboutModal = () => {
+  showAboutModal.value = !showAboutModal.value
+}
+
+onClickOutside(modalRef, () => {
+  showAboutModal.value = false
+})
 
 onMounted(() => {
   const savedTheme = localStorage.getItem('theme')
@@ -65,36 +99,32 @@ onMounted(() => {
   }
 
   // 添加平滑滚动导航功能
-  document.querySelectorAll('.napkin-nav-link').forEach(link => {
+  document.querySelectorAll('.napkin-nav-link:not(router-link)').forEach(link => {
     link.addEventListener('click', handleNavLinkClick)
   })
 })
 
-// 处理导航链接点击
+// 处理导航链接点击（平滑滚动效果）
 const handleNavLinkClick = (e) => {
   e.preventDefault()
   const targetId = e.currentTarget.getAttribute('href')
-  const targetElement = document.querySelector(targetId)
+  if (!targetId || targetId === 'javascript:void(0);') return
 
+  const targetElement = document.querySelector(targetId)
   if (targetElement) {
-    // 计算顶部偏移量，考虑导航栏高度
     const navHeight = document.querySelector('.napkin-nav').offsetHeight
     const elementPosition = targetElement.getBoundingClientRect().top
-    const offsetPosition = elementPosition + window.pageYOffset - navHeight
+    const offsetPosition = elementPosition + window.scrollY - navHeight
 
-    // 平滑滚动到目标位置
     window.scrollTo({
       top: offsetPosition,
       behavior: 'smooth'
     })
-
-    // 更新 URL hash 而不引起页面跳动
     history.pushState(null, null, targetId)
   }
 }
 
 const toggleLanguage = () => {
-  // 保持原有代码
   document.body.classList.add('language-transition')
   locale.value = locale.value === 'en' ? 'cn' : 'en'
   localStorage.setItem('language', locale.value)
@@ -104,7 +134,6 @@ const toggleLanguage = () => {
 }
 
 const toggleTheme = () => {
-  // 保持原有代码
   isDarkMode.value = !isDarkMode.value
   if (isDarkMode.value) {
     enableDarkMode({brightness: 100, contrast: 90, sepia: 10})
@@ -176,6 +205,7 @@ html {
   font-size: 1rem;
   position: relative;
   transition: color 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  cursor: pointer;
 }
 
 .napkin-nav-link:hover {
@@ -274,5 +304,71 @@ html {
 /* 语言切换过渡 */
 .language-transition {
   transition: all 0.3s ease;
+}
+
+/* 模态框样式 */
+.modal-mask {
+  position: fixed;
+  z-index: 9998;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.3s ease;
+}
+
+.modal-wrapper {
+  width: 90%;
+  max-width: 600px;
+}
+
+.modal-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+  transition: all 0.3s ease;
+  width: 1000px; /* 固定宽度 */
+}
+
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.2s;
+}
+
+.modal-close:hover {
+  color: #333;
+}
+
+/* 过渡动画 */
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+  opacity: 0;
+}
+
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.modal-fade-enter-to,
+.modal-fade-leave-from {
+  opacity: 1;
 }
 </style>
