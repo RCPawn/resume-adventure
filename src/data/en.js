@@ -52,6 +52,8 @@ export default {
         building: 'Building...',
         developing: 'This page is still under development, please stay tuned! ...',
     },
+
+    // Resume
     resume: {
         education: {
             title: "Education",
@@ -62,7 +64,7 @@ export default {
             ]
         },
         skills: {
-            title: "Professional Skills",
+            title: "Prof Skills",
             categories: [
                 {
                     name: "Programming Languages",
@@ -96,7 +98,7 @@ export default {
             ]
         },
         projects: {
-            title: "Project Experience",
+            title: "Projects",
             stackLabel: "Tech Stack",
             contributionsLabel: "Personal Contributions",
             items: [
@@ -139,7 +141,7 @@ export default {
             ]
         },
         courses: {
-            title: "Professional Courses",
+            title: "Prof Courses",
             items: [
                 "Computer Fundamentals: Data Structures, Algorithm Analysis & Design, Computer Architecture, Computer Networks, Operating Systems",
                 "Development Technologies: Spring Stack, MyBatis, Redis, MySQL, Vue3, and related courses",
@@ -147,7 +149,7 @@ export default {
             ]
         },
         selfLearning: {
-            title: "Self-Learning & Interests",
+            title: "Self-Learning",
             items: [
                 "Continuously following technology trends, learning professional knowledge through YouTube",
                 "Understanding and utilizing various AI tools to improve development efficiency",

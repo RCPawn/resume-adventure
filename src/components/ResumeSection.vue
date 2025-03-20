@@ -105,7 +105,7 @@ const sections = [
             <div class="project-contributions">
               <h4>{{ t('resume.projects.contributionsLabel') }}：</h4>
               <ul>
-                <li v-for="(item, itemIndex) in tm('project.contributions')" :key="itemIndex">
+                <li v-for="(item, itemIndex) in project.contributions" :key="itemIndex">
                   {{ item }}
                 </li>
               </ul>

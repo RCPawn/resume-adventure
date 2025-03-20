@@ -101,7 +101,7 @@ export default {
             contributionsLabel: "个人贡献",
             items: [
                 {
-                    title: "智慧农业管理系统 - 油橄榄园区一体化平台",
+                    title: "榄人千里眼 - 油橄榄园区一体化平台",
                     stack: "SpringBoot, Vue3, MySQL, Redis",
                     contributions: [
                         "负责用户认证模块与权限管理系统",
@@ -147,7 +147,7 @@ export default {
             ]
         },
         selfLearning: {
-            title: "自学能力与兴趣",
+            title: "自学能力",
             items: [
                 "持续跟踪技术发展趋势，通过YouTube学习专业相关知识",
                 "了解并使用各类AI工具提升开发效率",
