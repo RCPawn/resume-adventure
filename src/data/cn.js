@@ -23,33 +23,33 @@ export default {
         items: [
             {
                 name: '全栈开发',
-                desc: '精通Java, Spring, Vue等技术栈，从前端到后端，从设计到实现，提供完整的解决方案',
+                desc: '熟练应用Java, Spring, Vue等技术栈，能够从前端到后端进行完整系统开发，具备系统设计到实现的综合能力',
                 icon: 'fas fa-laptop-code',
-                level: 90
+                level: 60
             },
             {
                 name: '数据库设计与优化',
-                desc: '熟练掌握MySQL架构设计，精通复杂SQL查询和性能优化，确保系统高效运行',
+                desc: '熟练操作MySQL数据库，擅长编写高效SQL语句，具备数据库结构设计经验',
                 icon: 'fas fa-database',
-                level: 85
+                level: 50
             },
             {
                 name: '游戏与3D开发',
-                desc: 'Unity游戏引擎和Blender 3D建模双修，能独立完成游戏原型和简单3D资源创建',
+                desc: '掌握Unity游戏引擎和Blender 3D建模基础技能，能够开发游戏原型及创建基础3D模型资源',
                 icon: 'fas fa-gamepad',
-                level: 75
+                level: 30
             },
             {
                 name: '人工智能与机器学习',
-                desc: '掌握Python数据分析和基础机器学习应用，具备AI领域的探索和学习能力',
+                desc: '具备Python编程基础，了解AI核心概念，持续学习和探索深度学习应用能力',
                 icon: 'fas fa-brain',
-                level: 70
+                level: 20
             },
             {
                 name: '版本控制与协作',
-                desc: '精通Git工作流程，擅长团队协作开发，热衷参与开源社区贡献',
+                desc: '熟练运用Git工作流程，擅长团队协作开发，积极参与开源社区贡献',
                 icon: 'fab fa-github',
-                level: 95
+                level: 60
             }
         ]
     },

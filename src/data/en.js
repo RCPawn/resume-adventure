@@ -22,34 +22,34 @@ export default {
         title: 'Professional Skills',
         items: [
             {
-                name: 'Full Stack Development',
-                desc: 'Proficient in Java, Spring, Vue and related technologies, delivering complete solutions from frontend to backend',
+                name: 'Full-Stack Development',
+                desc: 'Proficient with Java, Spring, Vue and related technologies, capable of developing complete systems from frontend to backend',
                 icon: 'fas fa-laptop-code',
-                level: 90
+                level: 60
             },
             {
                 name: 'Database Design & Optimization',
-                desc: 'Expert in MySQL architecture design, complex SQL queries and performance tuning for efficient system operation',
+                desc: 'Strong experience with MySQL databases, skilled at writing efficient SQL queries and designing database structures',
                 icon: 'fas fa-database',
-                level: 85
+                level: 50
             },
             {
                 name: 'Game & 3D Development',
-                desc: 'Skilled with Unity engine and Blender for 3D modeling, capable of creating game prototypes and basic 3D assets',
+                desc: 'Familiar with Unity game engine and Blender 3D modeling, able to develop game prototypes and create basic 3D assets',
                 icon: 'fas fa-gamepad',
-                level: 75
+                level: 30
             },
             {
                 name: 'AI & Machine Learning',
-                desc: 'Competent in Python data analysis and foundational machine learning applications with strong learning potential',
+                desc: 'Knowledgeable in Python programming with understanding of core AI concepts, actively exploring deep learning applications',
                 icon: 'fas fa-brain',
-                level: 70
+                level: 20
             },
             {
                 name: 'Version Control & Collaboration',
-                desc: 'Expert in Git workflow, team collaboration and active open-source community contribution',
+                desc: 'Adept at Git workflows, experienced in team collaboration and actively contributing to open source communities',
                 icon: 'fab fa-github',
-                level: 95
+                level: 60
             }
         ]
     },
