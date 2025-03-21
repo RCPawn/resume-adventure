@@ -172,12 +172,12 @@ const toggleTheme = () => {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: #ffffff; /* 纯白色背景，完全遮挡下方内容 */
+  background-color: #ffffff;
   border-bottom: 1px solid var(--border-color);
-  position: sticky;
+  position: relative; /* 修改：设为相对定位 */
   top: 0;
   z-index: 100;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* 更流畅的缓动函数 */
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 /* Logo */
@@ -193,8 +193,11 @@ const toggleTheme = () => {
   transform: scale(1.05); /* 悬停放大 */
 }
 
-/* 导航链接 */
+/* 修改导航链接样式，使其居中 */
 .napkin-nav-links {
+  position: absolute; /* 绝对定位 */
+  left: 50%;          /* 从左边50%位置开始 */
+  transform: translateX(-50%); /* 向左平移自身宽度的一半，实现居中 */
   display: flex;
   gap: 2rem;
 }
