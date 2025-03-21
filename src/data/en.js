@@ -56,31 +56,35 @@ export default {
     projects: {
         items: [
             {
-                name: "Skill Map",
-                description: "A dynamic visualization of skills and knowledge."
+                name: "Olive Guardian",
+                description: "Integrated olive grove management platform combining data visualization, WebGIS and blockchain technologies for comprehensive asset management"
             },
             {
-                name: "Adventure Car",
-                description: "Explore an adventurous car project."
+                name: "Algorithm",
+                description: "Systematically solved 300+ algorithm challenges covering data structures, dynamic programming, backtracking, greedy algorithms and more"
             },
             {
-                name: "Donuts Delight",
-                description: "A sweet project inspired by donuts."
+                name: "GitHub Project",
+                description: "Utilized GitHub for hosting personal project code, actively explored open-source resources, and developed version control skills and technical perspective"
             },
             {
-                name: "Assets Management",
-                description: "A comprehensive project created by the integration of multiple disciplines."
+                name: "Deep Learning",
+                description: "Self-taught deep learning fundamentals through YouTube and other platforms, practiced basic image recognition models, passionate about frontier AI technologies"
             },
             {
-                name: "GitHub Explorer",
-                description: "Discover projects and code on GitHub."
+                name: "Resume Adventure",
+                description: "Interactive game developed with Unity3D where players drive through a virtual world exploring my learning journey"
             },
             {
-                name: "Future Project",
-                description: "A project coming soon to revolutionize the field."
+                name: "Donut 3D",
+                description: "Created a 3D animated short film using Blender, demonstrating modeling, texturing, lighting and animation techniques"
+            },
+            {
+                name: "Skills Roadmap",
+                description: "Constructed personal full-stack development plan encompassing frontend, backend, algorithms, deep learning and product design, continuously updated through iterative learning"
             }
         ],
-        title: 'Projects Experience',
+        title: 'Learning Experience',
         viewDetails: 'View Details'
     },
     stuffs: {
@@ -200,6 +204,10 @@ export default {
                 "Problem Solving: When facing technical challenges, capable of consulting documentation, analyzing source code, and proposing solutions"
             ]
         }
+    },
+    gallery: {
+        title: 'Gallery',
+        subtitle: 'Here are a few visuals of my works',
     },
     footer: {
         appName: 'Dev Space',

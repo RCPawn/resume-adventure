@@ -29,10 +29,7 @@ const userInput = ref('');
 const messages = ref([
   {content: '你好！我是 rcpawn 的小助手 echo，有什么可以帮你的吗？', type: 'ai'}
 ]);
-const buttonPosition = reactive({
-  x: window.innerWidth - 70,
-  y: window.innerHeight / 2
-});
+
 const dragState = reactive({
   isDragging: false,
   initialX: 0,
@@ -81,17 +78,21 @@ const stopDrag = () => {
 };
 
 const snapToEdge = () => {
+  // 只有当用户完成拖拽后才执行吸附
+  if (dragState.isDragging) {
+    return; // 如果正在拖拽中，不执行吸附
+  }
+
+  // 计算各边缘距离
   const leftDistance = buttonPosition.x;
   const rightDistance = window.innerWidth - 70 - buttonPosition.x;
-  const topDistance = buttonPosition.y;
-  const bottomDistance = window.innerHeight - 70 - buttonPosition.y;
-  const minHorizontal = Math.min(leftDistance, rightDistance);
-  const minVertical = Math.min(topDistance, bottomDistance);
-  if (minHorizontal <= minVertical) {
-    buttonPosition.x = leftDistance < rightDistance ? 0 : window.innerWidth - 70;
-  } else {
-    buttonPosition.y = topDistance < bottomDistance ? 0 : window.innerHeight - 70;
-  }
+
+  // 总是吸附到右侧边缘
+  buttonPosition.x = window.innerWidth - 70;
+
+  // 保持垂直位置不变，保留用户的垂直拖拽结果
+  // 只确保不超出边界
+  buttonPosition.y = Math.min(Math.max(buttonPosition.y, 0), window.innerHeight - 70);
 };
 
 const toggleChatWindow = () => {
@@ -112,14 +113,24 @@ const sendMessage = () => {
   userInput.value = '';
 };
 
+// 在组件定义开始处修改初始位置
+const buttonPosition = reactive({
+  x: window.innerWidth - 70,
+  y: (window.innerHeight - 70) / 2
+});
+
+// onMounted 中添加重置位置的功能
 onMounted(() => {
+  // 初始化时设置为右侧中间位置
+  buttonPosition.x = window.innerWidth - 70;
+  buttonPosition.y = (window.innerHeight - 70) / 2;
+
   window.addEventListener('resize', () => {
-    if (buttonPosition.x > window.innerWidth - 70) {
-      buttonPosition.x = window.innerWidth - 70;
-    }
-    if (buttonPosition.y > window.innerHeight - 70) {
-      buttonPosition.y = window.innerHeight - 70;
-    }
+    // 窗口大小改变时，保持在右侧
+    buttonPosition.x = window.innerWidth - 70;
+
+    // 确保垂直位置在屏幕范围内
+    buttonPosition.y = Math.min(Math.max(buttonPosition.y, 0), window.innerHeight - 70);
   });
 });
 </script>

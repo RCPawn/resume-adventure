@@ -1,4 +1,9 @@
 <template>
+  <!-- 在 game-area 上方添加点击解锁层 -->
+  <div v-if="!audioUnlocked" class="audio-unlock-overlay" @click="unlockAudioContext">
+    <div class="unlock-tip">点击此处激活音频功能</div>
+  </div>
+
   <div class="game-container">
     <div class="back-button-area">
       <GoBackButton />
@@ -33,6 +38,16 @@ import GoBackButton from "@/components/GoBackButton.vue";
 
 const gameUrl = ref('/WebGL Builds/index.html');
 const gameIframe = ref(null);
+// 新增音频解锁逻辑
+const audioUnlocked = ref(false);
+
+const unlockAudioContext = () => {
+  const context = new AudioContext();
+  context.resume().then(() => {
+    audioUnlocked.value = true;
+    // 可在此处触发游戏声音初始化
+  });
+};
 
 function toggleFullscreen() {
   const iframe = gameIframe.value;
@@ -80,6 +95,21 @@ function adjustGameSize() {
 onMounted(() => {
   window.addEventListener('resize', adjustGameSize);
   setTimeout(adjustGameSize, 200);
+
+  // 在 onMounted 中
+  window.addEventListener('error', (e) => {
+    console.error('全局错误捕获:', e);
+    if (e.message.includes('AudioContext')) {
+      alert('请点击页面任意位置激活音频功能');
+    }
+  });
+});
+
+// 针对 iframe 的错误捕获
+onMounted(() => {
+  gameIframe.value.contentWindow.addEventListener('error', (e) => {
+    console.error('游戏内错误:', e);
+  });
 });
 
 onBeforeUnmount(() => {
@@ -91,7 +121,8 @@ onBeforeUnmount(() => {
 /* 手绘风格字体 */
 @font-face {
   font-family: 'HandDrawn';
-  src: url('https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Architects_Daughter/ArchitectsDaughter-Regular.ttf') format('truetype');
+  src: url('https://fonts.gstatic.com/s/architectsdaughter/v18/KtkxAKiDZI_td1Lkx62xHZHDtgO_YaV3lmyz3PhLk.woff2')
+  format('woff2');
 }
 
 * {
@@ -116,7 +147,6 @@ html, body {
   align-items: center;
   font-family: 'HandDrawn', cursive;
   /* 镜面设计背景 */
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   background-image:
       linear-gradient(45deg, rgba(255,255,255,.2) 25%, transparent 25%, transparent 50%,
       rgba(255,255,255,.2) 50%, rgba(255,255,255,.2) 75%, transparent 75%, transparent);
@@ -229,6 +259,27 @@ html, body {
   height: 120px;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-dasharray='2,4'/%3E%3C/svg%3E");
   animation: gentle-rotate 50s linear infinite;
+}
+
+.audio-unlock-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.unlock-tip {
+  color: #fff;
+  font-size: 1.5em;
+  padding: 20px;
+  border: 2px dashed #fff;
+  cursor: pointer;
 }
 
 @keyframes gentle-rotate {

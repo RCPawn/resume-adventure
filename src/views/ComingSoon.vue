@@ -20,16 +20,17 @@ const goBack = () => {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap');
+
+body {
+  font-family: 'Architects Daughter', cursive;
+}
+
 /* 重置基础样式 */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-}
-
-@font-face {
-  font-family: 'Sketchy';
-  src: url('https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Architects_Daughter/ArchitectsDaughter-Regular.ttf') format('truetype');
 }
 
 .sketch-container {

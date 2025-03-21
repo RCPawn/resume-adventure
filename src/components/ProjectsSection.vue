@@ -129,7 +129,10 @@ const setActiveProject = (index) => {
 };
 
 const getProjectLink = (index) => {
-  return index === 1 ? {path: '/projects/adventure'} : {path: '/coming-soon'};
+  let rawPath = projects.value[index].link;
+  // 去除所有前导斜杠，然后添加一个斜杠
+  const normalizedPath = '/' + rawPath.replace(/^\/+/, '');
+  return { path: normalizedPath };
 };
 
 const nextProject = () => {
@@ -152,6 +155,9 @@ const handleWheel = (e) => {
 };
 
 const handleKeydown = (e) => {
+  // 添加事件锁防止重复触发
+  if (isScrolling.value) return;
+
   if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
     nextProject();
   } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
@@ -206,27 +212,6 @@ onMounted(() => {
 
   // Initial animation
   animateProjectChange();
-
-  // Add intersection observer for lazy loading
-  const observer = new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting) {
-      gsap.fromTo(
-          '.showcase-heading',
-          {opacity: 0, y: -30},
-          {opacity: 1, y: 0, duration: 0.8, ease: 'power2.out'}
-      );
-
-      gsap.fromTo(
-          '.project-indicators',
-          {opacity: 0, y: 30},
-          {opacity: 1, y: 0, duration: 0.8, ease: 'power2.out', delay: 0.3}
-      );
-
-      observer.disconnect();
-    }
-  }, {threshold: 0.2});
-
-  observer.observe(document.querySelector('.projects-showcase'));
 });
 
 onBeforeUnmount(() => {
@@ -247,7 +232,7 @@ onBeforeUnmount(() => {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background-color: #ffffff;
   color: #333;
-  max-width: 1450px;
+  max-width: 1500px;
   margin: 0 auto;
 }
 
@@ -268,7 +253,7 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   height: 600px;
-  width: 1000px;
+  width: 1100px;
   margin-bottom: 2rem;
 }
 
@@ -330,6 +315,7 @@ onBeforeUnmount(() => {
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08), 0 5px 20px rgba(0, 0, 0, 0.05);
   transition: all 0.5s ease;
 }
+
 
 .project-card.active .card-inner {
   box-shadow: 0 25px 60px rgba(24, 96, 255, 0.15), 0 10px 30px rgba(39, 69, 190, 0.08);

@@ -5,7 +5,7 @@ export default {
     nav: {
         logo: '过河卒',
         home: '主页',
-        skill: '技术栈',
+        skill: '技能',
         projects: '项目',
         experience: '画廊',
         resume: '简历',
@@ -56,31 +56,35 @@ export default {
     projects: {
         items: [
             {
-                name: "技能地图",
-                description: "展示技能与知识的动态可视化。"
+                name: "榄人千里眼",
+                description: "油橄榄园区一体化平台，融合数据可视化、WebGIS与区块链技术的全域资产管理平台"
+            },
+            {
+                name: "算法刷题",
+                description: "系统性解决300+算法题，涵盖数据结构、动态规划、回溯、贪心算法等"
+            },
+            {
+                name: "GitHub项目管理",
+                description: "使用GitHub托管个人项目代码，积极探索开源资源，培养版本控制能力与技术视野"
+            },
+            {
+                name: "深度学习入门",
+                description: "通过YouTube等平台自学深度学习相关知识，实践简单图像识别模型，对AI前沿技术的学习充满热情"
             },
             {
                 name: "简历冒险",
-                description: "探索一个充满冒险精神的汽车项目。"
+                description: "基于Unity3D开发的互动游戏，通过驾驶小车探索我的学习历程"
             },
             {
-                name: "甜甜圈奇缘",
-                description: "受甜甜圈启发的创意项目。"
+                name: "甜甜圈",
+                description: "使用Blender学习创作的3D动画短片，展示建模、材质、光照与动画技术"
             },
             {
-                name: "园区管理",
-                description: "多学科融合打造的综合性项目。"
-            },
-            {
-                name: "GitHub 探索者",
-                description: "在GitHub上发现项目与代码。"
-            },
-            {
-                name: "未来项目",
-                description: "即将推出，颠覆领域的新项目。"
+                name: "技能路线图",
+                description: "构建个人全栈发展规划，涵盖前后端、算法、深度学习与产品设计等多领域技能体系，持续迭代更新"
             }
         ],
-        title: '项目经历',
+        title: '学习经历',
         viewDetails: '查看详情'
     },
     stuffs: {
@@ -169,7 +173,7 @@ export default {
         algo: {
             title: "算法能力",
             items: [
-                "力扣刷题300+道，覆盖数据结构、动态规划、贪心算法等",
+                "力扣刷题300+道，覆盖数据结构、动态规划、回溯、贪心算法等",
                 "熟悉常见算法复杂度分析与优化方法",
                 "能够针对实际问题选择合适的算法解决方案"
             ]
@@ -198,6 +202,10 @@ export default {
                 "问题解决：面对技术难题，能够查阅文档、分析源码并提出解决方案"
             ]
         }
+    },
+    gallery: {
+        title: '画廊',
+        subtitle: '以下是我作品的一些视觉效果',
     },
     footer: {
         appName: '开发者空间',

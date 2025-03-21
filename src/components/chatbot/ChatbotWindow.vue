@@ -1,4 +1,5 @@
 <template>
+<!--  TODO： 手机端展示优化-->
   <div v-if="isOpen"
        class="chat-window"
        :class="{ 'maximized': isMaximized }"

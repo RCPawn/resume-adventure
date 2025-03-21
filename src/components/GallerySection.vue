@@ -1,77 +1,93 @@
 <template>
-  <section id="gallery" class="gallery-section">
+  <div id="gallery" class="gallery-viewport">
     <!-- Gallery Header -->
     <div class="gallery-header">
-      <h2 class="gallery-title">Gallery</h2>
-      <p class="gallery-subtitle">Some of my works</p>
+      <h2 class="gallery-title">{{ t('gallery.title') }}</h2>
+      <p class="gallery-subtitle">{{ t('gallery.subtitle') }}</p>
     </div>
-
-    <!-- First row - scrolling left -->
-    <div class="scroll-container row-one">
-      <div
-          class="scroll-track"
-          :style="{ transform: `translateX(${rowOneScrollPosition}px)` }"
-          @mouseenter="pauseAnimation(1)"
-          @mouseleave="resumeAnimation(1)"
-      >
+    <section class="gallery-section">
+      <!-- First row - scrolling left -->
+      <div class="scroll-container row-one">
         <div
-            class="gallery-card"
-            v-for="(item, idx) in rowOneDuplicated"
-            :key="`row1-${idx}`"
-            :style="{ animationDelay: `${idx * 0.1}s` }"
-            @mouseenter="scaleUp($event)"
-            @mouseleave="scaleDown($event)"
+            class="scroll-track"
+            :style="{ transform: `translateX(${rowOneScrollPosition}px)` }"
+            @mouseenter="pauseAnimation(1)"
+            @mouseleave="resumeAnimation(1)"
         >
-          <img :src="item.imageUrl" :alt="`Gallery image ${idx}`" class="gallery-image" />
+          <div
+              class="gallery-card"
+              v-for="(item, idx) in rowOneDuplicated"
+              :key="`row1-${idx}`"
+              :style="{ animationDelay: `${idx * 0.1}s` }"
+              @mouseenter="scaleUp($event)"
+              @mouseleave="scaleDown($event)"
+          >
+            <img :src="item.imageUrl" :alt="`Gallery image ${idx}`" class="gallery-image"/>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Second row - scrolling right -->
-    <div class="scroll-container row-two">
-      <div
-          class="scroll-track"
-          :style="{ transform: `translateX(${rowTwoScrollPosition}px)` }"
-          @mouseenter="pauseAnimation(2)"
-          @mouseleave="resumeAnimation(2)"
-      >
+      <!-- Second row - scrolling right -->
+      <div class="scroll-container row-two">
         <div
-            class="gallery-card"
-            v-for="(item, idx) in rowTwoDuplicated"
-            :key="`row2-${idx}`"
-            :style="{ animationDelay: `${idx * 0.1}s` }"
-            @mouseenter="scaleUp($event)"
-            @mouseleave="scaleDown($event)"
+            class="scroll-track"
+            :style="{ transform: `translateX(${rowTwoScrollPosition}px)` }"
+            @mouseenter="pauseAnimation(2)"
+            @mouseleave="resumeAnimation(2)"
         >
-          <img :src="item.imageUrl" :alt="`Gallery image ${idx}`" class="gallery-image" />
+          <div
+              class="gallery-card"
+              v-for="(item, idx) in rowTwoDuplicated"
+              :key="`row2-${idx}`"
+              :style="{ animationDelay: `${idx * 0.1}s` }"
+              @mouseenter="scaleUp($event)"
+              @mouseleave="scaleDown($event)"
+          >
+            <img :src="item.imageUrl" :alt="`Gallery image ${idx}`" class="gallery-image"/>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import {ref, computed, onMounted, onUnmounted} from 'vue';
+import {useI18n} from 'vue-i18n';
 
+const {t} = useI18n();
 // First row data - larger images
 const rowOneItems = [
-  { imageUrl: "/images/placeholder.webp" },
-  { imageUrl: "/images/placeholder.webp" },
-  { imageUrl: "/images/placeholder.webp" },
-  { imageUrl: "/images/placeholder.webp" },
-  { imageUrl: "/images/placeholder.webp" },
-  { imageUrl: "/images/placeholder.webp" },
+  {imageUrl: "/images/brain.jpg"},
+  {imageUrl: "/images/car.webp"},
+  {imageUrl: "/images/donut.webp"},
+  {imageUrl: "/images/github.jpg"},
+  {imageUrl: "/images/neural_network.jpg"},
+  {imageUrl: "/images/skills.jpg"},
+  {imageUrl: "/images/brain.jpg"},
+  {imageUrl: "/images/car.webp"},
+  {imageUrl: "/images/donut.webp"},
+  {imageUrl: "/images/github.jpg"},
+  {imageUrl: "/images/neural_network.jpg"},
+  {imageUrl: "/images/skills.jpg"},
 ];
 
 // Second row data - smaller images
 const rowTwoItems = [
-  { imageUrl: "/images/placeholder.webp" },
-  { imageUrl: "/images/placeholder.webp" },
-  { imageUrl: "/images/placeholder.webp" },
-  { imageUrl: "/images/placeholder.webp" },
-  { imageUrl: "/images/placeholder.webp" },
-  { imageUrl: "/images/placeholder.webp" },
+  {imageUrl: "/images/tree.jpg"},
+  {imageUrl: "/images/brain.jpg"},
+  {imageUrl: "/images/car.webp"},
+  {imageUrl: "/images/donut.webp"},
+  {imageUrl: "/images/github.jpg"},
+  {imageUrl: "/images/neural_network.jpg"},
+  {imageUrl: "/images/tree.jpg"},
+  {imageUrl: "/images/brain.jpg"},
+  {imageUrl: "/images/car.webp"},
+  {imageUrl: "/images/donut.webp"},
+  {imageUrl: "/images/github.jpg"},
+  {imageUrl: "/images/neural_network.jpg"},
 ];
+
 
 // Duplicate items for seamless scrolling
 const rowOneDuplicated = computed(() => [
@@ -164,12 +180,20 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-/* Base layout - iOS inspired clean design */
+/* 视口容器：保证横向隐藏溢出，并适当增加上下留白 */
+.gallery-viewport {
+  width: 100%;
+  overflow-x: hidden;
+  position: relative;
+  padding: 1rem 0;
+}
+
+/* 基础布局 */
 .gallery-section {
   width: 100%;
-  max-width: 1180px;
+  max-width: 2000px;
   margin: 0 auto;
-  padding: 4rem 1.5rem;
+  padding: 3rem 2rem;
   overflow: hidden;
   background: #ffffff;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -178,13 +202,13 @@ onUnmounted(() => {
 /* Gallery header */
 .gallery-header {
   text-align: center;
-  margin-bottom: 3.5rem;
+  margin-bottom: 1rem;
 }
 
 .gallery-title {
   font-size: 3rem;
   font-weight: 700;
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
   text-align: center;
   background: #333;
   -webkit-background-clip: text;
@@ -199,37 +223,40 @@ onUnmounted(() => {
   font-weight: 400;
 }
 
-/* Scroll container with increased spacing between rows */
+/* 滚动容器：使用视口宽度，保证居中显示，并为各行添加适当间距 */
 .scroll-container {
-  width: 100%;
-  overflow: hidden;
+  width: 100vw;
+  margin: 0 auto 2rem auto; /* 底部增加间距分隔行 */
+  transform: translateX(0);
+  padding: 1rem 0;
   position: relative;
-  margin-bottom: 5rem; /* Increased spacing between rows */
+  overflow: hidden;
 }
 
+/* 调整滚动轨道，保持平滑过渡 */
 .scroll-track {
   display: flex;
   will-change: transform;
   transition: transform 0.2s ease-out;
 }
 
-/* Row 1 styles - larger cards */
+/* 第一行 - 大卡片 */
 .row-one .gallery-card {
-  width: 360px;
-  height: 220px;
-  margin-right: 24px;
+  width: 560px;
+  height: 380px;
+  margin-right: 32px; /* 稍微加大卡片之间的间距 */
   border-radius: 14px;
 }
 
-/* Row 2 styles - smaller cards */
+/* 第二行 - 小卡片 */
 .row-two .gallery-card {
   width: 280px;
-  height: 180px;
-  margin-right: 20px;
+  height: 200px;
+  margin-right: 24px; /* 同样调整间距 */
   border-radius: 12px;
 }
 
-/* Card base styles - iOS inspired with subtle shadows */
+/* 卡片基础样式 */
 .gallery-card {
   flex-shrink: 0;
   position: relative;
@@ -241,6 +268,7 @@ onUnmounted(() => {
   transform-origin: center;
 }
 
+/* 图片样式 */
 .gallery-image {
   width: 100%;
   height: 100%;
@@ -248,7 +276,7 @@ onUnmounted(() => {
   transition: transform 0.4s ease-out;
 }
 
-/* Card hover effects - iOS inspired subtlety */
+/* 卡片悬停效果 */
 .gallery-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
@@ -263,7 +291,13 @@ onUnmounted(() => {
   transform: scale(1.05);
 }
 
-/* Animations */
+/* 保证每行最后一张卡片不会紧靠屏幕右侧 */
+.row-one .gallery-card:last-child,
+.row-two .gallery-card:last-child {
+  margin-right: calc(100vw - 2rem);
+}
+
+/* 渐现动画 */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -275,14 +309,14 @@ onUnmounted(() => {
   }
 }
 
-/* Responsive adjustments */
+/* 响应式调整 */
 @media (max-width: 768px) {
   .gallery-section {
-    padding: 3rem 1rem;
+    padding: 2rem 1rem;
   }
 
   .gallery-header {
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
   }
 
   .gallery-title {
@@ -294,19 +328,20 @@ onUnmounted(() => {
   }
 
   .scroll-container {
-    margin-bottom: 3rem;
+    padding: 0.8rem 0;
+    margin-bottom: 1.5rem;
   }
 
   .row-one .gallery-card {
     width: 300px;
     height: 180px;
-    margin-right: 16px;
+    margin-right: 20px;
   }
 
   .row-two .gallery-card {
     width: 220px;
     height: 140px;
-    margin-right: 14px;
+    margin-right: 18px;
   }
 }
 
@@ -318,13 +353,13 @@ onUnmounted(() => {
   .row-one .gallery-card {
     width: 240px;
     height: 160px;
-    margin-right: 12px;
+    margin-right: 16px;
   }
 
   .row-two .gallery-card {
     width: 180px;
     height: 120px;
-    margin-right: 12px;
+    margin-right: 14px;
   }
 }
 </style>

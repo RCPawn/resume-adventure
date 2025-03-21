@@ -2,37 +2,43 @@
   {
     "nameKey": "projects.items.0.name",
     "descriptionKey": "projects.items.0.description",
-    "image": "/images/placeholder.webp",
+    "image": "/images/tree.jpg",
     "link": "/coming-soon"
   },
   {
     "nameKey": "projects.items.1.name",
     "descriptionKey": "projects.items.1.description",
-    "image": "/images/Car.png",
-    "link": "/projects/adventure"
+    "image": "/images/brain.jpg",
+    "link": "/coming-soon"
   },
   {
     "nameKey": "projects.items.2.name",
     "descriptionKey": "projects.items.2.description",
-    "image": "/images/donuts.png",
+    "image": "/images/github.jpg",
     "link": "/coming-soon"
   },
   {
     "nameKey": "projects.items.3.name",
     "descriptionKey": "projects.items.3.description",
-    "image": "/images/placeholder.webp",
+    "image": "/images/neural_network.jpg",
     "link": "/coming-soon"
   },
   {
     "nameKey": "projects.items.4.name",
     "descriptionKey": "projects.items.4.description",
-    "image": "/images/placeholder.webp",
-    "link": "/projects/github"
+    "image": "/images/car.webp",
+    "link": "/coming-soon"
   },
   {
     "nameKey": "projects.items.5.name",
     "descriptionKey": "projects.items.5.description",
-    "image": "/images/placeholder.webp",
+    "image": "/images/donut.webp",
+    "link": "/coming-soon"
+  },
+  {
+    "nameKey": "projects.items.6.name",
+    "descriptionKey": "projects.items.6.description",
+    "image": "/images/skills.jpg",
     "link": "/coming-soon"
   }
 ]
