@@ -7,8 +7,8 @@
           t('nav.home')
         }}</a>
       <a href="#skills" class="napkin-nav-link">{{ t('nav.skill') }}</a>
-      <a href="#projects" class="napkin-nav-link">{{ t('nav.projects') }}</a>
-      <a href="#gallery" class="napkin-nav-link">{{ t('nav.experience') }}</a>
+      <a href="#projects" class="napkin-nav-link">{{ t('nav.experience') }}</a>
+      <a href="#gallery" class="napkin-nav-link">{{ t('nav.gallery') }}</a>
       <!-- 修改为点击后弹出 About 模态框 -->
       <a href="javascript:void(0);" @click="toggleAboutModal" class="napkin-nav-link">{{ t('nav.resume') }}</a>
       <a href="#footer" class="napkin-nav-link">{{ t('nav.footer') }}</a>

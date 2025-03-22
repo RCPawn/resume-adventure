@@ -18,6 +18,11 @@ const router = createRouter({
       path: '/projects/adventure',
       name: 'adventure',
       component: () => import('../views/GameView.vue'),
+    }
+    ,{
+      path: '/olive-ppt',
+      name: 'olive-ppt',
+      component: () => import('../components/OlivePpt.vue'),
     },
     // {
     //   path: '/projects/github',

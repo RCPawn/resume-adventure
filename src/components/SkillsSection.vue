@@ -102,7 +102,7 @@ function pauseAnimation(event, pause) {
 
 .skill-card-2 {
   --animation-order: 1;
-  border-top: 5px solid #9D50BB;
+  border-top: 5px solid #8A6BFF;
 }
 
 .skill-card-3 {
@@ -112,12 +112,17 @@ function pauseAnimation(event, pause) {
 
 .skill-card-4 {
   --animation-order: 3;
-  border-top: 5px solid #FFD166;
+  border-top: 5px solid #FF9F43;
 }
 
 .skill-card-5 {
   --animation-order: 4;
   border-top: 5px solid #06D6A0;
+}
+
+.skill-card-6 {
+  --animation-order: 4;
+  border-top: 5px solid #4DCFE0;
 }
 
 .skill-card::before {
@@ -138,11 +143,12 @@ function pauseAnimation(event, pause) {
   text-align: center;
 }
 
-.skill-card-1 .skill-icon { color: #4D8CF5; }
-.skill-card-2 .skill-icon { color: #9D50BB; }
-.skill-card-3 .skill-icon { color: #FF6B6B; }
-.skill-card-4 .skill-icon { color: #FFD166; }
-.skill-card-5 .skill-icon { color: #06D6A0; }
+.skill-card-1 .skill-icon { color: #4D8CF5; } /* 保持科技蓝 */
+.skill-card-2 .skill-icon { color: #8A6BFF; } /* 调整为更柔和的紫罗兰 */
+.skill-card-3 .skill-icon { color: #FF6B6B; } /* 保持警示红 */
+.skill-card-4 .skill-icon { color: #FF9F43; } /* 加深为活力橙 */
+.skill-card-5 .skill-icon { color: #06D6A0; } /* 保持生态绿 */
+.skill-card-6 .skill-icon { color: #4DCFE0; } /* 新增清新青 */
 
 .skill-title {
   font-size: 1.5rem;
@@ -172,10 +178,11 @@ function pauseAnimation(event, pause) {
 }
 
 .skill-card-1 .level-fill { background-color: #4D8CF5; }
-.skill-card-2 .level-fill { background-color: #9D50BB; }
+.skill-card-2 .level-fill { background-color: #8A6BFF; }
 .skill-card-3 .level-fill { background-color: #FF6B6B; }
-.skill-card-4 .level-fill { background-color: #FFD166; }
+.skill-card-4 .level-fill { background-color: #FF9F43; }
 .skill-card-5 .level-fill { background-color: #06D6A0; }
+.skill-card-6 .level-fill { background-color: #4DCFE0; }
 
 .level-fill {
   height: 100%;

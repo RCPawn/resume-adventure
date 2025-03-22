@@ -6,8 +6,8 @@ export default {
         logo: 'RCPAWN',
         home: 'Home',
         skill: 'Skills',
-        projects: 'Projects',
-        experience: 'Gallery',
+        experience: 'Experience',
+        gallery: 'Gallery',
         resume: 'Resume',
         footer: 'Footer'
     },
@@ -23,31 +23,37 @@ export default {
         items: [
             {
                 name: 'Full-Stack Development',
-                desc: 'Proficient with Java, Spring, Vue and related technologies, capable of developing complete systems from frontend to backend',
+                desc: 'Proficient in Java, Spring, Vue and other technology stacks, capable of complete system development from front-end to back-end, possessing comprehensive abilities from system design to implementation',
                 icon: 'fas fa-laptop-code',
                 level: 60
             },
             {
                 name: 'Database Design & Optimization',
-                desc: 'Strong experience with MySQL databases, skilled at writing efficient SQL queries and designing database structures',
+                desc: 'Skilled in MySQL database operations, proficient in writing efficient SQL statements, experienced in database structure design',
                 icon: 'fas fa-database',
                 level: 50
             },
             {
+                name: 'Algorithms & Data Structures',
+                desc: 'Solved 300+ problems on LeetCode covering data structures, dynamic programming, backtracking, greedy algorithms, etc. Familiar with common algorithm complexity analysis and optimization methods. Able to select appropriate algorithmic solutions for practical problems',
+                icon: 'fas fa-code',
+                level: 55
+            },
+            {
                 name: 'Game & 3D Development',
-                desc: 'Familiar with Unity game engine and Blender 3D modeling, able to develop game prototypes and create basic 3D assets',
+                desc: 'Mastered Unity game engine and basic Blender 3D modeling skills, capable of developing game prototypes and creating basic 3D model resources',
                 icon: 'fas fa-gamepad',
                 level: 30
             },
             {
                 name: 'AI & Machine Learning',
-                desc: 'Knowledgeable in Python programming with understanding of core AI concepts, actively exploring deep learning applications',
+                desc: 'Possesses Python programming foundations, understands core AI concepts, continuously learning and exploring deep learning application capabilities',
                 icon: 'fas fa-brain',
                 level: 20
             },
             {
                 name: 'Version Control & Collaboration',
-                desc: 'Adept at Git workflows, experienced in team collaboration and actively contributing to open source communities',
+                desc: 'Proficient in Git workflow, skilled in team collaborative development, actively participating in open source community contributions',
                 icon: 'fab fa-github',
                 level: 60
             }
@@ -207,7 +213,7 @@ export default {
     },
     gallery: {
         title: 'Gallery',
-        subtitle: 'Here are a few visuals of my works',
+        subtitle: 'Here are a few visuals of my works (Replace with another picture first)',
     },
     footer: {
         appName: 'Dev Space',

@@ -68,9 +68,4 @@ const goBack = () => {
   z-index: -1;
   opacity: 0.5;
 }
-
-@font-face {
-  font-family: 'Sketchy';
-  src: url('https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Architects_Daughter/ArchitectsDaughter-Regular.ttf') format('truetype');
-}
 </style>

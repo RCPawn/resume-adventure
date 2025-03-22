@@ -6,8 +6,8 @@ export default {
         logo: '过河卒',
         home: '主页',
         skill: '技能',
-        projects: '项目',
-        experience: '画廊',
+        experience: '经历',
+        gallery: '画廊',
         resume: '简历',
         footer: '页脚'
     },
@@ -28,10 +28,16 @@ export default {
                 level: 60
             },
             {
-                name: '数据库设计与优化',
-                desc: '熟练操作MySQL数据库，擅长编写高效SQL语句，具备数据库结构设计经验',
+                name: '数据库设计',
+                desc: '熟练操作MySQL数据库，擅长编写常用SQL语句，具备数据库结构设计经验',
                 icon: 'fas fa-database',
                 level: 50
+            },
+            {
+                name: '算法与数据结构',
+                desc: '力扣刷题300+道，覆盖数据结构、动态规划、回溯、贪心算法等，熟悉常见算法复杂度分析与优化方法，能够针对实际问题选择合适的算法解决方案',
+                icon: 'fas fa-code',
+                level: 55
             },
             {
                 name: '游戏与3D开发',
@@ -205,7 +211,7 @@ export default {
     },
     gallery: {
         title: '画廊',
-        subtitle: '以下是我作品的一些视觉效果',
+        subtitle: '以下是我作品的一些视觉效果（先用别的图片替代）',
     },
     footer: {
         appName: '开发者空间',
@@ -238,7 +244,7 @@ export default {
                 title: '关于我',
                 links: [
                     { text: '个人简介', url: '/coming-soon' },
-                    { text: '联系方式', url: '//coming-soon' },
+                    { text: '联系方式', url: '/coming-soon' },
                     { text: '博客文章', url: '/coming-soon' }
                 ]
             }
