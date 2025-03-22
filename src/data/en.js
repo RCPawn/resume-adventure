@@ -1,6 +1,7 @@
 // data/i18n/en.js
 // 英文语言包
 import '@/assets/leetcodeIcon.css';
+
 export default {
     nav: {
         logo: 'RCPAWN',
@@ -19,41 +20,41 @@ export default {
         'Passionate About 3D and Interactive Design'
     ],
     skills: {
-        title: 'Professional Skills',
+        title: 'Technical Skills',
         items: [
             {
                 name: 'Full-Stack Development',
-                desc: 'Proficient in Java, Spring, Vue and other technology stacks, capable of complete system development from front-end to back-end, possessing comprehensive abilities from system design to implementation',
+                desc: 'Proficient in Spring and Vue technology stacks, capable of end-to-end system development from frontend to backend.',
                 icon: 'fas fa-laptop-code',
                 level: 60
             },
             {
-                name: 'Database Design & Optimization',
-                desc: 'Skilled in MySQL database operations, proficient in writing efficient SQL statements, experienced in database structure design',
+                name: 'Database Design',
+                desc: 'Skilled in MySQL with strong SQL query capabilities, experienced in schema design and optimization.',
                 icon: 'fas fa-database',
                 level: 50
             },
             {
                 name: 'Algorithms & Data Structures',
-                desc: 'Solved 300+ problems on LeetCode covering data structures, dynamic programming, backtracking, greedy algorithms, etc. Familiar with common algorithm complexity analysis and optimization methods. Able to select appropriate algorithmic solutions for practical problems',
+                desc: 'Solved 300+ LeetCode problems covering DP/backtracking/greedy algorithms, with practical optimization skills.',
                 icon: 'fas fa-code',
                 level: 55
             },
             {
                 name: 'Game & 3D Development',
-                desc: 'Mastered Unity game engine and basic Blender 3D modeling skills, capable of developing game prototypes and creating basic 3D model resources',
+                desc: 'Proficient in Unity engine fundamentals and Blender 3D modeling for game asset creation.',
                 icon: 'fas fa-gamepad',
                 level: 30
             },
             {
                 name: 'AI & Machine Learning',
-                desc: 'Possesses Python programming foundations, understands core AI concepts, continuously learning and exploring deep learning application capabilities',
+                desc: 'Python programming foundation with growing expertise in ML/DL through continuous learning.',
                 icon: 'fas fa-brain',
                 level: 20
             },
             {
-                name: 'Version Control & Collaboration',
-                desc: 'Proficient in Git workflow, skilled in team collaborative development, actively participating in open source community contributions',
+                name: 'Version Control',
+                desc: 'Experienced in Git workflows and team collaboration, active in open-source contributions.',
                 icon: 'fab fa-github',
                 level: 60
             }
@@ -98,15 +99,14 @@ export default {
         building: 'Building...',
         developing: 'This page is still under development, please stay tuned! ...',
     },
-
-    // Resume
     resume: {
         education: {
             title: "Education",
             items: [
-                "Software Engineering Major, Junior Year",
-                "University Excellence Scholarship Recipient",
-                "English Proficiency: CET6"
+                "B.S. in Software Engineering (Junior Year)",
+                "GPA 3.42/4.0 (Top 20% in Major)",
+                "University Outstanding Scholarship Recipient",
+                "English Proficiency: CET-6 (Skilled in Technical Documentation)"
             ]
         },
         skills: {
@@ -115,30 +115,30 @@ export default {
                 {
                     name: "Programming Languages",
                     items: [
-                        "Java: Familiar with core syntax, OOP, collections framework, and multi-threading basics",
-                        "Python: Proficient in basic syntax, preliminary applications in data analysis and machine learning"
+                        "Java: Proficient in OOP, Collections Framework & Exception Handling",
+                        "Python: Experienced with Pandas for data processing, familiar with ML fundamentals"
                     ]
                 },
                 {
                     name: "Web Development",
                     items: [
-                        "Backend: Spring ecosystem (SpringMVC, SpringBoot), MyBatis, Redis, MySQL",
-                        "Frontend: Vue3, Element UI, Node.js fundamentals",
-                        "Database: Capable of designing database models, writing complex SQL queries, and basic performance optimization"
+                        "Backend: REST API development with SpringBoot, MySQL operations via MyBatis",
+                        "Frontend: Component-based development using Vue3 + Element UI",
+                        "Database: Relational DB design, complex queries & index optimization"
                     ]
                 },
                 {
-                    name: "Version Control & Collaboration",
+                    name: "Version Control",
                     items: [
-                        "Proficient in Git for version control, familiar with branch management workflows",
-                        "Using GitHub for project hosting and participating in the open-source community"
+                        "Proficient with Git workflows (feature branching & collaboration)",
+                        "Active GitHub user with open-source contributions"
                     ]
                 },
                 {
                     name: "3D & Game Development",
                     items: [
-                        "Blender: Fundamentals of 3D modeling and animation",
-                        "Unity: Game development basics, C# scripting"
+                        "Blender: 3D modeling/texturing & basic animation workflows",
+                        "Unity: Scene setup & C# scripting for game logic"
                     ]
                 }
             ]
@@ -146,68 +146,69 @@ export default {
         projects: {
             title: "Projects",
             stackLabel: "Tech Stack",
-            contributionsLabel: "Personal Contributions",
+            contributionsLabel: "Contributions",
             items: [
                 {
-                    title: "Smart Agriculture Management System - Olive Grove Integrated Platform",
+                    title: "Olive Vision - Smart Agriculture Platform (Lab Collaboration)",
                     stack: "SpringBoot, Vue3, MySQL, Redis",
                     contributions: [
-                        "Responsible for user authentication and permission management",
-                        "Designed and implemented data visualization interface",
-                        "Optimized query performance, reducing page load time by 30%"
+                        "Co-designed API specifications for 3+ modules",
+                        "Developed asset analytics dashboard using ECharts"
                     ],
-                    highlight: "Challenge Solved: Implemented data consistency in high-concurrency scenarios"
+                    highlight: "Key Learning: Large-scale project collaboration & documentation standards"
                 },
                 {
-                    title: "Content Management System - Full Stack Project",
-                    stack: "Express.js, Vue3, MySQL",
-                    contributions: [
-                        "Implemented article publishing, editing, and categorization features",
-                        "Designed responsive user interfaces",
-                        "Integrated third-party rich text editors"
-                    ]
-                },
-                {
-                    title: "Online Food Ordering Platform - Full Stack Project",
+                    title: "SkyFood Delivery (Coding Bootcamp Project)",
                     stack: "SpringBoot, MyBatis, Redis, Vue3",
                     contributions: [
-                        "Developed order management system",
-                        "Implemented Redis-based shopping cart functionality",
-                        "Integrated payment interfaces"
-                    ]
+                        "Implemented order state machine using State Pattern",
+                        "Applied Redis in shopping cart scenarios",
+                        "Built WebSocket notifications per curriculum"
+                    ],
+                    highlight: "Extended Learning: Created 30+ Postman test cases"
+                },
+                {
+                    title: "NewsHub Platform (Coding Bootcamp Project)",
+                    stack: "SpringBoot, Vue3, MySQL",
+                    contributions: [
+                        "Developed article category management system",
+                        "Implemented responsive layouts with Flexbox/Grid",
+                        "Integrated JWT auth & Quill rich-text editor"
+                    ],
+                    highlight: "Key Takeaway: Mastered SpringBoot+Vue3 development workflow with Git collaboration"
                 }
             ]
         },
         algo: {
-            title: "Algorithm Skills",
+            title: "Algorithm",
             items: [
-                "Solved 300+ problems on LeetCode, covering data structures, dynamic programming, greedy algorithms, etc.",
-                "Familiar with common algorithm complexity analysis and optimization methods",
-                "Able to select appropriate algorithmic solutions for real-world problems"
+                "Solved 300+ LeetCode problems (DP/Backtracking/Greedy algorithms)",
+                "Proficient in algorithm complexity analysis",
+                "Practical problem-solving with optimized approaches"
             ]
         },
         courses: {
             title: "Prof Courses",
             items: [
-                "Computer Fundamentals: Data Structures, Algorithm Analysis & Design, Computer Architecture, Computer Networks, Operating Systems",
-                "Development Technologies: Spring Stack, MyBatis, Redis, MySQL, Vue3, and related courses",
-                "Artificial Intelligence: PyTorch fundamentals"
+                "Core CS: Data Structures, Algorithm Design, Computer Architecture, OS, Networking",
+                "Development: JavaEE, Web Frontend, Database Systems",
+                "AI/ML: Fundamentals of Machine Learning, PyTorch Projects"
             ]
         },
         selfLearning: {
             title: "Self-Learning",
             items: [
-                "Continuously following technology trends, learning professional knowledge through YouTube",
-                "Understanding and utilizing various AI tools to improve development efficiency",
-                "Active participation in the GitHub open-source community, studying high-quality project code"
+                "Continuous learning via tech blogs/YouTube/Coursera",
+                "Leverage AI tools (ChatGPT/Grok/Claude) for coding efficiency",
+                "Active GitHub user studying trending projects"
             ]
         },
         softSkills: {
             title: "Soft Skills",
             items: [
-                "Team Collaboration: Working closely with team members in project development, efficiently completing tasks",
-                "Time Management: Able to balance study, project development, and personal growth",
-                "Problem Solving: When facing technical challenges, capable of consulting documentation, analyzing source code, and proposing solutions"
+                "Collaboration: Effective cross-functional communication (Design/Product teams)",
+                "Time Management: Prioritization & deadline-driven delivery",
+                "Problem-Solving: Systematic debugging via docs/community resources"
             ]
         }
     },
@@ -221,33 +222,33 @@ export default {
         copyright: '© {year} Dev Space. All rights reserved.',
         madeWith: 'Made with passion & code',
         socialLinks: [
-            { url: 'https://github.com/RCPawn', icon: 'fab fa-github' },
-            { url: 'https://www.douyin.com/user/self?from_tab_name=main', icon: 'fab fa-tiktok' },
-            { url: 'https://leetcode.cn/u/guo-he-zu-ew/', icon: 'icon-leetcode' }
+            {url: 'https://github.com/RCPawn', icon: 'fab fa-github'},
+            {url: 'https://www.douyin.com/user/self?from_tab_name=main', icon: 'fab fa-tiktok'},
+            {url: 'https://leetcode.cn/u/guo-he-zu-ew/', icon: 'icon-leetcode'}
         ],
         linkGroups: [
             {
                 title: 'Projects',
                 links: [
-                    { text: 'Full Stack Apps', url: '/coming-soon' },
-                    { text: 'Game Dev', url: '/coming-soon' },
-                    { text: 'AI Lab', url: '/coming-soon' }
+                    {text: 'Full Stack Apps', url: '/coming-soon'},
+                    {text: 'Game Dev', url: '/coming-soon'},
+                    {text: 'AI Lab', url: '/coming-soon'}
                 ]
             },
             {
                 title: 'Tech Stack',
                 links: [
-                    { text: 'Java & Spring', url: '/coming-soon' },
-                    { text: 'Vue & Frontend', url: '/coming-soon' },
-                    { text: 'Unity & Blender', url: '/coming-soon' }
+                    {text: 'Java & Spring', url: '/coming-soon'},
+                    {text: 'Vue & Frontend', url: '/coming-soon'},
+                    {text: 'Unity & Blender', url: '/coming-soon'}
                 ]
             },
             {
                 title: 'About',
                 links: [
-                    { text: 'Bio', url: '/coming-soon' },
-                    { text: 'Contact', url: '/coming-soon' },
-                    { text: 'Blog', url: '/coming-soon' }
+                    {text: 'Bio', url: '/coming-soon'},
+                    {text: 'Contact', url: '/coming-soon'},
+                    {text: 'Blog', url: '/coming-soon'}
                 ]
             }
         ]

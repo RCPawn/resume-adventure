@@ -32,10 +32,19 @@
               <p class="project-description">{{ project.description }}</p>
 
               <div class="project-actions">
-                <router-link :to="getProjectLink(index)" class="view-button">
-                  <span>{{ t('projects.viewDetails') }}</span>
-                  <span class="button-icon">→</span>
-                </router-link>
+                <!-- 如果当前项目 link 为 /roadmap 则使用按钮触发弹窗，否则使用 router-link 页面跳转 -->
+                <template v-if="project.link === '/roadmap'">
+                  <button @click="openRoadmapModal" class="view-button">
+                    <span>{{ t('projects.viewDetails') }}</span>
+                    <span class="button-icon">→</span>
+                  </button>
+                </template>
+                <template v-else>
+                  <router-link :to="getProjectLink(index)" class="view-button">
+                    <span>{{ t('projects.viewDetails') }}</span>
+                    <span class="button-icon">→</span>
+                  </router-link>
+                </template>
               </div>
             </div>
           </div>
@@ -59,16 +68,28 @@
         <span class="indicator-label">{{ project.name }}</span>
       </div>
     </div>
+
+    <!-- 弹窗组件，点击遮罩或关闭按钮关闭弹窗 -->
+    <transition name="modal">
+      <div class="modal-overlay" v-if="showRoadmapModal" @click.self="closeRoadmapModal">
+        <div class="modal-container">
+          <button class="modal-close" @click="closeRoadmapModal">×</button>
+          <!-- 引入雷达图组件 -->
+          <MyRoadmap />
+        </div>
+      </div>
+    </transition>
   </section>
 </template>
 
 <script setup>
-import {ref, onMounted, computed, onBeforeUnmount} from 'vue';
-import {useI18n} from 'vue-i18n';
+import { ref, onMounted, computed, onBeforeUnmount } from 'vue';
+import { useI18n } from 'vue-i18n';
 import projectsData from '@/data/projects.json';
-import {gsap} from 'gsap';
+import { gsap } from 'gsap';
+import MyRoadmap from '@/components/MyRoadmap.vue';
 
-const {t} = useI18n();
+const { t } = useI18n();
 
 const activeIndex = ref(0);
 const projectsContainer = ref(null);
@@ -76,6 +97,7 @@ const isScrolling = ref(false);
 const scrollTimeout = ref(null);
 const touchStartY = ref(0);
 const touchStartX = ref(0);
+const showRoadmapModal = ref(false);
 
 const projects = computed(() => {
   return projectsData.map(project => ({
@@ -103,25 +125,22 @@ const isActiveOrAdjacent = (index) => {
 const animateProjectChange = () => {
   gsap.fromTo(
       '.project-card.active .project-info',
-      {opacity: 0, y: 30},
-      {opacity: 1, y: 0, duration: 0.6, ease: 'power2.out', delay: 0.2}
+      { opacity: 0, y: 30 },
+      { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out', delay: 0.2 }
   );
 
   gsap.fromTo(
       '.project-card.active .project-image',
-      {scale: 1.1, opacity: 0.8},
-      {scale: 1, opacity: 1, duration: 0.8, ease: 'power1.out'}
+      { scale: 1.1, opacity: 0.8 },
+      { scale: 1, opacity: 1, duration: 0.8, ease: 'power1.out' }
   );
 };
 
 const setActiveProject = (index) => {
   if (isScrolling.value || index === activeIndex.value) return;
-
   isScrolling.value = true;
   activeIndex.value = index;
-
   animateProjectChange();
-
   clearTimeout(scrollTimeout.value);
   scrollTimeout.value = setTimeout(() => {
     isScrolling.value = false;
@@ -148,16 +167,13 @@ const handleWheel = (e) => {
     e.preventDefault();
     return;
   }
-
   e.preventDefault();
   if (e.deltaY > 20) nextProject();
   else if (e.deltaY < -20) prevProject();
 };
 
 const handleKeydown = (e) => {
-  // 添加事件锁防止重复触发
   if (isScrolling.value) return;
-
   if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
     nextProject();
   } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
@@ -175,42 +191,39 @@ const handleTouchMove = (e) => {
     e.preventDefault();
     return;
   }
-
   const touchEndY = e.touches[0].clientY;
   const touchEndX = e.touches[0].clientX;
   const deltaY = touchStartY.value - touchEndY;
   const deltaX = touchStartX.value - touchEndX;
-
-  // Only respond to significant movements
   if (Math.abs(deltaY) > 50 || Math.abs(deltaX) > 50) {
     e.preventDefault();
-
-    // Determine if horizontal or vertical swipe is dominant
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
-      // Horizontal swipe
       if (deltaX > 0) nextProject();
       else prevProject();
     } else {
-      // Vertical swipe
       if (deltaY > 0) nextProject();
       else prevProject();
     }
-
     touchStartY.value = 0;
     touchStartX.value = 0;
   }
 };
 
+const openRoadmapModal = () => {
+  showRoadmapModal.value = true;
+};
+
+const closeRoadmapModal = () => {
+  showRoadmapModal.value = false;
+};
+
 onMounted(() => {
   if (projectsContainer.value) {
-    projectsContainer.value.addEventListener('wheel', handleWheel, {passive: false});
-    projectsContainer.value.addEventListener('touchstart', handleTouchStart, {passive: true});
-    projectsContainer.value.addEventListener('touchmove', handleTouchMove, {passive: false});
+    projectsContainer.value.addEventListener('wheel', handleWheel, { passive: false });
+    projectsContainer.value.addEventListener('touchstart', handleTouchStart, { passive: true });
+    projectsContainer.value.addEventListener('touchmove', handleTouchMove, { passive: false });
   }
-
   document.addEventListener('keydown', handleKeydown);
-
-  // Initial animation
   animateProjectChange();
 });
 
@@ -220,13 +233,13 @@ onBeforeUnmount(() => {
     projectsContainer.value.removeEventListener('touchstart', handleTouchStart);
     projectsContainer.value.removeEventListener('touchmove', handleTouchMove);
   }
-
   document.removeEventListener('keydown', handleKeydown);
   clearTimeout(scrollTimeout.value);
 });
 </script>
 
 <style scoped>
+
 .projects-showcase {
   padding: 4rem 2rem;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -512,6 +525,48 @@ onBeforeUnmount(() => {
 
 .indicator.active::before {
   width: 100%;
+}
+
+/* 弹窗样式 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-container {
+  position: relative;
+  background: #fff;
+  border-radius: 8px;
+  padding: 2rem;
+  max-width: 90%;
+  max-height: 90%;
+  overflow-y: auto;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+/* 弹窗动画 */
+.modal-enter-active, .modal-leave-active {
+  transition: opacity 0.3s;
+}
+.modal-enter-from, .modal-leave-to {
+  opacity: 0;
 }
 
 @media (max-width: 1024px) {

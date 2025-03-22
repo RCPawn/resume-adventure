@@ -15,14 +15,14 @@ const router = createRouter({
     //   component: () => import('../views/ProjectsView.vue'),
     // },
     {
-      path: '/projects/adventure',
+      path: '/game',
       name: 'adventure',
       component: () => import('../views/GameView.vue'),
-    }
-    ,{
+    },
+    {
       path: '/olive-ppt',
       name: 'olive-ppt',
-      component: () => import('../components/OlivePpt.vue'),
+      component: () => import('../views/OlivePpt.vue'),
     },
     // {
     //   path: '/projects/github',
