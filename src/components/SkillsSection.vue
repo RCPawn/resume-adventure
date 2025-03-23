@@ -1,5 +1,5 @@
 <template>
-  <div class="skill-radar-container">
+  <div id ="skills" class="skill-radar-container">
     <h2 class="title">{{ t('skills.title') }}</h2>
     <div class="content-wrapper">
       <div ref="chartRef" class="chart-container"></div>
@@ -232,11 +232,15 @@ onUnmounted(() => {
 }
 
 .title {
-  font-size: 2rem;
-  color: #333;
-  margin-bottom: 2rem;
-  font-weight: 600;
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 3rem;
   text-align: center;
+  background: #333;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: #333;
+  letter-spacing: -0.5px;
 }
 
 .content-wrapper {

@@ -239,25 +239,25 @@ export default {
             {
                 title: '项目',
                 links: [
-                    {text: '全栈应用', url: '/olive-ppt'},
-                    {text: '游戏作品', url: '/game'},
-                    {text: 'AI实验室', url: '/coming-soon'}
+                    { text: '全栈应用', url: '/olive-ppt' },
+                    { text: '游戏开发', url: '/game' },
+                    { text: 'AI 实验室', url: '/coming-soon' }
                 ]
             },
             {
-                title: '技术栈',
+                title: "资源",
                 links: [
-                    {text: 'Java & Spring', url: '/coming-soon'},
-                    {text: 'Vue & 前端', url: '/coming-soon'},
-                    {text: 'Unity & Blender', url: '/coming-soon'}
-                ]
+                    { text: "文档", url: "/coming-soon" },
+                    { text: "教程", url: "/coming-soon" },
+                    { text: "源码", url: "/coming-soon" }
+                ],
             },
             {
-                title: '关于我',
+                title: '关于',
                 links: [
-                    {text: '个人简介', url: '/coming-soon'},
-                    {text: '联系方式', url: '/coming-soon'},
-                    {text: '博客文章', url: '/coming-soon'}
+                    { text: '个人简介', url: '/coming-soon' },
+                    { text: '联系', url: '/coming-soon' },
+                    { text: '博客', url: '/coming-soon' }
                 ]
             }
         ]

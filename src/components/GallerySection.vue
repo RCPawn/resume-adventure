@@ -62,50 +62,31 @@ const rowOneItems = [
   {imageUrl: "/images/works/b1.png"},
   {imageUrl: "/images/works/1.png"},
   {imageUrl: "/images/works/2.png"},
+  {imageUrl: "/images/works/b4.png"},
+  {imageUrl: "/images/works/b6.png"},
   {imageUrl: "/images/works/b0.png"},
   {imageUrl: "/images/brain.jpg"},
   {imageUrl: "/images/works/3.png"},
   {imageUrl: "/images/works/b2.png"},
   {imageUrl: "/images/github.jpg"},
+  {imageUrl: "/images/works/b5.png"},
   {imageUrl: "/images/works/b1.png"},
   {imageUrl: "/images/car.webp"},
   {imageUrl: "/images/works/0.png"},
   {imageUrl: "/images/works/b1.png"},
   {imageUrl: "/images/skill_target.jpeg"},
-  {imageUrl: "/images/works/1.png"},
+  {imageUrl: "/images/works/b1.png"},
   {imageUrl: "/images/works/b3.png"},
   {imageUrl: "/images/neural_network.jpg"},
+  {imageUrl: "/images/works/b6.png"},
   {imageUrl: "/images/works/2.png"},
   {imageUrl: "/images/donut.webp"},
   {imageUrl: "/images/works/b1.png"},
   {imageUrl: "/images/tree.jpg"}
 ];
 
-
-// Second row data - smaller images
-const rowTwoItems = [
-  {imageUrl: "/images/works/0.png"},
-  {imageUrl: "/images/works/b1.png"},
-  {imageUrl: "/images/works/1.png"},
-  {imageUrl: "/images/works/2.png"},
-  {imageUrl: "/images/works/b0.png"},
-  {imageUrl: "/images/brain.jpg"},
-  {imageUrl: "/images/works/3.png"},
-  {imageUrl: "/images/works/b2.png"},
-  {imageUrl: "/images/github.jpg"},
-  {imageUrl: "/images/works/b1.png"},
-  {imageUrl: "/images/car.webp"},
-  {imageUrl: "/images/works/0.png"},
-  {imageUrl: "/images/works/b1.png"},
-  {imageUrl: "/images/skill_target.jpeg"},
-  {imageUrl: "/images/works/1.png"},
-  {imageUrl: "/images/works/b3.png"},
-  {imageUrl: "/images/neural_network.jpg"},
-  {imageUrl: "/images/works/2.png"},
-  {imageUrl: "/images/donut.webp"},
-  {imageUrl: "/images/works/b1.png"},
-  {imageUrl: "/images/tree.jpg"}
-];
+// rowTwoItems = rowOneItems.reverse();
+const rowTwoItems = [...rowOneItems].reverse();
 
 
 // Duplicate items for seamless scrolling

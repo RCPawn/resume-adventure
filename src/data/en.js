@@ -239,18 +239,18 @@ export default {
             {
                 title: 'Projects',
                 links: [
-                    {text: 'Full Stack Apps', url: '/coming-soon'},
-                    {text: 'Game Dev', url: '/coming-soon'},
+                    {text: 'Full Stack Apps', url: '/olive-ppt'},
+                    {text: 'Game Dev', url: '/game'},
                     {text: 'AI Lab', url: '/coming-soon'}
                 ]
             },
             {
-                title: 'Tech Stack',
+                title: "Resources",
                 links: [
-                    {text: 'Java & Spring', url: '/coming-soon'},
-                    {text: 'Vue & Frontend', url: '/coming-soon'},
-                    {text: 'Unity & Blender', url: '/coming-soon'}
-                ]
+                    { text: "Documentation", url: "/coming-soon" },
+                    { text: "Tutorials", url: "/coming-soon" },
+                    { text: "Blog", url: "/coming-soon" }
+                ],
             },
             {
                 title: 'About',
