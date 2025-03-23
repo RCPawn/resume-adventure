@@ -207,7 +207,7 @@ export default {
         selfLearning: {
             title: "自学能力",
             items: [
-                "通过技术博客、YouTube、Coursera等平台持续学习前沿技术",
+                "通过技术博客、YouTube、Bilibili等平台持续学习前沿技术",
                 "结合AI工具(如ChatGPT、Grok、Claude)进行开发，提高效率",
                 "关注技术社区动态，star优质项目并阅读源码，学习工程实践"
             ]
@@ -223,7 +223,7 @@ export default {
     },
     gallery: {
         title: '画廊',
-        subtitle: '以下是我作品的一些视觉效果（先用别的图片替代）',
+        subtitle: '以下是我作品的一些视觉效果',
     },
     footer: {
         appName: '开发者空间',
@@ -239,8 +239,8 @@ export default {
             {
                 title: '项目',
                 links: [
-                    {text: '全栈应用', url: '/coming-soon'},
-                    {text: '游戏作品', url: '/coming-soon'},
+                    {text: '全栈应用', url: '/olive-ppt'},
+                    {text: '游戏作品', url: '/game'},
                     {text: 'AI实验室', url: '/coming-soon'}
                 ]
             },

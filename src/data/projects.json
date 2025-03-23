@@ -33,12 +33,12 @@
     "nameKey": "projects.items.5.name",
     "descriptionKey": "projects.items.5.description",
     "image": "/images/donut.webp",
-    "link": "/coming-soon"
+    "link": "/model"
   },
   {
     "nameKey": "projects.items.6.name",
     "descriptionKey": "projects.items.6.description",
-    "image": "/images/skill_target.webp",
+    "image": "/images/skill_target.jpeg",
     "link": "/roadmap"
   }
 ]

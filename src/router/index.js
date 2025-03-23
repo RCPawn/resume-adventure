@@ -20,6 +20,11 @@ const router = createRouter({
       component: () => import('../views/OlivePpt.vue'),
     },
     {
+      path: '/model',
+      name: 'model',
+      component: () => import('../views/ModelView.vue'),
+    },
+    {
       path: '/coming-soon',
       name: 'coming-soon',
       component: () => import('../views/ComingSoon.vue'),

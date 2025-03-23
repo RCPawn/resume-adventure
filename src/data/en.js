@@ -207,7 +207,7 @@ export default {
         selfLearning: {
             title: "Self-Learning",
             items: [
-                "Continuous learning via tech blogs/YouTube/Coursera",
+                "Continuous learning via tech blogs/YouTube/Bilibili",
                 "Leverage AI tools (ChatGPT/Grok/Claude) for coding efficiency",
                 "Active GitHub user studying trending projects"
             ]
@@ -223,7 +223,7 @@ export default {
     },
     gallery: {
         title: 'Gallery',
-        subtitle: 'Here are a few visuals of my works (Replace with another picture first)',
+        subtitle: 'Here are a few visuals of my works',
     },
     footer: {
         appName: 'Dev Space',

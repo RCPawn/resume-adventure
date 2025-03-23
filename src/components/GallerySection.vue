@@ -58,34 +58,53 @@ import {useI18n} from 'vue-i18n';
 const {t} = useI18n();
 // First row data - larger images
 const rowOneItems = [
+  {imageUrl: "/images/works/0.png"},
+  {imageUrl: "/images/works/b1.png"},
+  {imageUrl: "/images/works/1.png"},
+  {imageUrl: "/images/works/2.png"},
+  {imageUrl: "/images/works/b0.png"},
   {imageUrl: "/images/brain.jpg"},
-  {imageUrl: "/images/car.webp"},
-  {imageUrl: "/images/donut.webp"},
+  {imageUrl: "/images/works/3.png"},
+  {imageUrl: "/images/works/b2.png"},
   {imageUrl: "/images/github.jpg"},
-  {imageUrl: "/images/neural_network.jpg"},
-  {imageUrl: "/images/skills.jpg"},
-  {imageUrl: "/images/brain.jpg"},
+  {imageUrl: "/images/works/b1.png"},
   {imageUrl: "/images/car.webp"},
-  {imageUrl: "/images/donut.webp"},
-  {imageUrl: "/images/github.jpg"},
+  {imageUrl: "/images/works/0.png"},
+  {imageUrl: "/images/works/b1.png"},
+  {imageUrl: "/images/skill_target.jpeg"},
+  {imageUrl: "/images/works/1.png"},
+  {imageUrl: "/images/works/b3.png"},
   {imageUrl: "/images/neural_network.jpg"},
-  {imageUrl: "/images/skills.jpg"},
+  {imageUrl: "/images/works/2.png"},
+  {imageUrl: "/images/donut.webp"},
+  {imageUrl: "/images/works/b1.png"},
+  {imageUrl: "/images/tree.jpg"}
 ];
+
 
 // Second row data - smaller images
 const rowTwoItems = [
-  {imageUrl: "/images/tree.jpg"},
+  {imageUrl: "/images/works/0.png"},
+  {imageUrl: "/images/works/b1.png"},
+  {imageUrl: "/images/works/1.png"},
+  {imageUrl: "/images/works/2.png"},
+  {imageUrl: "/images/works/b0.png"},
   {imageUrl: "/images/brain.jpg"},
-  {imageUrl: "/images/car.webp"},
-  {imageUrl: "/images/donut.webp"},
+  {imageUrl: "/images/works/3.png"},
+  {imageUrl: "/images/works/b2.png"},
   {imageUrl: "/images/github.jpg"},
-  {imageUrl: "/images/neural_network.jpg"},
-  {imageUrl: "/images/tree.jpg"},
-  {imageUrl: "/images/brain.jpg"},
+  {imageUrl: "/images/works/b1.png"},
   {imageUrl: "/images/car.webp"},
-  {imageUrl: "/images/donut.webp"},
-  {imageUrl: "/images/github.jpg"},
+  {imageUrl: "/images/works/0.png"},
+  {imageUrl: "/images/works/b1.png"},
+  {imageUrl: "/images/skill_target.jpeg"},
+  {imageUrl: "/images/works/1.png"},
+  {imageUrl: "/images/works/b3.png"},
   {imageUrl: "/images/neural_network.jpg"},
+  {imageUrl: "/images/works/2.png"},
+  {imageUrl: "/images/donut.webp"},
+  {imageUrl: "/images/works/b1.png"},
+  {imageUrl: "/images/tree.jpg"}
 ];
 
 
