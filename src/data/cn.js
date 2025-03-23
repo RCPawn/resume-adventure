@@ -21,7 +21,7 @@ export default {
     ],
     skills: {
         title: '专业技能',
-        skillTarget: '目标水平',
+        skillTarget: '技能目标',
         current: '当前水平',
         target: '目标水平',
         items: [

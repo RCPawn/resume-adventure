@@ -1,6 +1,6 @@
 <template>
   <div class="growth-container">
-    <h2 class="title">{{ t('skillTarget.title') }}</h2>
+    <h2 class="title">{{ t('skills.skillTarget') }}</h2>
     <div class="chart-wrapper">
       <div ref="chartRef" class="growth-chart"></div>
       <div class="legend-panel">
