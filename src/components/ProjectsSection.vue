@@ -1,93 +1,9 @@
-<template>
-  <section id="projects" class="projects-showcase">
-    <h2 class="showcase-heading">{{ t('projects.title') }}</h2>
-
-    <div class="showcase-container">
-      <!-- Navigation arrows -->
-      <button class="nav-arrow nav-prev" @click="prevProject" aria-label="Previous project">
-        <span class="arrow-icon">&#10094;</span>
-      </button>
-
-      <div class="projects-display" ref="projectsContainer">
-        <div
-            v-for="(project, index) in projects"
-            :key="project.name"
-            class="project-card"
-            :class="{
-            'active': activeIndex === index,
-            'prev': getPrevIndex() === index,
-            'next': getNextIndex() === index,
-            'far': !isActiveOrAdjacent(index)
-          }"
-        >
-          <div class="card-inner">
-            <div class="project-image-container">
-              <img :src="project.image" :alt="project.name" class="project-image"/>
-              <div class="image-overlay"></div>
-            </div>
-
-            <div class="project-info">
-              <span class="project-number">{{ (index + 1).toString().padStart(2, '0') }}</span>
-              <h3 class="project-title">{{ project.name }}</h3>
-              <p class="project-description">{{ project.description }}</p>
-
-              <div class="project-actions">
-                <!-- 如果当前项目 link 为 /roadmap 则使用按钮触发弹窗，否则使用 router-link 页面跳转 -->
-                <template v-if="project.link === '/roadmap'">
-                  <button @click="openRoadmapModal" class="view-button">
-                    <span>{{ t('projects.viewDetails') }}</span>
-                    <span class="button-icon">→</span>
-                  </button>
-                </template>
-                <template v-else>
-                  <router-link :to="getProjectLink(index)" class="view-button">
-                    <span>{{ t('projects.viewDetails') }}</span>
-                    <span class="button-icon">→</span>
-                  </router-link>
-                </template>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <button class="nav-arrow nav-next" @click="nextProject" aria-label="Next project">
-        <span class="arrow-icon">&#10095;</span>
-      </button>
-    </div>
-
-    <!-- Project indicators -->
-    <div class="project-indicators">
-      <div
-          v-for="(project, index) in projects"
-          :key="'indicator-' + index"
-          class="indicator"
-          :class="{ 'active': activeIndex === index }"
-          @click="setActiveProject(index)"
-      >
-        <span class="indicator-label">{{ project.name }}</span>
-      </div>
-    </div>
-
-    <!-- 弹窗组件，点击遮罩或关闭按钮关闭弹窗 -->
-    <transition name="modal">
-      <div class="modal-overlay" v-if="showRoadmapModal" @click.self="closeRoadmapModal">
-        <div class="modal-container">
-          <button class="modal-close" @click="closeRoadmapModal">×</button>
-          <!-- 引入雷达图组件 -->
-          <MyRoadmap />
-        </div>
-      </div>
-    </transition>
-  </section>
-</template>
-
 <script setup>
 import { ref, onMounted, computed, onBeforeUnmount } from 'vue';
 import { useI18n } from 'vue-i18n';
 import projectsData from '@/data/projects.json';
 import { gsap } from 'gsap';
-import MyRoadmap from '@/components/MyRoadmap.vue';
+import MyRoadmap from '@/components/SkillTarget.vue';
 
 const { t } = useI18n();
 
@@ -237,6 +153,91 @@ onBeforeUnmount(() => {
   clearTimeout(scrollTimeout.value);
 });
 </script>
+
+<template>
+  <section id="projects" class="projects-showcase">
+    <h2 class="showcase-heading">{{ t('projects.title') }}</h2>
+
+    <div class="showcase-container">
+      <!-- Navigation arrows -->
+      <button class="nav-arrow nav-prev" @click="prevProject" aria-label="Previous project">
+        <span class="arrow-icon">&#10094;</span>
+      </button>
+
+      <div class="projects-display" ref="projectsContainer">
+        <div
+            v-for="(project, index) in projects"
+            :key="project.name"
+            class="project-card"
+            :class="{
+            'active': activeIndex === index,
+            'prev': getPrevIndex() === index,
+            'next': getNextIndex() === index,
+            'far': !isActiveOrAdjacent(index)
+          }"
+        >
+          <div class="card-inner">
+            <div class="project-image-container">
+              <img :src="project.image" :alt="project.name" class="project-image"/>
+              <div class="image-overlay"></div>
+            </div>
+
+            <div class="project-info">
+              <span class="project-number">{{ (index + 1).toString().padStart(2, '0') }}</span>
+              <h3 class="project-title">{{ project.name }}</h3>
+              <p class="project-description">{{ project.description }}</p>
+
+              <div class="project-actions">
+                <!-- 如果当前项目 link 为 /roadmap 则使用按钮触发弹窗，否则使用 router-link 页面跳转 -->
+                <template v-if="project.link === '/roadmap'">
+                  <button @click="openRoadmapModal" class="view-button">
+                    <span>{{ t('projects.viewDetails') }}</span>
+                    <span class="button-icon">→</span>
+                  </button>
+                </template>
+                <template v-else>
+                  <router-link :to="getProjectLink(index)" class="view-button">
+                    <span>{{ t('projects.viewDetails') }}</span>
+                    <span class="button-icon">→</span>
+                  </router-link>
+                </template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="nav-arrow nav-next" @click="nextProject" aria-label="Next project">
+        <span class="arrow-icon">&#10095;</span>
+      </button>
+    </div>
+
+    <!-- Project indicators -->
+    <div class="project-indicators">
+      <div
+          v-for="(project, index) in projects"
+          :key="'indicator-' + index"
+          class="indicator"
+          :class="{ 'active': activeIndex === index }"
+          @click="setActiveProject(index)"
+      >
+        <span class="indicator-label">{{ project.name }}</span>
+      </div>
+    </div>
+
+    <!-- 弹窗组件，点击遮罩或关闭按钮关闭弹窗 -->
+    <transition name="modal">
+      <div class="modal-overlay" v-if="showRoadmapModal" @click.self="closeRoadmapModal">
+        <div class="modal-container">
+          <button class="modal-close" @click="closeRoadmapModal">×</button>
+          <!-- 引入雷达图组件 -->
+          <MyRoadmap />
+        </div>
+      </div>
+    </transition>
+  </section>
+</template>
+
 
 <style scoped>
 
@@ -546,7 +547,8 @@ onBeforeUnmount(() => {
   background: #fff;
   border-radius: 8px;
   padding: 2rem;
-  max-width: 90%;
+  width: 90%;
+  max-width: 1000px;  /* 调整最大宽度 */
   max-height: 90%;
   overflow-y: auto;
 }
@@ -560,6 +562,7 @@ onBeforeUnmount(() => {
   font-size: 2rem;
   cursor: pointer;
 }
+
 
 /* 弹窗动画 */
 .modal-enter-active, .modal-leave-active {

@@ -20,43 +20,52 @@ export default {
         'Passionate About 3D and Interactive Design'
     ],
     skills: {
-        title: 'Technical Skills',
+        title: 'Professional Skills',
+        skillTarget: 'Skill Target',
+        current: 'Current Level',
+        target: 'Target Level',
         items: [
             {
-                name: 'Full-Stack Development',
-                desc: 'Proficient in Spring and Vue technology stacks, capable of end-to-end system development from frontend to backend.',
+                name: 'Full-Stack Dev',
+                desc: 'Proficient in Spring, Vue, and other technologies, capable of full-stack development from frontend to backend.',
                 icon: 'fas fa-laptop-code',
-                level: 60
+                level: 60,
+                target: 85
             },
             {
                 name: 'Database Design',
-                desc: 'Skilled in MySQL with strong SQL query capabilities, experienced in schema design and optimization.',
+                desc: 'Proficient in MySQL, able to write complex SQL queries, and knowledgeable in database design and optimization.',
                 icon: 'fas fa-database',
-                level: 50
+                level: 50,
+                target: 75
             },
             {
-                name: 'Algorithms & Data Structures',
-                desc: 'Solved 300+ LeetCode problems covering DP/backtracking/greedy algorithms, with practical optimization skills.',
+                name: 'Algorithms',
+                desc: 'Solved 300+ problems on LeetCode, covering data structures, dynamic programming, backtracking, and greedy algorithms.',
                 icon: 'fas fa-code',
-                level: 55
-            },
-            {
-                name: 'Game & 3D Development',
-                desc: 'Proficient in Unity engine fundamentals and Blender 3D modeling for game asset creation.',
-                icon: 'fas fa-gamepad',
-                level: 30
+                level: 55,
+                target: 80
             },
             {
                 name: 'AI & Machine Learning',
-                desc: 'Python programming foundation with growing expertise in ML/DL through continuous learning.',
+                desc: 'Familiar with Python programming and has a foundational understanding of machine learning and deep learning.',
                 icon: 'fas fa-brain',
-                level: 20
+                level: 20,
+                target: 70
+            },
+            {
+                name: 'Game & 3D Dev',
+                desc: 'Experienced in Unity game engine and Blender 3D modeling, capable of creating simple 3D assets.',
+                icon: 'fas fa-gamepad',
+                level: 30,
+                target: 60
             },
             {
                 name: 'Version Control',
-                desc: 'Experienced in Git workflows and team collaboration, active in open-source contributions.',
+                desc: 'Proficient in Git workflows, efficient in team collaboration, and actively involved in open-source projects.',
                 icon: 'fab fa-github',
-                level: 60
+                level: 60,
+                target: 80
             }
         ]
     },
@@ -87,7 +96,7 @@ export default {
                 description: "Created a 3D animated short film using Blender, demonstrating modeling, texturing, lighting and animation techniques"
             },
             {
-                name: "Skills Roadmap",
+                name: "Skill Target",
                 description: "Constructed personal full-stack development plan encompassing frontend, backend, algorithms, deep learning and product design, continuously updated through iterative learning"
             }
         ],

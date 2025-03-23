@@ -1,227 +1,365 @@
 <template>
-  <section id="skills" class="skills-section">
-    <h2 class="section-title">{{ t('skills.title') }}</h2>
-    <div class="skills-container">
-      <div
-          v-for="(skill, index) in tm('skills.items')"
-          :key="index"
-          class="skill-card"
-          :class="`skill-card-${index + 1}`"
-          @mouseenter="pauseAnimation($event, true)"
-          @mouseleave="pauseAnimation($event, false)"
-      >
-        <div class="skill-icon">
-          <i :class="skill.icon"></i>
-        </div>
-        <h3 class="skill-title">{{ skill.name }}</h3>
-        <p class="skill-desc">{{ skill.desc }}</p>
-        <div class="skill-level">
-          <div class="level-bar">
-            <div class="level-fill" :style="{ width: skill.level + '%' }"></div>
+  <div class="skill-radar-container">
+    <h2 class="title">{{ t('skills.title') }}</h2>
+    <div class="content-wrapper">
+      <div ref="chartRef" class="chart-container"></div>
+      <div class="skill-details">
+        <div
+            v-for="(skill, index) in tm('skills.items')"
+            :key="index"
+            class="skill-card"
+            @mouseenter="highlightSkill(index)"
+            @mouseleave="resetHighlight()">
+          <div class="skill-header">
+            <i :class="skill.icon"></i>
+            <h3>{{ skill.name }}</h3>
           </div>
-          <span class="level-text">{{ skill.level }}%</span>
+          <div class="skill-progress">
+            <div class="progress-bar">
+              <div class="progress-fill" :style="{ width: `${skill.level}%` }"></div>
+            </div>
+            <span class="progress-text">{{ skill.level }}%</span>
+          </div>
+          <p class="skill-description">{{ skill.desc }}</p>
         </div>
       </div>
     </div>
-  </section>
+  </div>
 </template>
 
 <script setup>
-import { useI18n } from 'vue-i18n';
+import {ref, onMounted, onUnmounted, computed} from 'vue';
+import {useI18n} from 'vue-i18n';
+import * as echarts from 'echarts';
 
-const { t, tm } = useI18n();
+const {t, tm} = useI18n();
+const chartRef = ref(null);
+let chart = null;
 
-// 当鼠标悬停时暂停动画
-function pauseAnimation(event, pause) {
-  const card = event.currentTarget;
-  card.style.animationPlayState = pause ? 'paused' : 'running';
-}
+// Calculate max level for scale reference
+computed(() => {
+  const skills = tm('skills.items');
+  return Math.max(...skills.map(skill => skill.level));
+});
+// Create the chart
+const initChart = () => {
+  if (!chartRef.value) return;
+
+  chart = echarts.init(chartRef.value);
+  updateChart();
+
+  // Handle resize events
+  window.addEventListener('resize', handleResize);
+};
+
+const handleResize = () => {
+  chart && chart.resize();
+};
+
+const updateChart = () => {
+  if (!chart) return;
+
+  const skills = tm('skills.items');
+  const skillNames = skills.map(skill => skill.name);
+  const skillLevels = skills.map(skill => skill.level);
+
+  const option = {
+    backgroundColor: 'transparent',
+    color: ['rgba(64, 158, 255, 0.7)'],
+    radar: {
+      indicator: skillNames.map(name => ({name, max: 100})),
+      shape: 'polygon',
+      splitNumber: 5,
+      // TODO: 优化配色（黑色主题下不好看）
+      axisName: {
+        color: '#666',
+        fontSize: 12,
+        fontWeight: 'normal'
+      },
+      splitArea: {
+        areaStyle: {
+          color: ['rgba(250, 250, 250, 0.3)', 'rgba(245, 245, 245, 0.5)']
+        }
+      },
+      axisLine: {
+        lineStyle: {
+          color: 'rgba(200, 200, 200, 0.5)'
+        }
+      },
+      splitLine: {
+        lineStyle: {
+          color: 'rgba(200, 200, 200, 0.5)'
+        }
+      }
+    },
+    series: [
+      {
+        name: t('skills.title'),
+        type: 'radar',
+        data: [
+          {
+            value: skillLevels,
+            name: t('skills.title'),
+            areaStyle: {
+              color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+                {
+                  color: 'rgba(64, 158, 255, 0.7)',
+                  offset: 0
+                },
+                {
+                  color: 'rgba(64, 158, 255, 0.2)',
+                  offset: 1
+                }
+              ])
+            },
+            lineStyle: {
+              width: 2,
+              color: '#409EFF'
+            },
+            symbolSize: 6,
+            symbol: 'circle'
+          }
+        ]
+      }
+    ],
+    tooltip: {
+      trigger: 'item'
+    },
+    textStyle: {
+      fontFamily: "'Poppins', 'PingFang SC', sans-serif"
+    },
+    animation: true
+  };
+
+  chart.setOption(option);
+};
+
+// Highlight specific skill in the chart
+const highlightSkill = (index) => {
+  if (!chart) return;
+
+  const skills = tm('skills.items');
+  const values = skills.map((_, i) => i === index ? skills[i].level : skills[i].level * 0.3);
+
+  chart.dispatchAction({
+    type: 'highlight',
+    seriesIndex: 0,
+    dataIndex: 0
+  });
+
+  chart.setOption({
+    series: [
+      {
+        data: [
+          {
+            value: values,
+            itemStyle: {
+              color: i => i === index ? '#F56C6C' : 'rgba(64, 158, 255, 0.7)'
+            },
+            lineStyle: {
+              width: 2,
+              color: '#409EFF'
+            }
+          }
+        ]
+      }
+    ]
+  });
+};
+
+// Reset highlight
+const resetHighlight = () => {
+  if (!chart) return;
+
+  const skills = tm('skills.items');
+  const values = skills.map(skill => skill.level);
+
+  chart.dispatchAction({
+    type: 'downplay',
+    seriesIndex: 0,
+    dataIndex: 0
+  });
+
+  chart.setOption({
+    series: [
+      {
+        data: [
+          {
+            value: values,
+            areaStyle: {
+              color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+                {
+                  color: 'rgba(64, 158, 255, 0.7)',
+                  offset: 0
+                },
+                {
+                  color: 'rgba(64, 158, 255, 0.2)',
+                  offset: 1
+                }
+              ])
+            }
+          }
+        ]
+      }
+    ]
+  });
+};
+
+onMounted(() => {
+  initChart();
+});
+
+onUnmounted(() => {
+  if (chart) {
+    chart.dispose();
+    chart = null;
+  }
+  window.removeEventListener('resize', handleResize);
+});
 </script>
 
 <style scoped>
-.skills-section {
-  padding: 60px 20px;
-  background-color: white;
-  position: relative;
-  overflow: hidden;
-}
-
-.section-title {
-  text-align: center;
-  font-size: 2.5rem;
-  margin-bottom: 40px;
-  font-weight: 700;
-  color: #333;
-  position: relative;
-  display: inline-block;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.section-title::after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background-color: #333;
-}
-
-.skills-container {
+.skill-radar-container {
   display: flex;
-  flex-wrap: wrap;
-  gap: 30px;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   max-width: 1200px;
   margin: 0 auto;
 }
 
-.skill-card {
-  position: relative;
-  width: 260px;
-  padding: 25px;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  transition: all 0.4s ease;
-  overflow: hidden;
-  background-color: white;
-  animation: float 4s ease-in-out infinite;
-  animation-delay: calc(var(--animation-order) * 0.5s);
-}
-
-.skill-card:hover {
-  transform: translateY(-15px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-}
-
-.skill-card-1 {
-  --animation-order: 0;
-  border-top: 5px solid #4D8CF5;
-}
-
-.skill-card-2 {
-  --animation-order: 1;
-  border-top: 5px solid #8A6BFF;
-}
-
-.skill-card-3 {
-  --animation-order: 2;
-  border-top: 5px solid #FF6B6B;
-}
-
-.skill-card-4 {
-  --animation-order: 3;
-  border-top: 5px solid #FF9F43;
-}
-
-.skill-card-5 {
-  --animation-order: 4;
-  border-top: 5px solid #06D6A0;
-}
-
-.skill-card-6 {
-  --animation-order: 4;
-  border-top: 5px solid #4DCFE0;
-}
-
-.skill-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 50%);
-  z-index: 0;
-}
-
-.skill-icon {
-  font-size: 2.5rem;
-  margin-bottom: 15px;
-  color: inherit;
+.title {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 2rem;
+  font-weight: 600;
   text-align: center;
 }
 
-.skill-card-1 .skill-icon { color: #4D8CF5; } /* 保持科技蓝 */
-.skill-card-2 .skill-icon { color: #8A6BFF; } /* 调整为更柔和的紫罗兰 */
-.skill-card-3 .skill-icon { color: #FF6B6B; } /* 保持警示红 */
-.skill-card-4 .skill-icon { color: #FF9F43; } /* 加深为活力橙 */
-.skill-card-5 .skill-icon { color: #06D6A0; } /* 保持生态绿 */
-.skill-card-6 .skill-icon { color: #4DCFE0; } /* 新增清新青 */
+.content-wrapper {
+  display: flex;
+  width: 100%;
+  gap: 2rem;
+  align-items: flex-start;
+}
 
-.skill-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 12px;
+.chart-container {
+  flex: 1;
+  height: 500px;
+  min-width: 400px;
+}
+
+.skill-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 500px;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.skill-card {
+  padding: 1.25rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  border: 1px solid #eaeaea;
+  cursor: pointer;
+}
+
+.skill-card:hover {
+  transform: translateX(5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  background-color: #f5f7fa;
+  border-color: #dcdfe6;
+}
+
+.skill-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.skill-header i {
+  font-size: 1.25rem;
+  margin-right: 0.75rem;
+  color: #409EFF;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(64, 158, 255, 0.1);
+  border-radius: 50%;
+}
+
+.skill-header h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
   color: #333;
-  position: relative;
+  margin: 0;
 }
 
-.skill-desc {
-  font-size: 1rem;
-  color: #666;
-  line-height: 1.6;
-  margin-bottom: 15px;
+.skill-progress {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
 }
 
-.skill-level {
-  position: relative;
-  margin-top: 15px;
-}
-
-.level-bar {
-  height: 8px;
-  background-color: #f0f0f0;
-  border-radius: 4px;
+.progress-bar {
+  flex: 1;
+  height: 6px;
+  background-color: rgba(200, 200, 200, 0.3);
+  border-radius: 3px;
   overflow: hidden;
+  margin-right: 1rem;
 }
 
-.skill-card-1 .level-fill { background-color: #4D8CF5; }
-.skill-card-2 .level-fill { background-color: #8A6BFF; }
-.skill-card-3 .level-fill { background-color: #FF6B6B; }
-.skill-card-4 .level-fill { background-color: #FF9F43; }
-.skill-card-5 .level-fill { background-color: #06D6A0; }
-.skill-card-6 .level-fill { background-color: #4DCFE0; }
-
-.level-fill {
+.progress-fill {
   height: 100%;
-  border-radius: 4px;
-  transition: width 1.5s ease-in-out;
+  background: linear-gradient(90deg, #409EFF, #59c2ff);
+  border-radius: 3px;
+  transition: width 1s ease-in-out;
 }
 
-.level-text {
-  position: absolute;
-  right: 0;
-  top: -22px;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #555;
+.progress-text {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #409EFF;
+  width: 50px;
+  text-align: right;
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+.skill-description {
+  font-size: 0.875rem;
+  color: #606266;
+  line-height: 1.5;
+  margin: 0;
 }
 
-@media (max-width: 768px) {
-  .skills-container {
-    gap: 20px;
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .content-wrapper {
+    flex-direction: column;
   }
 
-  .skill-card {
-    width: calc(50% - 20px);
-    padding: 20px;
-  }
-}
-
-@media (max-width: 480px) {
-  .skill-card {
+  .chart-container {
     width: 100%;
+    height: 400px;
+  }
+
+  .skill-details {
+    width: 100%;
+    max-height: none;
+    padding-right: 0;
+  }
+
+  .skill-card:hover {
+    transform: translateY(-5px);
   }
 }
 </style>

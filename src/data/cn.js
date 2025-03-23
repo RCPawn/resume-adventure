@@ -21,42 +21,51 @@ export default {
     ],
     skills: {
         title: '专业技能',
+        skillTarget: '目标水平',
+        current: '当前水平',
+        target: '目标水平',
         items: [
             {
                 name: '全栈开发',
                 desc: '熟练掌握Spring、Vue等技术栈，具备从前端到后端的开发能力，能够独立完成完整的系统开发工作。',
                 icon: 'fas fa-laptop-code',
-                level: 60
+                level: 60,
+                target: 85
             },
             {
                 name: '数据库设计',
                 desc: '熟练使用MySQL数据库，能够编写常用SQL查询，具备数据库结构设计与优化的基础能力。',
                 icon: 'fas fa-database',
-                level: 50
+                level: 50,
+                target: 75
             },
             {
                 name: '算法与数据结构',
                 desc: '在力扣平台完成300+道题目，涵盖数据结构、动态规划、回溯、贪心算法等，能够根据实际问题选用合适的算法进行优化。',
                 icon: 'fas fa-code',
-                level: 55
-            },
-            {
-                name: '游戏与3D开发',
-                desc: '掌握Unity游戏引擎和Blender 3D建模基础技能，能够创建简单的3D模型和游戏资源。',
-                icon: 'fas fa-gamepad',
-                level: 30
+                level: 55,
+                target: 80
             },
             {
                 name: '人工智能与机器学习',
                 desc: '具备Python编程基础，并对机器学习和深度学习有初步了解，持续进行学习与实践。',
                 icon: 'fas fa-brain',
-                level: 20
+                level: 20,
+                target: 70
+            },
+            {
+                name: '游戏与3D开发',
+                desc: '掌握Unity游戏引擎和Blender 3D建模基础技能，能够创建简单的3D模型和游戏资源。',
+                icon: 'fas fa-gamepad',
+                level: 30,
+                target: 60
             },
             {
                 name: '版本控制与协作',
                 desc: '熟悉Git工作流程，能够高效进行团队协作开发，积极参与开源项目。',
                 icon: 'fab fa-github',
-                level: 60
+                level: 60,
+                target: 80
             }
         ]
     },
@@ -87,7 +96,7 @@ export default {
                 description: "使用Blender学习创作的3D动画短片，展示建模、材质、光照与动画技术"
             },
             {
-                name: "我的雷达图",
+                name: "技能目标",
                 description: "构建个人全栈发展规划，涵盖前后端、算法、深度学习与产品设计等多领域技能体系，持续迭代更新"
             }
         ],
