@@ -1,9 +1,14 @@
 <script setup>
 import {ref, computed} from 'vue';
 import {useI18n} from 'vue-i18n';
+import {useRoute, useRouter} from 'vue-router';
 import projectsData from '@/data/projects.json';
-const {t, tm} = useI18n();
+import SkillTarget from '@/components/SkillTarget.vue';
 
+const {t, tm} = useI18n();
+const route = useRoute();
+const router = useRouter();
+const showModal = ref(false);
 const activeIndex = ref(0);
 
 const projects = computed(() => {
@@ -24,40 +29,62 @@ const getNextIndex = () => {
   return (activeIndex.value + 1) % projects.value.length;
 };
 
+const setActiveProject = (index) => {
+  activeIndex.value = index;
+};
+
+const handleProjectClick = (project) => {
+  if (project.link === '/roadmap') {
+    showModal.value = true;
+  } else if (project.link) {
+    router.push(project.link);
+  }
+};
+
+const closeModal = () => {
+  showModal.value = false;
+};
 </script>
 
 <template>
-<!--  TODO: 条件判断路由，分情况处理，并添加 SkillTarget.vue 的弹窗-->
-<!--  TODO: 右侧部分样式需要优化-->
-  <div class="main-container">
-    <div class="usecases-nav">
-      <div class="sticky-header">
-        <h1 class="gradient-text">📜{{t('projects.title')}}</h1>
-      </div>
-    </div>
-
-    <div class="projects-list">
-      <div
-          v-for="(project, index) in projects"
-          :key="project.name"
-          class="project-card"
-          :class="{
-          'active': activeIndex === index,
-          'prev': getPrevIndex() === index,
-          'next': getNextIndex() === index
-        }"
-          @click="setActiveProject(index)"
-      >
-        <div class="project-image-container">
-          <img :src="project.image" :alt="project.name" class="project-image"/>
+  <div id="projects" class="projects-container">
+    <div class="main-container">
+      <div class="usecases-nav">
+        <div class="sticky-header">
+          <h1 class="gradient-text">📜{{t('projects.title')}}</h1>
+          <p class="subtitle">{{t('projects.subtitle')}}</p>
+          <div class="decoration-dots"></div>
         </div>
-        <div class="project-info">
-          <span class="project-number">{{ (index + 1).toString().padStart(2, '0') }}</span>
-          <h3 class="project-title">{{ project.name }}</h3>
-          <p class="project-description">{{ project.description }}</p>
-          <router-link v-if="project.link" :to="project.link" class="project-link">
-            View Details →
-          </router-link>
+      </div>
+
+      <div class="projects-list">
+        <div
+            v-for="(project, index) in projects"
+            :key="project.name"
+            class="project-card"
+            :class="{
+              'active': activeIndex === index,
+              'prev': getPrevIndex() === index,
+              'next': getNextIndex() === index
+            }"
+            @click="handleProjectClick(project)"
+        >
+          <div class="project-image-container">
+            <img :src="project.image" :alt="project.name" class="project-image"/>
+            <div class="project-overlay"></div>
+          </div>
+          <div class="project-info">
+            <span class="project-number">{{ (index + 1).toString().padStart(2, '0') }}</span>
+            <h3 class="project-title">{{ project.name }}</h3>
+            <p class="project-description">{{ project.description }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="showModal" class="modal-overlay" @click="closeModal">
+        <div class="modal-content" @click.stop>
+          <button class="close-button" @click="closeModal">×</button>
+          <SkillTarget />
         </div>
       </div>
     </div>
@@ -72,7 +99,13 @@ const getNextIndex = () => {
   --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 }
 
+.projects-container {
+  position: relative;
+  width: 100%;
+}
+
 .main-container {
+  position: relative;
   display: flex;
   width: 100%;
   max-width: 1200px;
@@ -81,12 +114,16 @@ const getNextIndex = () => {
   background: linear-gradient(135deg, var(--bg-primary) 0%, #ffffff 100%);
   padding: 2rem;
   box-sizing: border-box;
+  z-index: 1;
 }
 
 .usecases-nav {
   width: 35%;
   padding: 2rem;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .sticky-header {
@@ -94,18 +131,112 @@ const getNextIndex = () => {
   top: 10rem;
   z-index: 10;
   margin-bottom: 2rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.gradient-text{
-  font-size: 3rem;
+.gradient-text {
+  font-size: 2.5rem;
   font-weight: 700;
-  margin-bottom: 3rem;
+  margin-bottom: 1.5rem;
   text-align: center;
-  background: #333;
+  background: linear-gradient(135deg, #333 0%, #666 100%);
   -webkit-background-clip: text;
   background-clip: text;
-  color: #333;
+  color: transparent;
   letter-spacing: -0.5px;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.gradient-text::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #333 0%, #666 100%);
+  border-radius: 2px;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: #666;
+  text-align: center;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  position: relative;
+  padding: 0 1rem;
+}
+
+.subtitle::before,
+.subtitle::after {
+  content: '';
+  position: absolute;
+  width: 30px;
+  height: 2px;
+  background: #666;
+  opacity: 0.3;
+}
+
+.subtitle::before {
+  left: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.subtitle::after {
+  right: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.sticky-header::before {
+  content: '✨';
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+.sticky-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(51, 51, 51, 0.1) 20%,
+    rgba(51, 51, 51, 0.1) 80%,
+    transparent 100%
+  );
+}
+
+.decoration-dots {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(circle, #333 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 .projects-list {
@@ -122,20 +253,31 @@ const getNextIndex = () => {
   background: white;
   border-radius: 16px;
   padding: 1.5rem;
-  opacity: 0.6;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform: translateY(20px);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
 }
 
 .project-card.active {
-  opacity: 1;
-  transform: scale(1.03);
+  transform: scale(1.02) translateY(0);
   box-shadow: var(--card-shadow);
+  border: 2px solid var(--accent-color);
 }
 
 .project-image-container {
   width: 55%;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .project-image {
@@ -143,7 +285,28 @@ const getNextIndex = () => {
   height: auto;
   border-radius: 12px;
   object-fit: cover;
-  transition: transform 0.4s ease;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: brightness(0.95);
+}
+
+.project-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.15) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.project-card:hover .project-image {
+  transform: scale(1.05);
+  filter: brightness(1);
+}
+
+.project-card:hover .project-overlay {
+  opacity: 1;
 }
 
 .project-info {
@@ -179,5 +342,47 @@ const getNextIndex = () => {
 
 .project-link:hover {
   color: #0056b3;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  position: relative;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.3s ease;
+}
+
+.close-button:hover {
+  color: #333;
 }
 </style>

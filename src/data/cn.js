@@ -20,7 +20,8 @@ export default {
         '热衷于3D和互动设计'
     ],
     skills: {
-        title: '专业技能',
+        title: '技能专长',
+        subtitle: '从技术栈到实践应用，记录我的成长历程',
         skillTarget: '技能目标',
         current: '当前水平',
         target: '目标水平',
@@ -101,6 +102,7 @@ export default {
             }
         ],
         title: '学习经历',
+        subtitle: '从技能到实践，记录我的成长之路',
         viewDetails: '查看详情'
     },
     stuffs: {
@@ -228,8 +230,8 @@ export default {
         }
     },
     gallery: {
-        title: '画廊',
-        subtitle: '以下是我作品的一些视觉效果',
+        title: '作品展示',
+        subtitle: '用视觉记录我的创作历程，展示我的设计理念',
     },
     footer: {
         appName: '开发者空间',

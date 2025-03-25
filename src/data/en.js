@@ -20,7 +20,8 @@ export default {
         'Passionate About 3D and Interactive Design'
     ],
     skills: {
-        title: 'Professional Skills',
+        title: 'Skills & Expertise',
+        subtitle: 'From Tech Stack to Practice, Recording My Growth Journey',
         skillTarget: 'Skill Target',
         current: 'Current Level',
         target: 'Target Level',
@@ -101,6 +102,7 @@ export default {
             }
         ],
         title: 'Learning Experience',
+        subtitle: 'From Skills to Practice, Recording My Growth Journey',
         viewDetails: 'View Details'
     },
     stuffs: {
@@ -228,8 +230,8 @@ export default {
         }
     },
     gallery: {
-        title: 'Gallery',
-        subtitle: 'Here are a few visuals of my works',
+        title: 'Portfolio',
+        subtitle: 'Visual Journey of My Creative Process and Design Philosophy',
     },
     footer: {
         appName: 'Dev Space',

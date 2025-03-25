@@ -1,53 +1,58 @@
 <template>
-  <div id="gallery" class="gallery-viewport">
-    <!-- Gallery Header -->
-    <div class="gallery-header">
-      <h2 class="gallery-title">🖼️{{ t('gallery.title') }}</h2>
-      <p class="gallery-subtitle">{{ t('gallery.subtitle') }}</p>
+  <div class="gallery-section" id="gallery">
+    <div class="section-title-container">
+      <div class="title-wrapper">
+        <h2 class="gradient-text">{{ t('gallery.title') }}</h2>
+        <div class="title-decoration"></div>
+      </div>
+      <p v-if="t('gallery.subtitle')" class="subtitle">{{ t('gallery.subtitle') }}</p>
+      <div class="napkin-energy-overlay"></div>
     </div>
-    <section class="gallery-section">
-      <!-- First row - scrolling left -->
-      <div class="scroll-container row-one">
-        <div
-            class="scroll-track"
-            :style="{ transform: `translateX(${rowOneScrollPosition}px)` }"
-            @mouseenter="pauseAnimation(1)"
-            @mouseleave="resumeAnimation(1)"
-        >
+    <div class="gallery-container">
+      <section class="gallery-section">
+        <!-- First row - scrolling left -->
+        <div class="scroll-container row-one">
           <div
-              class="gallery-card"
-              v-for="(item, idx) in rowOneDuplicated"
-              :key="`row1-${idx}`"
-              :style="{ animationDelay: `${idx * 0.1}s` }"
-              @mouseenter="scaleUp($event)"
-              @mouseleave="scaleDown($event)"
+              class="scroll-track"
+              :style="{ transform: `translateX(${rowOneScrollPosition}px)` }"
+              @mouseenter="pauseAnimation(1)"
+              @mouseleave="resumeAnimation(1)"
           >
-            <img :src="item.imageUrl" :alt="`Gallery image ${idx}`" class="gallery-image"/>
+            <div
+                class="gallery-card"
+                v-for="(item, idx) in rowOneDuplicated"
+                :key="`row1-${idx}`"
+                :style="{ animationDelay: `${idx * 0.1}s` }"
+                @mouseenter="scaleUp($event)"
+                @mouseleave="scaleDown($event)"
+            >
+              <img :src="item.imageUrl" :alt="`Gallery image ${idx}`" class="gallery-image"/>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Second row - scrolling right -->
-      <div class="scroll-container row-two">
-        <div
-            class="scroll-track"
-            :style="{ transform: `translateX(${rowTwoScrollPosition}px)` }"
-            @mouseenter="pauseAnimation(2)"
-            @mouseleave="resumeAnimation(2)"
-        >
+        <!-- Second row - scrolling right -->
+        <div class="scroll-container row-two">
           <div
-              class="gallery-card"
-              v-for="(item, idx) in rowTwoDuplicated"
-              :key="`row2-${idx}`"
-              :style="{ animationDelay: `${idx * 0.1}s` }"
-              @mouseenter="scaleUp($event)"
-              @mouseleave="scaleDown($event)"
+              class="scroll-track"
+              :style="{ transform: `translateX(${rowTwoScrollPosition}px)` }"
+              @mouseenter="pauseAnimation(2)"
+              @mouseleave="resumeAnimation(2)"
           >
-            <img :src="item.imageUrl" :alt="`Gallery image ${idx}`" class="gallery-image"/>
+            <div
+                class="gallery-card"
+                v-for="(item, idx) in rowTwoDuplicated"
+                :key="`row2-${idx}`"
+                :style="{ animationDelay: `${idx * 0.1}s` }"
+                @mouseenter="scaleUp($event)"
+                @mouseleave="scaleDown($event)"
+            >
+              <img :src="item.imageUrl" :alt="`Gallery image ${idx}`" class="gallery-image"/>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   </div>
 </template>
 
@@ -55,7 +60,7 @@
 import {ref, computed, onMounted, onUnmounted} from 'vue';
 import {useI18n} from 'vue-i18n';
 
-const {t} = useI18n();
+const {t, tm} = useI18n();
 // First row data - larger images
 const rowOneItems = [
   {imageUrl: "/images/works/0.png"},
@@ -180,23 +185,80 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-/* 视口容器：保证横向隐藏溢出，并适当增加上下留白 */
-.gallery-viewport {
-  width: 100%;
-  overflow-x: hidden;
+.section-title-container {
   position: relative;
-  padding: 1rem 0;
+  text-align: center;
+  padding: 2rem 0;
+  margin-bottom: 3rem;
 }
 
-/* 基础布局 */
+.title-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.gradient-text {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #333 0%, #666 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin: 0;
+  padding: 0.5rem 0;
+  position: relative;
+  z-index: 2;
+}
+
+.title-decoration {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #333 0%, #666 100%);
+  border-radius: 2px;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: #666;
+  margin-top: 1rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+  position: relative;
+  z-index: 2;
+}
+
+.napkin-energy-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 50%, 
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  opacity: 0.6;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 视口容器：保证横向隐藏溢出，并适当增加上下留白 */
 .gallery-section {
-  width: 100%;
-  max-width: 2000px;
+  position: relative;
+  padding: 6rem 0;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+.gallery-container {
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 3rem 2rem;
-  overflow: hidden;
-  background: #ffffff;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  padding: 0 2rem;
 }
 
 /* Gallery header */
