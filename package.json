@@ -28,6 +28,7 @@
     "fontfaceobserver": "^2.3.0",
     "gsap": "^3.12.7",
     "highlight.js": "^11.11.1",
+    "lucide-vue-next": "^0.483.0",
     "marked": "^15.0.7",
     "reveal.js": "^5.2.0",
     "three": "^0.174.0",

@@ -2,7 +2,7 @@
   <div id="gallery" class="gallery-viewport">
     <!-- Gallery Header -->
     <div class="gallery-header">
-      <h2 class="gallery-title">{{ t('gallery.title') }}</h2>
+      <h2 class="gallery-title">🖼️{{ t('gallery.title') }}</h2>
       <p class="gallery-subtitle">{{ t('gallery.subtitle') }}</p>
     </div>
     <section class="gallery-section">

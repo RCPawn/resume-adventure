@@ -119,37 +119,39 @@ export default {
             ]
         },
         skills: {
-            title: "Prof Skills",
-            categories: [
+            "title": "Professional Skills",
+            "categories": [
                 {
-                    name: "Programming Languages",
-                    items: [
-                        "Solid mastery of Java core syntax, proficient with collection frameworks (studied HashMap source code, understanding hash collision resolution and expansion mechanisms). Experienced in multi-threaded programming (synchronized, volatile, thread pools) and common algorithms (Quick Sort, Merge Sort)"
+                    "name": "Programming Languages",
+                    "items": [
+                        "Solid foundation in Java, proficient in strings, collections, multithreading (including synchronized, volatile, thread pools), and sorting algorithms (quick sort, bubble sort), with understanding of collection framework internals (including the thread safety mechanism of ConcurrentHashMap)."
                     ]
                 },
                 {
-                    name: "Storage Layer Development",
-                    items: [
-                        "Proficient in Redis fundamentals, including String/Hash data structures, RDB persistence, and cache breakdown/penetration solutions (timeout randomization, null object caching)"
+                    "name": "Data Storage Development",
+                    "items": [
+                        "Proficient in MySQL basics: index optimization (B+ tree structure), transaction ACID properties, locking mechanisms, and SQL tuning.",
+                        "Familiar with basic Redis applications: String/Hash data structures, RDB persistence, and solutions for cache avalanche/penetration."
                     ]
                 },
                 {
-                    name: "Server-Side Frameworks",
-                    items: [
-                        "Skilled in SpringBoot development (IOC/AOP), integrating MyBatis-Plus to implement dynamic SQL and pagination plugin optimization",
-                        "Experienced with Spring Security+JWT in building RBAC permission systems, capable of implementing interface-level permission control and security interception"
+                    "name": "Server-Side Frameworks",
+                    "items": [
+                        "Experienced in the SpringBoot development process (IOC container management, AOP logging aspects, MyBatis-Plus integration), capable of developing RESTful APIs independently.",
+                        "Skilled in the Spring Security authentication process, implementing Token-based authentication with JWT and designing an RBAC access control system."
                     ]
                 },
                 {
-                    name: "Distributed Computing Basics",
-                    items: [
-                        "Familiar with SpringCloud microservice components (Nacos/OpenFeign), able to perform service registration, discovery, and remote interface calls"
+                    "name": "Distributed Systems Basics",
+                    "items": [
+                        "Familiar with SpringCloud basic components (Nacos for service registration and OpenFeign for remote calls), with an understanding of microservice communication principles.",
+                        "Knowledgeable in HTTP/HTTPS protocols and TCP three-way handshake mechanisms, as well as the principles of WebSocket real-time communication."
                     ]
                 },
                 {
-                    name: "Engineering Tools",
-                    items: [
-                        "Proficient in Git version control (resolving branch conflicts), Maven project management, Postman interface testing, and Swagger documentation maintenance"
+                    "name": "Engineering Tools",
+                    "items": [
+                        "Skilled in using Git for version control (branch management and conflict resolution), Maven multi-module builds, Postman API testing, and Swagger API documentation generation."
                     ]
                 }
             ]
@@ -160,45 +162,44 @@ export default {
             contributionsLabel: "Personal Contributions",
             items: [
                 {
-                    title: "Olive Thousand-Mile Panorama - Intelligent Asset Management Platform for Thousand-Mu Olive Groves",
-                    stack: "SpringBoot, Vue3, MySQL, Redis",
-                    contributions: [
-                        "Developed asset information management module: Implemented CRUD interfaces for equipment (bug traps, mowers, etc.) using SpringBoot, optimizing backend management efficiency with MyBatis-Plus dynamic SQL and PageHelper pagination",
-                        "Designed permission and security system: Implemented multi-role permission control using RBAC model+JWT+Spring Security, intercepting unauthorized requests with standardized status codes (401/403)",
-                        "Optimized data storage and querying: Utilized MySQL composite indexing (Device ID + timestamp) to improve trajectory query efficiency, combined with Redis caching of high-frequency location data to reduce database pressure",
-                        "Produced technical solutions and documentation: Collaborated with team to organize business processes, transforming asset management and trajectory tracking requirements into backend module design proposals, and generated Swagger interface documentation",
-                        "Maintained code traceability: Used Git for version control, resolved branch conflicts, and ensured code maintainability"
+                    "title": "Olive Vision - Intelligent Visual Management Platform for 10,000-Acre Olive Grove Assets",
+                    "stack": "SpringBoot, Vue3, MySQL, Redis",
+                    "contributions": [
+                        "Developed device management interfaces based on the SpringBoot framework, utilizing MyBatis-Plus dynamic SQL for handling multi-criteria queries, integrated the PageHelper pagination plugin to optimize device data loading efficiency, and designed a device state machine (Idle, Under Repair, Scrapped) along with maintenance workflows for full lifecycle management.",
+                        "Established a role-based access control (RBAC) system for roles such as administrators and operators, implemented token authentication using Spring Security and JWT, and designed filters to intercept unauthorized operations (e.g., operators accessing admin interfaces), returning 401/403 status codes to ensure interface security.",
+                        "For device tracking queries, designed a composite index on device ID and timestamp in MySQL to enhance query efficiency, and combined Redis caching for frequently accessed device location data to reduce database load by approximately 20%.",
+                        "Drafted backend module design proposals, utilized Swagger to generate standardized API documentation, and created core business process flowcharts and database ER diagrams to promote unified team development standards."
                     ],
-                    highlight: "Project Insights: Mastered enterprise-level full-stack development process, enhanced engineering capabilities of SpringBoot technology stack integration, completed project delivery through cross-role collaboration (product, frontend), and strengthened communication and documentation skills."
+                    "highlight": "Project Achievements: Gained mastery over enterprise-level full-stack development processes, enhanced the implementation of integrated SpringBoot technology stacks, delivered the project through cross-functional collaboration (product, front-end), and strengthened communication and documentation skills."
                 },
                 {
-                    title: "Sky Take-Out (Black Horse Programmer Course Practice)",
-                    stack: "SpringBoot, MyBatis, Redis, Vue3",
-                    contributions: [
-                        "Implemented order state machine module following course guidance (State Pattern)",
-                        "Practiced Redis application in shopping cart scenarios (course experimental case)",
-                        "Completed WebSocket message notification functionality based on teaching template"
+                    "title": "Celestial Takeaway (HeiMa Programmer Course Practice)",
+                    "stack": "SpringBoot, MyBatis, Redis, Vue3",
+                    "contributions": [
+                        "Implemented an order state machine module (State Pattern) following course instructions.",
+                        "Practiced applying Redis in shopping cart scenarios (course lab example).",
+                        "Completed WebSocket message notification functionality based on the provided teaching template."
                     ],
-                    highlight: "Course Extension: Completed 30+ interface test cases using Postman"
+                    "highlight": "Course Extension: Executed over 30 API test cases using Postman."
                 },
                 {
-                    title: "Major Events (Black Horse Programmer Course Practice)",
-                    stack: "SpringBoot, Vue3, MySQL",
-                    contributions: [
-                        "Course practice: Implemented article category management module according to teaching documentation",
-                        "Applied course knowledge to complete responsive layout (Flexbox/Grid)",
-                        "Mastered JWT authentication process and Quill rich text integration through course cases"
+                    "title": "Big Events (HeiMa Programmer Course Practice)",
+                    "stack": "SpringBoot, Vue3, MySQL",
+                    "contributions": [
+                        "Course Practice: Implemented an article category management module according to teaching documents.",
+                        "Applied course knowledge to develop responsive layouts using Flexbox/Grid.",
+                        "Mastered JWT authentication flow and integrated the Quill rich text editor through a course case study."
                     ],
-                    highlight: "Course Gains: Systematically learned SpringBoot+Vue3 engineering development process, practiced version control and team collaboration with Git"
+                    "highlight": "Course Achievements: Systematically mastered the SpringBoot+Vue3 engineering development process and practiced Git for version control and team collaboration."
                 }
             ]
         },
         algo: {
-            title: "Algorithm",
-            items: [
-                "Solved 300+ LeetCode problems, covering data structures, dynamic programming, backtracking, and greedy algorithms",
-                "Familiar with common algorithm complexity analysis and optimization methods",
-                "Capable of selecting appropriate algorithmic solutions for practical problems"
+            "title": "Algorithm Skills",
+            "items": [
+                "Solved over 300 LeetCode problems covering dynamic programming, backtracking, greedy algorithms, etc., enjoying the process of achieving code acceptance.",
+                "Familiar with common algorithm complexity analysis and optimization methods.",
+                "Capable of selecting appropriate algorithmic solutions for real-world problems."
             ]
         },
         courses: {

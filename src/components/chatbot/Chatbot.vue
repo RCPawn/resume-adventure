@@ -106,7 +106,8 @@ const sendMessage = () => {
   messages.value.push({content: userInput.value, type: 'user'});
   setTimeout(() => {
     messages.value.push({
-      content: `我收到了你的消息："${userInput.value}"。这里将来会由腾讯云AI小助手回复。`,
+      // "${userInput.value}"
+      content: `我已经收到了你的消息，这里将来会由腾讯云AI小助手回复。`,
       type: 'ai'
     });
   }, 500);

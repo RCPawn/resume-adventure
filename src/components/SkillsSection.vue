@@ -1,6 +1,6 @@
 <template>
   <div id ="skills" class="skill-radar-container">
-    <h2 class="title">{{ t('skills.title') }}</h2>
+    <h2 class="title">🛠️{{ t('skills.title') }}</h2>
     <div class="content-wrapper">
       <div ref="chartRef" class="chart-container"></div>
       <div class="skill-details">
@@ -70,7 +70,6 @@ const updateChart = () => {
       indicator: skillNames.map(name => ({name, max: 100})),
       shape: 'polygon',
       splitNumber: 5,
-      // TODO: 优化配色（黑色主题下不好看）
       axisName: {
         color: '#666',
         fontSize: 12,
@@ -225,8 +224,6 @@ onUnmounted(() => {
   align-items: center;
   padding: 2rem;
   background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   max-width: 1200px;
   margin: 0 auto;
 }

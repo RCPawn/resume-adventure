@@ -119,38 +119,39 @@ export default {
             ]
         },
         skills: {
-            title: "专业技能",
-            categories: [
+            "title": "专业技能",
+            "categories": [
                 {
-                    name: "编程语言",
-                    items: [
-                        "扎实掌握Java核心语法，熟悉集合框架（阅读HashMap源码，理解哈希碰撞解决方案与扩容机制）" +
-                        "熟悉多线程编程（synchronized、volatile、线程池）及常用算法（快速排序、归并排序）"
+                    "name": "编程语言",
+                    "items": [
+                        "具备扎实的Java基础，熟练掌握字符串、集合、多线程编程（含synchronized、volatile、线程池）以及排序算法（快速排序、冒泡排序），理解集合框架实现原理（包括ConcurrentHashMap的线程安全机制）"
                     ]
                 },
                 {
-                    name: "存储层开发",
-                    items: [
-                        "熟悉Redis基础应用，String/Hash数据结构、RDB持久化、缓存雪崩/穿透解决方案（超时随机化、空对象缓存）"
+                    "name": "存储层开发",
+                    "items": [
+                        "掌握MySQL基础应用：索引优化（B+树结构）、事务ACID特性、锁机制及SQL调优经验",
+                        "熟悉Redis基础应用：String/Hash数据结构、RDB持久化、缓存雪崩/穿透解决方案"
                     ]
                 },
                 {
-                    name: "服务端框架",
-                    items: [
-                        "掌握SpringBoot开发（IOC/AOP），整合MyBatis-Plus实现动态SQL与分页插件优化",
-                        "熟悉Spring Security+JWT构建RBAC权限体系，能实现接口级权限控制与安全拦截"
+                    "name": "服务端框架",
+                    "items": [
+                        "熟悉SpringBoot开发流程（IOC容器管理、AOP日志切面、MyBatis-Plus整合），能独立开发RESTful API",
+                        "熟悉Spring Security认证流程，基于JWT实现Token鉴权并设计RBAC权限控制体系"
                     ]
                 },
                 {
-                    name: "分布式基础",
-                    items: [
-                        "了解SpringCloud微服务组件（Nacos/OpenFeign），能进行服务注册发现与接口远程调用"
+                    "name": "分布式基础",
+                    "items": [
+                        "了解SpringCloud基础组件（Nacos服务注册、OpenFeign远程调用），理解微服务通信原理",
+                        "了解HTTP/HTTPS协议与TCP三次握手机制，掌握WebSocket实时通信原理"
                     ]
                 },
                 {
-                    name: "工程化工具",
-                    items: [
-                        "熟练使用Git进行版本控制（解决分支冲突），Maven项目管理，Postman接口测试及Swagger文档维护"
+                    "name": "工程化工具",
+                    "items": [
+                        "熟练使用Git进行版本控制（包括分支管理与冲突解决）、Maven多模块构建、Postman接口调试及Swagger接口文档生成"
                     ]
                 }
             ]
@@ -164,11 +165,10 @@ export default {
                     title: "榄人千里眼-万亩油橄榄林区资产可视智能管控平台",
                     stack: "SpringBoot、Vue3、MySQL、Redis",
                     contributions: [
-                        "开发资产信息管理模块：基于SpringBoot实现设备（捕虫灯、割草机等）CRUD接口，结合MyBatis-Plus动态SQL与PageHelper分页优化后台管理效率",
-                        "设计权限与安全体系：通过RBAC模型+JWT+Spring Security实现多角色权限控制，拦截非法请求并返回标准化状态码（401/403）",
-                        "优化数据存储与查询：利用MySQL联合索引（设备ID+时间戳）提升轨迹查询效率，结合Redis缓存高频位置数据降低数据库压力",
-                        "输出技术方案与文档：协同团队梳理业务流程，将台账管理、轨迹追踪需求转化为后端模块设计方案，输出Swagger接口文档",
-                        "维护代码可回溯性：使用Git进行版本控制，解决分支冲突并保障代码可维护性"
+                        "基于SpringBoot框架开发设备管理接口，采用MyBatis-Plus动态SQL处理多条件组合查询，集成PageHelper分页插件优化设备数据加载效率，并设计设备状态机（空闲、报修、报废）、维保流程等全生命周期管理功能",
+                        "基于RBAC模型构建管理员、操作员等角色权限体系，通过Spring Security+JWT实现Token认证，设计过滤器拦截越权操作（如操作员访问管理员接口），返回401/403状态码保障接口安全",
+                        "针对设备轨迹查询场景，在MySQL设计设备ID与时间戳的联合索引提升查询效率，结合Redis缓存高频访问的设备位置数据，降低数据库并发压力约20%",
+                        "编写后端模块设计方案，使用Swagger生成标准化接口文档，绘制系统核心业务流程图与数据库ER图，推动团队开发规范统一"
                     ],
                     highlight: "项目收获：掌握企业级全栈开发流程，提升SpringBoot整合技术栈的工程化落地能力，通过跨角色协作（产品、前端）完成项目交付，强化沟通与文档输出能力。"
                 },
@@ -197,7 +197,7 @@ export default {
         algo: {
             title: "算法能力",
             items: [
-                "力扣刷题300+道，覆盖数据结构、动态规划、回溯、贪心算法等",
+                "力扣刷题300+道，覆盖动态规划、回溯、贪心算法等，享受代码AC的过程",
                 "熟悉常见算法复杂度分析与优化方法",
                 "能够针对实际问题选择合适的算法解决方案"
             ]
