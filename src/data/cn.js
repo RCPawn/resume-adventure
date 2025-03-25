@@ -124,30 +124,33 @@ export default {
                 {
                     name: "编程语言",
                     items: [
-                        "Java：熟悉面向对象开发，理解集合框架与异常处理机制",
-                        "Python：能使用Pandas进行数据处理，了解机器学习基础"
+                        "扎实掌握Java核心语法，熟悉集合框架（阅读HashMap源码，理解哈希碰撞解决方案与扩容机制）" +
+                        "熟悉多线程编程（synchronized、volatile、线程池）及常用算法（快速排序、归并排序）"
                     ]
                 },
                 {
-                    name: "Web开发",
+                    name: "存储层开发",
                     items: [
-                        "后端：使用SpringBoot开发REST API，配合MyBatis操作MySQL",
-                        "前端：基于Vue3+Element UI实现组件化开发",
-                        "数据库：掌握关系型数据库设计，能编写联表查询与索引优化"
+                        "熟悉Redis基础应用，String/Hash数据结构、RDB持久化、缓存雪崩/穿透解决方案（超时随机化、空对象缓存）"
                     ]
                 },
                 {
-                    name: "版本控制与协作",
+                    name: "服务端框架",
                     items: [
-                        "熟练使用Git进行日常开发，了解feature分支工作流与协作流程",
-                        "使用GitHub托管项目代码，积极参与开源项目讨论"
+                        "掌握SpringBoot开发（IOC/AOP），整合MyBatis-Plus实现动态SQL与分页插件优化",
+                        "熟悉Spring Security+JWT构建RBAC权限体系，能实现接口级权限控制与安全拦截"
                     ]
                 },
                 {
-                    name: "3D与游戏开发",
+                    name: "分布式基础",
                     items: [
-                        "Blender：能够创建简单3D模型与材质，了解基础动画制作流程",
-                        "Unity：掌握基本游戏场景搭建，使用C#脚本实现游戏逻辑"
+                        "了解SpringCloud微服务组件（Nacos/OpenFeign），能进行服务注册发现与接口远程调用"
+                    ]
+                },
+                {
+                    name: "工程化工具",
+                    items: [
+                        "熟练使用Git进行版本控制（解决分支冲突），Maven项目管理，Postman接口测试及Swagger文档维护"
                     ]
                 }
             ]
@@ -158,13 +161,16 @@ export default {
             contributionsLabel: "个人贡献",
             items: [
                 {
-                    title: "榄人千里眼 - 油橄榄园区一体化平台（实验室合作项目）",
-                    stack: "SpringBoot, Vue3, MySQL, Redis",
+                    title: "榄人千里眼-万亩油橄榄林区资产可视智能管控平台",
+                    stack: "SpringBoot、Vue3、MySQL、Redis",
                     contributions: [
-                        "参与需求分析与设计文档编写（完成3+模块的API设计说明）",
-                        "协助开发数据可视化看板：基于ECharts实现园区资产分类统计"
+                        "开发资产信息管理模块：基于SpringBoot实现设备（捕虫灯、割草机等）CRUD接口，结合MyBatis-Plus动态SQL与PageHelper分页优化后台管理效率",
+                        "设计权限与安全体系：通过RBAC模型+JWT+Spring Security实现多角色权限控制，拦截非法请求并返回标准化状态码（401/403）",
+                        "优化数据存储与查询：利用MySQL联合索引（设备ID+时间戳）提升轨迹查询效率，结合Redis缓存高频位置数据降低数据库压力",
+                        "输出技术方案与文档：协同团队梳理业务流程，将台账管理、轨迹追踪需求转化为后端模块设计方案，输出Swagger接口文档",
+                        "维护代码可回溯性：使用Git进行版本控制，解决分支冲突并保障代码可维护性"
                     ],
-                    highlight: "项目收获：学习大型项目协作规范与文档编写标准"
+                    highlight: "项目收获：掌握企业级全栈开发流程，提升SpringBoot整合技术栈的工程化落地能力，通过跨角色协作（产品、前端）完成项目交付，强化沟通与文档输出能力。"
                 },
                 {
                     title: "苍穹外卖（黑马程序员课程实践）",
@@ -208,7 +214,7 @@ export default {
             title: "自学能力",
             items: [
                 "通过技术博客、YouTube、Bilibili等平台持续学习前沿技术",
-                "结合AI工具(如ChatGPT、Grok、Claude)进行开发，提高效率",
+                "结合AI工具(如ChatGPT、Grok、Claude)等优化开发工作流，提高效率",
                 "关注技术社区动态，star优质项目并阅读源码，学习工程实践"
             ]
         },
@@ -239,25 +245,25 @@ export default {
             {
                 title: '项目',
                 links: [
-                    { text: '全栈应用', url: '/olive-ppt' },
-                    { text: '游戏开发', url: '/game' },
-                    { text: 'AI 实验室', url: '/coming-soon' }
+                    {text: '全栈应用', url: '/olive-ppt'},
+                    {text: '游戏开发', url: '/game'},
+                    {text: 'AI 实验室', url: '/coming-soon'}
                 ]
             },
             {
                 title: "资源",
                 links: [
-                    { text: "文档", url: "/coming-soon" },
-                    { text: "教程", url: "/coming-soon" },
-                    { text: "源码", url: "/coming-soon" }
+                    {text: "文档", url: "/coming-soon"},
+                    {text: "教程", url: "/coming-soon"},
+                    {text: "源码", url: "/coming-soon"}
                 ],
             },
             {
                 title: '关于',
                 links: [
-                    { text: '个人简介', url: '/coming-soon' },
-                    { text: '联系', url: '/coming-soon' },
-                    { text: '博客', url: '/coming-soon' }
+                    {text: '个人简介', url: '/coming-soon'},
+                    {text: '联系', url: '/coming-soon'},
+                    {text: '博客', url: '/coming-soon'}
                 ]
             }
         ]

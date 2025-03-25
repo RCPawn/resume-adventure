@@ -112,10 +112,10 @@ export default {
         education: {
             title: "Education",
             items: [
-                "B.S. in Software Engineering (Junior Year)",
+                "Software Engineering, Junior Year (Undergraduate)",
                 "GPA 3.42/4.0 (Top 20% in Major)",
-                "University Outstanding Scholarship Recipient",
-                "English Proficiency: CET-6 (Skilled in Technical Documentation)"
+                "University-Level Scholarship Recipient",
+                "English Proficiency: CET6, Skilled in Technical Documentation Reading"
             ]
         },
         skills: {
@@ -124,30 +124,32 @@ export default {
                 {
                     name: "Programming Languages",
                     items: [
-                        "Java: Proficient in OOP, Collections Framework & Exception Handling",
-                        "Python: Experienced with Pandas for data processing, familiar with ML fundamentals"
+                        "Solid mastery of Java core syntax, proficient with collection frameworks (studied HashMap source code, understanding hash collision resolution and expansion mechanisms). Experienced in multi-threaded programming (synchronized, volatile, thread pools) and common algorithms (Quick Sort, Merge Sort)"
                     ]
                 },
                 {
-                    name: "Web Development",
+                    name: "Storage Layer Development",
                     items: [
-                        "Backend: REST API development with SpringBoot, MySQL operations via MyBatis",
-                        "Frontend: Component-based development using Vue3 + Element UI",
-                        "Database: Relational DB design, complex queries & index optimization"
+                        "Proficient in Redis fundamentals, including String/Hash data structures, RDB persistence, and cache breakdown/penetration solutions (timeout randomization, null object caching)"
                     ]
                 },
                 {
-                    name: "Version Control",
+                    name: "Server-Side Frameworks",
                     items: [
-                        "Proficient with Git workflows (feature branching & collaboration)",
-                        "Active GitHub user with open-source contributions"
+                        "Skilled in SpringBoot development (IOC/AOP), integrating MyBatis-Plus to implement dynamic SQL and pagination plugin optimization",
+                        "Experienced with Spring Security+JWT in building RBAC permission systems, capable of implementing interface-level permission control and security interception"
                     ]
                 },
                 {
-                    name: "3D & Game Development",
+                    name: "Distributed Computing Basics",
                     items: [
-                        "Blender: 3D modeling/texturing & basic animation workflows",
-                        "Unity: Scene setup & C# scripting for game logic"
+                        "Familiar with SpringCloud microservice components (Nacos/OpenFeign), able to perform service registration, discovery, and remote interface calls"
+                    ]
+                },
+                {
+                    name: "Engineering Tools",
+                    items: [
+                        "Proficient in Git version control (resolving branch conflicts), Maven project management, Postman interface testing, and Swagger documentation maintenance"
                     ]
                 }
             ]
@@ -155,69 +157,72 @@ export default {
         projects: {
             title: "Projects",
             stackLabel: "Tech Stack",
-            contributionsLabel: "Contributions",
+            contributionsLabel: "Personal Contributions",
             items: [
                 {
-                    title: "Olive Vision - Smart Agriculture Platform (Lab Collaboration)",
+                    title: "Olive Thousand-Mile Panorama - Intelligent Asset Management Platform for Thousand-Mu Olive Groves",
                     stack: "SpringBoot, Vue3, MySQL, Redis",
                     contributions: [
-                        "Co-designed API specifications for 3+ modules",
-                        "Developed asset analytics dashboard using ECharts"
+                        "Developed asset information management module: Implemented CRUD interfaces for equipment (bug traps, mowers, etc.) using SpringBoot, optimizing backend management efficiency with MyBatis-Plus dynamic SQL and PageHelper pagination",
+                        "Designed permission and security system: Implemented multi-role permission control using RBAC model+JWT+Spring Security, intercepting unauthorized requests with standardized status codes (401/403)",
+                        "Optimized data storage and querying: Utilized MySQL composite indexing (Device ID + timestamp) to improve trajectory query efficiency, combined with Redis caching of high-frequency location data to reduce database pressure",
+                        "Produced technical solutions and documentation: Collaborated with team to organize business processes, transforming asset management and trajectory tracking requirements into backend module design proposals, and generated Swagger interface documentation",
+                        "Maintained code traceability: Used Git for version control, resolved branch conflicts, and ensured code maintainability"
                     ],
-                    highlight: "Key Learning: Large-scale project collaboration & documentation standards"
+                    highlight: "Project Insights: Mastered enterprise-level full-stack development process, enhanced engineering capabilities of SpringBoot technology stack integration, completed project delivery through cross-role collaboration (product, frontend), and strengthened communication and documentation skills."
                 },
                 {
-                    title: "SkyFood Delivery (Coding Bootcamp Project)",
+                    title: "Sky Take-Out (Black Horse Programmer Course Practice)",
                     stack: "SpringBoot, MyBatis, Redis, Vue3",
                     contributions: [
-                        "Implemented order state machine using State Pattern",
-                        "Applied Redis in shopping cart scenarios",
-                        "Built WebSocket notifications per curriculum"
+                        "Implemented order state machine module following course guidance (State Pattern)",
+                        "Practiced Redis application in shopping cart scenarios (course experimental case)",
+                        "Completed WebSocket message notification functionality based on teaching template"
                     ],
-                    highlight: "Extended Learning: Created 30+ Postman test cases"
+                    highlight: "Course Extension: Completed 30+ interface test cases using Postman"
                 },
                 {
-                    title: "NewsHub Platform (Coding Bootcamp Project)",
+                    title: "Major Events (Black Horse Programmer Course Practice)",
                     stack: "SpringBoot, Vue3, MySQL",
                     contributions: [
-                        "Developed article category management system",
-                        "Implemented responsive layouts with Flexbox/Grid",
-                        "Integrated JWT auth & Quill rich-text editor"
+                        "Course practice: Implemented article category management module according to teaching documentation",
+                        "Applied course knowledge to complete responsive layout (Flexbox/Grid)",
+                        "Mastered JWT authentication process and Quill rich text integration through course cases"
                     ],
-                    highlight: "Key Takeaway: Mastered SpringBoot+Vue3 development workflow with Git collaboration"
+                    highlight: "Course Gains: Systematically learned SpringBoot+Vue3 engineering development process, practiced version control and team collaboration with Git"
                 }
             ]
         },
         algo: {
             title: "Algorithm",
             items: [
-                "Solved 300+ LeetCode problems (DP/Backtracking/Greedy algorithms)",
-                "Proficient in algorithm complexity analysis",
-                "Practical problem-solving with optimized approaches"
+                "Solved 300+ LeetCode problems, covering data structures, dynamic programming, backtracking, and greedy algorithms",
+                "Familiar with common algorithm complexity analysis and optimization methods",
+                "Capable of selecting appropriate algorithmic solutions for practical problems"
             ]
         },
         courses: {
             title: "Prof Courses",
             items: [
-                "Core CS: Data Structures, Algorithm Design, Computer Architecture, OS, Networking",
-                "Development: JavaEE, Web Frontend, Database Systems",
-                "AI/ML: Fundamentals of Machine Learning, PyTorch Projects"
+                "Computer Fundamentals: Data Structures, Algorithm Analysis and Design, Computer Organization, Computer Networks, Operating Systems",
+                "Development Technologies: JavaEE, Web Frontend Development, Database Fundamentals",
+                "Artificial Intelligence: Machine Learning Basics, PyTorch Practical Course"
             ]
         },
         selfLearning: {
             title: "Self-Learning",
             items: [
-                "Continuous learning via tech blogs/YouTube/Bilibili",
-                "Leverage AI tools (ChatGPT/Grok/Claude) for coding efficiency",
-                "Active GitHub user studying trending projects"
+                "Continuously learning cutting-edge technologies through tech blogs, YouTube, Bilibili, and other platforms",
+                "Optimizing development workflow using AI tools (such as ChatGPT, Grok, Claude) to improve efficiency",
+                "Following tech community trends, starring quality projects, and reading source code to learn engineering practices"
             ]
         },
         softSkills: {
             title: "Soft Skills",
             items: [
-                "Collaboration: Effective cross-functional communication (Design/Product teams)",
-                "Time Management: Prioritization & deadline-driven delivery",
-                "Problem-Solving: Systematic debugging via docs/community resources"
+                "Team Collaboration: Actively participating in group project discussions, skilled in listening and expression, effectively communicating with design and product roles",
+                "Time Management: Rationally planning task priorities, delivering projects on time, maintaining a balance between learning and development",
+                "Problem Solving: When encountering technical challenges, capable of consulting official documentation, analyzing source code, and finding solutions on Stack Overflow and GitHub issues"
             ]
         }
     },
@@ -247,9 +252,9 @@ export default {
             {
                 title: "Resources",
                 links: [
-                    { text: "Documentation", url: "/coming-soon" },
-                    { text: "Tutorials", url: "/coming-soon" },
-                    { text: "Blog", url: "/coming-soon" }
+                    {text: "Documentation", url: "/coming-soon"},
+                    {text: "Tutorials", url: "/coming-soon"},
+                    {text: "Blog", url: "/coming-soon"}
                 ],
             },
             {
