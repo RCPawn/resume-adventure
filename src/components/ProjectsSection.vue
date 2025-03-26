@@ -109,12 +109,12 @@ const closeModal = () => {
   display: flex;
   width: 100%;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 10rem auto;
   min-height: 100vh;
   background: linear-gradient(135deg, var(--bg-primary) 0%, #ffffff 100%);
   padding: 2rem;
   box-sizing: border-box;
-  z-index: 1;
+  z-index: 999;
 }
 
 .usecases-nav {
@@ -142,13 +142,14 @@ const closeModal = () => {
   font-weight: 700;
   margin-bottom: 1.5rem;
   text-align: center;
-  background: linear-gradient(135deg, #333 0%, #666 100%);
+  background: #333;
   -webkit-background-clip: text;
   background-clip: text;
-  color: transparent;
+  color: #333;
   letter-spacing: -0.5px;
   position: relative;
   padding-bottom: 1rem;
+  filter: drop-shadow(0 2px 5px rgba(255, 235, 100, 0.3));
 }
 
 .gradient-text::after {
@@ -200,6 +201,7 @@ const closeModal = () => {
   font-size: 1.5rem;
   margin-bottom: 1rem;
   animation: float 3s ease-in-out infinite;
+  filter: drop-shadow(0 2px 5px rgba(255, 235, 100, 0.3));
 }
 
 .sticky-header::after {
@@ -332,57 +334,104 @@ const closeModal = () => {
   margin-bottom: 1rem;
 }
 
-.project-link {
-  display: inline-block;
-  color: var(--accent-color);
-  text-decoration: none;
-  font-weight: bold;
-  transition: color 0.3s ease;
-}
-
-.project-link:hover {
-  color: #0056b3;
-}
-
 .modal-overlay {
   position: fixed;
+  z-index: 9998;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 1000;
-  backdrop-filter: blur(5px);
+  justify-content: center;
 }
 
 .modal-content {
   background: white;
-  padding: 2rem;
-  border-radius: 20px;
-  position: relative;
+  border-radius: 24px;
+  padding: 3rem;
+  max-width: 1000px;
   width: 90%;
-  max-width: 800px;
-  max-height: 90vh;
+  max-height: 85vh;
   overflow-y: auto;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 10000;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+.modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
 }
 
 .close-button {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: none;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: rgba(255, 255, 255, 0.9);
   border: none;
-  font-size: 2rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  line-height: 1;
   cursor: pointer;
-  color: #666;
-  transition: color 0.3s ease;
+  color: #333;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .close-button:hover {
-  color: #333;
+  background: #fff;
+  color: #000;
+  transform: scale(1.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+  .modal-content {
+    padding: 2rem;
+    width: 95%;
+    max-height: 90vh;
+    margin: 1rem;
+  }
+
+  .close-button {
+    top: 1rem;
+    right: 1rem;
+    width: 32px;
+    height: 32px;
+    font-size: 1.2rem;
+  }
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modal-content {
+  animation: modalFadeIn 0.3s ease-out forwards;
 }
 </style>
