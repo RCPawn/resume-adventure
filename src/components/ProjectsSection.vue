@@ -114,7 +114,7 @@ const closeModal = () => {
   background: linear-gradient(135deg, var(--bg-primary) 0%, #ffffff 100%);
   padding: 2rem;
   box-sizing: border-box;
-  z-index: 999;
+  z-index: 99;
 }
 
 .usecases-nav {
