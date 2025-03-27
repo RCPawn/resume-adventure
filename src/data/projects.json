@@ -2,13 +2,13 @@
   {
     "nameKey": "projects.items.0.name",
     "descriptionKey": "projects.items.0.description",
-    "image": "/images/tree.jpg",
+    "image": "/images/tree.png",
     "link": "/olive-ppt"
   },
   {
     "nameKey": "projects.items.1.name",
     "descriptionKey": "projects.items.1.description",
-    "image": "/images/brain.jpg",
+    "image": "/images/light.png",
     "link": "/coming-soon"
   },
   {
@@ -20,7 +20,7 @@
   {
     "nameKey": "projects.items.3.name",
     "descriptionKey": "projects.items.3.description",
-    "image": "/images/neural_network.jpg",
+    "image": "/images/neural_network.webp",
     "link": "/coming-soon"
   },
   {
@@ -38,7 +38,7 @@
   {
     "nameKey": "projects.items.6.name",
     "descriptionKey": "projects.items.6.description",
-    "image": "/images/skill_target.jpeg",
+    "image": "/images/skill_target.webp",
     "link": "/roadmap"
   }
 ]

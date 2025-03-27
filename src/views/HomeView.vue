@@ -43,34 +43,10 @@ onMounted(() => {
 <style>
 
 /* 全局样式 */
-/*.napkin-container {
+.napkin-container {
   min-height: 100vh;
   width: 100%;
   position: relative;
-}*/
-.napkin-container {
-  display: flex;
-  flex-direction: column;
-  gap: 20px; /* 可根据实际需要调整 */
-  padding: 1rem; /* 如有需要，也可以统一设置内边距 */
+  background-color: #F8F8F8;
 }
-
-:root {
-  --global-gap: 20px;
-}
-
-.napkin-container {
-  display: flex;
-  flex-direction: column;
-  gap: var(--global-gap);
-  padding: 1rem;
-}
-
-@media (max-width: 768px) {
-  .napkin-container {
-    gap: 15px;
-  }
-}
-
-
 </style>

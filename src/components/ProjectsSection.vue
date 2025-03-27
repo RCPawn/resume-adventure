@@ -92,12 +92,6 @@ const closeModal = () => {
 </template>
 
 <style scoped>
-:root {
-  --bg-primary: #f0f4f8;
-  --text-primary: #1a2b3b;
-  --accent-color: #007bff;
-  --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-}
 
 .projects-container {
   position: relative;
@@ -140,7 +134,7 @@ const closeModal = () => {
 .gradient-text {
   font-size: 2.5rem;
   font-weight: 700;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   text-align: center;
   background: #333;
   -webkit-background-clip: text;
@@ -148,20 +142,6 @@ const closeModal = () => {
   color: #333;
   letter-spacing: -0.5px;
   position: relative;
-  padding-bottom: 1rem;
-  filter: drop-shadow(0 2px 5px rgba(255, 235, 100, 0.3));
-}
-
-.gradient-text::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 3px;
-  background: linear-gradient(90deg, #333 0%, #666 100%);
-  border-radius: 2px;
 }
 
 .subtitle {
@@ -212,8 +192,8 @@ const closeModal = () => {
   transform: translateX(-50%);
   width: 80%;
   height: 1px;
-  background: linear-gradient(90deg, 
-    transparent 0%, 
+  background: linear-gradient(90deg,
+    transparent 0%,
     rgba(51, 51, 51, 0.1) 20%,
     rgba(51, 51, 51, 0.1) 80%,
     transparent 100%
@@ -252,7 +232,7 @@ const closeModal = () => {
   display: flex;
   align-items: center;
   gap: 2rem;
-  background: white;
+  background: #F2F2F2;
   border-radius: 16px;
   padding: 1.5rem;
   transform: translateY(20px);
@@ -266,12 +246,6 @@ const closeModal = () => {
 .project-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-}
-
-.project-card.active {
-  transform: scale(1.02) translateY(0);
-  box-shadow: var(--card-shadow);
-  border: 2px solid var(--accent-color);
 }
 
 .project-image-container {
@@ -351,7 +325,6 @@ const closeModal = () => {
 .modal-content {
   background: white;
   border-radius: 24px;
-  padding: 3rem;
   max-width: 1000px;
   width: 90%;
   max-height: 85vh;

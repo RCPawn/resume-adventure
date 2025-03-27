@@ -129,7 +129,7 @@ onUnmounted(() => {
 .napkin-hero {
   position: relative;
   /* 调整最小高度，使组件不再占满整个视口 */
-  min-height: 65vh; /* 或者根据需要使用 auto */
+  min-height: 75vh; /* 或者根据需要使用 auto */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -137,7 +137,7 @@ onUnmounted(() => {
   /* 减少内边距，紧凑布局 */
   padding: 2rem 1rem;
   overflow: hidden;
-  background-color: #fff;
+  background-color: #F8F8F8;
   color: #333;
   font-family: 'Inter', sans-serif;
 }

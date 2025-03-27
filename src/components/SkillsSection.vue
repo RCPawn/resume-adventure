@@ -1,34 +1,41 @@
 <template>
-  <div id ="skills" class="skill-radar-container">
+  <!-- 保持原有模板结构不变 -->
+  <div id="skills" class="skill-radar-container">
     <div class="section-title-container">
       <div class="title-wrapper">
         <span class="title-icon">🛠️</span>
         <h2 class="gradient-text">{{ t('skills.title') }}</h2>
-        <div class="title-decoration"></div>
       </div>
       <p v-if="t('skills.subtitle')" class="subtitle">{{ t('skills.subtitle') }}</p>
-      <div class="napkin-energy-overlay"></div>
     </div>
     <div class="content-wrapper">
-      <div ref="chartRef" class="chart-container"></div>
-      <div class="skill-details">
-        <div
-            v-for="(skill, index) in tm('skills.items')"
-            :key="index"
-            class="skill-card"
-            @mouseenter="highlightSkill(index)"
-            @mouseleave="resetHighlight()">
-          <div class="skill-header">
-            <i :class="skill.icon"></i>
-            <h3>{{ skill.name }}</h3>
-          </div>
-          <div class="skill-progress">
-            <div class="progress-bar">
-              <div class="progress-fill" :style="{ width: `${skill.level}%` }"></div>
+      <div class="chart-and-skills-container">
+        <div ref="chartRef" class="chart-container"></div>
+        <div class="skill-summary">
+          <div
+              v-for="(skill, index) in skills"
+              :key="index"
+              class="skill-summary-item"
+              @mouseenter="highlightSkill(index)"
+              @mouseleave="resetHighlight"
+          >
+            <!-- 保持原有技能展示结构 -->
+            <div class="skill-summary-icon">
+              <i :class="skill.icon"></i>
             </div>
-            <span class="progress-text">{{ skill.level }}%</span>
+            <div class="skill-summary-details">
+              <div class="skill-summary-header">
+                <span class="skill-name">{{ skill.name }}</span>
+                <span class="skill-level">{{ skill.level }}%</span>
+              </div>
+              <div class="skill-progress-bar">
+                <div
+                    class="skill-progress-fill"
+                    :style="{ width: `${skill.level}%`, background: getSkillGradient(index) }"
+                ></div>
+              </div>
+            </div>
           </div>
-          <p class="skill-description">{{ skill.desc }}</p>
         </div>
       </div>
     </div>
@@ -36,7 +43,7 @@
 </template>
 
 <script setup>
-import {ref, onMounted, onUnmounted, computed} from 'vue';
+import {ref, computed, watch, onMounted, onUnmounted} from 'vue';
 import {useI18n} from 'vue-i18n';
 import * as echarts from 'echarts';
 
@@ -44,36 +51,54 @@ const {t, tm} = useI18n();
 const chartRef = ref(null);
 let chart = null;
 
-// Calculate max level for scale reference
-computed(() => {
-  const skills = tm('skills.items');
-  return Math.max(...skills.map(skill => skill.level));
-});
-// Create the chart
+// 响应式技能数据
+const skills = computed(() => tm('skills.items') || []);
+
+// 监听语言变化
+watch(
+    () => tm('skills.items'),
+    () => {
+      updateChart();
+    }
+);
+
+// 颜色配置保持不变
+const skillColors = [
+  ['#FF6B6B', '#FF9A6B'],
+  ['#4ECDC4', '#45B7D1'],
+  ['#A8DADC', '#457B9D'],
+  ['#9C6644', '#BC8F5E'],
+  ['#6A4C93', '#8D6ED3']
+];
+
+const getSkillGradient = (index) => {
+  const colors = skillColors[index % skillColors.length];
+  return `linear-gradient(to right, ${colors[0]}, ${colors[1]})`;
+};
+
+// 初始化图表
 const initChart = () => {
   if (!chartRef.value) return;
 
   chart = echarts.init(chartRef.value);
   updateChart();
-
-  // Handle resize events
   window.addEventListener('resize', handleResize);
 };
 
 const handleResize = () => {
-  chart && chart.resize();
+  chart?.resize();
 };
 
+// 更新图表数据
 const updateChart = () => {
-  if (!chart) return;
+  if (!chart || skills.value.length === 0) return;
 
-  const skills = tm('skills.items');
-  const skillNames = skills.map(skill => skill.name);
-  const skillLevels = skills.map(skill => skill.level);
+  const skillNames = skills.value.map(skill => skill.name);
+  const skillLevels = skills.value.map(skill => skill.level);
 
   const option = {
+    // 保持原有图表配置
     backgroundColor: 'transparent',
-    color: ['rgba(64, 158, 255, 0.7)'],
     radar: {
       indicator: skillNames.map(name => ({name, max: 100})),
       shape: 'polygon',
@@ -109,14 +134,8 @@ const updateChart = () => {
             name: t('skills.title'),
             areaStyle: {
               color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
-                {
-                  color: 'rgba(64, 158, 255, 0.7)',
-                  offset: 0
-                },
-                {
-                  color: 'rgba(64, 158, 255, 0.2)',
-                  offset: 1
-                }
+                {color: 'rgba(64, 158, 255, 0.7)', offset: 0},
+                {color: 'rgba(64, 158, 255, 0.2)', offset: 1}
               ])
             },
             lineStyle: {
@@ -130,7 +149,10 @@ const updateChart = () => {
       }
     ],
     tooltip: {
-      trigger: 'item'
+      trigger: 'item',
+      formatter: (params) => {
+        return `${params.name}: ${params.value}%`;
+      }
     },
     textStyle: {
       fontFamily: "'Poppins', 'PingFang SC', sans-serif"
@@ -141,12 +163,13 @@ const updateChart = () => {
   chart.setOption(option);
 };
 
-// Highlight specific skill in the chart
+// 高亮交互方法
 const highlightSkill = (index) => {
-  if (!chart) return;
+  if (!chart || !skills.value.length) return;
 
-  const skills = tm('skills.items');
-  const values = skills.map((_, i) => i === index ? skills[i].level : skills[i].level * 0.3);
+  const values = skills.value.map((_, i) =>
+      i === index ? skills.value[i].level : skills.value[i].level * 0.3
+  );
 
   chart.dispatchAction({
     type: 'highlight',
@@ -161,11 +184,9 @@ const highlightSkill = (index) => {
           {
             value: values,
             itemStyle: {
-              color: i => i === index ? '#F56C6C' : 'rgba(64, 158, 255, 0.7)'
-            },
-            lineStyle: {
-              width: 2,
-              color: '#409EFF'
+              color: (params) => params.dataIndex === index
+                  ? '#F56C6C'
+                  : 'rgba(64, 158, 255, 0.7)'
             }
           }
         ]
@@ -174,12 +195,10 @@ const highlightSkill = (index) => {
   });
 };
 
-// Reset highlight
 const resetHighlight = () => {
-  if (!chart) return;
+  if (!chart || !skills.value.length) return;
 
-  const skills = tm('skills.items');
-  const values = skills.map(skill => skill.level);
+  const values = skills.value.map(skill => skill.level);
 
   chart.dispatchAction({
     type: 'downplay',
@@ -195,14 +214,8 @@ const resetHighlight = () => {
             value: values,
             areaStyle: {
               color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
-                {
-                  color: 'rgba(64, 158, 255, 0.7)',
-                  offset: 0
-                },
-                {
-                  color: 'rgba(64, 158, 255, 0.2)',
-                  offset: 1
-                }
+                {color: 'rgba(64, 158, 255, 0.7)', offset: 0},
+                {color: 'rgba(64, 158, 255, 0.2)', offset: 1}
               ])
             }
           }
@@ -212,6 +225,7 @@ const resetHighlight = () => {
   });
 };
 
+// 生命周期管理
 onMounted(() => {
   initChart();
 });
@@ -226,19 +240,9 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.skill-radar-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 2rem;
-  background-color: #ffffff;
-  max-width: 1200px;
-  margin: 0 auto;
-}
 .section-title-container {
   position: relative;
   text-align: center;
-  padding: 2rem 0;
   margin-bottom: 3rem;
 }
 
@@ -274,22 +278,10 @@ onUnmounted(() => {
   -webkit-background-clip: text;
   background-clip: text;
   color: #333;
-  margin: 0;
+  margin-bottom: 1rem;
   padding: 0.5rem 0;
   position: relative;
   z-index: 2;
-  filter: drop-shadow(0 2px 5px rgba(255, 235, 100, 0.3));
-}
-
-.title-decoration {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 3px;
-  background: linear-gradient(90deg, #333 0%, #666 100%);
-  border-radius: 2px;
 }
 
 .subtitle {
@@ -298,11 +290,25 @@ onUnmounted(() => {
   font-weight: 400;
 }
 
-.content-wrapper {
+/* 下面为内容区域样式 */
+.skill-radar-container {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  background-color: #F8F8F8;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.content-wrapper {
   width: 100%;
+}
+
+.chart-and-skills-container {
+  display: flex;
+  align-items: center;
   gap: 2rem;
-  align-items: flex-start;
 }
 
 .chart-container {
@@ -311,114 +317,84 @@ onUnmounted(() => {
   min-width: 400px;
 }
 
-.skill-details {
+.skill-summary {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  max-height: 500px;
-  overflow-y: auto;
-  padding-right: 10px;
 }
 
-.skill-card {
-  padding: 1.25rem;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  border: 1px solid #eaeaea;
-  cursor: pointer;
-}
-
-.skill-card:hover {
-  transform: translateX(5px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-  background-color: #f5f7fa;
-  border-color: #dcdfe6;
-}
-
-.skill-header {
+.skill-summary-item {
   display: flex;
   align-items: center;
-  margin-bottom: 1rem;
+  background-color: #F8F8F8;
+  border-radius: 12px;
+  padding: 1rem;
+  transition: all 0.3s ease;
 }
 
-.skill-header i {
-  font-size: 1.25rem;
-  margin-right: 0.75rem;
-  color: #409EFF;
-  width: 40px;
-  height: 40px;
+.skill-summary-item:hover {
+  transform: translateY(-5px);
+}
+
+.skill-summary-icon {
+  margin-right: 1rem;
+  background-color: rgba(64, 158, 255, 0.1);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(64, 158, 255, 0.1);
-  border-radius: 50%;
 }
 
-.skill-header h3 {
-  font-size: 1.15rem;
+.skill-summary-icon i {
+  font-size: 1.5rem;
+  color: #409EFF;
+}
+
+.skill-summary-details {
+  flex-grow: 1;
+}
+
+.skill-summary-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.skill-name {
   font-weight: 600;
   color: #333;
-  margin: 0;
 }
 
-.skill-progress {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.75rem;
-}
-
-.progress-bar {
-  flex: 1;
-  height: 6px;
-  background-color: rgba(200, 200, 200, 0.3);
-  border-radius: 3px;
-  overflow: hidden;
-  margin-right: 1rem;
-}
-
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #409EFF, #59c2ff);
-  border-radius: 3px;
-  transition: width 1s ease-in-out;
-}
-
-.progress-text {
-  font-size: 0.875rem;
+.skill-level {
   font-weight: 600;
   color: #409EFF;
-  width: 50px;
-  text-align: right;
 }
 
-.skill-description {
-  font-size: 0.875rem;
-  color: #606266;
-  line-height: 1.5;
-  margin: 0;
+.skill-progress-bar {
+  height: 6px;
+  background-color: #e0e0e0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.skill-progress-fill {
+  height: 100%;
+  transition: width 1s ease-in-out;
 }
 
 /* Responsive adjustments */
 @media (max-width: 992px) {
-  .content-wrapper {
+  .chart-and-skills-container {
     flex-direction: column;
   }
 
   .chart-container {
     width: 100%;
     height: 400px;
-  }
-
-  .skill-details {
-    width: 100%;
-    max-height: none;
-    padding-right: 0;
-  }
-
-  .skill-card:hover {
-    transform: translateY(-5px);
+    min-width: auto;
   }
 }
 </style>

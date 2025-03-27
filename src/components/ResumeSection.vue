@@ -189,7 +189,7 @@ const sections = [
   height: 100vh;
   max-height: 1000px;
   background-color: #ffffff;
-  border-radius: 12px;
+  border-radius: 24px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   overflow: hidden;
   font-family: 'Inter', sans-serif;

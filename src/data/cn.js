@@ -263,7 +263,7 @@ export default {
             {
                 title: '关于',
                 links: [
-                    {text: '个人简介', url: '/coming-soon'},
+                    {text: '简介', url: '/coming-soon'},
                     {text: '联系', url: '/coming-soon'},
                     {text: '博客', url: '/coming-soon'}
                 ]

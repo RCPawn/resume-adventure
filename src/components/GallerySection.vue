@@ -1,55 +1,57 @@
 <template>
-  <div id="gallery" class="gallery-viewport">
-    <!-- Gallery Header -->
-    <div class="gallery-header">
-      <h2 class="gallery-title">
-        <span class="icon">🖼️</span>{{ t('gallery.title') }}
-      </h2>
-      <p class="gallery-subtitle">{{ t('gallery.subtitle') }}</p>
-    </div>
-    <section class="gallery-section">
-      <!-- First row - scrolling left -->
-      <div class="scroll-container row-one">
-        <div
-            class="scroll-track"
-            :style="{ transform: `translateX(${rowOneScrollPosition}px)` }"
-            @mouseenter="pauseAnimation(1)"
-            @mouseleave="resumeAnimation(1)"
-        >
+  <div id="gallery" class="main-container">
+    <div class="gallery-viewport">
+      <!-- Gallery Header -->
+      <div class="gallery-header">
+        <h2 class="gallery-title">
+          <span class="icon">🖼️</span>{{ t('gallery.title') }}
+        </h2>
+        <p class="gallery-subtitle">{{ t('gallery.subtitle') }}</p>
+      </div>
+      <section class="gallery-section">
+        <!-- First row - scrolling left -->
+        <div class="scroll-container row-one">
           <div
-              class="gallery-card"
-              v-for="(item, idx) in rowOneDuplicated"
-              :key="`row1-${idx}`"
-              :style="{ animationDelay: `${idx * 0.1}s` }"
-              @mouseenter="scaleUp($event)"
-              @mouseleave="scaleDown($event)"
+              class="scroll-track"
+              :style="{ transform: `translateX(${rowOneScrollPosition}px)` }"
+              @mouseenter="pauseAnimation(1)"
+              @mouseleave="resumeAnimation(1)"
           >
-            <img :src="item.imageUrl" :alt="`Gallery image ${idx}`" class="gallery-image"/>
+            <div
+                class="gallery-card"
+                v-for="(item, idx) in rowOneDuplicated"
+                :key="`row1-${idx}`"
+                :style="{ animationDelay: `${idx * 0.1}s` }"
+                @mouseenter="scaleUp($event)"
+                @mouseleave="scaleDown($event)"
+            >
+              <img :src="item.imageUrl" :alt="`Gallery image ${idx}`" class="gallery-image"/>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Second row - scrolling right -->
-      <div class="scroll-container row-two">
-        <div
-            class="scroll-track"
-            :style="{ transform: `translateX(${rowTwoScrollPosition}px)` }"
-            @mouseenter="pauseAnimation(2)"
-            @mouseleave="resumeAnimation(2)"
-        >
+        <!-- Second row - scrolling right -->
+        <div class="scroll-container row-two">
           <div
-              class="gallery-card"
-              v-for="(item, idx) in rowTwoDuplicated"
-              :key="`row2-${idx}`"
-              :style="{ animationDelay: `${idx * 0.1}s` }"
-              @mouseenter="scaleUp($event)"
-              @mouseleave="scaleDown($event)"
+              class="scroll-track"
+              :style="{ transform: `translateX(${rowTwoScrollPosition}px)` }"
+              @mouseenter="pauseAnimation(2)"
+              @mouseleave="resumeAnimation(2)"
           >
-            <img :src="item.imageUrl" :alt="`Gallery image ${idx}`" class="gallery-image"/>
+            <div
+                class="gallery-card"
+                v-for="(item, idx) in rowTwoDuplicated"
+                :key="`row2-${idx}`"
+                :style="{ animationDelay: `${idx * 0.1}s` }"
+                @mouseenter="scaleUp($event)"
+                @mouseleave="scaleDown($event)"
+            >
+              <img :src="item.imageUrl" :alt="`Gallery image ${idx}`" class="gallery-image"/>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   </div>
 </template>
 
@@ -67,7 +69,7 @@ const rowOneItems = [
   {imageUrl: "/images/works/b4.png"},
   {imageUrl: "/images/works/b6.png"},
   {imageUrl: "/images/works/b0.png"},
-  {imageUrl: "/images/brain.jpg"},
+  {imageUrl: "/images/light.png"},
   {imageUrl: "/images/works/b3.png"},
   {imageUrl: "/images/works/3.png"},
   {imageUrl: "/images/works/b1.png"},
@@ -79,7 +81,7 @@ const rowOneItems = [
   {imageUrl: "/images/works/0.png"},
   {imageUrl: "/images/works/b1.png"},
   {imageUrl: "/images/works/b3.png"},
-  {imageUrl: "/images/neural_network.jpg"},
+  {imageUrl: "/images/neural_network.webp"},
   {imageUrl: "/images/works/b6.png"},
   {imageUrl: "/images/works/2.png"},
   {imageUrl: "/images/donut.webp"},
@@ -182,6 +184,18 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+.main-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* 减少内边距，紧凑布局 */
+  padding: 2rem 1rem;
+  overflow: hidden;
+  background-color: #F8F8F8;
+}
+
 /* 视口容器：保证横向隐藏溢出，并适当增加上下留白 */
 .gallery-viewport {
   width: 100%;
@@ -193,11 +207,10 @@ onUnmounted(() => {
 /* 基础布局 */
 .gallery-section {
   width: 100%;
-  max-width: 2000px;
   margin: 0 auto;
   padding: 3rem 2rem;
   overflow: hidden;
-  background: #ffffff;
+  background: #F8F8F8;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
@@ -232,13 +245,13 @@ onUnmounted(() => {
   font-size: 2.5rem;
   font-weight: 700;
   background: #333;
+  margin-bottom: 1rem;
   -webkit-background-clip: text;
   background-clip: text;
   color: #333;
   letter-spacing: -0.5px;
   display: inline-flex;
   align-items: center;
-  filter: drop-shadow(0 2px 5px rgba(255, 235, 100, 0.3));
 }
 
 .gallery-subtitle {
@@ -266,8 +279,8 @@ onUnmounted(() => {
 
 /* 第一行 - 大卡片 */
 .row-one .gallery-card {
-  width: 560px;
-  height: 380px;
+  width: 620px;
+  height: 400px;
   margin-right: 32px; /* 稍微加大卡片之间的间距 */
   border-radius: 14px;
 }
@@ -304,15 +317,6 @@ onUnmounted(() => {
 .gallery-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
-}
-
-.gallery-card.scaled {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
-}
-
-.gallery-card:hover .gallery-image {
-  transform: scale(1.05);
 }
 
 /* 保证每行最后一张卡片不会紧靠屏幕右侧 */

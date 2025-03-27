@@ -44,7 +44,7 @@
     </div>
   </nav>
 
-  <!-- 模态框 -->
+  <!-- 修改后的模态框结构 -->
   <teleport to="body">
     <transition name="modal-fade">
       <div v-if="showAboutModal" class="modal-mask">
@@ -140,9 +140,9 @@ const toggleTheme = () => {
   isDarkMode.value = !isDarkMode.value;
   if (isDarkMode.value) {
     enableDarkMode({
-      brightness: 100,
+      brightness: 95,
       contrast: 90,
-      sepia: 10,
+      sepia: 0,
     });
     localStorage.setItem('theme', 'dark');
   } else {
@@ -172,7 +172,7 @@ const toggleTheme = () => {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: #ffffff;
+  background-color: #F8F8F8;
   border-bottom: 1px solid var(--border-color);
   position: sticky;
   top: 0;
@@ -254,7 +254,7 @@ html {
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  background-color: #f5f5f5;
+  background-color: #F8F8F8;
   border: 1px solid var(--border-color);
   border-radius: 6px;
   color: var(--secondary-color);
@@ -325,6 +325,7 @@ html {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px); /* 毛玻璃效果 */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -341,9 +342,8 @@ html {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 2rem;
+  background-color: #F8F8F8;
+  border-radius: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
   width: 1000px; /* 固定宽度 */
@@ -352,14 +352,17 @@ html {
 
 .modal-close {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: 20px;      /* 距离顶部距离 */
+  right: 20px;    /* 距离右侧距离 */
   font-size: 1.5rem;
   background: none;
   border: none;
   cursor: pointer;
   color: #666;
   transition: color 0.2s;
+  padding: 4px;    /* 增加点击区域 */
+  z-index: 1;      /* 确保在最顶层 */
+  line-height: 1;  /* 消除行高影响 */
 }
 
 .modal-close:hover {

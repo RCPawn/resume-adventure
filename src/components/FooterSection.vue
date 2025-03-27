@@ -50,7 +50,7 @@ const handleLinkClick = (link) => {
 <style scoped>
 .footer-section {
   padding: 3.5rem 2rem 1.5rem;
-  background-color: #fafafa;
+  background-color: #F8F8F8;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   border-top: 1px solid #f0f0f0;
 }
@@ -92,19 +92,13 @@ const handleLinkClick = (link) => {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background-color: #f5f5f5;
+  background-color: #F8F8F8;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #555;
   transition: all 0.2s ease;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.social-link:hover {
-  transform: translateY(-3px);
-  background-color: #4087DC;
-  color: white;
 }
 
 .footer-links {
@@ -145,8 +139,14 @@ const handleLinkClick = (link) => {
   display: inline-block;
 }
 
+.social-link:hover {
+  transform: translateY(-3px);
+  background-color: #F8F8F8; /* 背景色保持不变 */
+  color: #333c4d; /* 修改为对比色 */
+}
+
 .link-group a:hover {
-  color: #4087DC;
+  color: #333c4d; /* 修改为对比色 */
   transform: translateX(2px);
 }
 
@@ -157,13 +157,14 @@ const handleLinkClick = (link) => {
   left: 0;
   width: 0;
   height: 1px;
-  background-color: #4087DC;
+  background-color: #333c4d; /* 同步修改下划线颜色 */
   transition: width 0.3s ease;
 }
 
 .link-group a:hover::after {
   width: 100%;
 }
+
 
 .footer-bottom {
   max-width: 1100px;
