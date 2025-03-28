@@ -121,39 +121,39 @@ export default {
             ]
         },
         skills: {
-            "title": "Professional Skills",
+            "title": "Prof Skills",
             "categories": [
                 {
                     "name": "Programming Languages",
                     "items": [
-                        "Solid foundation in Java, proficient in strings, collections, multithreading (including synchronized, volatile, thread pools), and sorting algorithms (quick sort, bubble sort), with understanding of collection framework internals (including the thread safety mechanism of ConcurrentHashMap)."
+                        "Solid foundation in Java, proficient in string manipulation, collection frameworks, multithreading programming, and common sorting algorithms, with an understanding of the underlying implementation of collection frameworks"
                     ]
                 },
                 {
                     "name": "Data Storage Development",
                     "items": [
-                        "Proficient in MySQL basics: index optimization (B+ tree structure), transaction ACID properties, locking mechanisms, and SQL tuning.",
-                        "Familiar with basic Redis applications: String/Hash data structures, RDB persistence, and solutions for cache avalanche/penetration."
+                        "Proficient in using MySQL for data storage and queries, with an understanding of basic principles of indexes (e.g., B+ tree) and transactions (ACID properties), capable of writing efficient SQL queries to address common business requirements",
+                        "Familiar with the basic applications of Redis, proficient in String/Hash data structures and the RDB persistence mechanism, with an understanding of basic caching optimization strategies"
                     ]
                 },
                 {
-                    "name": "Server-Side Frameworks",
+                    "name": "Server-side Frameworks",
                     "items": [
-                        "Experienced in the SpringBoot development process (IOC container management, AOP logging aspects, MyBatis-Plus integration), capable of developing RESTful APIs independently.",
-                        "Skilled in the Spring Security authentication process, implementing Token-based authentication with JWT and designing an RBAC access control system."
+                        "Proficient in the SpringBoot development process, familiar with IOC container management, AOP logging aspects, and MyBatis integration, capable of independently developing RESTful APIs",
+                        "Familiar with the Spring Security authentication process, capable of implementing token authentication based on JWT and designing an RBAC (Role-Based Access Control) system"
                     ]
                 },
                 {
-                    "name": "Distributed Systems Basics",
+                    "name": "Distributed Systems Fundamentals",
                     "items": [
-                        "Familiar with SpringCloud basic components (Nacos for service registration and OpenFeign for remote calls), with an understanding of microservice communication principles.",
-                        "Knowledgeable in HTTP/HTTPS protocols and TCP three-way handshake mechanisms, as well as the principles of WebSocket real-time communication."
+                        "Familiar with the basic concepts of SpringCloud, knowledgeable in the basic usage of Nacos for service registration and OpenFeign for remote calls, and understanding their role in microservices communication",
+                        "Understanding of HTTP/HTTPS protocols and the TCP three-way handshake mechanism, with a grasp of WebSocket real-time communication principles"
                     ]
                 },
                 {
                     "name": "Engineering Tools",
                     "items": [
-                        "Skilled in using Git for version control (branch management and conflict resolution), Maven multi-module builds, Postman API testing, and Swagger API documentation generation."
+                        "Possess engineering development skills, proficient in using Swagger for generating API documentation, and skilled in tools and techniques such as Git branch management, Maven multi-module builds, and Postman for API debugging"
                     ]
                 }
             ]

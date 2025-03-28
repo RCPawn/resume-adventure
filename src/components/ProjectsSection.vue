@@ -1,12 +1,11 @@
 <script setup>
 import {ref, computed} from 'vue';
 import {useI18n} from 'vue-i18n';
-import {useRoute, useRouter} from 'vue-router';
+import {useRouter} from 'vue-router';
 import projectsData from '@/data/projects.json';
-import SkillTarget from '@/components/SkillTarget.vue';
+import SkillTarget from '@/components/TargetWindow.vue';
 
 const {t, tm} = useI18n();
-const route = useRoute();
 const router = useRouter();
 const showModal = ref(false);
 const activeIndex = ref(0);
@@ -29,10 +28,6 @@ const getNextIndex = () => {
   return (activeIndex.value + 1) % projects.value.length;
 };
 
-const setActiveProject = (index) => {
-  activeIndex.value = index;
-};
-
 const handleProjectClick = (project) => {
   if (project.link === '/roadmap') {
     showModal.value = true;
@@ -51,8 +46,8 @@ const closeModal = () => {
     <div class="main-container">
       <div class="usecases-nav">
         <div class="sticky-header">
-          <h1 class="gradient-text">📜{{t('projects.title')}}</h1>
-          <p class="subtitle">{{t('projects.subtitle')}}</p>
+          <h1 class="gradient-text">📜{{ t('projects.title') }}</h1>
+          <p class="subtitle">{{ t('projects.subtitle') }}</p>
           <div class="decoration-dots"></div>
         </div>
       </div>
@@ -84,7 +79,7 @@ const closeModal = () => {
       <div v-if="showModal" class="modal-overlay" @click="closeModal">
         <div class="modal-content" @click.stop>
           <button class="close-button" @click="closeModal">×</button>
-          <SkillTarget />
+          <SkillTarget/>
         </div>
       </div>
     </div>
@@ -193,10 +188,10 @@ const closeModal = () => {
   width: 80%;
   height: 1px;
   background: linear-gradient(90deg,
-    transparent 0%,
-    rgba(51, 51, 51, 0.1) 20%,
-    rgba(51, 51, 51, 0.1) 80%,
-    transparent 100%
+  transparent 0%,
+  rgba(51, 51, 51, 0.1) 20%,
+  rgba(51, 51, 51, 0.1) 80%,
+  transparent 100%
   );
 }
 
@@ -271,7 +266,7 @@ const closeModal = () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.15) 100%);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.15) 100%);
   opacity: 0;
   transition: opacity 0.3s ease;
 }

@@ -9,7 +9,7 @@
     "nameKey": "projects.items.1.name",
     "descriptionKey": "projects.items.1.description",
     "image": "/images/light.png",
-    "link": "/coming-soon"
+    "link": "/leetcode"
   },
   {
     "nameKey": "projects.items.2.name",

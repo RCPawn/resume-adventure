@@ -120,40 +120,41 @@ export default {
                 "英语水平：CET6，熟练阅读技术文档"
             ]
         },
+
         skills: {
             "title": "专业技能",
             "categories": [
                 {
                     "name": "编程语言",
                     "items": [
-                        "具备扎实的Java基础，熟练掌握字符串、集合、多线程编程（含synchronized、volatile、线程池）以及排序算法（快速排序、冒泡排序），理解集合框架实现原理（包括ConcurrentHashMap的线程安全机制）"
+                        "具备扎实的Java基础，熟练掌握字符串处理、集合框架、多线程编程及常见排序算法，了解集合框架的实现原理"
                     ]
                 },
                 {
                     "name": "存储层开发",
                     "items": [
-                        "掌握MySQL基础应用：索引优化（B+树结构）、事务ACID特性、锁机制及SQL调优经验",
-                        "熟悉Redis基础应用：String/Hash数据结构、RDB持久化、缓存雪崩/穿透解决方案"
+                        "熟练使用MySQL进行数据存储与查询，了解索引（如B+树结构）和事务（ACID特性）的基本原理，能够编写高效的SQL语句解决常见业务需求",
+                        "熟悉Redis的基础应用，掌握String/Hash数据结构及RDB持久化机制，了解缓存的基本优化策略"
                     ]
                 },
                 {
                     "name": "服务端框架",
                     "items": [
-                        "熟悉SpringBoot开发流程（IOC容器管理、AOP日志切面、MyBatis-Plus整合），能独立开发RESTful API",
-                        "熟悉Spring Security认证流程，基于JWT实现Token鉴权并设计RBAC权限控制体系"
+                        "掌握SpringBoot开发流程，熟悉IOC容器管理、AOP日志切面、MyBatis整合，能够独立开发RESTful API",
+                        "熟悉Spring Security认证流程，能基于JWT实现Token鉴权并设计RBAC权限控制体系"
                     ]
                 },
                 {
                     "name": "分布式基础",
                     "items": [
-                        "了解SpringCloud基础组件（Nacos服务注册、OpenFeign远程调用），理解微服务通信原理",
-                        "了解HTTP/HTTPS协议与TCP三次握手机制，掌握WebSocket实时通信原理"
+                        "了解SpringCloud的基础概念，熟悉Nacos服务注册与OpenFeign远程调用的基本使用，理解其在微服务通信中的作用",
+                        "了解HTTP/HTTPS协议和TCP三次握手机制，掌握WebSocket实时通信原理"
                     ]
                 },
                 {
                     "name": "工程化工具",
                     "items": [
-                        "熟练使用Git进行版本控制（包括分支管理与冲突解决）、Maven多模块构建、Postman接口调试及Swagger接口文档生成"
+                        "具备工程化开发能力，熟练使用Swagger生成接口文档，掌握Git分支管理、Maven多模块构建、Postman接口调试等工具和技术"
                     ]
                 }
             ]

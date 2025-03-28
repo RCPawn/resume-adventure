@@ -29,6 +29,11 @@ const router = createRouter({
       name: 'coming-soon',
       component: () => import('../views/ComingSoon.vue'),
     },
+    {
+      path: '/leetcode',
+      name: 'leetcode',
+      component: () => import('../components/LeetCodeWindow.vue'),
+    },
     // {
     //   path: '/about',
     //   name: 'about',
