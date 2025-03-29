@@ -8,7 +8,6 @@
     <!-- 画布容器 -->
     <div ref="container" class="canvas-wrapper"></div>
 
-
     <!-- 修改加载提示部分 -->
     <div v-if="loading" class="loading-overlay">
       <div class="loading-content">
@@ -122,14 +121,13 @@ const modelBasePath = import.meta.env.PROD
 // 2. 实现模型加载器
 const loadModel = async () => {
   const loader = new GLTFLoader()
-
   // 添加加载进度监听
   loader.manager.onProgress = (url, itemsLoaded, itemsTotal) => {
     loadProgress.value = (itemsLoaded / itemsTotal) * 100
   }
 
   try {
-    // 使用CDN路径
+    // 使用GitHub Raw链接替换本地路径
     const gltf = await loader.loadAsync('models/donut.glb')
     const model = gltf.scene
     scene.add(model)
@@ -209,8 +207,6 @@ onUnmounted(() => {
   renderer?.dispose()
   if (mixer) mixer.stopAllAction()
 })
-
-
 </script>
 
 <style scoped>
