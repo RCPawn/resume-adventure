@@ -1,0 +1,19 @@
+[[headers]]
+# 同时匹配glb/gltf/bin/texture等资源
+for = ["/*.glb", "/*.gltf", "/*.bin", "/*.png", "/*.jpg", "/*.webp"]
+[headers.values]
+Cache-Control = "public, max-age=31536000, immutable"
+Access-Control-Allow-Origin = "*"
+# 启用压缩传输
+Content-Encoding = "gzip"
+# 支持分块加载
+Accept-Ranges = "bytes"
+
+# 对CDN的额外优化
+[[headers]]
+for = "/models/*"
+[headers.values]
+# 当使用Netlify Large Media时
+X-Content-Type-Options = "nosniff"
+# 安全策略
+X-Frame-Options = "DENY"

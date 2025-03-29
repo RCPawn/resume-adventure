@@ -8,16 +8,15 @@
     <!-- 画布容器 -->
     <div ref="container" class="canvas-wrapper"></div>
 
-    <!-- 简化后的加载提示 -->
+
+    <!-- 修改加载提示部分 -->
     <div v-if="loading" class="loading-overlay">
       <div class="loading-content">
-        <div class="loading-text">
-          正在加载，请稍候
-          <span class="loading-dots">
-            <span></span>
-            <span></span>
-            <span></span>
-          </span>
+        <div class="loading-progress">
+          <div class="loading-text">稍等一下 {{ loadProgress.toFixed(0) }}%</div>
+          <div class="progress-bar">
+            <div class="progress-fill" :style="{width: `${loadProgress}%`}"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -63,14 +62,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import {ref, onMounted, onUnmounted} from 'vue'
 import * as THREE from 'three'
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js'
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'
 import GoBackButton from '@/components/GoBackButton.vue'
 
 const container = ref(null)
 const loading = ref(true)  // 加载状态标识
+// 添加进度状态
+const loadProgress = ref(0)
 
 let scene = null
 let camera = null
@@ -111,11 +112,24 @@ const initScene = () => {
   scene.add(directionalLight)
 }
 
+// 1. 添加CDN配置 (示例使用变量来控制资源URL)
+/*
+const modelBasePath = import.meta.env.PROD
+    ? 'https://cdn.jsdelivr.net/gh/RCPawn/large-file-resources@master/' // 生产环境使用CDN
+    : 'models/' // 开发环境使用本地路径
+*/
+
+// 2. 实现模型加载器
 const loadModel = async () => {
   const loader = new GLTFLoader()
 
+  // 添加加载进度监听
+  loader.manager.onProgress = (url, itemsLoaded, itemsTotal) => {
+    loadProgress.value = (itemsLoaded / itemsTotal) * 100
+  }
+
   try {
-    // 使用GitHub Raw链接替换本地路径
+    // 使用CDN路径
     const gltf = await loader.loadAsync('models/donut.glb')
     const model = gltf.scene
     scene.add(model)
@@ -195,22 +209,13 @@ onUnmounted(() => {
   renderer?.dispose()
   if (mixer) mixer.stopAllAction()
 })
+
+
 </script>
 
 <style scoped>
-.model-container {
-  position: relative;
-  max-width: 1200rem;
-  height: 100vh;
-  overflow: hidden;
-}
 
-.canvas-wrapper {
-  width: 100%;
-  height: 100%;
-}
-
-/* 简化后的加载提示样式 */
+/* 优化加载提示样式 - 简约浅蓝色版本 */
 .loading-overlay {
   position: absolute;
   top: 0;
@@ -229,49 +234,48 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 90%;
+  max-width: 400px;
+}
+
+.loading-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
 }
 
 .loading-text {
   font-size: 16px;
-  font-weight: 550;
+  font-weight: 500;
   color: #333;
-  display: flex;
-  align-items: center;
+  margin-bottom: 8px;
 }
 
-/* 三点加载动画 */
-.loading-dots {
-  display: inline-flex;
-  align-items: center;
-  margin-left: 4px;
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 100px;
+  overflow: hidden;
 }
 
-.loading-dots span {
-  width: 6px;
-  height: 6px;
-  margin: 0 2px;
-  border-radius: 50%;
-  background-color: #333;
-  display: inline-block;
-  animation: bounce 1.4s infinite ease-in-out both;
+.progress-fill {
+  height: 100%;
+  background: #4db8ff; /* 浅蓝色 */
+  border-radius: 100px;
+  transition: width 0.3s ease;
 }
 
-.loading-dots span:nth-child(1) {
-  animation-delay: -0.32s;
-}
-
-.loading-dots span:nth-child(2) {
-  animation-delay: -0.16s;
-}
-
-@keyframes bounce {
-  0%, 80%, 100% {
-    transform: scale(0);
-    opacity: 0.5;
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .loading-text {
+    font-size: 15px;
   }
-  40% {
-    transform: scale(1);
-    opacity: 1;
+
+  .progress-bar {
+    height: 6px;
   }
 }
 

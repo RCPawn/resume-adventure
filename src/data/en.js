@@ -20,7 +20,7 @@ export default {
         'Passionate About 3D and Interactive Design'
     ],
     skills: {
-        title: 'Skills &Map',
+        title: 'Skills & Map',
         subtitle: 'DB all varchar, algorithms bubble sort, AI = import keras (The % are for reference only)',
         skillTarget: 'Skill Target',
         current: 'Current Level',
