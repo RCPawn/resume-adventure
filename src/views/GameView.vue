@@ -4,11 +4,9 @@
       <GoBackButton />
     </div>
 
-    <div class="game-area">
       <div class="game-frame">
         <iframe ref="gameIframe" :src="gameUrl" class="game-iframe"></iframe>
       </div>
-    </div>
   </div>
 </template>
 
@@ -67,7 +65,7 @@ html, body {
 
 .game-container {
   width: 100%;
-  height: 100vh;
+  height: 90vh;
   overflow: hidden;
   position: relative;
   display: flex;
@@ -83,32 +81,22 @@ html, body {
   z-index: 50;
 }
 
-.game-area {
-  width: 92%;
-  height: 88%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-}
-
 .game-frame {
   width: 100%;
   height: 100%;
   display: flex;
+  background-color: #f8f8f8;
   justify-content: center;
   align-items: center;
   position: relative;
   border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .game-iframe {
   border: none;
   border-radius: 8px;
-  background-color: #fff;
+  background-color: #f8f8f8;
   transition: all 0.3s ease;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.05);
 }
 
 /* 响应式调整 */

@@ -248,7 +248,7 @@ export default {
                 title: 'Projects',
                 links: [
                     {text: 'Full Stack Apps', url: '/olive-ppt'},
-                    {text: 'Game Dev', url: '/game'},
+                    {text: '3D Model', url: '/model'},
                     {text: 'AI Lab', url: '/coming-soon'}
                 ]
             },

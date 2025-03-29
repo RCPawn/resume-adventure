@@ -32,7 +32,12 @@ const router = createRouter({
     {
       path: '/leetcode',
       name: 'leetcode',
-      component: () => import('../components/LeetCodeWindow.vue'),
+      component: () => import('../views/LeetCode.vue'),
+    }
+    ,{
+      path: '/github',
+      name: 'github',
+      component: () => import('../views/GitHub.vue'),
     },
     // {
     //   path: '/about',

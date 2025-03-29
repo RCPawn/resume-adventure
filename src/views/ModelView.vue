@@ -200,7 +200,7 @@ onUnmounted(() => {
 <style scoped>
 .model-container {
   position: relative;
-  width: 100vw;
+  max-width: 1200rem;
   height: 100vh;
   overflow: hidden;
 }
@@ -233,7 +233,7 @@ onUnmounted(() => {
 
 .loading-text {
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 550;
   color: #333;
   display: flex;
   align-items: center;

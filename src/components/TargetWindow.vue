@@ -4,14 +4,6 @@
     <div class="chart-wrapper">
       <div ref="chartRef" class="growth-chart"></div>
       <div class="legend-panel">
-        <div class="legend-item">
-          <div class="legend-color current"></div>
-          <span>{{ t('skills.current') }}</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color target"></div>
-          <span>{{ t('skills.target') }}</span>
-        </div>
       </div>
     </div>
   </div>
@@ -48,30 +40,30 @@ const updateChart = () => {
   const targetLevels = skills.map(skill => skill.target || (skill.level + 20));
 
   const option = {
-    tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+    tooltip: {trigger: 'axis', axisPointer: {type: 'shadow'}},
     legend: {
       data: [t('skills.current'), t('skills.target')],
-      textStyle: { color: '#666' }
+      textStyle: {color: '#666'}
     },
-    grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
-    xAxis: [{ type: 'value', max: 100, axisLabel: { formatter: '{value}%' } }],
-    yAxis: [{ type: 'category', data: skillNames, axisTick: { alignWithLabel: true } }],
+    grid: {left: '3%', right: '4%', bottom: '3%', containLabel: true},
+    xAxis: [{type: 'value', max: 100, axisLabel: {formatter: '{value}%'}}],
+    yAxis: [{type: 'category', data: skillNames, axisTick: {alignWithLabel: true}}],
     series: [
       {
         name: t('skills.current'),
         type: 'bar',
         barWidth: 15,
-        label: { show: true, position: 'right', formatter: '{c}%' },
+        label: {show: true, position: 'right', formatter: '{c}%'},
         data: currentLevels,
-        itemStyle: { color: '#409EFF' }
+        itemStyle: {color: '#85C1E9'}
       },
       {
         name: t('skills.target'),
         type: 'bar',
         barWidth: 15,
-        label: { show: true, position: 'right', formatter: '{c}%' },
+        label: {show: true, position: 'right', formatter: '{c}%'},
         data: targetLevels,
-        itemStyle: { color: '#67C23A' }
+        itemStyle: {color: '#B3FFB3'}
       }
     ]
   };
@@ -133,25 +125,5 @@ onUnmounted(() => {
   justify-content: center;
   gap: 2rem;
   margin-bottom: 2rem;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.legend-color {
-  width: 16px;
-  height: 16px;
-  border-radius: 4px;
-}
-
-.legend-color.current {
-  background-color: #409EFF;
-}
-
-.legend-color.target {
-  background-color: #67C23A;
 }
 </style>

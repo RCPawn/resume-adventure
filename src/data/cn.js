@@ -249,7 +249,7 @@ export default {
                 title: '项目',
                 links: [
                     {text: '全栈应用', url: '/olive-ppt'},
-                    {text: '游戏开发', url: '/game'},
+                    {text: '3D模型', url: '/model'},
                     {text: 'AI 实验室', url: '/coming-soon'}
                 ]
             },
