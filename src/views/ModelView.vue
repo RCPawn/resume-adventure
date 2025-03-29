@@ -8,6 +8,20 @@
     <!-- 画布容器 -->
     <div ref="container" class="canvas-wrapper"></div>
 
+    <!-- 简化后的加载提示 -->
+    <div v-if="loading" class="loading-overlay">
+      <div class="loading-content">
+        <div class="loading-text">
+          正在加载，请稍候
+          <span class="loading-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+        </div>
+      </div>
+    </div>
+
     <!-- 操作指引 -->
     <div class="model-notice">
       <div class="notice-box">
@@ -47,14 +61,17 @@
     </div>
   </div>
 </template>
+
 <script setup>
-import {ref, onMounted, onUnmounted} from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import * as THREE from 'three'
-import {OrbitControls} from 'three/addons/controls/OrbitControls.js'
-import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import GoBackButton from '@/components/GoBackButton.vue'
 
 const container = ref(null)
+const loading = ref(true)  // 加载状态标识
+
 let scene = null
 let camera = null
 let renderer = null
@@ -98,7 +115,8 @@ const loadModel = async () => {
   const loader = new GLTFLoader()
 
   try {
-    const gltf = await loader.loadAsync('/models/donut.glb')
+    // 使用GitHub Raw链接替换本地路径
+    const gltf = await loader.loadAsync('models/donut.glb')
     const model = gltf.scene
     scene.add(model)
 
@@ -136,6 +154,8 @@ const loadModel = async () => {
 
   } catch (error) {
     console.error('模型加载失败:', error)
+  } finally {
+    loading.value = false  // 加载完成或出错后隐藏加载提示
   }
 }
 
@@ -176,6 +196,7 @@ onUnmounted(() => {
   if (mixer) mixer.stopAllAction()
 })
 </script>
+
 <style scoped>
 .model-container {
   position: relative;
@@ -189,6 +210,72 @@ onUnmounted(() => {
   height: 100%;
 }
 
+/* 简化后的加载提示样式 */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+
+.loading-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-text {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  display: flex;
+  align-items: center;
+}
+
+/* 三点加载动画 */
+.loading-dots {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 4px;
+}
+
+.loading-dots span {
+  width: 6px;
+  height: 6px;
+  margin: 0 2px;
+  border-radius: 50%;
+  background-color: #333;
+  display: inline-block;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.loading-dots span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 控制按钮及其他样式 */
 .control-top {
   position: absolute;
   top: 40px;
@@ -238,8 +325,6 @@ canvas {
 canvas:active {
   cursor: grabbing;
 }
-
-/* 在原有样式基础上新增以下样式 */
 
 .notice-header {
   font-size: 16px;
@@ -315,6 +400,10 @@ canvas:active {
 
   .guide-text {
     font-size: 12px;
+  }
+
+  .loading-text {
+    font-size: 18px;
   }
 }
 </style>

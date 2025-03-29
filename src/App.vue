@@ -10,4 +10,6 @@ import TestVue from './Test.vue'
 <!--   <TestVue />-->
 </template>
 
-<style scoped></style>
+<style scoped>
+
+</style>

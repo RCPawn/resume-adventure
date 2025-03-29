@@ -20,16 +20,12 @@
         </section>
       </div>
     </div>
-
-    <!-- 贴近图片底部的导航指示器 -->
-    <div class="navigation-indicator" ref="navIndicator">
-      {{ currentSlide + 1 }} / 20
-    </div>
   </div>
 </template>
 
+
 <script setup>
-import {ref, onMounted, onUnmounted, nextTick, watch} from "vue";
+import {ref, onMounted, onUnmounted} from "vue";
 import Reveal from "reveal.js";
 import RevealZoom from "reveal.js/plugin/zoom/zoom";
 import "reveal.js/dist/reveal.css";
@@ -38,8 +34,6 @@ import GoBackButton from "@/components/GoBackButton.vue";
 
 // 引用
 const revealRef = ref(null);
-const navIndicator = ref(null);
-const currentSlide = ref(0);
 let deck = null;
 
 // 背景颜色数组
@@ -86,29 +80,8 @@ const initReveal = () => {
   });
 
   deck.initialize().then(() => {
-    deck.on("ready", () => {
-      updateSlidePosition(); // 确保初始化后更新导航指示器
-    });
-
-    deck.on("slidechanged", (event) => {
-      currentSlide.value = event.indexh;
-      updateSlidePosition();
-    });
-
-    updateSlidePosition();
-  });
-};
-
-// 更新导航指示器的位置
-const updateSlidePosition = () => {
-  nextTick(() => {
-    requestAnimationFrame(() => {
-      const img = document.querySelector(".reveal .slides section.present img");
-      if (img && navIndicator.value) {
-        const rect = img.getBoundingClientRect();
-        navIndicator.value.style.top = `${rect.bottom + 10}px`;
-      }
-    });
+    // 强制重新布局以确保第一页居中
+    deck.layout();
   });
 };
 
@@ -116,7 +89,6 @@ const updateSlidePosition = () => {
 const handleResize = () => {
   if (deck) {
     deck.layout();
-    requestAnimationFrame(updateSlidePosition);
   }
 };
 
@@ -133,9 +105,6 @@ onUnmounted(() => {
   }
   window.removeEventListener("resize", handleResize);
 });
-
-// 监听当前幻灯片变化，调整导航指示器
-watch(currentSlide, updateSlidePosition);
 </script>
 
 <style scoped>
@@ -172,19 +141,5 @@ watch(currentSlide, updateSlidePosition);
   top: 20px;
   left: 20px;
   z-index: 1000;
-}
-
-/* 导航指示器，自动放置在图片下方 */
-.navigation-indicator {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.6);
-  color: white;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 14px;
-  white-space: nowrap;
-  transition: top 0.3s ease;
 }
 </style>

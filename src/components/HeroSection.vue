@@ -124,7 +124,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-@import '@/assets/NapkinBackground.css';
+@import '@/assets/styles/NapkinBackground.css';
 
 .napkin-hero {
   position: relative;

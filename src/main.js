@@ -29,15 +29,6 @@ const globalState = reactive({
     }
 })
 
-// 在 Vue 完全挂载后启用暗黑模式（如果需要）
-/*onMounted(() => {
-    nextTick(() => {
-        if (globalState.isDark) {
-            globalState.updateTheme()
-        }
-    })
-})*/
-
 // 将全局状态提供给所有组件
 app.provide('globalState', globalState)
 

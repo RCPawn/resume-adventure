@@ -1,6 +1,6 @@
 // data/i18n/en.js
 // 英文语言包
-import '@/assets/leetcodeIcon.css';
+import '@/assets/styles/leetcodeIcon.css';
 
 export default {
     nav: {

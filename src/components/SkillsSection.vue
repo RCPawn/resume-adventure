@@ -31,7 +31,7 @@
               <div class="skill-progress-bar">
                 <div
                     class="skill-progress-fill"
-                    :style="{ width: `${skill.level}%`, background: getSkillGradient(index) }"
+                    :style="{ width: `${skill.level}%`, background: getSkillColor(index) }"
                 ></div>
               </div>
             </div>
@@ -62,19 +62,20 @@ watch(
     }
 );
 
-// 颜色配置保持不变
 const skillColors = [
-  ['#FF6B6B', '#FF9A6B'],
-  ['#4ECDC4', '#45B7D1'],
-  ['#A8DADC', '#457B9D'],
-  ['#9C6644', '#BC8F5E'],
-  ['#6A4C93', '#8D6ED3']
+  '#B3FFB3', // 清新绿色
+  '#FFEB99', // 温暖黄色
+  '#B3FFB3',
+  '#FFB3B3', // 柔和红色
+  '#FFB3B3',
+  '#B3FFB3'
 ];
 
-const getSkillGradient = (index) => {
-  const colors = skillColors[index % skillColors.length];
-  return `linear-gradient(to right, ${colors[0]}, ${colors[1]})`;
+
+const getSkillColor = (index) => {
+  return skillColors[index % skillColors.length];
 };
+
 
 // 初始化图表
 const initChart = () => {
