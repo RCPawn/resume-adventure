@@ -20,50 +20,44 @@ export default {
         'Passionate About 3D and Interactive Design'
     ],
     skills: {
-        title: 'Skills & Expertise',
-        subtitle: 'From Tech Stack to Practice, Recording My Growth Journey',
+        title: 'Skills &Map',
+        subtitle: 'DB all varchar, algorithms bubble sort, AI = import keras (The % are for reference only)',
         skillTarget: 'Skill Target',
         current: 'Current Level',
         target: 'Target Level',
         items: [
             {
                 name: 'Full-Stack Dev',
-                desc: 'Proficient in Spring, Vue, and other technologies, capable of full-stack development from frontend to backend.',
                 icon: 'fas fa-laptop-code',
                 level: 60,
                 target: 85
             },
             {
                 name: 'Database Design',
-                desc: 'Proficient in MySQL, able to write complex SQL queries, and knowledgeable in database design and optimization.',
                 icon: 'fas fa-database',
                 level: 50,
                 target: 75
             },
             {
                 name: 'Algorithms',
-                desc: 'Solved 300+ problems on LeetCode, covering data structures, dynamic programming, backtracking, and greedy algorithms.',
                 icon: 'fas fa-code',
                 level: 55,
                 target: 80
             },
             {
                 name: 'AI & Machine Learning',
-                desc: 'Familiar with Python programming and has a foundational understanding of machine learning and deep learning.',
                 icon: 'fas fa-brain',
                 level: 20,
                 target: 70
             },
             {
                 name: 'Game & 3D Dev',
-                desc: 'Experienced in Unity game engine and Blender 3D modeling, capable of creating simple 3D assets.',
                 icon: 'fas fa-gamepad',
                 level: 30,
                 target: 60
             },
             {
                 name: 'Version Control',
-                desc: 'Proficient in Git workflows, efficient in team collaboration, and actively involved in open-source projects.',
                 icon: 'fab fa-github',
                 level: 60,
                 target: 80
@@ -102,7 +96,7 @@ export default {
             }
         ],
         title: 'Learning Experience',
-        subtitle: 'From Skills to Practice, Recording My Growth Journey',
+        subtitle: 'From hello world to hello bug',
         viewDetails: 'View Details'
     },
     stuffs: {
@@ -117,7 +111,7 @@ export default {
                 "Software Engineering, Junior Year (Undergraduate)",
                 "GPA 3.42/4.0 (Top 20% in Major)",
                 "University-Level Scholarship Recipient",
-                "English Proficiency: CET6, Skilled in Technical Documentation Reading"
+                "English Proficiency: CET-6, Skilled in Technical Documentation Reading"
             ]
         },
         skills: {
@@ -231,7 +225,7 @@ export default {
     },
     gallery: {
         title: 'Portfolio',
-        subtitle: 'Visual Journey of My Creative Process and Design Philosophy',
+        subtitle: 'Screenshots as a souvenir, proving that I once made it through',
     },
     footer: {
         appName: 'Dev Space',

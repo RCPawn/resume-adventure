@@ -227,7 +227,7 @@ onUnmounted(() => {
   transform: translateZ(0);
   filter: drop-shadow(0 2px 5px rgba(255, 235, 100, 0.3));
   will-change: transform;
-  margin-right: 0.8rem;
+  margin-right: 0.1rem;
   font-size: 2.5rem;
 }
 

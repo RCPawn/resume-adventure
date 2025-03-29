@@ -20,50 +20,44 @@ export default {
         '热衷于3D和互动设计'
     ],
     skills: {
-        title: '技能专长',
-        subtitle: '从技术栈到实践应用，记录我的成长历程',
+        title: '技能图谱',
+        subtitle: '数据库全varchar(255)，算法只会冒泡排序，AI=import keras（百分比仅供参考）',
         skillTarget: '技能目标',
         current: '当前水平',
         target: '目标水平',
         items: [
             {
                 name: '全栈开发',
-                desc: '熟练掌握Spring、Vue等技术栈，具备从前端到后端的开发能力，能够独立完成完整的系统开发工作。',
                 icon: 'fas fa-laptop-code',
                 level: 60,
                 target: 85
             },
             {
                 name: '数据库设计',
-                desc: '熟练使用MySQL数据库，能够编写常用SQL查询，具备数据库结构设计与优化的基础能力。',
                 icon: 'fas fa-database',
                 level: 50,
                 target: 75
             },
             {
                 name: '算法与数据结构',
-                desc: '在力扣平台完成300+道题目，涵盖数据结构、动态规划、回溯、贪心算法等，能够根据实际问题选用合适的算法进行优化。',
                 icon: 'fas fa-code',
                 level: 55,
                 target: 80
             },
             {
                 name: '人工智能与机器学习',
-                desc: '具备Python编程基础，并对机器学习和深度学习有初步了解，持续进行学习与实践。',
                 icon: 'fas fa-brain',
                 level: 20,
                 target: 70
             },
             {
                 name: '游戏与3D开发',
-                desc: '掌握Unity游戏引擎和Blender 3D建模基础技能，能够创建简单的3D模型和游戏资源。',
                 icon: 'fas fa-gamepad',
                 level: 30,
                 target: 60
             },
             {
                 name: '版本控制与协作',
-                desc: '熟悉Git工作流程，能够高效进行团队协作开发，积极参与开源项目。',
                 icon: 'fab fa-github',
                 level: 60,
                 target: 80
@@ -102,7 +96,7 @@ export default {
             }
         ],
         title: '学习经历',
-        subtitle: '从技能到实践，记录我的成长之路',
+        subtitle: '从 Hello World 到 Hello Bug',
         viewDetails: '查看详情'
     },
     stuffs: {
@@ -117,7 +111,7 @@ export default {
                 "软件工程专业，大三在读",
                 "GPA 3.42/4.0 (专业前20%)",
                 "校级优秀奖学金获得者",
-                "英语水平：CET6，熟练阅读技术文档"
+                "英语水平：CET-6，熟练阅读技术文档"
             ]
         },
 
@@ -232,7 +226,7 @@ export default {
     },
     gallery: {
         title: '作品展示',
-        subtitle: '用视觉记录我的创作历程，展示我的设计理念',
+        subtitle: '截图留念，证明曾经跑通过',
     },
     footer: {
         appName: '开发者空间',

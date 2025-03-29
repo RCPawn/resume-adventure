@@ -251,7 +251,7 @@ onUnmounted(() => {
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.1rem;
 }
 
 .title-icon {
