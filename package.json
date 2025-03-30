@@ -24,6 +24,7 @@
     "d3": "^7.9.0",
     "darkreader": "^4.9.96",
     "dompurify": "^3.2.4",
+    "draco3dgltf": "^1.5.7",
     "echarts": "^5.5.0",
     "fontfaceobserver": "^2.3.0",
     "gsap": "^3.12.7",

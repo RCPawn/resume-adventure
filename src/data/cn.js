@@ -96,8 +96,12 @@ export default {
             }
         ],
         title: '学习经历',
-        subtitle: '从 Hello World 到 Hello Bug',
+        subtitle: '我的Commit历史，从 Hello World 到 Hello Bug',
         viewDetails: '查看详情'
+    },
+    gallery: {
+        title: '作品展示',
+        subtitle: '截图留念，证明曾经跑通过',
     },
     stuffs: {
         back: '返回',
@@ -141,14 +145,14 @@ export default {
                 {
                     "name": "分布式基础",
                     "items": [
-                        "了解SpringCloud的基础概念，熟悉Nacos服务注册与OpenFeign远程调用的基本使用，理解其在微服务通信中的作用",
+                        "了解SpringCloud的基础概念，熟悉Nacos服务注册、OpenFeign远程调用和Dubbo（RPC通信、服务治理）等分布式服务框架，理解其在微服务通信中的作用",
                         "了解HTTP/HTTPS协议和TCP三次握手机制，掌握WebSocket实时通信原理"
                     ]
                 },
                 {
                     "name": "工程化工具",
                     "items": [
-                        "具备工程化开发能力，熟练使用Swagger生成接口文档，掌握Git分支管理、Maven多模块构建、Postman接口调试等工具和技术"
+                        "具备工程化开发能力，熟练使用Git进行版本控制，Swagger实现API文档自动化，Postman完成接口测试，具备良好的团队协作能力，保障开发流程规范高效"
                     ]
                 }
             ]
@@ -223,10 +227,6 @@ export default {
                 "问题解决：遇到技术难题，能够查阅官方文档、分析源码，在Stack Overflow和GitHub issues中寻找解决方案"
             ]
         }
-    },
-    gallery: {
-        title: '作品展示',
-        subtitle: '截图留念，证明曾经跑通过',
     },
     footer: {
         appName: '开发者空间',
