@@ -23,16 +23,14 @@
   </div>
 </template>
 
-
 <script setup>
-import {ref, onMounted, onUnmounted} from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import Reveal from "reveal.js";
 import RevealZoom from "reveal.js/plugin/zoom/zoom";
 import "reveal.js/dist/reveal.css";
 import "reveal.js/dist/theme/black.css";
 import GoBackButton from "@/components/GoBackButton.vue";
 
-// 引用
 const revealRef = ref(null);
 let deck = null;
 
@@ -47,19 +45,14 @@ const backgroundColors = [
 // 过渡效果数组
 const transitions = ["slide", "fade", "convex", "concave", "zoom"].flatMap((t) => Array(4).fill(t));
 
-// 获取背景颜色
 const getBackgroundColor = (index) => backgroundColors[index % backgroundColors.length];
-
-// 获取过渡效果
 const getTransition = (index) => transitions[index % transitions.length];
 
-// Reveal.js 初始化
 const initReveal = () => {
   if (!revealRef.value) return;
-
   deck = new Reveal(revealRef.value, {
-    width: 1200,
-    height: 700,
+    width: window.innerWidth > 768 ? 1200 : window.innerWidth,
+    height: window.innerWidth > 768 ? 700 : window.innerHeight,
     margin: 0.05,
     minScale: 0.2,
     maxScale: 2.0,
@@ -85,20 +78,22 @@ const initReveal = () => {
   });
 };
 
-// 监听窗口大小调整，防止不居中
 const handleResize = () => {
   if (deck) {
+    // 当窗口尺寸变化时，更新 Reveal 尺寸（移动端可能尺寸会发生较大变化）
+    deck.configure({
+      width: window.innerWidth > 768 ? 1200 : window.innerWidth,
+      height: window.innerWidth > 768 ? 700 : window.innerHeight,
+    });
     deck.layout();
   }
 };
 
-// 组件挂载
 onMounted(() => {
   initReveal();
   window.addEventListener("resize", handleResize);
 });
 
-// 组件卸载
 onUnmounted(() => {
   if (deck) {
     deck.destroy();
@@ -116,6 +111,7 @@ onUnmounted(() => {
 }
 
 .reveal {
+  width: 100%;
   height: 100%;
 }
 
@@ -141,5 +137,70 @@ onUnmounted(() => {
   top: 20px;
   left: 20px;
   z-index: 1000;
+}
+
+/* 强制显示左右切换按钮（Reveal 默认在移动端隐藏） */
+.reveal .controls {
+  opacity: 1 !important;
+  display: block !important;
+}
+
+/* 增大左右按钮点击区域，便于移动端操作 */
+.reveal .navigate-left,
+.reveal .navigate-right {
+  width: 50px;
+  height: 50px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: #fff;
+  transition: background-color 0.3s ease;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  cursor: pointer;
+}
+
+.reveal .navigate-left:hover,
+.reveal .navigate-right:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* 左右按钮的位置调整 */
+.reveal .navigate-left {
+  left: 10px;
+}
+
+.reveal .navigate-right {
+  right: 10px;
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+  .presentation-container {
+    height: 100vh;
+  }
+
+  .reveal {
+    width: 100%;
+    height: 100%;
+  }
+
+  .slide-image {
+    max-width: 95%;
+    max-height: 70vh;
+  }
+
+  /* 保证导航按钮在移动端也能显示 */
+  .reveal .controls,
+  .reveal .navigate-left,
+  .reveal .navigate-right {
+    opacity: 1 !important;
+    display: flex !important;
+  }
 }
 </style>

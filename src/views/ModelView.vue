@@ -211,6 +211,13 @@ onUnmounted(() => {
 
 <style scoped>
 
+.model-container {
+  position: relative;
+  min-height: 100vh;
+  background: #f8fafc;
+  overflow: hidden;
+}
+
 /* 优化加载提示样式 - 简约浅蓝色版本 */
 .loading-overlay {
   position: absolute;
@@ -404,6 +411,62 @@ canvas:active {
 
   .loading-text {
     font-size: 18px;
+  }
+}
+
+/* 移动端适配增强 */
+@media (max-width: 768px) {
+  .control-top {
+    top: 20px;
+    left: 15px;
+  }
+
+  .model-notice {
+    bottom: 20px;
+    width: 95%;
+  }
+
+  .notice-box {
+    padding: 12px;
+  }
+
+  .notice-header {
+    font-size: 15px;
+    padding-bottom: 6px;
+    margin-bottom: 6px;
+  }
+
+  .notice-content {
+    margin: 8px 0;
+    font-size: 13px;
+  }
+
+  .control-guide {
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+  }
+
+  .guide-item {
+    gap: 8px;
+  }
+
+  .key-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+
+  .guide-text {
+    font-size: 12px;
+  }
+
+  .loading-text {
+    font-size: 16px;
+  }
+
+  .progress-bar {
+    height: 6px;
   }
 }
 </style>

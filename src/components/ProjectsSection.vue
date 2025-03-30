@@ -1,5 +1,5 @@
 <script setup>
-import {ref, computed} from 'vue';
+import {ref, computed, onMounted} from 'vue';
 import {useI18n} from 'vue-i18n';
 import {useRouter} from 'vue-router';
 import projectsData from '@/data/projects.json';
@@ -9,6 +9,18 @@ const {t, tm} = useI18n();
 const router = useRouter();
 const showModal = ref(false);
 const activeIndex = ref(0);
+const isMobile = ref(false);
+
+// 检测设备类型
+const checkDeviceType = () => {
+  isMobile.value = window.innerWidth <= 768;
+};
+
+// 监听窗口大小变化
+onMounted(() => {
+  checkDeviceType();
+  window.addEventListener('resize', checkDeviceType);
+});
 
 const projects = computed(() => {
   return projectsData.map(project => ({
@@ -39,12 +51,46 @@ const handleProjectClick = (project) => {
 const closeModal = () => {
   showModal.value = false;
 };
+
+// 用于移动端的滑动功能
+const touchStartX = ref(0);
+const touchEndX = ref(0);
+
+const handleTouchStart = (e) => {
+  touchStartX.value = e.changedTouches[0].screenX;
+};
+
+const handleTouchEnd = (e) => {
+  touchEndX.value = e.changedTouches[0].screenX;
+  handleSwipe();
+};
+
+const handleSwipe = () => {
+  const swipeThreshold = 50;
+  if (touchEndX.value < touchStartX.value - swipeThreshold) {
+    // 左滑
+    activeIndex.value = getNextIndex();
+  } else if (touchEndX.value > touchStartX.value + swipeThreshold) {
+    // 右滑
+    activeIndex.value = getPrevIndex();
+  }
+};
+
+// 移动端切换项目
+const navigateProject = (direction) => {
+  if (direction === 'next') {
+    activeIndex.value = getNextIndex();
+  } else {
+    activeIndex.value = getPrevIndex();
+  }
+};
 </script>
 
 <template>
   <div id="projects" class="projects-container">
-    <div class="main-container">
-      <div class="usecases-nav">
+    <div class="main-container" :class="{'mobile-layout': isMobile}">
+      <!-- 标题部分 -->
+      <div class="usecases-nav" :class="{'mobile-header': isMobile}">
         <div class="sticky-header">
           <h1 class="gradient-text">📜{{ t('projects.title') }}</h1>
           <p class="subtitle">{{ t('projects.subtitle') }}</p>
@@ -52,7 +98,8 @@ const closeModal = () => {
         </div>
       </div>
 
-      <div class="projects-list">
+      <!-- 项目列表 - 桌面视图 -->
+      <div v-if="!isMobile" class="projects-list">
         <div
             v-for="(project, index) in projects"
             :key="project.name"
@@ -76,8 +123,46 @@ const closeModal = () => {
         </div>
       </div>
 
+      <!-- 项目列表 - 移动视图 (卡片滑动) -->
+      <div v-else class="mobile-projects-carousel"
+           @touchstart="handleTouchStart"
+           @touchend="handleTouchEnd">
+        <div class="mobile-projects-wrapper" :style="{transform: `translateX(-${activeIndex * 100}%)`}">
+          <div
+              v-for="(project, index) in projects"
+              :key="project.name"
+              class="mobile-project-card"
+              @click="handleProjectClick(project)"
+          >
+            <div class="mobile-project-image-container">
+              <img :src="project.image" :alt="project.name" class="project-image"/>
+              <div class="project-overlay"></div>
+            </div>
+            <div class="mobile-project-info">
+              <span class="project-number">{{ (index + 1).toString().padStart(2, '0') }}</span>
+              <h3 class="project-title">{{ project.name }}</h3>
+              <p class="project-description">{{ project.description }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 移动端导航控制 -->
+        <div class="mobile-navigation">
+          <button class="nav-button prev-button" @click.stop="navigateProject('prev')">&lt;</button>
+          <div class="mobile-indicators">
+            <span v-for="(_, index) in projects"
+                  :key="index"
+                  class="indicator-dot"
+                  :class="{'active': activeIndex === index}">
+            </span>
+          </div>
+          <button class="nav-button next-button" @click.stop="navigateProject('next')">&gt;</button>
+        </div>
+      </div>
+
+      <!-- 模态框 -->
       <div v-if="showModal" class="modal-overlay" @click="closeModal">
-        <div class="modal-content" @click.stop>
+        <div class="modal-content" :class="{'mobile-modal': isMobile}" @click.stop>
           <button class="close-button" @click="closeModal">×</button>
           <SkillTarget/>
         </div>
@@ -87,7 +172,6 @@ const closeModal = () => {
 </template>
 
 <style scoped>
-
 .projects-container {
   position: relative;
   width: 100%;
@@ -371,23 +455,6 @@ const closeModal = () => {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
 
-@media (max-width: 768px) {
-  .modal-content {
-    padding: 2rem;
-    width: 95%;
-    max-height: 90vh;
-    margin: 1rem;
-  }
-
-  .close-button {
-    top: 1rem;
-    right: 1rem;
-    width: 32px;
-    height: 32px;
-    font-size: 1.2rem;
-  }
-}
-
 @keyframes modalFadeIn {
   from {
     opacity: 0;
@@ -401,5 +468,218 @@ const closeModal = () => {
 
 .modal-content {
   animation: modalFadeIn 0.3s ease-out forwards;
+}
+
+/* 移动端样式 */
+.mobile-layout {
+  flex-direction: column;
+  margin: 4rem auto;
+  min-height: auto;
+  padding: 1.5rem;
+}
+
+.mobile-header {
+  width: 100%;
+  padding: 1rem 0 2rem;
+}
+
+.mobile-header .sticky-header {
+  position: relative;
+  top: 0;
+}
+
+.mobile-header .gradient-text {
+  font-size: 2.2rem;
+}
+
+.mobile-header .subtitle {
+  font-size: 1rem;
+  padding: 0 2rem;
+}
+
+/* 移动端轮播样式 */
+.mobile-projects-carousel {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  margin-top: 1rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-projects-wrapper {
+  display: flex;
+  transition: transform 0.4s ease;
+  width: 100%;
+}
+
+.mobile-project-card {
+  flex: 0 0 100%;
+  width: 100%;
+  background: #F7F7F7;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.mobile-project-image-container {
+  width: 100%;
+  height: 240px;
+  overflow: hidden;
+  position: relative;
+}
+
+.mobile-project-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mobile-project-info {
+  padding: 1.5rem;
+}
+
+.mobile-project-info .project-title {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.mobile-project-info .project-description {
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* 移动端导航控制 */
+.mobile-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(5px);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+}
+
+.nav-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.nav-button:active {
+  transform: scale(0.95);
+  background: #f0f0f0;
+}
+
+.mobile-indicators {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+}
+
+.indicator-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.indicator-dot.active {
+  width: 12px;
+  height: 12px;
+  background: var(--accent-color, #333);
+}
+
+/* 移动端模态框 */
+.mobile-modal {
+  width: 95%;
+  max-height: 90vh;
+  border-radius: 18px;
+  padding-top: 2.5rem;
+}
+
+.mobile-modal .close-button {
+  top: 1rem;
+  right: 1rem;
+  width: 32px;
+  height: 32px;
+  font-size: 1.2rem;
+}
+
+/* 横屏适配 */
+@media (max-width: 768px) and (orientation: landscape) {
+  .mobile-project-image-container {
+    height: 180px;
+  }
+
+  .mobile-layout {
+    margin: 2rem auto;
+  }
+
+  .mobile-header {
+    padding: 0.5rem 0 1rem;
+  }
+
+  .mobile-navigation {
+    padding: 0.5rem 1rem;
+  }
+}
+
+/* 小屏幕手机优化 */
+@media (max-width: 380px) {
+  .mobile-header .gradient-text {
+    font-size: 1.8rem;
+  }
+
+  .mobile-header .subtitle {
+    font-size: 0.9rem;
+  }
+
+  .mobile-project-image-container {
+    height: 200px;
+  }
+
+  .mobile-project-info .project-title {
+    font-size: 1.3rem;
+  }
+
+  .mobile-project-info {
+    padding: 1.2rem;
+  }
+
+  .nav-button {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* 项目卡片过渡动画增强 */
+.mobile-project-card {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transform: scale(0.98);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.mobile-projects-wrapper:hover .mobile-project-card {
+  transform: scale(1);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
 }
 </style>

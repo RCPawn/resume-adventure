@@ -165,7 +165,6 @@ const handleLinkClick = (link) => {
   width: 100%;
 }
 
-
 .footer-bottom {
   max-width: 1100px;
   margin: 2.5rem auto 0;
@@ -208,18 +207,52 @@ const handleLinkClick = (link) => {
   }
 }
 
+/* 移动端优化 */
 @media (max-width: 768px) {
+  .footer-section {
+    padding: 2.5rem 1.5rem 1rem;
+  }
+
   .footer-container {
     flex-direction: column;
+    align-items: center;
+    text-align: center;
     gap: 2rem;
   }
 
+  .footer-logo h2 {
+    font-size: 1.5rem;
+  }
+
+  .tagline {
+    font-size: 0.9rem;
+  }
+
+  .social-links {
+    justify-content: center;
+  }
+
   .footer-links {
+    flex-direction: column;
+    align-items: center;
     gap: 1.5rem;
+  }
+
+  .link-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .link-group h3 {
+    font-size: 1rem;
+  }
+
+  .link-group a {
+    font-size: 0.95rem;
   }
 
   .footer-bottom {
     flex-direction: column;
+    align-items: center;
     text-align: center;
     gap: 0.5rem;
   }
