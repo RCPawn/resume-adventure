@@ -15,19 +15,19 @@ export default {
     title: '嘿，我是过河卒',
     subtitle: '一名软件工程专业的学生',
     professions: [
-        '全栈开发者',
+        '后端开发者',
         '深度学习爱好者',
         '热衷于3D和互动设计'
     ],
     skills: {
         title: '技能图谱',
-        subtitle: '数据库全varchar(255)，算法只会冒泡排序，AI=import keras（百分比仅供参考）',
+        subtitle: '百分比为测试数据',
         skillTarget: '技能目标',
         current: '当前水平',
         target: '目标水平',
         items: [
             {
-                name: '全栈开发',
+                name: '后端开发',
                 icon: 'fas fa-laptop-code',
                 level: 60,
                 target: 85
@@ -96,7 +96,7 @@ export default {
             }
         ],
         title: '学习经历',
-        subtitle: '我的Commit历史，从 Hello World 到 Hello Bug',
+        subtitle: '从 Hello World 到 Hello Bug',
         viewDetails: '查看详情'
     },
     gallery: {
@@ -113,85 +113,85 @@ export default {
             title: "教育背景",
             items: [
                 "软件工程专业，大三在读",
-                "GPA 3.42/4.0 (专业前20%)",
-                "校级优秀奖学金获得者",
-                "英语水平：CET-6，熟练阅读技术文档"
+                "GPA 3.47/4.0 (专业前20%)",
+                "校级优秀奖学金",
+                "英语水平：CET-6"
             ]
         },
 
         skills: {
-            "title": "专业技能",
-            "categories": [
+            title: "专业技能",
+            categories: [
                 {
-                    "name": "编程语言",
-                    "items": [
-                        "具备扎实的Java基础，熟练掌握字符串处理、集合框架、多线程编程及常见排序算法，了解集合框架的实现原理"
+                    name: "编程语言",
+                    items: [
+                        "熟练使用Java语言，熟悉常用集合及数据结构，面向对象、反射、异常、类加载等"
                     ]
                 },
                 {
-                    "name": "存储层开发",
-                    "items": [
-                        "熟练使用MySQL进行数据存储与查询，了解索引（如B+树结构）和事务（ACID特性）的基本原理，能够编写高效的SQL语句解决常见业务需求",
-                        "熟悉Redis的基础应用，掌握String/Hash数据结构及RDB持久化机制，了解缓存的基本优化策略"
+                    name: "存储层开发",
+                    items: [
+                        "熟练使用MySQL，理解索引和事务的基本原理",
+                        "熟悉Redis，理解其数据结构、持久化策略、基本优化策略"
                     ]
                 },
                 {
-                    "name": "服务端框架",
-                    "items": [
-                        "掌握SpringBoot开发流程，熟悉IOC容器管理、AOP日志切面、MyBatis整合，能够独立开发RESTful API",
-                        "熟悉Spring Security认证流程，能基于JWT实现Token鉴权并设计RBAC权限控制体系"
+                    name: "服务端框架",
+                    items: [
+                        "熟悉SSM、SpringBoot、SpringCloud等框架，理解IOC、AOP、Bean生命周期，循环依赖等"
                     ]
                 },
                 {
-                    "name": "分布式基础",
-                    "items": [
-                        "了解SpringCloud的基础概念，熟悉Nacos服务注册、OpenFeign远程调用和Dubbo（RPC通信、服务治理）等分布式服务框架，理解其在微服务通信中的作用",
-                        "了解HTTP/HTTPS协议和TCP三次握手机制，掌握WebSocket实时通信原理"
+                    name: "系统设计",
+                    items: [
+                        "熟悉常见设计模式，如单例、工厂、模板方法、责任链、策略模式等",
+                        "了解JVM基础知识，包括堆、栈内存划分，垃圾回收概念，以及类加载的基本流程"
                     ]
                 },
                 {
-                    "name": "工程化工具",
-                    "items": [
-                        "具备工程化开发能力，熟练使用Git进行版本控制，Swagger实现API文档自动化，Postman完成接口测试，具备良好的团队协作能力，保障开发流程规范高效"
+                    name: "中间件",
+                    items: [
+                        "熟悉消息中间件RocketMQ，了解消息堆积和重试机制"
+                    ]
+                },
+                {
+                    name: "工程化工具",
+                    items: [
+                        "熟悉Git、Postman、Swagger等工具"
                     ]
                 }
             ]
         },
         projects: {
-            title: "项目经验",
+            title: "项目经历",
             stackLabel: "技术栈",
             contributionsLabel: "个人贡献",
             items: [
                 {
                     title: "榄人千里眼-万亩油橄榄林区资产可视智能管控平台",
+                    description: "校企合作项目，覆盖12个管区1000余台农业设备（捕虫灯、割草机等）的全生命周期数字化管理平台。实现了资产入库、跨区调拨、移动端扫码报修、报废处置等核心功能，解决了设备追踪难、权责界定模糊、跨区协同低效等行业痛点，项目待上线，预计为企业降低运维成本超30%。",
                     stack: "SpringBoot、Vue3、MySQL、Redis",
                     contributions: [
-                        "基于SpringBoot框架开发设备管理接口，采用MyBatis-Plus动态SQL处理多条件组合查询，集成PageHelper分页插件优化设备数据加载效率，并设计设备状态机（空闲、报修、报废）、维保流程等全生命周期管理功能",
-                        "基于RBAC模型构建管理员、操作员等角色权限体系，通过Spring Security+JWT实现Token认证，设计过滤器拦截越权操作（如操作员访问管理员接口），返回401/403状态码保障接口安全",
-                        "针对设备轨迹查询场景，在MySQL设计设备ID与时间戳的联合索引提升查询效率，结合Redis缓存高频访问的设备位置数据，降低数据库并发压力约20%",
-                        "编写后端模块设计方案，使用Swagger生成标准化接口文档，绘制系统核心业务流程图与数据库ER图，推动团队开发规范统一"
+                        "基于SpringBoot+MyBatis构建资产管理核心功能，实现设备借还、报修、报废等全生命周期状态流转",
+                        "利用Redis缓存热点资产数据，实现快速查询响应，减轻数据库访问压力约20%",
+                        "针对越权操作实现基于RBAC的权限控制系统，通过Spring Security+JWT实现Token认证，设计过滤器拦截越权操作",
+                        "实现资产维保工单派单功能，支持自动派单、进度追踪及超时告警",
+                        "针对批量数据处理场景，利用EasyExcel实现资产信息的批量导入/导出",
+                        "主导需求分析与技术方案设计，参与后端架构讨论，制定核心模块开发规范"
                     ],
                     highlight: "项目收获：掌握企业级全栈开发流程，提升SpringBoot整合技术栈的工程化落地能力，通过跨角色协作（产品、前端）完成项目交付，强化沟通与文档输出能力。"
                 },
                 {
-                    title: "苍穹外卖（黑马程序员课程实践）",
-                    stack: "SpringBoot, MyBatis, Redis, Vue3",
+                    title: "Resume Adventure（个人网站）",
+                    description: "基于SpringBoot+Vue3，独自设计的个人网站，通过AI辅助编程（Claude/ChatGPT）高效完成核心模块开发。",
+                    stack: "SpringBoot, Vue3",
                     contributions: [
-                        "按课程指导实现订单状态机模块（状态模式）",
-                        "练习Redis在购物车场景的应用（课程实验案例）",
-                        "基于教学模板完成WebSocket消息通知功能"
+                        "调用腾讯云大模型知识引擎API，基于个人知识库实现智能问答功能",
+                        "整合Three.js技术，实现项目展示区3D交互效果",
+                        "基于Reveal.js开发在线演示模块，将个人项目经历转化为交互式PPT展示",
+                        "设计开发简洁美观的个人信息展示页面，清晰呈现学习经历、技能与项目成果"
                     ],
-                    highlight: "课程延伸：使用Postman完成30+接口测试用例"
-                },
-                {
-                    title: "大事件（黑马程序员课程实践）",
-                    stack: "SpringBoot, Vue3, MySQL",
-                    contributions: [
-                        "课程实践：根据教学文档实现文章分类管理模块",
-                        "应用课程知识完成响应式布局（Flexbox/Grid）",
-                        "通过课程案例掌握JWT鉴权流程与Quill富文本集成"
-                    ],
-                    highlight: "课程收获：系统掌握SpringBoot+Vue3工程化开发流程，实践Git进行版本控制与团队协作"
+                    highlight: "项目特点：独立全栈开发项目，实践AI辅助编程工作流，探索前沿技术在实际项目中的应用。"
                 }
             ]
         },

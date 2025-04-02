@@ -15,19 +15,19 @@ export default {
     title: 'HEY, I AM RCPAWN',
     subtitle: 'A SOFTWARE ENGINEERING STUDENT',
     professions: [
-        'Full-stack Developer',
+        'Backend Developer',
         'Deep Learning Enthusiast',
         'Passionate About 3D and Interactive Design'
     ],
     skills: {
         title: 'Skills & Map',
-        subtitle: 'DB all varchar, algorithms bubble sort, AI = import keras (The % are for reference only)',
+        subtitle: 'The % are for reference only',
         skillTarget: 'Skill Target',
         current: 'Current Level',
         target: 'Target Level',
         items: [
             {
-                name: 'Full-Stack Dev',
+                name: 'BackendDev',
                 icon: 'fas fa-laptop-code',
                 level: 60,
                 target: 85
@@ -154,39 +154,34 @@ export default {
         },
         projects: {
             title: "Projects",
-            stackLabel: "Tech Stack",
-            contributionsLabel: "Personal Contributions",
+            stackLabel: "Technology Stack",
+            contributionsLabel: "Key Contributions",
             items: [
                 {
-                    "title": "Olive Vision - Intelligent Visual Management Platform for 10,000-Acre Olive Grove Assets",
-                    "stack": "SpringBoot, Vue3, MySQL, Redis",
-                    "contributions": [
-                        "Developed device management interfaces based on the SpringBoot framework, utilizing MyBatis-Plus dynamic SQL for handling multi-criteria queries, integrated the PageHelper pagination plugin to optimize device data loading efficiency, and designed a device state machine (Idle, Under Repair, Scrapped) along with maintenance workflows for full lifecycle management.",
-                        "Established a role-based access control (RBAC) system for roles such as administrators and operators, implemented token authentication using Spring Security and JWT, and designed filters to intercept unauthorized operations (e.g., operators accessing admin interfaces), returning 401/403 status codes to ensure interface security.",
-                        "For device tracking queries, designed a composite index on device ID and timestamp in MySQL to enhance query efficiency, and combined Redis caching for frequently accessed device location data to reduce database load by approximately 20%.",
-                        "Drafted backend module design proposals, utilized Swagger to generate standardized API documentation, and created core business process flowcharts and database ER diagrams to promote unified team development standards."
+                    title: "Olive Vision - Intelligent Asset Management Platform for Olive Groves",
+                    description: "A university-enterprise collaboration project covering digital lifecycle management for over 1000 agricultural devices (insect traps, mowers, etc.) across 12 management zones. Implemented core features including asset registration, cross-zone transfers, mobile QR code maintenance requests, and disposal processes. Addressed industry pain points like difficult device tracking, ambiguous responsibility definition, and inefficient cross-zone coordination. Project pending launch with expected 30%+ reduction in operational costs.",
+                    stack: "SpringBoot, Vue3, MySQL, Redis",
+                    contributions: [
+                        "Developed core asset management features using SpringBoot+MyBatis, implementing complete lifecycle state transitions (check-in/out, maintenance, disposal)",
+                        "Utilized Redis to cache hotspot asset data, improving query response time and reducing database pressure by ~20%",
+                        "Implemented RBAC-based permission control system with Spring Security+JWT token authentication, designing filters to block unauthorized operations",
+                        "Developed maintenance work order dispatch system with auto-assignment, progress tracking and timeout alerts",
+                        "Implemented batch data processing using EasyExcel for bulk import/export of asset information",
+                        "Led requirements analysis and technical solution design, participated in backend architecture discussions, and established core module development standards"
                     ],
-                    "highlight": "Project Achievements: Gained mastery over enterprise-level full-stack development processes, enhanced the implementation of integrated SpringBoot technology stacks, delivered the project through cross-functional collaboration (product, front-end), and strengthened communication and documentation skills."
+                    highlight: "Key Takeaways: Mastered enterprise full-stack development processes, enhanced engineering implementation capabilities with SpringBoot integration, improved communication and documentation skills through cross-role collaboration (product managers, frontend developers)."
                 },
                 {
-                    "title": "Celestial Takeaway (HeiMa Programmer Course Practice)",
-                    "stack": "SpringBoot, MyBatis, Redis, Vue3",
-                    "contributions": [
-                        "Implemented an order state machine module (State Pattern) following course instructions.",
-                        "Practiced applying Redis in shopping cart scenarios (course lab example).",
-                        "Completed WebSocket message notification functionality based on the provided teaching template."
+                    title: "Resume Adventure (Personal Website)",
+                    description: "Independently designed personal website using SpringBoot+Vue3, with core modules developed efficiently through AI-assisted programming (Claude/ChatGPT).",
+                    stack: "SpringBoot, Vue3",
+                    contributions: [
+                        "Integrated Tencent Cloud's AI knowledge engine API to implement intelligent Q&A based on personal knowledge base",
+                        "Incorporated Three.js technology to create 3D interactive effects in project showcase area",
+                        "Developed online presentation module using Reveal.js to transform project experience into interactive slides",
+                        "Designed and developed clean, aesthetic personal information display pages showcasing education, skills and project achievements"
                     ],
-                    "highlight": "Course Extension: Executed over 30 API test cases using Postman."
-                },
-                {
-                    "title": "Big Events (HeiMa Programmer Course Practice)",
-                    "stack": "SpringBoot, Vue3, MySQL",
-                    "contributions": [
-                        "Course Practice: Implemented an article category management module according to teaching documents.",
-                        "Applied course knowledge to develop responsive layouts using Flexbox/Grid.",
-                        "Mastered JWT authentication flow and integrated the Quill rich text editor through a course case study."
-                    ],
-                    "highlight": "Course Achievements: Systematically mastered the SpringBoot+Vue3 engineering development process and practiced Git for version control and team collaboration."
+                    highlight: "Project Highlights: Independent full-stack development project, practiced AI-assisted programming workflow, explored cutting-edge technology applications in real projects."
                 }
             ]
         },

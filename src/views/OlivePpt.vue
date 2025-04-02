@@ -139,46 +139,6 @@ onUnmounted(() => {
   z-index: 1000;
 }
 
-/* 强制显示左右切换按钮（Reveal 默认在移动端隐藏） */
-.reveal .controls {
-  opacity: 1 !important;
-  display: block !important;
-}
-
-/* 增大左右按钮点击区域，便于移动端操作 */
-.reveal .navigate-left,
-.reveal .navigate-right {
-  width: 50px;
-  height: 50px;
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 50%;
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-  color: #fff;
-  transition: background-color 0.3s ease;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  cursor: pointer;
-}
-
-.reveal .navigate-left:hover,
-.reveal .navigate-right:hover {
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-/* 左右按钮的位置调整 */
-.reveal .navigate-left {
-  left: 10px;
-}
-
-.reveal .navigate-right {
-  right: 10px;
-}
-
 /* 移动端优化 */
 @media (max-width: 768px) {
   .presentation-container {
@@ -195,12 +155,5 @@ onUnmounted(() => {
     max-height: 70vh;
   }
 
-  /* 保证导航按钮在移动端也能显示 */
-  .reveal .controls,
-  .reveal .navigate-left,
-  .reveal .navigate-right {
-    opacity: 1 !important;
-    display: flex !important;
-  }
 }
 </style>

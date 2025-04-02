@@ -98,6 +98,10 @@ const sections = [
         <div class="content-scrollable">
           <div v-for="(project, index) in tm('resume.projects.items')" :key="index" class="project-item">
             <h3 class="project-title">{{ project.title }}</h3>
+            <!-- 新增：项目描述 -->
+            <div class="project-description">
+              {{ project.description }}
+            </div>
             <div class="project-stack">
               <span class="stack-label">{{ t('resume.projects.stackLabel') }}：</span>
               <span class="stack-content">{{ project.stack }}</span>
@@ -347,6 +351,13 @@ ul li::before {
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 12px;
+}
+
+/* 新增：项目描述样式 */
+.project-description {
+  margin-bottom: 16px;
+  line-height: 1.6;
+  color: #333333;
 }
 
 .project-stack {

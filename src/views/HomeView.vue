@@ -18,7 +18,6 @@ import SkillsSection from "@/components/SkillsSection.vue";
 import ProjectsSection from '@/components/ProjectsSection.vue';
 import ExperienceSection from "@/components/GallerySection.vue";
 import FooterSection from '@/components/FooterSection.vue';
-
 import {onMounted} from 'vue';
 
 onMounted(() => {
