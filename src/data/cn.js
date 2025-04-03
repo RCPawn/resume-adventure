@@ -10,7 +10,7 @@ export default {
         experience: '经历',
         gallery: '画廊',
         resume: '简历',
-        footer: '页脚'
+        footer: '网站相关'
     },
     title: '嘿，我是过河卒',
     subtitle: '一名软件工程专业的学生',

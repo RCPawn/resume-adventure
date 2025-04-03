@@ -10,7 +10,7 @@ export default {
         experience: 'Experience',
         gallery: 'Gallery',
         resume: 'Resume',
-        footer: 'Footer'
+        footer: 'About'
     },
     title: 'HEY, I AM RCPAWN',
     subtitle: 'A SOFTWARE ENGINEERING STUDENT',
