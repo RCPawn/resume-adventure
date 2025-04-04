@@ -254,7 +254,7 @@ export default {
                 links: [
                     {text: '全栈应用', url: '/olive-ppt'},
                     {text: '3D模型', url: '/model'},
-                    {text: 'AI 实验室', url: '/coming-soon'}
+                    {text: 'AI 实验室', url: '/https://github.com/RCPawn/ai-generate-prompt-words/blob/main/README.md'}
                 ]
             },
             {
