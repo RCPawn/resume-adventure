@@ -5,21 +5,43 @@
         <h2>{{ t('footer.appName') }}</h2>
         <p class="tagline">{{ t('footer.tagline') }}</p>
         <div class="social-links">
-          <a v-for="(social, index) in tm('footer.socialLinks')" :key="index" :href="social.url" class="social-link"
-             target="_blank" rel="noopener noreferrer">
+          <a
+              v-for="(social, index) in tm('footer.socialLinks')"
+              :key="index"
+              :href="social.url"
+              class="social-link"
+              target="_blank"
+              rel="noopener noreferrer"
+          >
             <i :class="social.icon"></i>
           </a>
         </div>
       </div>
 
       <div class="footer-links">
-        <div v-for="(group, index) in tm('footer.linkGroups')" :key="index" class="link-group">
+        <div
+            v-for="(group, index) in tm('footer.linkGroups')"
+            :key="index"
+            class="link-group"
+        >
           <h3>{{ group.title }}</h3>
           <ul>
             <li v-for="(link, linkIndex) in group.links" :key="linkIndex">
-              <router-link :to="link.url" @click="handleLinkClick(link)">
+              <router-link
+                  v-if="!isExternal(link.url)"
+                  :to="link.url"
+                  @click="handleLinkClick(link)"
+              >
                 {{ link.text }}
               </router-link>
+              <a
+                  v-else
+                  :href="link.url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+              >
+                {{ link.text }}
+              </a>
             </li>
           </ul>
         </div>
@@ -27,25 +49,36 @@
     </div>
 
     <div class="footer-bottom">
-      <p class="copyright">{{ t('footer.copyright', {year: new Date().getFullYear()}) }}</p>
-      <p class="made-with">{{ t('footer.madeWith') }} <span class="heart">❤</span></p>
+      <p class="copyright">
+        {{ t('footer.copyright', {year: new Date().getFullYear()}) }}
+      </p>
+      <p class="made-with">
+        {{ t('footer.madeWith') }} <span class="heart">❤</span>
+      </p>
     </div>
   </footer>
 </template>
 
 <script setup>
-import { useI18n } from 'vue-i18n';
+import {useI18n} from 'vue-i18n';
 
-const { t, tm } = useI18n();
+const {t, tm} = useI18n();
 
 // Emits
 const emit = defineEmits(['linkClicked']);
 
-// Methods
+// 判断链接是否为外部链接的方法
+const isExternal = (url) => {
+  // 判断链接是否以 "http://" 或 "https://" 开头
+  return url.startsWith('http://') || url.startsWith('https://');
+};
+
+// 点击链接时触发事件
 const handleLinkClick = (link) => {
   emit('linkClicked', link);
 };
 </script>
+
 
 <style scoped>
 .footer-section {
