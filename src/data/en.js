@@ -72,15 +72,15 @@ export default {
             },
             {
                 name: "Algorithm",
-                description: "Systematically solved 300+ algorithm challenges covering data structures, dynamic programming, backtracking, greedy algorithms and more"
+                description: "Stay tuned😊"
             },
             {
                 name: "GitHub Project",
-                description: "Utilized GitHub for hosting personal project code, actively explored open-source resources, and developed version control skills and technical perspective"
+                description: "Stay tuned😊"
             },
             {
                 name: "Deep Learning",
-                description: "Self-taught deep learning fundamentals through YouTube and other platforms, practiced basic image recognition models, passionate about frontier AI technologies"
+                description: "Stay tuned😊"
             },
             {
                 name: "Resume Adventure",
@@ -238,7 +238,7 @@ export default {
                 links: [
                     {text: 'Full Stack Apps', url: '/olive-ppt'},
                     {text: '3D Model', url: '/model'},
-                    {text: 'AI Lab', url: '/coming-soon'}
+                    {text: 'AI Lab', url: 'https://github.com/RCPawn/ai-generate-prompt-words/blob/main/README.md'}
                 ]
             },
             {
@@ -252,9 +252,9 @@ export default {
             {
                 title: 'About',
                 links: [
-                    {text: 'Bio', url: '/coming-soon'},
+                    {text: 'Bio', url: 'https://github.com/RCPawn/rcpawn'},
                     {text: 'Contact', url: '/coming-soon'},
-                    {text: 'Blog', url: '/coming-soon'}
+                    {text: 'Blog', url: 'https://github.com/RCPawn/rcpawn'}
                 ]
             }
         ]

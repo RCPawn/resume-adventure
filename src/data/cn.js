@@ -10,7 +10,7 @@ export default {
         experience: '经历',
         gallery: '画廊',
         resume: '简历',
-        footer: '网站相关'
+        footer: '关于'
     },
     title: '嘿，我是过河卒',
     subtitle: '一名软件工程专业的学生',
@@ -71,20 +71,20 @@ export default {
                 description: "油橄榄园区一体化平台，融合数据可视化、WebGIS与区块链技术的全域资产管理平台"
             },
             {
-                name: "算法刷题",
-                description: "系统性解决300+算法题，涵盖数据结构、动态规划、回溯、贪心算法等"
+                name: "算法心得",
+                description: "敬请期待😊"
             },
             {
-                name: "GitHub项目管理",
-                description: "使用GitHub托管个人项目代码，积极探索开源资源，培养版本控制能力与技术视野"
+                name: "GitHub开源",
+                description: "敬请期待😊"
             },
             {
-                name: "深度学习入门",
-                description: "通过YouTube等平台自学深度学习相关知识，实践简单图像识别模型，对AI前沿技术的学习充满热情"
+                name: "深度学习",
+                description: "敬请期待😊"
             },
             {
                 name: "简历冒险",
-                description: "基于Unity3D开发的互动游戏，通过驾驶小车探索我的学习历程"
+                description: "基于Unity3D开发的互动游戏，通过驾驶小车探索我的学习历程（敬请期待😊）"
             },
             {
                 name: "甜甜圈",
@@ -92,7 +92,7 @@ export default {
             },
             {
                 name: "技能目标",
-                description: "构建个人全栈发展规划，涵盖前后端、算法、深度学习与产品设计等多领域技能体系，持续迭代更新"
+                description: "简单展示自己的技能目标（当前百分比为测试数据）"
             }
         ],
         title: '学习经历',
@@ -254,7 +254,7 @@ export default {
                 links: [
                     {text: '全栈应用', url: '/olive-ppt'},
                     {text: '3D模型', url: '/model'},
-                    {text: 'AI 实验室', url: 'https://github.com/RCPawn/ai-generate-prompt-words/blob/main/README.md'}
+                    {text: 'AI实验室', url: 'https://github.com/RCPawn/ai-generate-prompt-words/blob/main/README.md'}
                 ]
             },
             {
@@ -268,9 +268,9 @@ export default {
             {
                 title: '关于',
                 links: [
-                    {text: '简介', url: '/coming-soon'},
+                    {text: '简介', url: 'https://github.com/RCPawn/rcpawn'},
                     {text: '联系', url: '/coming-soon'},
-                    {text: '博客', url: '/coming-soon'}
+                    {text: '博客', url: 'https://github.com/RCPawn/rcpawn'}
                 ]
             }
         ]
