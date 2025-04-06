@@ -256,9 +256,9 @@ export default {
             {
                 title: 'About',
                 links: [
-                    {text: 'Bio', url: 'https://github.com/RCPawn/rcpawn'},
+                    {text: 'Bio', url: 'https://github.com/RCPawn'},
                     {text: 'Contact', url: '/coming-soon'},
-                    {text: 'Blog', url: 'https://github.com/RCPawn/rcpawn'}
+                    {text: 'Blog', url: 'https://github.com/RCPawn'}
                 ]
             }
         ]

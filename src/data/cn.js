@@ -272,9 +272,9 @@ export default {
             {
                 title: '关于',
                 links: [
-                    {text: '简介', url: 'https://github.com/RCPawn/rcpawn'},
+                    {text: '简介', url: 'https://github.com/RCPawn'},
                     {text: '联系', url: '/coming-soon'},
-                    {text: '博客', url: 'https://github.com/RCPawn/rcpawn'}
+                    {text: '博客', url: 'https://github.com/RCPawn'}
                 ]
             }
         ]
