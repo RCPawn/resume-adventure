@@ -5,6 +5,7 @@
     "image": "/images/tree.png",
     "link": "/olive-ppt"
   },
+
   {
     "nameKey": "projects.items.1.name",
     "descriptionKey": "projects.items.1.description",
@@ -26,18 +27,24 @@
   {
     "nameKey": "projects.items.4.name",
     "descriptionKey": "projects.items.4.description",
-    "image": "/images/car.webp",
-    "link": "/game"
+    "image": "/images/neural_network.webp",
+    "link": "/weather"
   },
   {
     "nameKey": "projects.items.5.name",
     "descriptionKey": "projects.items.5.description",
-    "image": "/images/donut.webp",
-    "link": "/model"
+    "image": "/images/car.webp",
+    "link": "/game"
   },
   {
     "nameKey": "projects.items.6.name",
     "descriptionKey": "projects.items.6.description",
+    "image": "/images/donut.webp",
+    "link": "/model"
+  },
+  {
+    "nameKey": "projects.items.7.name",
+    "descriptionKey": "projects.items.7.description",
     "image": "/images/skill_target.webp",
     "link": "/roadmap"
   }

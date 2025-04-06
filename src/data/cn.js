@@ -83,6 +83,10 @@ export default {
                 description: "敬请期待😊"
             },
             {
+                name: "天气App",
+                description: "后端还未部署（敬请期待😊）"
+            },
+            {
                 name: "简历冒险",
                 description: "基于Unity3D开发的互动游戏，通过驾驶小车探索我的学习历程（敬请期待😊）"
             },

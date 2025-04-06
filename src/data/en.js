@@ -83,6 +83,10 @@ export default {
                 description: "Stay tuned😊"
             },
             {
+                name: "Weather App",
+                description: "Stay tuned😊"
+            },
+            {
                 name: "Resume Adventure",
                 description: "Interactive game developed with Unity3D where players drive through a virtual world exploring my learning journey"
             },

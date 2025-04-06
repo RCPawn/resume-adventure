@@ -1,91 +1,3 @@
-<script setup>
-import {ref, computed, onMounted} from 'vue';
-import {useI18n} from 'vue-i18n';
-import {useRouter} from 'vue-router';
-import projectsData from '@/data/projects.json';
-import SkillTarget from '@/components/TargetWindow.vue';
-
-const {t, tm} = useI18n();
-const router = useRouter();
-const showModal = ref(false);
-const activeIndex = ref(0);
-const isMobile = ref(false);
-
-// 检测设备类型
-const checkDeviceType = () => {
-  isMobile.value = window.innerWidth <= 768;
-};
-
-// 监听窗口大小变化
-onMounted(() => {
-  checkDeviceType();
-  window.addEventListener('resize', checkDeviceType);
-});
-
-const projects = computed(() => {
-  return projectsData.map(project => ({
-    name: t(project.nameKey),
-    description: t(project.descriptionKey),
-    image: project.image,
-    link: project.link,
-    icon: project.icon
-  }));
-});
-
-const getPrevIndex = () => {
-  return (activeIndex.value - 1 + projects.value.length) % projects.value.length;
-};
-
-const getNextIndex = () => {
-  return (activeIndex.value + 1) % projects.value.length;
-};
-
-const handleProjectClick = (project) => {
-  if (project.link === '/roadmap') {
-    showModal.value = true;
-  } else if (project.link) {
-    router.push(project.link);
-  }
-};
-
-const closeModal = () => {
-  showModal.value = false;
-};
-
-// 用于移动端的滑动功能
-const touchStartX = ref(0);
-const touchEndX = ref(0);
-
-const handleTouchStart = (e) => {
-  touchStartX.value = e.changedTouches[0].screenX;
-};
-
-const handleTouchEnd = (e) => {
-  touchEndX.value = e.changedTouches[0].screenX;
-  handleSwipe();
-};
-
-const handleSwipe = () => {
-  const swipeThreshold = 50;
-  if (touchEndX.value < touchStartX.value - swipeThreshold) {
-    // 左滑
-    activeIndex.value = getNextIndex();
-  } else if (touchEndX.value > touchStartX.value + swipeThreshold) {
-    // 右滑
-    activeIndex.value = getPrevIndex();
-  }
-};
-
-// 移动端切换项目
-const navigateProject = (direction) => {
-  if (direction === 'next') {
-    activeIndex.value = getNextIndex();
-  } else {
-    activeIndex.value = getPrevIndex();
-  }
-};
-</script>
-
 <template>
   <div id="projects" class="projects-container">
     <div class="main-container" :class="{'mobile-layout': isMobile}">
@@ -160,16 +72,138 @@ const navigateProject = (direction) => {
         </div>
       </div>
 
-      <!-- 模态框 -->
+      <!-- 原来的模态框 -->
       <div v-if="showModal" class="modal-overlay" @click="closeModal">
         <div class="modal-content" :class="{'mobile-modal': isMobile}" @click.stop>
           <button class="close-button" @click="closeModal">×</button>
           <SkillTarget/>
         </div>
       </div>
+
+      <!-- 天气模态框 -->
+      <WeatherModal
+          :show="showWeatherModal"
+          :isMobile="isMobile"
+          @close="closeWeatherModal"
+      />
+
     </div>
+
   </div>
 </template>
+
+<script setup>
+import {ref, computed, onMounted, watch} from 'vue';
+import {useI18n} from 'vue-i18n';
+import {useRouter, useRoute} from 'vue-router';
+import projectsData from '@/data/projects.json';
+import SkillTarget from '@/components/TargetWindow.vue';
+import WeatherModal from '@/components/WeatherModel.vue'; // 导入天气组件
+
+const {t, tm} = useI18n();
+const router = useRouter();
+const route = useRoute(); // 获取当前路由
+const showModal = ref(false);
+const showWeatherModal = ref(false); // 天气模态框状态
+const activeIndex = ref(0);
+const isMobile = ref(false);
+
+// 监听路由变化，检测是否需要显示天气弹窗
+watch(() => route.path, (newPath) => {
+  if (newPath === '/weather') {
+    showWeatherModal.value = true;
+  }
+}, { immediate: true });
+
+// 检测设备类型
+const checkDeviceType = () => {
+  isMobile.value = window.innerWidth <= 768;
+};
+
+// 监听窗口大小变化
+onMounted(() => {
+  checkDeviceType();
+  window.addEventListener('resize', checkDeviceType);
+
+  // 初始化时检查是否在天气路径
+  if (route.path === '/weather') {
+    showWeatherModal.value = true;
+  }
+});
+
+const projects = computed(() => {
+  return projectsData.map(project => ({
+    name: t(project.nameKey),
+    description: t(project.descriptionKey),
+    image: project.image,
+    link: project.link,
+    icon: project.icon
+  }));
+});
+
+const getPrevIndex = () => {
+  return (activeIndex.value - 1 + projects.value.length) % projects.value.length;
+};
+
+const getNextIndex = () => {
+  return (activeIndex.value + 1) % projects.value.length;
+};
+
+const handleProjectClick = (project) => {
+  if (project.link === '/roadmap') {
+    showModal.value = true;
+  } else if (project.link === '/weather') {
+    showWeatherModal.value = true; // 打开天气模态框
+  } else if (project.link) {
+    router.push(project.link);
+  }
+};
+
+const closeModal = () => {
+  showModal.value = false;
+};
+
+const closeWeatherModal = () => {
+  showWeatherModal.value = false;
+  // 返回上一个路由，如果是直接访问 /weather
+  if (route.path === '/weather') {
+    router.push('/');
+  }
+};
+
+// 用于移动端的滑动功能
+const touchStartX = ref(0);
+const touchEndX = ref(0);
+
+const handleTouchStart = (e) => {
+  touchStartX.value = e.changedTouches[0].screenX;
+};
+
+const handleTouchEnd = (e) => {
+  touchEndX.value = e.changedTouches[0].screenX;
+  handleSwipe();
+};
+
+const handleSwipe = () => {
+  const swipeThreshold = 50;
+  if (touchEndX.value < touchStartX.value - swipeThreshold) {
+    // 左滑
+    activeIndex.value = getNextIndex();
+  } else if (touchEndX.value > touchStartX.value + swipeThreshold) {
+    // 右滑
+    activeIndex.value = getPrevIndex();
+  }
+};
+
+// 移动端切换项目
+const navigateProject = (direction) => {
+  if (direction === 'next') {
+    activeIndex.value = getNextIndex();
+  } else {
+    activeIndex.value = getPrevIndex();
+  }
+};
+</script>
 
 <style scoped>
 .projects-container {
