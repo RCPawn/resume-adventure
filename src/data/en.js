@@ -1,3 +1,4 @@
+/*
 // data/i18n/en.js
 // 英文语言包
 import '@/assets/styles/leetcodeIcon.css';
@@ -113,7 +114,7 @@ export default {
             title: "Education",
             items: [
                 "Software Engineering, Junior Year (Undergraduate)",
-                "GPA 3.42/4.0 (Top 20% in Major)",
+                "GPA 3.47/4.0 (Top 20% in Major)",
                 "University-Level Scholarship Recipient",
                 "English Proficiency: CET-6, Skilled in Technical Documentation Reading"
             ]
@@ -261,6 +262,171 @@ export default {
                     {text: 'Blog', url: 'https://github.com/RCPawn'}
                 ]
             }
+        ]
+    }
+}
+*/
+// data/i18n/en.js
+import '@/assets/styles/leetcodeIcon.css';
+
+export default {
+    nav: {
+        logo: 'Pawn',
+        home: 'Home',
+        skill: 'Skills',
+        experience: 'Experience',
+        gallery: 'Gallery',
+        resume: 'Resume',
+        footer: 'About'
+    },
+    title: "Hey, I'm Pawn",
+    subtitle: 'A Software Engineering Student',
+    professions: [
+        'Backend Developer',
+        'Deep Learning Enthusiast',
+        'Passionate about 3D & Interactive Design'
+    ],
+    skills: {
+        title: 'Skill Map',
+        subtitle: 'Percentages are for demonstration purposes',
+        skillTarget: 'Target',
+        current: 'Current',
+        target: 'Goal',
+        items: [
+            { name: 'Backend', icon: 'fas fa-laptop-code', level: 60, target: 85 },
+            { name: 'Database', icon: 'fas fa-database', level: 50, target: 75 },
+            { name: 'Algorithm', icon: 'fas fa-code', level: 55, target: 80 },
+            { name: 'AI/ML', icon: 'fas fa-brain', level: 20, target: 70 },
+            { name: '3D/Game', icon: 'fas fa-gamepad', level: 30, target: 60 },
+            { name: 'Git/Collab', icon: 'fab fa-github', level: 60, target: 80 }
+        ]
+    },
+    projects: {
+        items: [
+            {
+                name: "Intangible Heritage Exhibition",
+                description: "Digital twin platform for Bai heritage, featuring 3D exhibits, real-time statistics, and interactive discussions."
+            },
+            {
+                name: "Olive Overseer",
+                description: "Asset digitalization platform for olive forests, integrating data visualization, WebGIS, and asset management."
+            }
+        ],
+        title: 'Learning Path',
+        subtitle: 'From Hello World to Hello Bug',
+        viewDetails: 'View Details'
+    },
+    resume: {
+        education: {
+            title: "Education",
+            items: [
+                "Southwest Minzu University - B.E. - Software Engineering (2022.09 - 2026.07)",
+                "GPA: 3.47 / 4.00 (Top 20%)",
+                "School-level Scholarship for two consecutive years (2023-2025)",
+                "English Proficiency: CET-6"
+            ]
+        },
+        skills: {
+            title: "Professional Skills",
+            categories: [
+                {
+                    name: "Java Core",
+                    items: [
+                        "Proficient in Java core syntax, collection frameworks, and OOP; familiar with reflection and exception handling."
+                    ]
+                },
+                {
+                    name: "Backend Development",
+                    items: [
+                        "Proficient in Spring Boot / Spring MVC; understand IoC, AOP, and Bean lifecycle.",
+                        "Proficient in MyBatis; capable of writing SQL for business needs; understand index optimization and locking."
+                    ]
+                },
+                {
+                    name: "Storage & Interactive",
+                    items: [
+                        "Proficient in MySQL and Redis; understand common data structures and cache consistency schemes.",
+                        "Familiar with Vue3 and WebGL (model-viewer) rendering; experienced in 3D model data interaction."
+                    ]
+                },
+                {
+                    name: "Engineering Tools",
+                    items: [
+                        "Proficient in IDEA, Git, Maven, and other core tools; consistent habit of writing Markdown documentation."
+                    ]
+                }
+            ]
+        },
+        projects: {
+            title: "Project Experience",
+            stackLabel: "Tech Stack",
+            contributionsLabel: "Key Responsibilities",
+            items: [
+                {
+                    title: "Design & Implementation of Intangible Heritage Digital Hall based on SpringBoot/WebGL (2025.12 - Present)",
+                    description: "Description: A digital twin platform for Bai heritage, featuring 3D exhibits, real-time statistics, and interactive discussions.",
+                    stack: "Spring Boot, Vue3, WebGL (model-viewer), MyBatis, MySQL",
+                    contributions: [
+                        "Developed the end-to-end system based on a mature framework; reshaped high-fidelity layouts following Poizon design specs; achieved a technical closed loop.",
+                        "Designed and implemented the Like/Favorite toggle logic; introduced user_action tables with @Transactional to ensure data consistency.",
+                        "Utilized atomic operations and CASE WHEN logic at the SQL layer to prevent data pollution and ensure non-negative count values.",
+                        "Solved rendering loops and white-screen issues for the <model-viewer> component using Vue3 lifecycle management and Key mechanisms."
+                    ]
+                },
+                {
+                    title: "Olive Overseer - Digital Asset Intelligent Control Platform (2024.09 - 2025.03)",
+                    description: "Description: A lab collaboration project for agricultural asset digitalization, covering 12 zones and 1000+ devices, reducing O&M costs by 30%+.",
+                    stack: "Spring Boot, MySQL, Redis, MyBatis",
+                    contributions: [
+                        "Implemented a state machine design pattern to drive the full lifecycle of assets, improving accuracy and utilization.",
+                        "Utilized Redis to cache high-frequency device locations, significantly reducing database pressure during map rendering.",
+                        "Built a work order dispatch module based on WebSocket with priority queues and timeout alerts.",
+                        "Constructed a permission interception and audit system using AOP + Custom Annotations to ensure compliance."
+                    ]
+                }
+            ]
+        },
+        algo: {
+            title: "Algorithms",
+            items: [
+                "Solved 300+ LeetCode problems, covering DP, DFS, Backtracking, etc.",
+                "Familiar with algorithm complexity analysis and optimization methods.",
+                "Enjoy the process of code AC and possess strong algorithmic thinking."
+            ]
+        },
+        courses: {
+            title: "Professional Courses",
+            items: [
+                "Foundations: Data Structures, Algorithms, Comp Arch, Computer Networks, OS.",
+                "Development: JavaEE, Database Systems, Web Frontend Development.",
+                "AI: Machine Learning Foundations, PyTorch Practice Course."
+            ]
+        },
+        selfLearning: {
+            title: "Self-Evaluation",
+            items: [
+                "Eager to learn continuously and record learning experiences and achievements.",
+                "Strong interest in emerging technologies; skilled in turning ideas into practical implementations.",
+                "Experienced in laboratory project collaboration; proactive communicator; fast integration into teams."
+            ]
+        },
+        softSkills: {
+            title: "Soft Skills",
+            items: [
+                "Self-discipline: Maintained high-frequency code commits during postgraduate exam preparation.",
+                "Rigorous Logic: Focus on boundary conditions in development and habit of using logs to locate bugs.",
+                "Collaboration: Good listener and speaker, able to coordinate with team members of different roles."
+            ]
+        }
+    },
+    footer: {
+        appName: 'Pawn · Dev Space',
+        tagline: 'Coding More Possibilities',
+        copyright: '© {year} Pawn. All Rights Reserved.',
+        madeWith: 'Crafted with passion and code',
+        socialLinks: [
+            {url: 'https://github.com/RCPawn', icon: 'fab fa-github'},
+            {url: 'https://leetcode.cn/u/guo-he-zu-ew/', icon: 'icon-leetcode'}
         ]
     }
 }
