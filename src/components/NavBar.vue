@@ -140,15 +140,18 @@ const toggleTheme = () => {
   isDarkMode.value = !isDarkMode.value;
   if (isDarkMode.value) {
     enableDarkMode({
-      brightness: 95,
+      brightness: 100,
       contrast: 90,
-      sepia: 0,
+      sepia: 10,
     });
     localStorage.setItem('theme', 'dark');
   } else {
     disableDarkMode();
     localStorage.setItem('theme', 'light');
   }
+
+  // 🔥 新增：派发一个全局事件，通知 HeroSection 调整 3D 模型
+  window.dispatchEvent(new CustomEvent('theme-changed', { detail: { isDark: isDarkMode.value } }));
 };
 </script>
 

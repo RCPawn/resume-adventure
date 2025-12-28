@@ -1,13 +1,14 @@
+<!--
 <template>
   <section id="hero" class="napkin-hero">
 
-    <!-- 草稿纸背景 -->
+    &lt;!&ndash; 草稿纸背景 &ndash;&gt;
     <div class="napkin-paper-background">
       <div class="napkin-paper-lines"></div>
     </div>
 
     <div class="napkin-hero-content">
-      <!-- 标题带能量线动画 -->
+      &lt;!&ndash; 标题带能量线动画 &ndash;&gt;
       <div class="napkin-title-container">
         <h1 class="napkin-heading">{{ t('title') }}</h1>
         <div class="napkin-energy-overlay"></div>
@@ -15,7 +16,7 @@
 
       <h2 class="napkin-subheading">{{ t('subtitle') }}</h2>
 
-      <!-- 专业标签调整为类似标题的展示 -->
+      &lt;!&ndash; 专业标签调整为类似标题的展示 &ndash;&gt;
       <div class="napkin-profession-sentences">
         <div
             v-for="(prof, index) in tm('professions')"
@@ -28,7 +29,7 @@
       </div>
     </div>
 
-    <!-- 背景装饰元素 -->
+    &lt;!&ndash; 背景装饰元素 &ndash;&gt;
     <div class="napkin-decoration">
       <div class="napkin-floating-shapes">
         <div class="napkin-shape napkin-circle" ref="circle"></div>
@@ -44,20 +45,20 @@
         <div class="napkin-dot napkin-dot-4"></div>
         <div class="napkin-dot napkin-dot-5"></div>
 
-        <!-- 新增手绘标记元素 -->
+        &lt;!&ndash; 新增手绘标记元素 &ndash;&gt;
         <div class="napkin-sketch-element napkin-sketch-check"></div>
         <div class="napkin-sketch-element napkin-sketch-underline"></div>
         <div class="napkin-sketch-element napkin-sketch-bracket"></div>
         <div class="napkin-sketch-element napkin-sketch-circle"></div>
 
-        <!-- 新增便利贴效果 -->
+        &lt;!&ndash; 新增便利贴效果 &ndash;&gt;
         <div class="napkin-sticky-note">
           <div class="napkin-sticky-content">Less is more</div>
         </div>
       </div>
     </div>
 
-    <!-- 新增手绘涂鸦效果 -->
+    &lt;!&ndash; 新增手绘涂鸦效果 &ndash;&gt;
     <div class="napkin-doodles">
       <div class="napkin-doodle napkin-lightbulb"></div>
       <div class="napkin-doodle napkin-rocket"></div>
@@ -645,5 +646,423 @@ onUnmounted(() => {
   .napkin-profession-item {
     font-size: 2rem;
   }
+}
+</style>
+-->
+<template>
+  <!-- 强制使用浅色主题，确保草稿纸效果正常显示 -->
+  <section class="hero-section light-theme">
+
+    <!-- 1. 背景纹理 (保留草稿纸效果) -->
+    <div class="paper-texture">
+      <div class="grid-lines"></div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="layout-grid">
+
+        <!-- 左侧：文字信息 -->
+        <div class="text-area">
+          <div class="content-wrapper">
+            <!-- 标题组 -->
+            <div class="title-group">
+              <h1 class="main-name">
+                <span class="greeting">HEY, I AM</span>
+                <br>
+                <span class="highlight-name">RCPAWN</span>
+                <!-- 能量线装饰 -->
+                <svg class="energy-underline" viewBox="0 0 200 15" preserveAspectRatio="none">
+                  <path d="M5,10 Q50,0 100,10 T195,10" fill="none" stroke="#4dabf7" stroke-width="4" />
+                </svg>
+              </h1>
+            </div>
+
+            <h2 class="sub-heading">{{ t('subtitle') || 'A SOFTWARE ENGINEERING STUDENT' }}</h2>
+
+            <!-- 职业列表 -->
+            <div class="skill-list">
+              <div
+                  v-for="(prof, index) in tm('professions')"
+                  :key="index"
+                  class="skill-item"
+                  :style="{ animationDelay: `${0.2 + index * 0.1}s` }"
+              >
+<!--                <span class="icon"></span>-->
+                <span class="text">{{ prof }}</span>
+              </div>
+            </div>
+
+            <!-- 便利贴 (移动到不遮挡的位置) -->
+            <div class="sticky-note">
+              <span class="note-pin">📌</span>
+              <p>Less is<br>more</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右侧：3D 模型展示 -->
+        <div class="model-area">
+          <div class="model-wrapper floating-anim">
+            <!--
+              bounds="tight": 自动裁剪模型周围空白
+              camera-orbit: 调整相机角度和距离 (关键!)
+              field-of-view: 视角大小，越小模型越平，越大透视越强
+              min-camera-orbit: 限制用户缩放的最小距离
+            -->
+            <model-viewer
+                src="/models/mystery_shack.glb"
+                camera-controls
+                disable-zoom
+                auto-rotate
+                auto-rotate-delay="1000"
+                rotation-per-second="15deg"
+                shadow-intensity="1.8"
+                shadow-softness="0.5"
+                exposure="1.1"
+                camera-orbit="-20deg 75deg 105%"
+                field-of-view="25deg"
+                min-camera-orbit="auto auto 5%"
+                class="huge-model"
+            >
+              <!-- 加载时的占位 -->
+              <div slot="poster" class="loading-poster">
+                <div class="spinner"></div>
+              </div>
+            </model-viewer>
+          </div>
+
+          <!-- 手绘箭头装饰 -->
+          <div class="sketch-arrow"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 漂浮的背景装饰 (纯CSS动画) -->
+    <div class="floating-decorations">
+      <div class="doodle circle"></div>
+      <div class="doodle cross"></div>
+      <div class="doodle triangle"></div>
+      <div class="doodle squiggly"></div>
+    </div>
+  </section>
+</template>
+
+<script setup>
+import { useI18n } from 'vue-i18n';
+import '@google/model-viewer';
+
+const { t, tm } = useI18n();
+</script>
+
+<style scoped>
+/* 引入原有字体，如果需要 */
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Inter:wght@400;800&display=swap');
+
+/* --- 基础布局 --- */
+.hero-section {
+  position: relative;
+  /* 强制占满高度，确保大气 */
+  min-height: 85vh;
+  width: 100%;
+  background-color: #f8f9fa; /* 强制浅灰背景 */
+  color: #212529; /* 强制深色文字 */
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  align-items: center;
+}
+
+.container-fluid {
+  width: 100%;
+  max-width: 1400px; /* 增加最大宽度 */
+  margin: 0 auto;
+  padding: 0 4%;
+  z-index: 10;
+}
+
+.layout-grid {
+  display: grid;
+  /* 左侧 45%，右侧 55%，给模型更多空间 */
+  grid-template-columns: 0.9fr 1.1fr;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* --- 背景纹理 --- */
+.paper-texture {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.grid-lines {
+  width: 100%;
+  height: 100%;
+  /* 蓝色方格纸效果 */
+  background-image:
+      linear-gradient(#e9ecef 1px, transparent 1px),
+      linear-gradient(90deg, #e9ecef 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+
+/* --- 左侧文字区域 --- */
+.text-area {
+  position: relative;
+  padding: 2rem 0;
+}
+
+.content-wrapper {
+  position: relative;
+  max-width: 600px; /* 限制文字最大宽度，防止太长 */
+}
+
+.main-name {
+  font-weight: 900;
+  line-height: 1;
+  color: #212529;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.greeting {
+  font-size: 2.5rem;
+  color: #495057;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.highlight-name {
+  font-size: 5.5rem; /* 超大字体 */
+  letter-spacing: -2px;
+  display: inline-block;
+  position: relative;
+  z-index: 2;
+}
+
+/* 能量线动画 SVG */
+.energy-underline {
+  position: absolute;
+  bottom: -15px;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  overflow: visible;
+}
+.energy-underline path {
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+  animation: drawLine 2s ease-out forwards 0.5s;
+}
+
+.sub-heading {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #868e96;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 3rem;
+}
+
+/* 技能列表 */
+.skill-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.skill-item {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #343a40;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: fadeInRight 0.5s ease-out forwards;
+}
+
+.icon {
+  font-size: 1.2rem;
+}
+
+/* 便利贴 (重定位) */
+.sticky-note {
+  position: absolute;
+  top: -60px;
+  right: -20px; /* 放在文字框的右上角 */
+  width: 110px;
+  height: 110px;
+  background-color: #ffec99; /* 黄色便利贴 */
+  box-shadow: 3px 3px 10px rgba(0,0,0,0.1);
+  transform: rotate(5deg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-family: 'Caveat', cursive;
+  font-size: 1.4rem;
+  line-height: 1.1;
+  color: #333;
+  z-index: 5;
+  animation: gentle-sway 4s ease-in-out infinite;
+}
+
+.note-pin {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.5rem;
+}
+
+/* --- 右侧模型区域 --- */
+.model-area {
+  position: relative;
+  height: 70vh; /* 使用视口高度，保证模型足够大 */
+  min-height: 500px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.model-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  /* 去掉这里的transform，避免冲突，动画只做上下浮动 */
+}
+
+/* 浮动动画 */
+.floating-anim {
+  animation: levitate 6s ease-in-out infinite;
+}
+
+.huge-model {
+  width: 100%;
+  height: 100%;
+  /* 移除模型自带的边框聚焦颜色 */
+  --poster-color: transparent;
+}
+
+/* 手绘箭头 */
+.sketch-arrow {
+  position: absolute;
+  bottom: 10%;
+  left: 0;
+  width: 80px;
+  height: 80px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 13l-6-6-6 6'/%3E%3Cpath d='M12 7v10'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.15;
+  transform: rotate(90deg); /* 指向模型 */
+}
+
+/* --- 装饰元素 --- */
+.floating-decorations {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.doodle {
+  position: absolute;
+  opacity: 0.1;
+  border: 2px solid #333;
+}
+
+.circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  top: 15%;
+  left: 50%;
+  border-color: #4dabf7;
+  animation: float 8s infinite;
+}
+
+.triangle {
+  width: 0;
+  height: 0;
+  border: none;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-bottom: 35px solid rgba(255, 107, 107, 0.3);
+  bottom: 15%;
+  left: 45%;
+  animation: float 12s infinite reverse;
+}
+
+.cross {
+  width: 30px;
+  height: 30px;
+  top: 20%;
+  right: 10%;
+  border: none;
+  background:
+      linear-gradient(#333, #333),
+      linear-gradient(#333, #333);
+  background-position: center;
+  background-size: 100% 2px, 2px 100%;
+  background-repeat: no-repeat;
+  transform: rotate(45deg);
+  opacity: 0.2;
+}
+
+/* --- 动画关键帧 --- */
+@keyframes levitate {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes drawLine {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes fadeInRight {
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(15px, -15px) rotate(10deg); }
+}
+
+@keyframes gentle-sway {
+  0%, 100% { transform: rotate(5deg); }
+  50% { transform: rotate(2deg); }
+}
+
+/* --- 响应式调整 --- */
+@media (max-width: 992px) {
+  .highlight-name { font-size: 4rem; }
+  .layout-grid {
+    grid-template-columns: 1fr; /* 变回单列 */
+    text-align: center;
+    gap: 1rem;
+  }
+  .content-wrapper { margin: 0 auto; }
+  .skill-item { justify-content: center; }
+
+  /* 在移动端，把模型放上面或者下面 */
+  .model-area { order: -1; height: 50vh; }
+  .text-area { padding-top: 0; }
+
+  .sticky-note {
+    position: relative;
+    top: auto; right: auto;
+    margin: 20px auto;
+    transform: rotate(-2deg);
+  }
+}
+
+@media (max-width: 576px) {
+  .highlight-name { font-size: 3rem; }
+  .greeting { font-size: 1.5rem; }
+  .model-area { height: 45vh; }
 }
 </style>

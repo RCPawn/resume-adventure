@@ -13,7 +13,7 @@
             :data-transition="getTransition(index - 1)"
         >
           <img
-              :src="`/images/olive/${index - 1}.png`"
+              :src="`/images/olive/${index - 1}.jpg`"
               :alt="`橄榄图片 ${index - 1}`"
               class="slide-image"
           />
