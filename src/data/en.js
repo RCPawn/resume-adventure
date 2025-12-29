@@ -1,4 +1,3 @@
-/*
 // data/i18n/en.js
 // 英文语言包
 import '@/assets/styles/leetcodeIcon.css';
@@ -104,102 +103,137 @@ export default {
         subtitle: 'From hello world to hello bug',
         viewDetails: 'View Details'
     },
+
+
     stuffs: {
         back: 'Back',
         building: 'Building...',
         developing: 'This page is still under development, please stay tuned! ...',
     },
+
     resume: {
         education: {
             title: "Education",
             items: [
-                "Software Engineering, Junior Year (Undergraduate)",
+                "Software Engineering (2022.09 - 2026.07)",
                 "GPA 3.47/4.0 (Top 20% in Major)",
-                "University-Level Scholarship Recipient",
-                "English Proficiency: CET-6, Skilled in Technical Documentation Reading"
+                "University-Level Scholarship Recipient (Consecutive years 2023-2025)",
+                "English Proficiency: CET-6"
             ]
         },
+
         skills: {
-            "title": "Prof Skills",
-            "categories": [
+            title: "Professional Skills",
+            categories: [
                 {
-                    "name": "Programming Languages",
-                    "items": [
-                        "Solid foundation in Java, proficient in string manipulation, collection frameworks, multithreading programming, and common sorting algorithms, with an understanding of the underlying implementation of collection frameworks"
+                    name: "Programming Languages",
+                    items: [
+                        "Proficient in Java core syntax, Collection Framework, and Object-Oriented Design; familiar with Reflection and Exception Handling mechanisms."
                     ]
                 },
                 {
-                    "name": "Data Storage Development",
-                    "items": [
-                        "Proficient in using MySQL for data storage and queries, with an understanding of basic principles of indexes (e.g., B+ tree) and transactions (ACID properties), capable of writing efficient SQL queries to address common business requirements",
-                        "Familiar with the basic applications of Redis, proficient in String/Hash data structures and the RDB persistence mechanism, with an understanding of basic caching optimization strategies"
+                    name: "Data Storage",
+                    items: [
+                        "Proficient in MyBatis, capable of writing SQL for business needs; understand Index Optimization, Transaction Isolation Levels, and Locking mechanisms.",
+                        "Proficient in MySQL; familiar with Redis caching applications, understanding its common data structures, persistence, and cache consistency strategies."
                     ]
                 },
                 {
-                    "name": "Server-side Frameworks",
-                    "items": [
-                        "Proficient in the SpringBoot development process, familiar with IOC container management, AOP logging aspects, and MyBatis integration, capable of independently developing RESTful APIs",
-                        "Familiar with the Spring Security authentication process, capable of implementing token authentication based on JWT and designing an RBAC (Role-Based Access Control) system"
+                    name: "Server-side Frameworks",
+                    items: [
+                        "Proficient in Spring Boot / Spring MVC; understand IoC, AOP, and Bean Lifecycle."
                     ]
                 },
                 {
-                    "name": "Distributed Systems Fundamentals",
-                    "items": [
-                        "Familiar with the basic concepts of SpringCloud, knowledgeable in the basic usage of Nacos for service registration and OpenFeign for remote calls, and understanding their role in microservices communication",
-                        "Understanding of HTTP/HTTPS protocols and the TCP three-way handshake mechanism, with a grasp of WebSocket real-time communication principles"
+                    name: "Frontend & Visualization",
+                    items: [
+                        "Familiar with Vue3 framework; understand WebGL (model-viewer) rendering principles; experienced in coupling 3D models with backend data."
                     ]
                 },
                 {
-                    "name": "Engineering Tools",
-                    "items": [
-                        "Possess engineering development skills, proficient in using Swagger for generating API documentation, and skilled in tools and techniques such as Git branch management, Maven multi-module builds, and Postman for API debugging"
+                    name: "System Design",
+                    items: [
+                        "Familiar with common design patterns such as Singleton, Factory, Template Method, Chain of Responsibility, and Strategy patterns.",
+                        "Understand JVM fundamentals, including Heap/Stack memory layout, Garbage Collection concepts, and the basic Class Loading process."
+                    ]
+                },
+                {
+                    name: "Communication Protocols",
+                    items: [
+                        "Understand WebSocket protocol, capable of implementing real-time message pushing between server and client."
+                    ]
+                },
+                {
+                    name: "Engineering Tools",
+                    items: [
+                        "Proficient in core development tools like IDEA / Git / Maven; possess good habits for Markdown documentation."
                     ]
                 }
             ]
         },
         projects: {
             title: "Projects",
-            stackLabel: "Technology Stack",
+            stackLabel: "Tech Stack",
             contributionsLabel: "Key Contributions",
             items: [
                 {
-                    title: "Olive Vision - Intelligent Asset Management Platform for Olive Groves",
-                    description: "A university-enterprise collaboration project covering digital lifecycle management for over 1000 agricultural devices (insect traps, mowers, etc.) across 12 management zones. Implemented core features including asset registration, cross-zone transfers, mobile QR code maintenance requests, and disposal processes. Addressed industry pain points like difficult device tracking, ambiguous responsibility definition, and inefficient cross-zone coordination. Project pending launch with expected 30%+ reduction in operational costs.",
-                    stack: "SpringBoot, Vue3, MySQL, Redis",
+                    title: "Design and Implementation of Non-Heritage Digital Exhibition Hall based on SpringBoot & WebGL (2025.12 - Present)",
+                    description: "A digital twin platform designed for intangible cultural heritage, realizing comprehensive 3D product display, real-time dynamic statistics, and high-interaction discussions. Core technologies include Spring Boot, Vue3, WebGL, MyBatis, and MySQL.",
+                    stack: "Spring Boot, Vue3, WebGL, MyBatis, MySQL",
                     contributions: [
-                        "Developed core asset management features using SpringBoot+MyBatis, implementing complete lifecycle state transitions (check-in/out, maintenance, disposal)",
-                        "Utilized Redis to cache hotspot asset data, improving query response time and reducing database pressure by ~20%",
-                        "Implemented RBAC-based permission control system with Spring Security+JWT token authentication, designing filters to block unauthorized operations",
-                        "Developed maintenance work order dispatch system with auto-assignment, progress tracking and timeout alerts",
-                        "Implemented batch data processing using EasyExcel for bulk import/export of asset information",
-                        "Led requirements analysis and technical solution design, participated in backend architecture discussions, and established core module development standards"
+                        "Completed end-to-end system development based on mature frameworks; refactored high-fidelity interaction layouts referencing Dewu (Poison) App design specs, solving technical challenges in 3D artifact upload, storage, and web-side rendering, achieving a technical closed loop from data modeling to terminal display.",
+                        "Designed and implemented Logic for Like/Collection status toggling; introduced 'user_action' table combined with Spring Transactions (@Transactional) to ensure strong consistency between 'user activity records' and 'statistical fields', supporting state persistence.",
+                        "Adopted Atomic Operations and CASE WHEN logic for SQL updates, effectively avoiding concurrent data pollution under high-frequency clicks and realizing 'non-negative' verification for statistical values, enhancing system robustness.",
+                        "Addressed rendering loops and white screen issues caused by framework caching in the WebGL component <model-viewer>; utilized Vue3 Lifecycle Management and Key Mechanism to force component re-rendering, significantly improving 3D model loading stability and switching smoothness."
+                    ]
+                },
+                {
+                    title: "Olive Vision - 10,000-Acre Olive Forest Asset Visual Intelligent Control Platform (2024.09 - 2025.03)",
+                    description: "A lab-enterprise collaboration project. An agricultural asset digitalization management platform covering 12 zones and 1000+ devices. Provides full lifecycle management functions including asset entry, cross-zone transfer, scan-to-repair, and work order dispatch. Solves traditional problems like difficult counting, chaotic ledgers, and inefficient cross-zone coordination. Expected to reduce enterprise O&M costs by 30%+ upon launch.",
+                    stack: "Spring Boot, MySQL, Redis, MyBatis",
+                    contributions: [
+                        "Introduced State Machine Design Pattern to drive full asset lifecycle management (Entry, Transfer, Repair, Scrap), improving asset ledger accuracy and utilization rates.",
+                        "Utilized Redis to cache high-frequency access data regarding device location and running status, significantly reducing database pressure during large map rendering in forest areas.",
+                        "Built a work order dispatch module based on WebSocket; introduced Priority Queues and Overtime Alarm Mechanisms to ensure emergency tasks are prioritized, triggering hierarchical alerts if unprocessed for over 30 minutes.",
+                        "Combined AOP + Custom Annotations to build a permission interception and operation audit system, ensuring compliance of sensitive operations at the technical level."
                     ],
-                    highlight: "Key Takeaways: Mastered enterprise full-stack development processes, enhanced engineering implementation capabilities with SpringBoot integration, improved communication and documentation skills through cross-role collaboration (product managers, frontend developers)."
+                    highlight: "Key Takeaways: Mastered enterprise full-stack development processes, enhanced engineering implementation capabilities with SpringBoot integration, improved communication and documentation skills through cross-role collaboration."
+                },
+                {
+                    title: "Campus Second-hand Trading Platform (2023.09 - 2023.11)",
+                    description: "A Software Engineering course group project supporting user registration/login, item posting, browsing, and simple trading functions. Aimed at mastering frontend-backend collaboration processes through practice.",
+                    stack: "Spring Boot, Vue3, MySQL, MyBatis",
+                    contributions: [
+                        "Self-taught relevant knowledge to complete basic environment setup and database connection, implementing login and registration functions.",
+                        "Developed the item management module supporting multi-condition queries (e.g., category, price range) and integrated PageHelper for pagination.",
+                        "Managed branches via Git (Sourcetree), established team code submission standards, and resolved branch merge conflicts multiple times.",
+                        "As the team lead, assigned tasks and tracked progress using online collaboration platforms to ensure on-time project delivery."
+                    ]
                 },
                 {
                     title: "Resume Adventure (Personal Website)",
                     description: "Independently designed personal website using SpringBoot+Vue3, with core modules developed efficiently through AI-assisted programming (Claude/ChatGPT).",
                     stack: "SpringBoot, Vue3",
                     contributions: [
-                        "Integrated Tencent Cloud's AI knowledge engine API to implement intelligent Q&A based on personal knowledge base",
-                        "Incorporated Three.js technology to create 3D interactive effects in project showcase area",
-                        "Developed online presentation module using Reveal.js to transform project experience into interactive slides",
-                        "Designed and developed clean, aesthetic personal information display pages showcasing education, skills and project achievements"
+                        "Integrated Tencent Cloud's AI knowledge engine API to implement intelligent Q&A based on personal knowledge base.",
+                        "Incorporated Three.js technology to create 3D interactive effects in project showcase area.",
+                        "Developed online presentation module using Reveal.js to transform project experience into interactive slides.",
+                        "Designed and developed clean, aesthetic personal information display pages showcasing education, skills and project achievements."
                     ],
                     highlight: "Project Highlights: Independent full-stack development project, practiced AI-assisted programming workflow, explored cutting-edge technology applications in real projects."
                 }
             ]
         },
         algo: {
-            "title": "Algorithm Skills",
-            "items": [
+            title: "Algorithm Skills",
+            items: [
                 "Solved over 300 LeetCode problems covering dynamic programming, backtracking, greedy algorithms, etc., enjoying the process of achieving code acceptance.",
                 "Familiar with common algorithm complexity analysis and optimization methods.",
                 "Capable of selecting appropriate algorithmic solutions for real-world problems."
             ]
         },
         courses: {
-            title: "Prof Courses",
+            title: "Professional Courses",
             items: [
                 "Computer Fundamentals: Data Structures, Algorithm Analysis and Design, Computer Organization, Computer Networks, Operating Systems",
                 "Development Technologies: JavaEE, Web Frontend Development, Database Fundamentals",
@@ -207,26 +241,27 @@ export default {
             ]
         },
         selfLearning: {
-            title: "Self-Learning",
+            title: "Self-Evaluation",
             items: [
-                "Continuously learning cutting-edge technologies through tech blogs, YouTube, Bilibili, and other platforms",
-                "Optimizing development workflow using AI tools (such as ChatGPT, Grok, Claude) to improve efficiency",
-                "Following tech community trends, starring quality projects, and reading source code to learn engineering practices"
+                "Willing to learn continuously, recording learning experiences and gains (GitHub).",
+                "Strong interest in emerging technologies, skilled in implementing ideas into reality (Personal Blog)."
             ]
         },
         softSkills: {
             title: "Soft Skills",
             items: [
-                "Team Collaboration: Actively participating in group project discussions, skilled in listening and expression, effectively communicating with design and product roles",
-                "Time Management: Rationally planning task priorities, delivering projects on time, maintaining a balance between learning and development",
-                "Problem Solving: When encountering technical challenges, capable of consulting official documentation, analyzing source code, and finding solutions on Stack Overflow and GitHub issues"
+                "Possess experience in lab project collaboration, proactive in communication, able to quickly integrate into teams and cooperate with members to complete development tasks."
             ]
         }
     },
+
+
     gallery: {
         title: 'Portfolio',
         subtitle: 'Screenshots as a souvenir, proving that I once made it through',
     },
+
+
     footer: {
         appName: 'Dev Space',
         tagline: 'Where code meets creativity',
@@ -262,171 +297,6 @@ export default {
                     {text: 'Blog', url: 'https://github.com/RCPawn'}
                 ]
             }
-        ]
-    }
-}
-*/
-// data/i18n/en.js
-import '@/assets/styles/leetcodeIcon.css';
-
-export default {
-    nav: {
-        logo: 'Pawn',
-        home: 'Home',
-        skill: 'Skills',
-        experience: 'Experience',
-        gallery: 'Gallery',
-        resume: 'Resume',
-        footer: 'About'
-    },
-    title: "Hey, I'm Pawn",
-    subtitle: 'A Software Engineering Student',
-    professions: [
-        'Backend Developer',
-        'Deep Learning Enthusiast',
-        'Passionate about 3D & Interactive Design'
-    ],
-    skills: {
-        title: 'Skill Map',
-        subtitle: 'Percentages are for demonstration purposes',
-        skillTarget: 'Target',
-        current: 'Current',
-        target: 'Goal',
-        items: [
-            { name: 'Backend', icon: 'fas fa-laptop-code', level: 60, target: 85 },
-            { name: 'Database', icon: 'fas fa-database', level: 50, target: 75 },
-            { name: 'Algorithm', icon: 'fas fa-code', level: 55, target: 80 },
-            { name: 'AI/ML', icon: 'fas fa-brain', level: 20, target: 70 },
-            { name: '3D/Game', icon: 'fas fa-gamepad', level: 30, target: 60 },
-            { name: 'Git/Collab', icon: 'fab fa-github', level: 60, target: 80 }
-        ]
-    },
-    projects: {
-        items: [
-            {
-                name: "Intangible Heritage Exhibition",
-                description: "Digital twin platform for Bai heritage, featuring 3D exhibits, real-time statistics, and interactive discussions."
-            },
-            {
-                name: "Olive Overseer",
-                description: "Asset digitalization platform for olive forests, integrating data visualization, WebGIS, and asset management."
-            }
-        ],
-        title: 'Learning Path',
-        subtitle: 'From Hello World to Hello Bug',
-        viewDetails: 'View Details'
-    },
-    resume: {
-        education: {
-            title: "Education",
-            items: [
-                "Southwest Minzu University - B.E. - Software Engineering (2022.09 - 2026.07)",
-                "GPA: 3.47 / 4.00 (Top 20%)",
-                "School-level Scholarship for two consecutive years (2023-2025)",
-                "English Proficiency: CET-6"
-            ]
-        },
-        skills: {
-            title: "Professional Skills",
-            categories: [
-                {
-                    name: "Java Core",
-                    items: [
-                        "Proficient in Java core syntax, collection frameworks, and OOP; familiar with reflection and exception handling."
-                    ]
-                },
-                {
-                    name: "Backend Development",
-                    items: [
-                        "Proficient in Spring Boot / Spring MVC; understand IoC, AOP, and Bean lifecycle.",
-                        "Proficient in MyBatis; capable of writing SQL for business needs; understand index optimization and locking."
-                    ]
-                },
-                {
-                    name: "Storage & Interactive",
-                    items: [
-                        "Proficient in MySQL and Redis; understand common data structures and cache consistency schemes.",
-                        "Familiar with Vue3 and WebGL (model-viewer) rendering; experienced in 3D model data interaction."
-                    ]
-                },
-                {
-                    name: "Engineering Tools",
-                    items: [
-                        "Proficient in IDEA, Git, Maven, and other core tools; consistent habit of writing Markdown documentation."
-                    ]
-                }
-            ]
-        },
-        projects: {
-            title: "Project Experience",
-            stackLabel: "Tech Stack",
-            contributionsLabel: "Key Responsibilities",
-            items: [
-                {
-                    title: "Design & Implementation of Intangible Heritage Digital Hall based on SpringBoot/WebGL (2025.12 - Present)",
-                    description: "Description: A digital twin platform for Bai heritage, featuring 3D exhibits, real-time statistics, and interactive discussions.",
-                    stack: "Spring Boot, Vue3, WebGL (model-viewer), MyBatis, MySQL",
-                    contributions: [
-                        "Developed the end-to-end system based on a mature framework; reshaped high-fidelity layouts following Poizon design specs; achieved a technical closed loop.",
-                        "Designed and implemented the Like/Favorite toggle logic; introduced user_action tables with @Transactional to ensure data consistency.",
-                        "Utilized atomic operations and CASE WHEN logic at the SQL layer to prevent data pollution and ensure non-negative count values.",
-                        "Solved rendering loops and white-screen issues for the <model-viewer> component using Vue3 lifecycle management and Key mechanisms."
-                    ]
-                },
-                {
-                    title: "Olive Overseer - Digital Asset Intelligent Control Platform (2024.09 - 2025.03)",
-                    description: "Description: A lab collaboration project for agricultural asset digitalization, covering 12 zones and 1000+ devices, reducing O&M costs by 30%+.",
-                    stack: "Spring Boot, MySQL, Redis, MyBatis",
-                    contributions: [
-                        "Implemented a state machine design pattern to drive the full lifecycle of assets, improving accuracy and utilization.",
-                        "Utilized Redis to cache high-frequency device locations, significantly reducing database pressure during map rendering.",
-                        "Built a work order dispatch module based on WebSocket with priority queues and timeout alerts.",
-                        "Constructed a permission interception and audit system using AOP + Custom Annotations to ensure compliance."
-                    ]
-                }
-            ]
-        },
-        algo: {
-            title: "Algorithms",
-            items: [
-                "Solved 300+ LeetCode problems, covering DP, DFS, Backtracking, etc.",
-                "Familiar with algorithm complexity analysis and optimization methods.",
-                "Enjoy the process of code AC and possess strong algorithmic thinking."
-            ]
-        },
-        courses: {
-            title: "Professional Courses",
-            items: [
-                "Foundations: Data Structures, Algorithms, Comp Arch, Computer Networks, OS.",
-                "Development: JavaEE, Database Systems, Web Frontend Development.",
-                "AI: Machine Learning Foundations, PyTorch Practice Course."
-            ]
-        },
-        selfLearning: {
-            title: "Self-Evaluation",
-            items: [
-                "Eager to learn continuously and record learning experiences and achievements.",
-                "Strong interest in emerging technologies; skilled in turning ideas into practical implementations.",
-                "Experienced in laboratory project collaboration; proactive communicator; fast integration into teams."
-            ]
-        },
-        softSkills: {
-            title: "Soft Skills",
-            items: [
-                "Self-discipline: Maintained high-frequency code commits during postgraduate exam preparation.",
-                "Rigorous Logic: Focus on boundary conditions in development and habit of using logs to locate bugs.",
-                "Collaboration: Good listener and speaker, able to coordinate with team members of different roles."
-            ]
-        }
-    },
-    footer: {
-        appName: 'Pawn · Dev Space',
-        tagline: 'Coding More Possibilities',
-        copyright: '© {year} Pawn. All Rights Reserved.',
-        madeWith: 'Crafted with passion and code',
-        socialLinks: [
-            {url: 'https://github.com/RCPawn', icon: 'fab fa-github'},
-            {url: 'https://leetcode.cn/u/guo-he-zu-ew/', icon: 'icon-leetcode'}
         ]
     }
 }
