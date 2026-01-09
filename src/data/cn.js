@@ -103,6 +103,9 @@ export default {
         subtitle: '从 Hello World 到 Hello Bug',
         viewDetails: '查看详情'
     },
+
+
+
     gallery: {
         title: '作品展示',
         subtitle: '截图留念，证明曾经跑通过',
@@ -112,6 +115,9 @@ export default {
         building: '建设中...',
         developing: '该页面还在开发中，敬请期待！...',
     },
+
+
+
     resume: {
         education: {
             title: "教育背景",
@@ -123,92 +129,71 @@ export default {
             ]
         },
 
+// ... existing education ...
+
         skills: {
             title: "专业技能",
             categories: [
                 {
-                    name: "编程语言",
+                    name: "Java 核心",
                     items: [
-                        "熟练掌握 Java 核心语法、集合框架、面向对象设计，熟悉反射及异常处理机制"
+                        "熟练使用 Java 语言与集合框架，熟悉 ThreadLocal 线程隔离应用，了解 JVM 内存模型与 GC 机制"
                     ]
                 },
                 {
-                    name: "存储层开发",
+                    name: "微服务架构",
                     items: [
-                        "熟练使用 MyBatis 框架，能编写 SQL 满足基本业务需求，理解索引优化、事务隔离级别与锁机制",
-                        "熟练使用 MySQL，熟悉 Redis 缓存应用，理解其常用数据结构、数据持久化及缓存一致性方案"
+                        "熟悉 Spring Cloud Alibaba 生态，掌握 Nacos、Sentinel、OpenFeign 核心组件及服务治理",
+                        "掌握 Spring Cloud Gateway 架构，理解 Netty + WebFlux 响应式模型及 Filter 链机制"
                     ]
                 },
                 {
                     name: "服务端框架",
                     items: [
-                        "熟练使用 Spring Boot / Spring MVC，理解 IoC、AOP、Bean 生命周期"
+                        "熟练使用 Spring Boot / Spring MVC 进行后端开发，理解 IoC、AOP 原理及 Bean 生命周期"
                     ]
                 },
                 {
-                    name: "前端与可视化",
+                    name: "数据库与缓存",
                     items: [
-                        "熟悉 Vue3 框架，了解 WebGL (model-viewer) 渲染原理，具备 3D 模型与后端数据交互的联调经验"
+                        "熟练使用 MySQL，掌握 SQL 编写，熟悉索引优化，理解事务隔离级别与 MVCC/锁机制",
+                        "熟悉 Redis 核心数据结构及应用场景，掌握缓存穿透/击穿/雪崩的解决方案及双写一致性策略"
                     ]
                 },
                 {
-                    name: "系统设计",
+                    name: "前端技术",
                     items: [
-                        "熟悉常见设计模式，如单例、工厂、模板方法、责任链、策略模式等",
-                        "了解JVM基础知识，包括堆、栈内存划分，垃圾回收概念，以及类加载的基本流程"
-                    ]
-                },
-                {
-                    name: "通信协议",
-                    items: [
-                        "了解 WebSocket 协议，能够实现服务器与客户端之间的实时消息推送"
-                    ]
-                },
-                {
-                    name: "工程化工具",
-                    items: [
-                        "熟练使用 IDEA / Git / Maven 等核心开发工具，具备良好的 Markdown 文档编写习惯"
+                        "熟悉 Vue3 + Element Plus 开发，具备前后端联调、CORS 跨域处理及组件化开发经验"
                     ]
                 }
             ]
         },
+
         projects: {
             title: "项目经历",
             stackLabel: "技术栈",
             contributionsLabel: "主要工作",
             items: [
                 {
-                    title: "基于 SpringBoot 与 WebGL 的非遗数字展厅设计与实现 (2025.12 - 至今)",
-                    description: "项目描述：针对非遗文化设计的数字双生平台，实现 3D 展品全方位展示、实时动态统计与高交互讨论。核心技术包括 Spring Boot、Vue3、WebGL、MyBatis、MySQL。",
-                    stack: "Spring Boot、Vue3、WebGL、MyBatis、MySQL",
+                    title: "微服务流量治理与统一接入网关平台 (2025.12 - 至今)",
+                    description: "自主研发的微服务统一流量治理平台，深度整合了动态路由热更新、全链路身份安全闭环、Sentinel 高可用防护及 SkyWalking 链路追踪，配套开发 Vue3 可视化运维控制台，通过 Nacos 与 Actuator 实现路由规则的零停机动态管理与服务健康实时监控，构建了安全可观测的流量入口。",
+                    stack: "Spring Boot 3、Spring Cloud Alibaba (Nacos, Sentinel)、Spring Cloud Gateway",
                     contributions: [
-                        "依托成熟框架完成系统全链路开发，参考得物设计规范重塑高保真交互布局，攻克 3D 非遗物品上传存储与 Web 端实时渲染展示难题，实现非遗展品管理模块从数据建模到终端展示的技术闭环。",
-                        "设计并实现了点赞/收藏状态切换逻辑，引入 user_action 记录表，结合 Spring 事务 (@Transactional) 确保“用户行为记录”与“主表统计字段”的强一致性，支持状态持久化。",
-                        "在 SQL 更新层采用原子操作与 CASE WHEN 逻辑，有效避免了高频点击下的并发数据污染，并实现计数值“非负”校验，提升了系统鲁棒性。",
-                        "针对 WebGL 组件 <model-viewer> 在框架缓存机制下出现的渲染死循环与白屏问题，利用 Vue3 生命周期管理与 Key 机制强制组件重绘，显著提升了 3D 模型的加载稳定性与切换流畅度。"
+                        "全链路身份闭环：针对微服务间调用 Token 丢失痛点，设计基于 ThreadLocal + Feign 拦截器的透传方案，在网关层注入 Header，配合内部拦截器实现令牌中继，确保用户 ID 与 Token 在全链路的无缝传递。",
+                        "零停机动态路由：摒弃 YAML 静态配置，基于 Nacos Config 监听机制开发动态路由加载器，监听配置变更并调用 Gateway 底层 API 实时刷新路由表，达成修改路由规则无需重启网关的目标。",
+                        "流量治理与监控：基于 Sentinel 实现核心接口的 QPS 限流与熔断降级，并通过 Nacos 落地规则持久化方案，整合 SkyWalking 探针实现分布式全链路追踪，通过异常处理规范限流响应，并精准定位系统耗时瓶颈。",
+                        "可视化管理平台：独立搭建 Vue3 管理后台，配置全局 CORS 解决跨域，对接 Actuator 端点与管理接口，实现了路由规则的可视化查看及服务健康状态监控。"
                     ]
                 },
                 {
-                    title: "榄人千里眼-万亩油橄榄林区资产可视智能管控平台（2024.09 - 2025.03）",
-                    description: "项目描述：实验室合作项目，为企业开发的农业资产数字化管理平台，覆盖 12 个管区、1000+ 台设备（捕虫灯、割草机等），提供资产入库、跨区调拨、扫码报修、工单派送等全生命周期管理功能，解决传统农业资产管理中的盘点困难、台账混乱、跨区协同低效等问题，预计上线后可降低企业运维成本 30%+。",
-                    stack: "Spring Boot、MySQL、Redis、MyBatis",
+                    title: "非遗虚拟陈列与数据监测平台 (2024.09 - 2025.01)",
+                    description: "针对非遗文化设计的数字双生平台，实现 3D 展品全方位展示、实时动态统计与高交互讨论等功能。",
+                    stack: "Spring Boot、Vue3、WebGL、MyBatis、MySQL",
                     contributions: [
-                        "引入状态机设计模式驱动资产全生命周期管理（入库、调拨、报修、报废），提升资产台账准确性及利用率。",
-                        "利用 Redis 对高频访问的设备地理位置与运行状态进行缓存，显著降低了林区大地图渲染时的数据库穿透压力。",
-                        "基于 WebSocket 构建工单派送模块，引入优先级队列与超时告警机制，确保紧急任务优先处理，超时 30 分钟未处理自动触发分级告警。",
-                        "结合 AOP + 自定义注解搭建权限拦截与操作审计体系，从技术层面保障敏感操作的合规性。"
-                    ],
-                    highlight: "项目收获：掌握企业级全栈开发流程，提升SpringBoot整合技术栈的工程化落地能力，通过跨角色协作（产品、前端）完成项目交付，强化沟通与文档输出能力。"
-                },
-                {
-                    title: "校园二手交易平台（2023.09 - 2023.11）",
-                    description: "软件工程课程小组项目，支持用户注册登录、商品发布、浏览及简单交易功能，旨在通过实践掌握前后端协作开发流程，并完成基础功能实现。",
-                    stack: "Spring Boot、Vue3、MySQL、MyBatis",
-                    contributions: [
-                        "自学相关知识，完成前后端基础环境搭建、数据库连接，并实现登录注册功能。",
-                        "开发商品管理模块，支持多条件查询（如分类、价格区间），集成 PageHelper 实现分页展示",
-                        "通过 Git（Sourcetree）管理分支，制定团队代码提交规范，多次解决分支合并冲突",
-                        "作为小组负责人，利用在线协作平台分配任务并跟踪进度，确保项目按时交付"
+                        "业务闭环与全栈建模：独立完成系统全链路开发，设计并落地 UGC 发布系统，重构分类模型为层级架构，利用递归算法与级联选择器实现了对复杂非遗项目谱系的精准管理与数据聚合。",
+                        "数字化看板：构建集成 WebGL 与 ECharts 的数字驾驶舱，实时分析资源分布与交互热度，通过异构数据聚合算法，直观呈现非遗技艺流派与传承人之间的谱系关联。",
+                        "数据一致性与并发安全：独立设计点赞/收藏“状态切换”逻辑并引入行为记录表，结合 Spring 事务确保交互行为与统计数据的强一致性，采用 SQL 原子操作规避并发更新丢失风险并实现计数值非负校验。",
+                        "组件调优与 UI 适配：针对 WebGL 组件利用 Vue3 生命周期管理与 Key 机制解决框架缓存导致的渲染死循环及白屏问题，并采用视口锁定与滚动隔离方案，彻底消除了复杂 3D 页面在后台容器中的布局晃动感。"
                     ]
                 },
                 {
@@ -225,6 +210,8 @@ export default {
                 }
             ]
         },
+
+// ... existing algo, courses ...
         algo: {
             title: "算法能力",
             items: [
@@ -255,6 +242,8 @@ export default {
             ]
         }
     },
+
+
     footer: {
         appName: '开发者空间',
         tagline:

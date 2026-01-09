@@ -122,108 +122,89 @@ export default {
             ]
         },
 
+// ... existing education ...
+
         skills: {
             title: "Professional Skills",
             categories: [
                 {
-                    name: "Programming Languages",
+                    name: "Java Core",
                     items: [
-                        "Proficient in Java core syntax, Collection Framework, and Object-Oriented Design; familiar with Reflection and Exception Handling mechanisms."
+                        "Proficient in Java language and Collection Framework; Familiar with ThreadLocal thread isolation applications; Understanding of JVM memory model and GC mechanisms."
                     ]
                 },
                 {
-                    name: "Data Storage",
+                    name: "Microservices Architecture",
                     items: [
-                        "Proficient in MyBatis, capable of writing SQL for business needs; understand Index Optimization, Transaction Isolation Levels, and Locking mechanisms.",
-                        "Proficient in MySQL; familiar with Redis caching applications, understanding its common data structures, persistence, and cache consistency strategies."
+                        "Familiar with Spring Cloud Alibaba ecosystem; Mastered core components like Nacos, Sentinel, and OpenFeign for service governance.",
+                        "Mastered Spring Cloud Gateway architecture; Understanding of Netty + WebFlux reactive model and Filter chain mechanisms."
                     ]
                 },
                 {
                     name: "Server-side Frameworks",
                     items: [
-                        "Proficient in Spring Boot / Spring MVC; understand IoC, AOP, and Bean Lifecycle."
+                        "Proficient in Spring Boot / Spring MVC for backend development; Understanding of IoC, AOP principles, and Bean lifecycle."
                     ]
                 },
                 {
-                    name: "Frontend & Visualization",
+                    name: "Database & Caching",
                     items: [
-                        "Familiar with Vue3 framework; understand WebGL (model-viewer) rendering principles; experienced in coupling 3D models with backend data."
+                        "Proficient in MySQL and SQL writing; Familiar with index optimization; Understanding of transaction isolation levels and MVCC/Locking mechanisms.",
+                        "Familiar with Redis core data structures and scenarios; Mastered solutions for Cache Penetration/Breakdown/Avalanche and double-write consistency strategies."
                     ]
                 },
                 {
-                    name: "System Design",
+                    name: "Frontend Technologies",
                     items: [
-                        "Familiar with common design patterns such as Singleton, Factory, Template Method, Chain of Responsibility, and Strategy patterns.",
-                        "Understand JVM fundamentals, including Heap/Stack memory layout, Garbage Collection concepts, and the basic Class Loading process."
-                    ]
-                },
-                {
-                    name: "Communication Protocols",
-                    items: [
-                        "Understand WebSocket protocol, capable of implementing real-time message pushing between server and client."
-                    ]
-                },
-                {
-                    name: "Engineering Tools",
-                    items: [
-                        "Proficient in core development tools like IDEA / Git / Maven; possess good habits for Markdown documentation."
+                        "Familiar with Vue3 + Element Plus development; Experienced in frontend-backend integration, CORS handling, and component-based development."
                     ]
                 }
             ]
         },
+
         projects: {
-            title: "Projects",
+            title: "Project Experience",
             stackLabel: "Tech Stack",
             contributionsLabel: "Key Contributions",
             items: [
                 {
-                    title: "Design and Implementation of Non-Heritage Digital Exhibition Hall based on SpringBoot & WebGL (2025.12 - Present)",
-                    description: "A digital twin platform designed for intangible cultural heritage, realizing comprehensive 3D product display, real-time dynamic statistics, and high-interaction discussions. Core technologies include Spring Boot, Vue3, WebGL, MyBatis, and MySQL.",
-                    stack: "Spring Boot, Vue3, WebGL, MyBatis, MySQL",
+                    title: "Microservice Traffic Governance & Unified Gateway Platform (2025.12 - Present)",
+                    description: "Independently developed a unified microservice traffic governance platform integrating dynamic route hot-updates, full-link identity security loop, Sentinel high-availability protection, and SkyWalking tracing. Developed a matching Vue3 visual operations console. Achieved zero-downtime dynamic management of routing rules and real-time service health monitoring via Nacos and Actuator, building a secure and observable traffic entrance.",
+                    stack: "Spring Boot 3, Spring Cloud Alibaba (Nacos, Sentinel), Spring Cloud Gateway",
                     contributions: [
-                        "Completed end-to-end system development based on mature frameworks; refactored high-fidelity interaction layouts referencing Dewu (Poison) App design specs, solving technical challenges in 3D artifact upload, storage, and web-side rendering, achieving a technical closed loop from data modeling to terminal display.",
-                        "Designed and implemented Logic for Like/Collection status toggling; introduced 'user_action' table combined with Spring Transactions (@Transactional) to ensure strong consistency between 'user activity records' and 'statistical fields', supporting state persistence.",
-                        "Adopted Atomic Operations and CASE WHEN logic for SQL updates, effectively avoiding concurrent data pollution under high-frequency clicks and realizing 'non-negative' verification for statistical values, enhancing system robustness.",
-                        "Addressed rendering loops and white screen issues caused by framework caching in the WebGL component <model-viewer>; utilized Vue3 Lifecycle Management and Key Mechanism to force component re-rendering, significantly improving 3D model loading stability and switching smoothness."
+                        "Full-link Identity Loop: Addressed the token loss issue in inter-service calls by designing a pass-through scheme based on ThreadLocal + Feign Interceptors. Injected headers at the gateway layer and coordinated with internal interceptors to achieve token relay, ensuring seamless propagation of User ID and Token across the entire link.",
+                        "Zero-Downtime Dynamic Routing: Abandoned static YAML configuration and developed a dynamic route loader based on the Nacos Config listening mechanism. It listens for configuration changes and calls the Gateway underlying API to refresh the routing table in real-time, achieving route rule modification without restarting the gateway.",
+                        "Traffic Governance & Monitoring: Implemented QPS rate limiting and circuit breaking for core interfaces based on Sentinel, utilizing Nacos for rule persistence. Integrated SkyWalking probes for distributed full-link tracing, standardized rate-limiting responses via exception handling, and accurately pinpointed system bottlenecks.",
+                        "Visual Management Platform: Independently built a Vue3 admin dashboard, configured global CORS, and integrated with Actuator endpoints to realize visual inspection of routing rules and monitoring of service health status."
                     ]
                 },
                 {
-                    title: "Olive Vision - 10,000-Acre Olive Forest Asset Visual Intelligent Control Platform (2024.09 - 2025.03)",
-                    description: "A lab-enterprise collaboration project. An agricultural asset digitalization management platform covering 12 zones and 1000+ devices. Provides full lifecycle management functions including asset entry, cross-zone transfer, scan-to-repair, and work order dispatch. Solves traditional problems like difficult counting, chaotic ledgers, and inefficient cross-zone coordination. Expected to reduce enterprise O&M costs by 30%+ upon launch.",
-                    stack: "Spring Boot, MySQL, Redis, MyBatis",
+                    title: "Intangible Cultural Heritage Virtual Display & Data Monitoring Platform (2024.09 - 2025.01)",
+                    description: "A digital twin platform designed for Intangible Cultural Heritage (ICH), realizing all-around 3D exhibit display, real-time dynamic statistics, and high-interaction discussions.",
+                    stack: "Spring Boot, Vue3, WebGL, MyBatis, MySQL",
                     contributions: [
-                        "Introduced State Machine Design Pattern to drive full asset lifecycle management (Entry, Transfer, Repair, Scrap), improving asset ledger accuracy and utilization rates.",
-                        "Utilized Redis to cache high-frequency access data regarding device location and running status, significantly reducing database pressure during large map rendering in forest areas.",
-                        "Built a work order dispatch module based on WebSocket; introduced Priority Queues and Overtime Alarm Mechanisms to ensure emergency tasks are prioritized, triggering hierarchical alerts if unprocessed for over 30 minutes.",
-                        "Combined AOP + Custom Annotations to build a permission interception and operation audit system, ensuring compliance of sensitive operations at the technical level."
-                    ],
-                    highlight: "Key Takeaways: Mastered enterprise full-stack development processes, enhanced engineering implementation capabilities with SpringBoot integration, improved communication and documentation skills through cross-role collaboration."
-                },
-                {
-                    title: "Campus Second-hand Trading Platform (2023.09 - 2023.11)",
-                    description: "A Software Engineering course group project supporting user registration/login, item posting, browsing, and simple trading functions. Aimed at mastering frontend-backend collaboration processes through practice.",
-                    stack: "Spring Boot, Vue3, MySQL, MyBatis",
-                    contributions: [
-                        "Self-taught relevant knowledge to complete basic environment setup and database connection, implementing login and registration functions.",
-                        "Developed the item management module supporting multi-condition queries (e.g., category, price range) and integrated PageHelper for pagination.",
-                        "Managed branches via Git (Sourcetree), established team code submission standards, and resolved branch merge conflicts multiple times.",
-                        "As the team lead, assigned tasks and tracked progress using online collaboration platforms to ensure on-time project delivery."
+                        "Business Loop & Full-Stack Modeling: Independently completed full-link system development. Designed and implemented the UGC publishing system. Refactored the classification model into a hierarchical structure, utilizing recursive algorithms and cascaded selectors to achieve precise management and data aggregation of complex ICH project genealogies.",
+                        "Digital Dashboard: Built a digital cockpit integrating WebGL and ECharts to analyze resource distribution and interaction heat in real-time. Used heterogeneous data aggregation algorithms to intuitively present the lineage connections between ICH schools and inheritors.",
+                        "Data Consistency & Concurrency Safety: Independently designed the Like/Collect 'state toggle' logic and introduced user action logs. Combined with Spring Transactions (@Transactional) to ensure strong consistency between interaction behaviors and statistical data. Adopted SQL atomic operations to avoid concurrent update data loss and implemented non-negative validation for counters.",
+                        "Component Tuning & UI Adaptation: Resolved infinite rendering loops and white screen issues caused by framework caching in WebGL components by utilizing Vue3 Lifecycle management and the Key mechanism. Adopted viewport locking and scroll isolation schemes to completely eliminate layout jitter of complex 3D pages in backend containers."
                     ]
                 },
                 {
                     title: "Resume Adventure (Personal Website)",
-                    description: "Independently designed personal website using SpringBoot+Vue3, with core modules developed efficiently through AI-assisted programming (Claude/ChatGPT).",
+                    description: "A personal website independently designed based on SpringBoot + Vue3, efficiently completing core module development via AI-assisted programming (Claude/ChatGPT).",
                     stack: "SpringBoot, Vue3",
                     contributions: [
-                        "Integrated Tencent Cloud's AI knowledge engine API to implement intelligent Q&A based on personal knowledge base.",
-                        "Incorporated Three.js technology to create 3D interactive effects in project showcase area.",
-                        "Developed online presentation module using Reveal.js to transform project experience into interactive slides.",
-                        "Designed and developed clean, aesthetic personal information display pages showcasing education, skills and project achievements."
+                        "Integrated Tencent Cloud LLM Knowledge Engine API to implement intelligent Q&A based on personal knowledge base.",
+                        "Integrated Three.js technology to achieve 3D interactive effects in the project showcase area.",
+                        "Developed an online presentation module based on Reveal.js, transforming project experiences into interactive PPTs.",
+                        "Designed and developed a clean and aesthetic personal information display page to clearly present learning experiences, skills, and project results."
                     ],
-                    highlight: "Project Highlights: Independent full-stack development project, practiced AI-assisted programming workflow, explored cutting-edge technology applications in real projects."
+                    highlight: "Highlights: Independent full-stack development, practiced AI-assisted programming workflow, and explored the application of cutting-edge technologies in actual projects."
                 }
             ]
         },
+
+// ... existing algo, courses ...
         algo: {
             title: "Algorithm Skills",
             items: [
