@@ -15,9 +15,9 @@ export default {
     title: '嘿，我是过河卒',
     subtitle: '一名软件工程专业的学生',
     professions: [
-        '后端开发者',
-        '深度学习爱好者',
-        '热衷于3D和互动设计'
+        '☕ Java后端开发者',
+        '☁️ 微服务架构探索者',
+        '🎨 热衷于3D和互动设计'
     ],
     skills: {
         title: '技能图谱',

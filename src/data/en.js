@@ -15,9 +15,9 @@ export default {
     title: 'HEY, I AM RCPAWN',
     subtitle: 'A SOFTWARE ENGINEERING STUDENT',
     professions: [
-        'Backend Developer',
-        'Deep Learning Enthusiast',
-        'Passionate About 3D and Interactive Design'
+        '☕ Java Backend Developer',
+        '☁️ Microservice Architecture Explorer',
+        '🎨 Enthusiast of 3D & Interactive Design'
     ],
     skills: {
         title: 'Skills & Map',
