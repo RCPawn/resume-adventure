@@ -1,29 +1,49 @@
-# resume-adventure
+# 🚀 Resume Adventure
 
-This template should help get you started developing with Vue 3 in Vite.
+🔗 **项目地址**：https://resume-adventure.netlify.app/  
+🐙 **源码仓库**：https://github.com/RCPawn/resume-adventure 
 
-## Recommended IDE Setup
+### 🏠 首页展示
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+1. **设计风格**：  
+   页面采用深色网格背景，结合 Three.js 构建的 3D 低多边形场景元素（右侧《怪诞小镇》风格小屋），在保证信息可读性的同时增强空间感与沉浸感，体现技术与创意相结合的设计理念。
 
-## Customize configuration
+2. **功能模块**：  
+   顶部导航栏整合主页、技能、学习经历等核心板块，并提供 GitHub 直达入口，形成集 **个人介绍、技术展示与项目索引** 于一体的综合展示平台。
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+![首页展示](README.assets/image-20260110221048191.png)
 
-## Project Setup
+---
 
-```sh
-npm install
-```
+### 📄 在线简历
 
-### Compile and Hot-Reload for Development
+在线简历模块以结构化方式展示个人的基本信息、技术栈与能力标签，相比传统 PDF 简历具备更好的交互性与可扩展性。
 
-```sh
-npm run dev
-```
+- 以模块化布局呈现技能、项目与个人优势
+- 支持快速浏览与重点信息突出
+- 作为求职与技术展示的线上入口，便于分享与访问
 
-### Compile and Minify for Production
+![在线简历](README.assets/image-20260110221316055.png)
 
-```sh
-npm run build
-```
+---
+
+### 🎓 学习经历
+
+学习经历模块用于记录个人的学习路径与阶段性成长过程：
+
+![学习经历](README.assets/image-20260110221121922.png)
+
+---
+
+### 🧊 通过 three.js 实现的在线演示
+
+![three.js 在线演示](README.assets/image-20260110222034049.png)
+
+---
+
+### 🧱 建模等截图
+
+本部分展示了个人在 3D 建模与相关创作过程中的部分截图。
+
+![建模截图](README.assets/image-20260110221226412.png)
+
