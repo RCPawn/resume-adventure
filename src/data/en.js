@@ -79,7 +79,7 @@ export default {
                 description: "Stay tuned😊"
             },
             {
-                name: "Deep Learning",
+                name: "Personal Gateway",
                 description: "Stay tuned😊"
             },
             {

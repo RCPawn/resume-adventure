@@ -41,11 +41,5 @@
     "descriptionKey": "projects.items.6.description",
     "image": "/images/donut.webp",
     "link": "/model"
-  },
-  {
-    "nameKey": "projects.items.7.name",
-    "descriptionKey": "projects.items.7.description",
-    "image": "/images/skill_target.webp",
-    "link": "/roadmap"
   }
 ]

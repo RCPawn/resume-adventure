@@ -79,7 +79,7 @@ export default {
                 description: "敬请期待😊"
             },
             {
-                name: "深度学习",
+                name: "个人网关",
                 description: "敬请期待😊"
             },
             {
