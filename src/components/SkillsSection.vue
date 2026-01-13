@@ -1,401 +1,330 @@
 <template>
-  <!-- 保持原有模板结构不变 -->
-  <div id="skills" class="skill-radar-container">
-    <div class="section-title-container">
+  <div id="skills" class="tech-stack-container">
+    <!-- 标题区域 -->
+    <div class="header-section" data-aos="fade-up">
+      <!-- 新增一个 wrapper 让图标和标题横向排列 -->
       <div class="title-wrapper">
-        <span class="title-icon">🛠️</span>
-        <h2 class="gradient-text">{{ t('skills.title') }}</h2>
+        <span class="emoji-icon">⚡</span>
+        <h2 class="section-title">专业 <span class="highlight">技能</span></h2>
       </div>
-      <p v-if="t('skills.subtitle')" class="subtitle">{{ t('skills.subtitle') }}</p>
+<!--      <p class="section-subtitle">核心技术栈</p>-->
     </div>
-    <div class="content-wrapper">
-      <div class="chart-and-skills-container">
-        <div ref="chartRef" class="chart-container"></div>
-        <div class="skill-summary">
-          <div
-              v-for="(skill, index) in skills"
-              :key="index"
-              class="skill-summary-item"
-              @mouseenter="highlightSkill(index)"
-              @mouseleave="resetHighlight"
-          >
-            <!-- 保持原有技能展示结构 -->
-            <div class="skill-summary-icon">
-              <i :class="skill.icon"></i>
-            </div>
-            <div class="skill-summary-details">
-              <div class="skill-summary-header">
-                <span class="skill-name">{{ skill.name }}</span>
-                <span class="skill-level">{{ skill.level }}%</span>
-              </div>
-              <div class="skill-progress-bar">
-                <div
-                    class="skill-progress-fill"
-                    :style="{ width: `${skill.level}%`, background: getSkillColor(index) }"
-                ></div>
-              </div>
-            </div>
+
+    <!-- 技能卡片网格 -->
+    <div class="bento-grid">
+
+      <!-- 卡片 1: Java与核心框架 (只留最硬核的) -->
+      <div class="tech-card core-backend" @mousemove="handleMouseMove" @mouseleave="resetCard">
+        <div class="card-bg"></div>
+        <div class="card-content">
+          <div class="card-header">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" class="tech-logo" alt="Java" />
+            <h3>Java & Spring</h3>
+          </div>
+          <p class="card-desc">后端开发的基石与核心框架。</p>
+          <div class="tag-container">
+            <!-- ThreadLocal 是你项目的亮点，必须留 -->
+            <span class="tech-tag highlight-tag">🧵 ThreadLocal</span>
+            <span class="tech-tag">☕ Java 17</span>
+            <span class="tech-tag">🧠 JVM</span>
+            <span class="tech-tag">🍃 Spring Boot 3</span>
           </div>
         </div>
       </div>
+
+      <!-- 卡片 2: 微服务架构 (这是你的杀手锏，竖长条展示) -->
+      <div class="tech-card microservices" @mousemove="handleMouseMove" @mouseleave="resetCard">
+        <div class="card-bg"></div>
+        <div class="card-content">
+          <div class="card-header">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" class="tech-logo" alt="Spring Cloud" />
+            <h3>Cloud Native</h3>
+          </div>
+          <p class="card-desc">基于 Spring Cloud Alibaba 的并发治理方案。</p>
+          <div class="tag-container">
+            <span class="tech-tag">☁️ Spring Cloud Alibaba</span>
+            <span class="tech-tag highlight-tag">☸️ Nacos</span>
+            <span class="tech-tag">🛡️ Sentinel</span>
+            <span class="tech-tag">🚪 Gateway</span>
+            <span class="tech-tag">⚡ OpenFeign</span>
+            <!-- Netty 是网关底层，写在这里很显深度 -->
+            <span class="tech-tag">🚀 Netty</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 卡片 3: 数据存储与中间件 (去掉了冗余描述) -->
+      <div class="tech-card data-infra" @mousemove="handleMouseMove" @mouseleave="resetCard">
+        <div class="card-bg"></div>
+        <div class="card-content">
+          <div class="card-header">
+            <div class="multi-logos">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" class="mini-logo" />
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg" class="mini-logo" />
+            </div>
+            <h3>Data & Middleware</h3>
+          </div>
+          <div class="tag-container">
+            <span class="tech-tag">🐬 MySQL</span>
+            <!-- 简历里写了MVCC/锁，这里用一个词概括，显得懂底层 -->
+            <span class="tech-tag">🔒 MVCC & Lock</span>
+            <span class="tech-tag">⚡ Redis</span>
+            <span class="tech-tag">🐰 RabbitMQ</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 卡片 4: 全栈能力 (只展示你能落地的) -->
+      <div class="tech-card fullstack" @mousemove="handleMouseMove" @mouseleave="resetCard">
+        <div class="card-bg"></div>
+        <div class="card-content">
+          <div class="card-header">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg" class="tech-logo" alt="Vue" />
+            <h3>Frontend</h3>
+          </div>
+          <div class="tag-container">
+            <span class="tech-tag">Vue 3</span>
+            <span class="tech-tag">Element Plus</span>
+            <!-- 加上 WebGL 呼应你的3D主页 -->
+            <span class="tech-tag highlight-tag">🧊 WebGL</span>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </template>
 
 <script setup>
-import {ref, computed, watch, onMounted, onUnmounted} from 'vue';
-import {useI18n} from 'vue-i18n';
-import * as echarts from 'echarts';
+// 3D 倾斜逻辑保持不变
+const handleMouseMove = (e) => {
+  const card = e.currentTarget;
+  const rect = card.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  const centerX = rect.width / 2;
+  const centerY = rect.height / 2;
+  // 减小旋转角度，让交互更微小精致
+  const rotateX = ((y - centerY) / centerY) * -5;
+  const rotateY = ((x - centerX) / centerX) * 5;
 
-const {t, tm} = useI18n();
-const chartRef = ref(null);
-let chart = null;
+  card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.01)`;
 
-// 响应式技能数据
-const skills = computed(() => tm('skills.items') || []);
-
-// 监听语言变化
-watch(
-    () => tm('skills.items'),
-    () => {
-      updateChart();
-    }
-);
-
-const skillColors = [
-  '#B3FFB3', // 清新绿色
-  '#FFEB99', // 温暖黄色
-  '#B3FFB3',
-  '#FFB3B3', // 柔和红色
-  '#FFB3B3',
-  '#B3FFB3'
-];
-
-
-const getSkillColor = (index) => {
-  return skillColors[index % skillColors.length];
+  const bg = card.querySelector('.card-bg');
+  bg.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 80%)`;
 };
 
-
-// 初始化图表
-const initChart = () => {
-  if (!chartRef.value) return;
-
-  chart = echarts.init(chartRef.value);
-  updateChart();
-  window.addEventListener('resize', handleResize);
+const resetCard = (e) => {
+  const card = e.currentTarget;
+  card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+  const bg = card.querySelector('.card-bg');
+  bg.style.background = 'transparent';
 };
-
-const handleResize = () => {
-  chart?.resize();
-};
-
-// 更新图表数据
-const updateChart = () => {
-  if (!chart || skills.value.length === 0) return;
-
-  const skillNames = skills.value.map(skill => skill.name);
-  const skillLevels = skills.value.map(skill => skill.level);
-
-  const option = {
-    // 保持原有图表配置
-    backgroundColor: 'transparent',
-    radar: {
-      indicator: skillNames.map(name => ({name, max: 100})),
-      shape: 'polygon',
-      splitNumber: 5,
-      axisName: {
-        color: '#666',
-        fontSize: 12,
-        fontWeight: 'normal'
-      },
-      splitArea: {
-        areaStyle: {
-          color: ['rgba(250, 250, 250, 0.3)', 'rgba(245, 245, 245, 0.5)']
-        }
-      },
-      axisLine: {
-        lineStyle: {
-          color: 'rgba(200, 200, 200, 0.5)'
-        }
-      },
-      splitLine: {
-        lineStyle: {
-          color: 'rgba(200, 200, 200, 0.5)'
-        }
-      }
-    },
-    series: [
-      {
-        name: t('skills.title'),
-        type: 'radar',
-        data: [
-          {
-            value: skillLevels,
-            name: t('skills.title'),
-            areaStyle: {
-              color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
-                {color: 'rgba(64, 158, 255, 0.7)', offset: 0},
-                {color: 'rgba(64, 158, 255, 0.2)', offset: 1}
-              ])
-            },
-            lineStyle: {
-              width: 2,
-              color: '#409EFF'
-            },
-            symbolSize: 6,
-            symbol: 'circle'
-          }
-        ]
-      }
-    ],
-    tooltip: {
-      trigger: 'item',
-      formatter: (params) => {
-        return `${params.name}: ${params.value}%`;
-      }
-    },
-    textStyle: {
-      fontFamily: "'Poppins', 'PingFang SC', sans-serif"
-    },
-    animation: true
-  };
-
-  chart.setOption(option);
-};
-
-// 高亮交互方法
-const highlightSkill = (index) => {
-  if (!chart || !skills.value.length) return;
-
-  const values = skills.value.map((_, i) =>
-      i === index ? skills.value[i].level : skills.value[i].level * 0.3
-  );
-
-  chart.dispatchAction({
-    type: 'highlight',
-    seriesIndex: 0,
-    dataIndex: 0
-  });
-
-  chart.setOption({
-    series: [
-      {
-        data: [
-          {
-            value: values,
-            itemStyle: {
-              color: (params) => params.dataIndex === index
-                  ? '#F56C6C'
-                  : 'rgba(64, 158, 255, 0.7)'
-            }
-          }
-        ]
-      }
-    ]
-  });
-};
-
-const resetHighlight = () => {
-  if (!chart || !skills.value.length) return;
-
-  const values = skills.value.map(skill => skill.level);
-
-  chart.dispatchAction({
-    type: 'downplay',
-    seriesIndex: 0,
-    dataIndex: 0
-  });
-
-  chart.setOption({
-    series: [
-      {
-        data: [
-          {
-            value: values,
-            areaStyle: {
-              color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
-                {color: 'rgba(64, 158, 255, 0.7)', offset: 0},
-                {color: 'rgba(64, 158, 255, 0.2)', offset: 1}
-              ])
-            }
-          }
-        ]
-      }
-    ]
-  });
-};
-
-// 生命周期管理
-onMounted(() => {
-  initChart();
-});
-
-onUnmounted(() => {
-  if (chart) {
-    chart.dispose();
-    chart = null;
-  }
-  window.removeEventListener('resize', handleResize);
-});
 </script>
 
 <style scoped>
-.section-title-container {
-  position: relative;
-  text-align: center;
-  margin-bottom: 3rem;
-}
-
+/* 新增：让图标和标题在同一行居中 */
 .title-wrapper {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.1rem;
-}
-
-.title-icon {
-  font-size: 2.5rem;
-  animation: float 3s ease-in-out infinite;
-  display: inline-block;
-  transform: translateZ(0);
-  filter: drop-shadow(0 2px 5px rgba(255, 235, 100, 0.3));
-  will-change: transform;
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-.gradient-text {
-  font-size: 2.5rem;
-  font-weight: 700;
-  background: #333;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: #333;
-  margin-bottom: 1rem;
-  padding: 0.5rem 0;
-  position: relative;
-  z-index: 2;
-}
-
-.subtitle {
-  font-size: 1.1rem;
-  color: #666;
-  font-weight: 400;
-}
-
-/* 下面为内容区域样式 */
-.skill-radar-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 2rem;
-  background-color: #F8F8F8;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.content-wrapper {
-  width: 100%;
-}
-
-.chart-and-skills-container {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-}
-
-.chart-container {
-  flex: 1;
-  height: 500px;
-  min-width: 400px;
-}
-
-.skill-summary {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.skill-summary-item {
-  display: flex;
-  align-items: center;
-  background-color: #F8F8F8;
-  border-radius: 12px;
-  padding: 1rem;
-  transition: all 0.3s ease;
-}
-
-.skill-summary-item:hover {
-  transform: translateY(-5px);
-}
-
-.skill-summary-icon {
-  margin-right: 1rem;
-  background-color: rgba(64, 158, 255, 0.1);
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.skill-summary-icon i {
-  font-size: 1.5rem;
-  color: #409EFF;
-}
-
-.skill-summary-details {
-  flex-grow: 1;
-}
-
-.skill-summary-header {
-  display: flex;
-  justify-content: space-between;
+  gap: 5px; /* 图标和文字之间的间距 */
   margin-bottom: 0.5rem;
 }
 
-.skill-name {
-  font-weight: 600;
-  color: #333;
+/* 核心布局与上一版一致，微调间距 */
+.tech-stack-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: transparent;
 }
 
-.skill-level {
-  font-weight: 600;
-  color: #409EFF;
+.header-section {
+  text-align: center;
+  margin-bottom: 3rem; /* 间距调小一点 */
 }
 
-.skill-progress-bar {
-  height: 6px;
-  background-color: #e0e0e0;
-  border-radius: 3px;
+.emoji-icon {
+  font-size: 2.8rem;
+  display: block;
+  animation: bounce 2s infinite;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #2c3e50;
+  margin: 0;
+  letter-spacing: -1px;
+}
+
+.highlight {
+  background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.section-subtitle {
+  color: #666;
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
+}
+
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, auto);
+  gap: 1.5rem;
+}
+
+.tech-card {
+  background: white;
+  border-radius: 20px;
+  padding: 1.8rem; /* 内边距稍微调小 */
+  position: relative;
   overflow: hidden;
+  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.03);
+  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  cursor: default;
+  backdrop-filter: blur(10px);
 }
 
-.skill-progress-fill {
+.card-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 100%;
-  transition: width 1s ease-in-out;
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+  transition: background 0.2s;
 }
 
-/* Responsive adjustments */
+.card-content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 布局分配 */
+.core-backend {
+  grid-column: span 2;
+  background: linear-gradient(145deg, #ffffff 0%, #f0f7ff 100%);
+}
+
+.microservices {
+  grid-row: span 2;
+  background: linear-gradient(145deg, #ffffff 0%, #f3fff3 100%);
+}
+
+.data-infra {
+  background: linear-gradient(145deg, #ffffff 0%, #fffbf0 100%);
+}
+
+.fullstack {
+  background: linear-gradient(145deg, #ffffff 0%, #fcf0ff 100%);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.8rem;
+}
+
+.card-header h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.tech-logo {
+  width: 36px;
+  height: 36px;
+}
+
+.multi-logos {
+  display: flex;
+  gap: -8px;
+}
+.mini-logo {
+  width: 32px;
+  height: 32px;
+}
+
+.card-desc {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin-bottom: 1.2rem;
+  line-height: 1.4;
+  opacity: 0.8; /* 描述文字稍微淡一点，突出标签 */
+}
+
+/* 标签容器 */
+.tag-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: auto;
+}
+
+/* 标签样式优化 */
+.tech-tag {
+  padding: 0.4rem 0.8rem;
+  background: rgba(0,0,0,0.03);
+  color: #475569;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600; /* 字体加粗一点 */
+  transition: all 0.3s;
+  border: 1px solid rgba(0,0,0,0.02);
+}
+
+.tech-tag:hover {
+  background: white;
+  border-color: rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  color: #000;
+}
+
+.highlight-tag {
+  background: #e0f2fe;
+  color: #0284c7; /* 颜色加深一点，更醒目 */
+}
+
 @media (max-width: 992px) {
-  .chart-and-skills-container {
+  .bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .core-backend {
+    grid-column: span 2;
+  }
+  .microservices {
+    grid-row: auto;
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .bento-grid {
+    display: flex;
     flex-direction: column;
   }
-
-  .chart-container {
-    width: 100%;
-    height: 400px;
-    min-width: auto;
+  .section-title {
+    font-size: 2rem;
   }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 </style>
