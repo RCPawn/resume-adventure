@@ -67,20 +67,16 @@ export default {
     projects: {
         items: [
             {
-                name: "榄人千里眼",
-                description: "油橄榄园区一体化平台，融合数据可视化、WebGIS与区块链技术的全域资产管理平台"
-            },
-            {
-                name: "算法心得",
-                description: "敬请期待😊"
-            },
-            {
-                name: "GitHub开源",
-                description: "敬请期待😊"
-            },
-            {
                 name: "个人网关",
                 description: "敬请期待😊"
+            },
+            {
+                name: "非遗展陈",
+                description: "敬请期待😊"
+            },
+            {
+                name: "榄人千里眼",
+                description: "油橄榄园区一体化平台，融合数据可视化、WebGIS与区块链技术的全域资产管理平台"
             },
             {
                 name: "天气App",
@@ -89,14 +85,6 @@ export default {
             {
                 name: "简历冒险",
                 description: "基于Unity3D开发的互动游戏，通过驾驶小车探索我的学习历程（敬请期待😊）"
-            },
-            {
-                name: "甜甜圈",
-                description: "使用Blender学习创作的3D模型，展示建模、材质、光照与动画技术"
-            },
-            {
-                name: "技能目标",
-                description: "简单展示自己的技能目标（当前百分比为测试数据）"
             }
         ],
         title: '学习经历',
@@ -128,8 +116,6 @@ export default {
                 "英语水平 CET-6"
             ]
         },
-
-// ... existing education ...
 
         skills: {
             title: "专业技能",
@@ -182,7 +168,8 @@ export default {
                         "全链路身份闭环：针对微服务间调用 Token 丢失痛点，设计基于 ThreadLocal + Feign 拦截器的透传方案，在网关层注入 Header，配合内部拦截器实现令牌中继，确保用户 ID 与 Token 在全链路的无缝传递。",
                         "零停机动态路由：摒弃 YAML 静态配置，基于 Nacos Config 监听机制开发动态路由加载器，监听配置变更并调用 Gateway 底层 API 实时刷新路由表，达成修改路由规则无需重启网关的目标。",
                         "流量治理与监控：基于 Sentinel 实现核心接口的 QPS 限流与熔断降级，并通过 Nacos 落地规则持久化方案，整合 SkyWalking 探针实现分布式全链路追踪，通过异常处理规范限流响应，并精准定位系统耗时瓶颈。",
-                        "可视化管理平台：独立搭建 Vue3 管理后台，配置全局 CORS 解决跨域，对接 Actuator 端点与管理接口，实现了路由规则的可视化查看及服务健康状态监控。"
+                        "安全防御与文档：基于 Redis + Lua 设计防重放过滤器，利用 Nonce 随机串与时间戳机制拦截重复请求；引入 Knife4j 在网关层聚合所有服务的 Swagger 文档，实现单一入口调试。",
+                        "异步日志与削峰：基于 RabbitMQ 实现日志异步解耦。经 JMeter 压测，在模拟 50ms 写库延迟下，系统吞吐量由 89 QPS 飙升至 1100+ QPS（提升约 12 倍），且在全链路拦截模式下仍保持了直连服务 66% 的高性能水准。"
                     ]
                 },
                 {

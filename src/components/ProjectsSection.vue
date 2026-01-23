@@ -35,31 +35,6 @@
         </div>
       </div>
 
-      <!-- 项目列表 - 移动视图 (卡片滑动) -->
-      <div v-else class="mobile-projects-carousel"
-           @touchstart="handleTouchStart"
-           @touchend="handleTouchEnd">
-        <div class="mobile-projects-wrapper" :style="{transform: `translateX(-${activeIndex * 100}%)`}">
-          <div
-              v-for="(project, index) in projects"
-              :key="project.name"
-              class="mobile-project-card"
-              @click="handleProjectClick(project)"
-          >
-            <div class="mobile-project-image-container">
-              <img :src="project.image" :alt="project.name" class="project-image"/>
-              <div class="project-overlay"></div>
-            </div>
-            <div class="mobile-project-info">
-              <span class="project-number">{{ (index + 1).toString().padStart(2, '0') }}</span>
-              <h3 class="project-title">{{ project.name }}</h3>
-              <p class="project-description">{{ project.description }}</p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
       <!-- 原来的模态框 -->
       <div v-if="showModal" class="modal-overlay" @click="closeModal">
         <div class="modal-content" :class="{'mobile-modal': isMobile}" @click.stop>
@@ -159,29 +134,6 @@ const closeWeatherModal = () => {
   }
 };
 
-// 用于移动端的滑动功能
-const touchStartX = ref(0);
-const touchEndX = ref(0);
-
-const handleTouchStart = (e) => {
-  touchStartX.value = e.changedTouches[0].screenX;
-};
-
-const handleTouchEnd = (e) => {
-  touchEndX.value = e.changedTouches[0].screenX;
-  handleSwipe();
-};
-
-const handleSwipe = () => {
-  const swipeThreshold = 50;
-  if (touchEndX.value < touchStartX.value - swipeThreshold) {
-    // 左滑
-    activeIndex.value = getNextIndex();
-  } else if (touchEndX.value > touchStartX.value + swipeThreshold) {
-    // 右滑
-    activeIndex.value = getPrevIndex();
-  }
-};
 </script>
 
 <style scoped>

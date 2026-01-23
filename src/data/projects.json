@@ -2,10 +2,9 @@
   {
     "nameKey": "projects.items.0.name",
     "descriptionKey": "projects.items.0.description",
-    "image": "/images/tree.png",
-    "link": "/olive-ppt"
+    "image": "/images/light.png",
+    "link": "/coming-soon"
   },
-
   {
     "nameKey": "projects.items.1.name",
     "descriptionKey": "projects.items.1.description",
@@ -15,31 +14,19 @@
   {
     "nameKey": "projects.items.2.name",
     "descriptionKey": "projects.items.2.description",
-    "image": "/images/github.jpg",
-    "link": "/coming-soon"
+    "image": "/images/tree.png",
+    "link": "/olive-ppt"
   },
   {
     "nameKey": "projects.items.3.name",
     "descriptionKey": "projects.items.3.description",
-    "image": "/images/neural_network.webp",
-    "link": "/coming-soon"
-  },
-  {
-    "nameKey": "projects.items.4.name",
-    "descriptionKey": "projects.items.4.description",
     "image": "/images/cloud.png",
     "link": "/weather"
   },
   {
-    "nameKey": "projects.items.5.name",
-    "descriptionKey": "projects.items.5.description",
+    "nameKey": "projects.items.4.name",
+    "descriptionKey": "projects.items.4.description",
     "image": "/images/car.webp",
     "link": "/game"
-  },
-  {
-    "nameKey": "projects.items.6.name",
-    "descriptionKey": "projects.items.6.description",
-    "image": "/images/donut.webp",
-    "link": "/model"
   }
 ]
