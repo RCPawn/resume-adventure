@@ -149,7 +149,7 @@ const closeWeatherModal = () => {
   max-width: 1200px;
   margin: 10rem auto;
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--bg-primary) 0%, #ffffff 100%);
+  background: linear-gradient(135deg, var(--bg-color) 0%, var(--bg-color) 100%);
   padding: 2rem;
   box-sizing: border-box;
   z-index: 99;
@@ -180,17 +180,14 @@ const closeWeatherModal = () => {
   font-weight: 700;
   margin-bottom: 1rem;
   text-align: center;
-  background: #333;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: #333;
+  color: var(--text-color);
   letter-spacing: -0.5px;
   position: relative;
 }
 
 .subtitle {
   font-size: 1.1rem;
-  color: #666;
+  color: var(--secondary-color);
   text-align: center;
   margin-bottom: 2rem;
   line-height: 1.6;
@@ -204,7 +201,7 @@ const closeWeatherModal = () => {
   position: absolute;
   width: 30px;
   height: 2px;
-  background: #666;
+  background: var(--border-color);
   opacity: 0.3;
 }
 
@@ -225,7 +222,7 @@ const closeWeatherModal = () => {
   font-size: 1.5rem;
   margin-bottom: 1rem;
   animation: float 3s ease-in-out infinite;
-  filter: drop-shadow(0 2px 5px rgba(255, 235, 100, 0.3));
+  filter: drop-shadow(0 2px 5px var(--hover-shadow));
 }
 
 .sticky-header::after {
@@ -238,8 +235,8 @@ const closeWeatherModal = () => {
   height: 1px;
   background: linear-gradient(90deg,
   transparent 0%,
-  rgba(51, 51, 51, 0.1) 20%,
-  rgba(51, 51, 51, 0.1) 80%,
+  var(--border-color) 20%,
+  var(--border-color) 80%,
   transparent 100%
   );
 }
@@ -250,7 +247,7 @@ const closeWeatherModal = () => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: radial-gradient(circle, #333 1px, transparent 1px);
+  background-image: radial-gradient(circle, var(--text-color) 1px, transparent 1px);
   background-size: 20px 20px;
   opacity: 0.1;
   pointer-events: none;
@@ -276,20 +273,21 @@ const closeWeatherModal = () => {
   display: flex;
   align-items: center;
   gap: 2rem;
-  background: #F2F2F2;
+  background: var(--modal-bg);
   border-radius: 16px;
   padding: 1.5rem;
   transform: translateY(20px);
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--hover-shadow);
   position: relative;
   overflow: hidden;
+  border: 1px solid var(--border-color);
 }
 
 .project-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--hover-shadow);
 }
 
 .project-image-container {
@@ -297,7 +295,8 @@ const closeWeatherModal = () => {
   position: relative;
   overflow: hidden;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--hover-shadow);
+  border: 1px solid var(--border-color);
 }
 
 .project-image {
@@ -315,7 +314,7 @@ const closeWeatherModal = () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.15) 100%);
+  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.2) 100%);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -335,20 +334,19 @@ const closeWeatherModal = () => {
 
 .project-number {
   display: block;
-  color: var(--accent-color);
+  color: var(--primary-color);
   opacity: 0.7;
   margin-bottom: 0.5rem;
 }
 
 .project-title {
   font-size: 1.75rem;
-  color: var(--text-primary);
+  color: var(--text-color);
   margin-bottom: 1rem;
 }
 
 .project-description {
-  color: var(--text-primary);
-  opacity: 0.8;
+  color: var(--secondary-color);
   margin-bottom: 1rem;
 }
 
@@ -359,7 +357,7 @@ const closeWeatherModal = () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0,0,0,0.7);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -367,7 +365,7 @@ const closeWeatherModal = () => {
 }
 
 .modal-content {
-  background: white;
+  background: var(--modal-bg);
   border-radius: 24px;
   max-width: 1000px;
   width: 90%;
@@ -375,9 +373,10 @@ const closeWeatherModal = () => {
   overflow-y: auto;
   position: relative;
   z-index: 10000;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--hover-shadow);
   scrollbar-width: thin;
-  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  scrollbar-color: var(--border-color) transparent;
+  border: 1px solid var(--border-color);
 }
 
 .modal-content::-webkit-scrollbar {
@@ -389,7 +388,7 @@ const closeWeatherModal = () => {
 }
 
 .modal-content::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: var(--border-color);
   border-radius: 3px;
 }
 
@@ -397,27 +396,27 @@ const closeWeatherModal = () => {
   position: absolute;
   top: 1.5rem;
   right: 1.5rem;
-  background: rgba(255, 255, 255, 0.9);
-  border: none;
+  background: var(--btn-bg);
+  border: 1px solid var(--border-color);
   width: 36px;
   height: 36px;
   border-radius: 50%;
   font-size: 1.5rem;
   line-height: 1;
   cursor: pointer;
-  color: #333;
+  color: var(--text-color);
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--hover-shadow);
 }
 
 .close-button:hover {
-  background: #fff;
-  color: #000;
+  background: var(--btn-bg);
+  color: var(--primary-color);
   transform: scale(1.1);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--hover-shadow);
 }
 
 @keyframes modalFadeIn {
@@ -437,13 +436,14 @@ const closeWeatherModal = () => {
 
 /* 项目卡片过渡动画增强 */
 .mobile-project-card {
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--hover-shadow);
   transform: scale(0.98);
   transition: transform 0.4s ease, box-shadow 0.4s ease;
+  border: 1px solid var(--border-color);
 }
 
 .mobile-projects-wrapper:hover .mobile-project-card {
   transform: scale(1);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--hover-shadow);
 }
 </style>

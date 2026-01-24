@@ -189,7 +189,7 @@ const getCurrentDate = () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0,0,0,0.7);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -199,9 +199,9 @@ const getCurrentDate = () => {
 
 /* 弹窗内容区域 - 增加了最大宽度 */
 .weather-modal-content {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, var(--modal-bg) 0%, var(--btn-bg) 100%);
   border-radius: 25px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--hover-shadow);
   position: relative;
   width: 90%;
   max-width: 550px; /* 增加最大宽度 */
@@ -209,7 +209,7 @@ const getCurrentDate = () => {
   overflow-y: auto;
   animation: slideUp 0.4s ease-out;
   padding: 30px; /* 增加内边距 */
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid var(--border-color);
 }
 
 /* 移动端样式 */
@@ -224,8 +224,8 @@ const getCurrentDate = () => {
   position: absolute;
   top: 15px;
   right: 15px;
-  background: rgba(255, 255, 255, 0.3);
-  border: none;
+  background: var(--btn-bg);
+  border: 1px solid var(--border-color);
   border-radius: 50%;
   width: 36px; /* 调大按钮 */
   height: 36px; /* 调大按钮 */
@@ -235,12 +235,13 @@ const getCurrentDate = () => {
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s;
-  color: #444;
+  color: var(--text-color);
   z-index: 10;
 }
 
 .close-button:hover {
-  background: rgba(255, 255, 255, 0.5);
+  background: var(--btn-bg);
+  color: var(--primary-color);
   transform: scale(1.1);
 }
 
@@ -255,7 +256,7 @@ const getCurrentDate = () => {
 .app-title {
   font-size: 30px; /* 调大标题字体 */
   font-weight: 600;
-  color: #333;
+  color: var(--text-color);
   margin-bottom: 24px;
   text-align: center;
 }
@@ -270,23 +271,24 @@ const getCurrentDate = () => {
 .city-input {
   flex: 1;
   padding: 12px 16px; /* 调大输入框 */
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 10px 0 0 10px;
   font-size: 18px; /* 调大字体 */
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: var(--btn-bg);
   transition: all 0.3s;
+  color: var(--text-color);
 }
 
 .city-input:focus {
   outline: none;
-  border-color: #64b5f6;
-  box-shadow: 0 0 0 2px rgba(100, 181, 246, 0.2);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
 }
 
 .search-button {
   padding: 12px 20px; /* 调大按钮 */
-  background: linear-gradient(135deg, #64b5f6 0%, #4299e1 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--primary-color) 0%, #4299e1 100%);
+  color: var(--bg-color);
   border: none;
   border-radius: 0 10px 10px 0;
   cursor: pointer;
@@ -303,6 +305,7 @@ const getCurrentDate = () => {
 .search-icon {
   margin-right: 8px;
   font-size: 20px; /* 调大图标 */
+  color: var(--icon-color);
 }
 
 /* 加载状态 */
@@ -316,9 +319,9 @@ const getCurrentDate = () => {
 }
 
 .loading-spinner {
-  border: 5px solid rgba(100, 181, 246, 0.3); /* 调大加载器 */
+  border: 5px solid rgba(96, 165, 250, 0.3); /* 调大加载器 */
   border-radius: 50%;
-  border-top: 5px solid #64b5f6;
+  border-top: 5px solid var(--primary-color);
   width: 50px; /* 调大加载器 */
   height: 50px; /* 调大加载器 */
   animation: spin 1s linear infinite;
@@ -332,17 +335,18 @@ const getCurrentDate = () => {
 
 .loading-container p {
   font-size: 18px; /* 调大字体 */
-  color: #555;
+  color: var(--secondary-color);
 }
 
 /* 天气结果 */
 .weather-result {
   width: 100%;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: var(--modal-bg);
   border-radius: 16px;
   padding: 25px; /* 增加内边距 */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--hover-shadow);
   margin-bottom: 20px;
+  border: 1px solid var(--border-color);
 }
 
 .location-info {
@@ -353,11 +357,11 @@ const getCurrentDate = () => {
 .location-info h2 {
   font-size: 28px; /* 调大城市名称 */
   margin-bottom: 8px;
-  color: #333;
+  color: var(--text-color);
 }
 
 .date {
-  color: #666;
+  color: var(--secondary-color);
   font-size: 16px; /* 调大日期字体 */
 }
 
@@ -377,23 +381,24 @@ const getCurrentDate = () => {
 .temp-value {
   font-size: 64px; /* 调大温度数字 */
   font-weight: 700;
-  color: #333;
+  color: var(--text-color);
 }
 
 .temp-unit {
   font-size: 32px; /* 调大温度单位 */
   margin-left: 5px;
-  color: #555;
+  color: var(--secondary-color);
 }
 
 .weather-icon {
   font-size: 64px; /* 调大天气图标 */
+  color: var(--icon-color);
 }
 
 .weather-description {
   text-align: center;
   font-size: 24px; /* 调大天气描述 */
-  color: #444;
+  color: var(--text-color);
   margin-bottom: 24px;
 }
 
@@ -414,14 +419,14 @@ const getCurrentDate = () => {
 
 .detail-label {
   font-size: 16px; /* 调大详情标签 */
-  color: #666;
+  color: var(--secondary-color);
   margin-bottom: 8px;
 }
 
 .detail-value {
   font-size: 20px; /* 调大详情值 */
   font-weight: 600;
-  color: #333;
+  color: var(--text-color);
 }
 
 /* 预报提示和按钮 */
@@ -433,9 +438,9 @@ const getCurrentDate = () => {
 }
 
 .forecast-button {
-  background-color: rgba(100, 181, 246, 0.2);
-  color: #3182ce;
-  border: 1px solid #3182ce;
+  background-color: var(--btn-bg);
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
   border-radius: 10px;
   padding: 10px 20px; /* 调大按钮 */
   font-size: 16px; /* 调大字体 */
@@ -444,7 +449,7 @@ const getCurrentDate = () => {
 }
 
 .forecast-button:hover {
-  background-color: rgba(100, 181, 246, 0.3);
+  background-color: rgba(96, 165, 250, 0.1);
 }
 
 .forecast-container {
@@ -452,12 +457,13 @@ const getCurrentDate = () => {
   width: 100%;
   text-align: center;
   padding: 15px;
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: var(--btn-bg);
   border-radius: 10px;
+  border: 1px solid var(--border-color);
 }
 
 .forecast-note {
-  color: #666;
+  color: var(--secondary-color);
   font-style: italic;
   font-size: 16px; /* 调大字体 */
 }
@@ -472,18 +478,19 @@ const getCurrentDate = () => {
   flex-direction: column;
   align-items: center;
   margin-top: 24px;
+  border: 1px solid var(--border-color);
 }
 
 .error p {
-  color: #e53e3e;
+  color: var(--primary-color);
   margin-bottom: 12px;
   text-align: center;
   font-size: 18px; /* 调大错误信息字体 */
 }
 
 .retry-button {
-  background-color: #e53e3e;
-  color: white;
+  background-color: var(--primary-color);
+  color: var(--bg-color);
   border: none;
   border-radius: 10px;
   padding: 10px 20px; /* 调大按钮 */
@@ -493,7 +500,7 @@ const getCurrentDate = () => {
 }
 
 .retry-button:hover {
-  background-color: #c53030;
+  background-color: #2563eb;
 }
 
 /* 欢迎页面 */
@@ -507,7 +514,7 @@ const getCurrentDate = () => {
 
 .welcome-text {
   font-size: 22px; /* 调大欢迎文字 */
-  color: #444;
+  color: var(--text-color);
   margin-bottom: 24px;
   text-align: center;
 }
@@ -519,7 +526,7 @@ const getCurrentDate = () => {
 
 .suggestion-title {
   font-size: 18px; /* 调大标题 */
-  color: #555;
+  color: var(--secondary-color);
   margin-bottom: 12px;
 }
 
@@ -531,9 +538,9 @@ const getCurrentDate = () => {
 }
 
 .suggestion-button {
-  background-color: rgba(100, 181, 246, 0.2);
-  color: #3182ce;
-  border: 1px solid #3182ce;
+  background-color: var(--btn-bg);
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
   border-radius: 8px;
   padding: 8px 16px; /* 调大按钮 */
   font-size: 16px; /* 调大字体 */
@@ -542,7 +549,7 @@ const getCurrentDate = () => {
 }
 
 .suggestion-button:hover {
-  background-color: rgba(100, 181, 246, 0.3);
+  background-color: rgba(96, 165, 250, 0.1);
 }
 
 /* 动画 */
@@ -562,16 +569,16 @@ const getCurrentDate = () => {
 }
 
 .weather-modal-content::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--btn-bg);
   border-radius: 10px;
 }
 
 .weather-modal-content::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.15);
+  background: var(--border-color);
   border-radius: 10px;
 }
 
 .weather-modal-content::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.25);
+  background: var(--secondary-color);
 }
 </style>

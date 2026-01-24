@@ -150,24 +150,25 @@ const resetCard = (e) => {
   font-size: 2.8rem;
   display: block;
   animation: bounce 2s infinite;
+  color: var(--icon-color);
 }
 
 .section-title {
   font-size: 2.5rem;
   font-weight: 800;
-  color: #2c3e50;
+  color: var(--text-color);
   margin: 0;
   letter-spacing: -1px;
 }
 
 .highlight {
-  background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+  background: linear-gradient(120deg, var(--primary-color) 0%, #8fd3f4 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .section-subtitle {
-  color: #666;
+  color: var(--secondary-color);
   font-size: 1.1rem;
   margin-top: 0.5rem;
 }
@@ -180,13 +181,13 @@ const resetCard = (e) => {
 }
 
 .tech-card {
-  background: white;
+  background: var(--modal-bg);
   border-radius: 20px;
   padding: 1.8rem; /* 内边距稍微调小 */
   position: relative;
   overflow: hidden;
-  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);
-  border: 1px solid rgba(0,0,0,0.03);
+  box-shadow: var(--hover-shadow);
+  border: 1px solid var(--border-color);
   transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   cursor: default;
   backdrop-filter: blur(10px);
@@ -215,20 +216,20 @@ const resetCard = (e) => {
 /* 布局分配 */
 .core-backend {
   grid-column: span 2;
-  background: linear-gradient(145deg, #ffffff 0%, #f0f7ff 100%);
+  background: linear-gradient(145deg, var(--modal-bg) 0%, var(--nav-bg) 100%);
 }
 
 .microservices {
   grid-row: span 2;
-  background: linear-gradient(145deg, #ffffff 0%, #f3fff3 100%);
+  background: linear-gradient(145deg, var(--modal-bg) 0%, var(--nav-bg) 100%);
 }
 
 .data-infra {
-  background: linear-gradient(145deg, #ffffff 0%, #fffbf0 100%);
+  background: linear-gradient(145deg, var(--modal-bg) 0%, var(--nav-bg) 100%);
 }
 
 .fullstack {
-  background: linear-gradient(145deg, #ffffff 0%, #fcf0ff 100%);
+  background: linear-gradient(145deg, var(--modal-bg) 0%, var(--nav-bg) 100%);
 }
 
 .card-header {
@@ -241,7 +242,7 @@ const resetCard = (e) => {
 .card-header h3 {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: var(--text-color);
   margin: 0;
 }
 
@@ -260,7 +261,7 @@ const resetCard = (e) => {
 }
 
 .card-desc {
-  color: #64748b;
+  color: var(--secondary-color);
   font-size: 0.9rem;
   margin-bottom: 1.2rem;
   line-height: 1.4;
@@ -278,26 +279,27 @@ const resetCard = (e) => {
 /* 标签样式优化 */
 .tech-tag {
   padding: 0.4rem 0.8rem;
-  background: rgba(0,0,0,0.03);
-  color: #475569;
+  background: var(--btn-bg);
+  color: var(--secondary-color);
   border-radius: 8px;
   font-size: 0.85rem;
   font-weight: 600; /* 字体加粗一点 */
   transition: all 0.3s;
-  border: 1px solid rgba(0,0,0,0.02);
+  border: 1px solid var(--border-color);
 }
 
 .tech-tag:hover {
-  background: white;
-  border-color: rgba(0,0,0,0.1);
+  background: var(--btn-bg);
+  border-color: var(--primary-color);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  color: #000;
+  box-shadow: var(--hover-shadow);
+  color: var(--text-color);
 }
 
 .highlight-tag {
-  background: #e0f2fe;
-  color: #0284c7; /* 颜色加深一点，更醒目 */
+  background: var(--btn-bg);
+  color: var(--primary-color); /* 颜色加深一点，更醒目 */
+  border-color: var(--primary-color);
 }
 
 @media (max-width: 992px) {

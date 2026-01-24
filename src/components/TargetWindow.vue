@@ -95,15 +95,17 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   padding: 2rem;
-  background-color: #F8F8F8;
+  background-color: var(--modal-bg);
   border-radius: 12px;
   max-width: 1200px;
   margin: 0 auto;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--hover-shadow);
 }
 
 .title {
   font-size: 2rem;
-  color: #333;
+  color: var(--text-color);
   margin-bottom: 2rem;
   font-weight: 600;
   text-align: center;

@@ -82,14 +82,17 @@ onUnmounted(() => {
 .button-inner {
   width: 100%;
   height: 100%;
-  background-color: #fff;
+  /* 替换：纯白背景 #fff → --bg-color */
+  background-color: var(--bg-color);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 24px;
-  border: 2px solid #333;
-  box-shadow: 3px 3px 0 #0005;
+  /* 替换：深色边框 #333 → --text-color */
+  border: 2px solid var(--text-color);
+  /* 替换：阴影颜色 #0005 → --hover-shadow（保留阴影的透明度逻辑） */
+  box-shadow: 3px 3px 0 var(--hover-shadow);
   transform: rotate(-2deg);
   transition: transform 0.2s;
 }

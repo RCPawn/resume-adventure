@@ -109,18 +109,19 @@ const onProgress = (event) => {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Inter:wght@400;800&display=swap');
 
-/* --- 基础布局优化：整体上移 --- */
+/* --- 基础布局 --- */
 .hero-section {
   position: relative;
   height: calc(100vh - 80px);
   width: 100%;
+  /* 🔥 核心改动：背景透明，让 body 的全局网格透出来 */
   background-color: transparent;
-  color: inherit;
+  color: var(--text-color);
   overflow: hidden;
   font-family: 'Inter', sans-serif;
   display: flex;
-  align-items: flex-start; /* 改为靠顶对齐 */
-  padding-top: 10vh; /* 通过 padding 控制上移程度，10vh 比较适中 */
+  align-items: flex-start;
+  padding-top: 10vh;
 }
 
 .container-fluid {
@@ -136,7 +137,7 @@ const onProgress = (event) => {
   grid-template-columns: minmax(400px, 1fr) minmax(500px, 1.1fr);
   align-items: center;
   justify-content: center;
-  gap: 6rem; /* 保持满意的间距 */
+  gap: 6rem;
 }
 
 /* --- 名字区域 --- */
@@ -150,8 +151,10 @@ const onProgress = (event) => {
   letter-spacing: -2px;
   font-weight: 900;
   line-height: 1;
+  color: var(--text-color); /* 跟随主题 */
 }
 
+/* 能量线条 (SVG) */
 .energy-underline {
   position: absolute;
   bottom: -4px;
@@ -163,22 +166,27 @@ const onProgress = (event) => {
 }
 
 .energy-underline path {
+  /* 🔥 核心改动：线条颜色跟随品牌色 */
+  stroke: var(--primary-color);
   stroke-dasharray: 400;
   stroke-dashoffset: 400;
   stroke-linecap: round;
   animation: drawLine 3s ease-in-out forwards 0.8s;
 }
 
-/* --- 便利贴 --- */
+/* --- 便利贴 (拟物风格) --- */
 .sticky-note {
   position: absolute;
   top: -25px;
-  right: -105px; /* 进一步向右，确保不遮挡文字 */
+  right: -105px;
   width: 95px;
   height: 95px;
+
+  /* 保持黄色背景，不随主题变黑，保留拟物感 */
   background-color: #fcc419;
-  box-shadow: 6px 6px 0px rgba(0,0,0,0.1);
+  box-shadow: var(--hover-shadow);
   transform: rotate(8deg);
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -186,7 +194,9 @@ const onProgress = (event) => {
   font-family: 'Caveat', cursive;
   font-size: 1.2rem;
   line-height: 1;
-  color: #333;
+
+  /* 🔥 关键：便利贴上的字永远是深色，否则暗黑模式下白字看不清 */
+  color: #1f2937;
   z-index: 5;
 }
 
@@ -196,6 +206,7 @@ const onProgress = (event) => {
   left: 50%;
   transform: translateX(-50%);
   font-size: 1.4rem;
+  color: #e63946; /* 大头针颜色固定 */
 }
 
 @keyframes napkinBounce {
@@ -203,44 +214,128 @@ const onProgress = (event) => {
   50% { transform: translateY(10px); }
 }
 
-/* --- 文字与组件样式 --- */
-.text-area { justify-self: end; }
-.greeting { font-size: 2rem; color: #495057; font-weight: 800; }
-.sub-heading { font-size: 1.1rem; font-weight: 700; color: #868e96; margin: 1.5rem 0 2rem 0; }
-.skill-list { display: flex; flex-direction: column; gap: 0.8rem; }
-.skill-item { font-size: 1.2rem; font-weight: 700; opacity: 0; animation: fadeInRight 0.5s ease-out forwards; }
-
-.model-area { justify-self: start; position: relative; height: 65vh; width: 100%; display: flex; align-items: center; }
-.model-wrapper { width: 100%; height: 100%; }
-.huge-model { width: 100%; height: 100%; outline: none; --poster-color: transparent; }
-
-/* --- 加载提示 --- */
-.custom-loader-overlay {
-  position: absolute; inset: 0; background-color: rgba(33, 37, 41, 0.92);
-  display: flex; align-items: center; justify-content: center; z-index: 100;
+/* --- 文字内容 --- */
+.text-area {
+  justify-self: end;
 }
-.loader-box { width: 200px; display: flex; flex-direction: column; align-items: center; }
-.loader-circle { width: 36px; height: 36px; border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid #339af0; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
-.loader-text { color: #ffffff; font-size: 1rem; font-weight: 700; margin-bottom: 12px; }
-.loader-bar-container { width: 100%; height: 5px; background-color: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
-.loader-bar-fill { height: 100%; background: #339af0; transition: width 0.3s ease; }
-.loader-percentage { color: #adb5bd; font-size: 0.8rem; margin-top: 8px; }
 
-/* --- 通用动画 --- */
+.greeting {
+  font-size: 2rem;
+  color: var(--text-color);
+  font-weight: 800;
+}
+
+.sub-heading {
+  font-size: 1.1rem;
+  font-weight: 700;
+  /* 使用次要颜色 */
+  color: var(--secondary-color);
+  margin: 1.5rem 0 2rem 0;
+}
+
+.skill-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.skill-item {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-color);
+  opacity: 0;
+  animation: fadeInRight 0.5s ease-out forwards;
+}
+
+/* --- 3D 模型区域 --- */
+.model-area {
+  justify-self: start;
+  position: relative;
+  height: 65vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.model-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.huge-model {
+  width: 100%;
+  height: 100%;
+  outline: none;
+  --poster-color: transparent;
+}
+
+/* --- 加载提示 (Loader) --- */
+.custom-loader-overlay {
+  position: absolute;
+  inset: 0;
+  /* 🔥 核心改动：使用主题背景色，而不是写死的黑色 */
+  background-color: var(--bg-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  transition: background-color 0.3s ease;
+}
+
+.loader-box {
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.loader-circle {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border-color);
+  /* 蓝色转圈 */
+  border-top: 3px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+.loader-text {
+  color: var(--text-color);
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.loader-bar-container {
+  width: 100%;
+  height: 5px;
+  background-color: var(--border-color);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.loader-bar-fill {
+  height: 100%;
+  /* 进度条颜色 */
+  background: var(--primary-color);
+  transition: width 0.3s ease;
+}
+
+.loader-percentage {
+  color: var(--secondary-color);
+  font-size: 0.8rem;
+  margin-top: 8px;
+}
+
+/* --- 动画关键帧 --- */
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 @keyframes drawLine { to { stroke-dashoffset: 0; } }
 @keyframes fadeInRight { from { opacity: 0; transform: translateX(-15px); } to { opacity: 1; transform: translateX(0); } }
 .floating-anim { animation: levitate 6s ease-in-out infinite; }
 @keyframes levitate { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-/* --- 背景纹理 --- */
-.paper-texture { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
-.grid-lines {
-  width: 100%; height: 100%;
-  background-image: linear-gradient(rgba(128, 128, 128, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(128, 128, 128, 0.1) 1px, transparent 1px);
-  background-size: 35px 35px;
-}
-
+/* --- 响应式适配 --- */
 @media (max-width: 1024px) {
   .hero-section { padding-top: 5vh; }
   .layout-grid { grid-template-columns: 1fr; text-align: center; gap: 2rem; }

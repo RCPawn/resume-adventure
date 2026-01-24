@@ -137,5 +137,4 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* No additional styles needed here */
 </style>

@@ -1,35 +1,67 @@
-@import './base.css';
+/* src/assets/main.css */
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
+/* =========================================
+   1. CSS 变量定义 (配色系统)
+   ========================================= */
+:root {
+    /* --- ☀️ 亮色模式 --- */
+    --bg-color: #ffffff;
+    --nav-bg: rgba(255, 255, 255, 0.75);
+    --modal-bg: #ffffff;
+    --btn-bg: #f3f4f6;
+    --text-color: #1f2937;
+    --secondary-color: #6b7280;
+    --primary-color: #3b82f6;
+    --border-color: #e5e7eb;
+    --hover-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --icon-color: #374151;
+    --grid-line: rgba(0, 0, 0, 0.04);
 }
 
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
+/* --- 🌙 暗黑模式 --- */
+html.dark {
+    --bg-color: #121212;
+    --nav-bg: rgba(18, 18, 18, 0.75);
+    --modal-bg: #1e1e1e;
+    --btn-bg: #2d2d2d;
+    --text-color: #f3f4f6;
+    --secondary-color: #9ca3af;
+    --primary-color: #60a5fa;
+    --border-color: #374151;
+    --hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    --icon-color: #d1d5db;
+    --grid-line: rgba(255, 255, 255, 0.05);
 }
 
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
+/* =========================================
+   2. 全局通用样式
+   ========================================= */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    /* 网格背景 */
+    background-image:
+            linear-gradient(var(--grid-line) 1px, transparent 1px),
+            linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 30px 30px;
+    background-position: center top;
 }
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
-
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
+/* 滚动条美化 */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--secondary-color);
 }

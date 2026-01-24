@@ -20,20 +20,22 @@ const goBack = () => {
 <style scoped>
 .sketchy-back-btn {
   padding: 10px 20px;
-  background-color: #fff;
-  border: 2px solid #333;
+  background-color: var(--btn-bg);
+  border: 2px solid var(--text-color);
   border-radius: 8px;
   font-family: 'Sketchy', 'Comic Sans MS', cursive;
   font-size: 16px;
   cursor: pointer;
   position: relative;
-  box-shadow: 4px 4px 0 #333;
+  box-shadow: var(--hover-shadow);
   transition: all 0.2s ease;
+  color: var(--text-color);
 }
 
 .sketchy-back-btn:hover {
-  box-shadow: 2px 2px 0 #333;
+  box-shadow: 2px 2px 0 var(--text-color);
   transform: translate(2px, 2px);
+  background-color: var(--btn-bg);
 }
 
 .sketchy-back-btn:active {
@@ -48,6 +50,7 @@ const goBack = () => {
   position: relative;
   display: inline-block;
   line-height: 1;
+  color: var(--icon-color);
 }
 
 .btn-text {
@@ -63,7 +66,7 @@ const goBack = () => {
   left: -4px;
   right: -4px;
   bottom: -4px;
-  border: 1px dashed #aaa;
+  border: 1px dashed var(--border-color);
   border-radius: 10px;
   z-index: -1;
   opacity: 0.5;

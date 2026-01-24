@@ -79,13 +79,12 @@ const handleLinkClick = (link) => {
 };
 </script>
 
-
 <style scoped>
 .footer-section {
   padding: 3.5rem 2rem 1.5rem;
-  background-color: #F8F8F8;
+  background-color: var(--nav-bg);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--border-color);
 }
 
 .footer-container {
@@ -105,11 +104,11 @@ const handleLinkClick = (link) => {
   font-size: 1.6rem;
   font-weight: 600;
   margin: 0 0 0.5rem;
-  color: #333;
+  color: var(--text-color);
 }
 
 .tagline {
-  color: #666;
+  color: var(--secondary-color);
   margin: 0 0 1.5rem;
   font-size: 0.95rem;
   line-height: 1.4;
@@ -125,13 +124,13 @@ const handleLinkClick = (link) => {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background-color: #F8F8F8;
+  background-color: var(--btn-bg);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #555;
+  color: var(--icon-color);
   transition: all 0.2s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--hover-shadow);
 }
 
 .footer-links {
@@ -150,7 +149,7 @@ const handleLinkClick = (link) => {
   font-size: 0.95rem;
   font-weight: 600;
   margin: 0 0 1rem;
-  color: #444;
+  color: var(--text-color);
 }
 
 .link-group ul {
@@ -165,7 +164,7 @@ const handleLinkClick = (link) => {
 
 .link-group a {
   text-decoration: none;
-  color: #666;
+  color: var(--secondary-color);
   font-size: 0.9rem;
   transition: all 0.2s ease;
   position: relative;
@@ -174,12 +173,12 @@ const handleLinkClick = (link) => {
 
 .social-link:hover {
   transform: translateY(-3px);
-  background-color: #F8F8F8; /* 背景色保持不变 */
-  color: #333c4d; /* 修改为对比色 */
+  background-color: var(--btn-bg);
+  color: var(--primary-color);
 }
 
 .link-group a:hover {
-  color: #333c4d; /* 修改为对比色 */
+  color: var(--primary-color);
   transform: translateX(2px);
 }
 
@@ -190,7 +189,7 @@ const handleLinkClick = (link) => {
   left: 0;
   width: 0;
   height: 1px;
-  background-color: #333c4d; /* 同步修改下划线颜色 */
+  background-color: var(--primary-color);
   transition: width 0.3s ease;
 }
 
@@ -202,7 +201,7 @@ const handleLinkClick = (link) => {
   max-width: 1100px;
   margin: 2.5rem auto 0;
   padding-top: 1.5rem;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -211,13 +210,13 @@ const handleLinkClick = (link) => {
 }
 
 .copyright {
-  color: #999;
+  color: var(--secondary-color);
   font-size: 0.85rem;
   margin: 0;
 }
 
 .made-with {
-  color: #999;
+  color: var(--secondary-color);
   font-size: 0.85rem;
   margin: 0;
   display: flex;
@@ -226,7 +225,7 @@ const handleLinkClick = (link) => {
 }
 
 .heart {
-  color: #FF6B6B;
+  color: var(--primary-color);
   display: inline-block;
   animation: heartbeat 1.5s ease infinite;
 }

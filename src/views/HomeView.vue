@@ -46,6 +46,6 @@ onMounted(() => {
   min-height: 100vh;
   width: 100%;
   position: relative;
-  background-color: #F8F8F8;
+  background-color: var(--bg-primary);
 }
 </style>

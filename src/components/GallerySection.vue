@@ -193,7 +193,7 @@ onUnmounted(() => {
   /* 减少内边距，紧凑布局 */
   padding: 2rem 1rem;
   overflow: hidden;
-  background-color: #F8F8F8;
+  background-color: var(--nav-bg);
 }
 
 /* 视口容器：保证横向隐藏溢出，并适当增加上下留白 */
@@ -210,7 +210,7 @@ onUnmounted(() => {
   margin: 0 auto;
   padding: 3rem 2rem;
   overflow: hidden;
-  background: #F8F8F8;
+  background: var(--nav-bg);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
@@ -225,10 +225,11 @@ onUnmounted(() => {
   animation: float 3s ease-in-out infinite;
   display: inline-block;
   transform: translateZ(0);
-  filter: drop-shadow(0 2px 5px rgba(255, 235, 100, 0.3));
+  filter: drop-shadow(0 2px 5px var(--hover-shadow));
   will-change: transform;
   margin-right: 0.1rem;
   font-size: 2.5rem;
+  color: var(--icon-color);
 }
 
 @keyframes float {
@@ -244,11 +245,8 @@ onUnmounted(() => {
 .gallery-title {
   font-size: 2.5rem;
   font-weight: 700;
-  background: #333;
   margin-bottom: 1rem;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: #333;
+  color: var(--text-color);
   letter-spacing: -0.5px;
   display: inline-flex;
   align-items: center;
@@ -256,7 +254,7 @@ onUnmounted(() => {
 
 .gallery-subtitle {
   font-size: 1.1rem;
-  color: #666;
+  color: var(--secondary-color);
   font-weight: 400;
 }
 
@@ -283,6 +281,7 @@ onUnmounted(() => {
   height: 400px;
   margin-right: 32px; /* 稍微加大卡片之间的间距 */
   border-radius: 14px;
+  border: 1px solid var(--border-color);
 }
 
 /* 第二行 - 小卡片 */
@@ -291,6 +290,7 @@ onUnmounted(() => {
   height: 200px;
   margin-right: 24px; /* 同样调整间距 */
   border-radius: 12px;
+  border: 1px solid var(--border-color);
 }
 
 /* 卡片基础样式 */
@@ -298,10 +298,10 @@ onUnmounted(() => {
   flex-shrink: 0;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--hover-shadow);
   transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
   animation: fadeIn 0.8s ease-out forwards;
-  background-color: #f5f5f7;
+  background-color: var(--modal-bg);
   transform-origin: center;
 }
 
@@ -316,7 +316,7 @@ onUnmounted(() => {
 /* 卡片悬停效果 */
 .gallery-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--hover-shadow);
 }
 
 /* 保证每行最后一张卡片不会紧靠屏幕右侧 */
@@ -364,12 +364,14 @@ onUnmounted(() => {
     width: 300px;
     height: 180px;
     margin-right: 20px;
+    border-radius: 12px;
   }
 
   .row-two .gallery-card {
     width: 220px;
     height: 140px;
     margin-right: 18px;
+    border-radius: 10px;
   }
 }
 
@@ -382,12 +384,14 @@ onUnmounted(() => {
     width: 240px;
     height: 160px;
     margin-right: 16px;
+    border-radius: 10px;
   }
 
   .row-two .gallery-card {
     width: 180px;
     height: 120px;
     margin-right: 14px;
+    border-radius: 8px;
   }
 }
 </style>

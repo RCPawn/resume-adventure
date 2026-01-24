@@ -185,25 +185,25 @@ const sections = [
 </template>
 
 <style scoped>
-
 .resume-container {
   display: flex;
   width: 100%;
   max-width: 1200px; /* Making it wider */
   height: 100vh;
   max-height: 1000px;
-  background-color: #ffffff;
+  background-color: var(--bg-color);
   border-radius: 24px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--hover-shadow);
   overflow: hidden;
   font-family: 'Inter', sans-serif;
+  border: 1px solid var(--border-color);
 }
 
 .resume-sidebar {
   width: 240px;
-  background-color: #f5f5f7;
+  background-color: var(--nav-bg);
   padding: 24px 0;
-  border-right: 1px solid #e6e6e6;
+  border-right: 1px solid var(--border-color);
 }
 
 .resume-nav {
@@ -222,22 +222,23 @@ const sections = [
   cursor: pointer;
   transition: all 0.2s ease;
   border-radius: 10px;
-  color: #333333;
+  color: var(--text-color);
 }
 
 .nav-item:hover {
-  background-color: rgba(0, 122, 255, 0.08);
+  background-color: rgba(96, 165, 250, 0.08);
 }
 
 .nav-item.active {
-  background-color: rgba(0, 122, 255, 0.12);
-  color: #007AFF;
+  background-color: rgba(96, 165, 250, 0.12);
+  color: var(--primary-color);
   font-weight: 500;
 }
 
 .nav-item i {
   margin-right: 12px;
   font-size: 1.2rem;
+  color: var(--icon-color);
 }
 
 .resume-content {
@@ -245,7 +246,7 @@ const sections = [
   display: flex;
   flex-direction: column;
   padding: 28px 32px;
-  background-color: #ffffff;
+  background-color: var(--bg-color);
 }
 
 .section {
@@ -267,26 +268,26 @@ const sections = [
 }
 
 .content-scrollable::-webkit-scrollbar-track {
-  background: #f5f5f7;
+  background: var(--nav-bg);
   border-radius: 8px;
 }
 
 .content-scrollable::-webkit-scrollbar-thumb {
-  background: #d1d1d6;
+  background: var(--border-color);
   border-radius: 8px;
 }
 
 .content-scrollable::-webkit-scrollbar-thumb:hover {
-  background: #c7c7cc;
+  background: var(--secondary-color);
 }
 
 .section-title {
-  color: #1d1d1f;
+  color: var(--text-color);
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 24px;
   padding-bottom: 12px;
-  border-bottom: 1px solid #e6e6e6;
+  border-bottom: 1px solid var(--border-color);
   display: flex;
   align-items: center;
   flex-shrink: 0;
@@ -294,7 +295,7 @@ const sections = [
 
 .section-title i {
   margin-right: 12px;
-  color: #007AFF;
+  color: var(--primary-color);
 }
 
 ul {
@@ -306,14 +307,14 @@ ul li {
   position: relative;
   margin-bottom: 12px;
   line-height: 1.6;
-  color: #333333;
+  color: var(--text-color);
 }
 
 ul li::before {
   content: "•";
   position: absolute;
   left: -20px;
-  color: #007AFF;
+  color: var(--primary-color);
   font-weight: bold;
 }
 
@@ -323,12 +324,12 @@ ul li::before {
 }
 
 .category-title {
-  color: #333333;
+  color: var(--text-color);
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 12px;
   padding-left: 12px;
-  border-left: 3px solid #007AFF;
+  border-left: 3px solid var(--primary-color);
 }
 
 /* 项目经验样式 */
@@ -336,18 +337,19 @@ ul li::before {
   margin-bottom: 30px;
   padding: 20px;
   border-radius: 12px;
-  background-color: #f5f5f7;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  background-color: var(--modal-bg);
+  box-shadow: var(--hover-shadow);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid var(--border-color);
 }
 
 .project-item:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--hover-shadow);
 }
 
 .project-title {
-  color: #1d1d1f;
+  color: var(--text-color);
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 12px;
@@ -357,21 +359,22 @@ ul li::before {
 .project-description {
   margin-bottom: 16px;
   line-height: 1.6;
-  color: #333333;
+  color: var(--secondary-color);
 }
 
 .project-stack {
   margin-bottom: 16px;
   font-size: 15px;
-  color: #515154;
+  color: var(--secondary-color);
 }
 
 .stack-label {
   font-weight: 500;
+  color: var(--text-color);
 }
 
 .project-contributions h4 {
-  color: #333333;
+  color: var(--text-color);
   font-size: 16px;
   font-weight: 500;
   margin-bottom: 12px;
@@ -380,10 +383,11 @@ ul li::before {
 .project-highlight {
   margin-top: 16px;
   padding: 12px;
-  background-color: rgba(0, 122, 255, 0.08);
+  background-color: rgba(96, 165, 250, 0.08);
   border-radius: 8px;
-  color: #007AFF;
+  color: var(--primary-color);
   font-weight: 500;
+  border: 1px solid var(--border-color);
 }
 
 @keyframes fadeIn {
@@ -408,7 +412,7 @@ ul li::before {
     width: 100%;
     padding: 12px 0;
     border-right: none;
-    border-bottom: 1px solid #e6e6e6;
+    border-bottom: 1px solid var(--border-color);
   }
 
   .resume-nav {
@@ -435,6 +439,7 @@ ul li::before {
     padding: 20px;
   }
 }
+
 /* 新增：侧边栏切换按钮样式 */
 .sidebar-toggle-button {
   position: absolute;
@@ -442,20 +447,22 @@ ul li::before {
   left: 0;
   width: 28px;
   height: 28px;
-  background-color: #007AFF;
-  color: white;
+  background-color: var(--primary-color);
+  color: var(--bg-color);
   border-radius: 0 4px 4px 0;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--hover-shadow);
   transition: all 0.3s ease;
   z-index: 10;
+  border: none;
 }
 
 .sidebar-toggle-button:hover {
-  background-color: #0056b3;
+  background-color: var(--primary-color);
+  opacity: 0.9;
   width: 32px;
 }
 
@@ -468,8 +475,8 @@ ul li::before {
   left: 100%;
   top: 50%;
   transform: translateY(-50%);
-  background-color: #333;
-  color: white;
+  background-color: var(--text-color);
+  color: var(--bg-color);
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 12px;

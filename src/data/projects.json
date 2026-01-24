@@ -1,15 +1,23 @@
 [
   {
+    "id": "gateway",
+    "title": "微服务网关平台",
     "nameKey": "projects.items.0.name",
     "descriptionKey": "projects.items.0.description",
-    "image": "/images/light.png",
-    "link": "/coming-soon"
+    "image": "/images/neural_network.webp",
+    "tags": ["Spring Cloud", "Vue3", "Redis"],
+    "mdFile": "gateway.md",
+    "link": "/project/gateway"
   },
   {
+    "id": "exhibition",
+    "title": "数字展厅系统",
     "nameKey": "projects.items.1.name",
     "descriptionKey": "projects.items.1.description",
-    "image": "/images/light.png",
-    "link": "/coming-soon"
+    "image": "/images/skill_target.webp",
+    "tags": ["Spring Boot", "Vue3", "MySQL"],
+    "mdFile": "exhibition.md",
+    "link": "/project/exhibition"
   },
   {
     "nameKey": "projects.items.2.name",

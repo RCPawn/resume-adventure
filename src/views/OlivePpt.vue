@@ -108,11 +108,14 @@ onUnmounted(() => {
   height: 100vh;
   overflow: hidden;
   position: relative;
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
 }
 
 .reveal {
   width: 100%;
   height: 100%;
+  background-color: var(--bg-color);
 }
 
 /* 幻灯片图片样式优化 */
@@ -120,15 +123,16 @@ onUnmounted(() => {
   max-width: 90%;
   max-height: 80vh;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--hover-shadow);
   transition: all 0.3s ease;
   display: block;
   margin: auto;
+  border: 1px solid var(--border-color);
 }
 
 .slide-image:hover {
   transform: scale(1.02);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--hover-shadow);
 }
 
 /* 使用已有的返回按钮组件 */
@@ -143,6 +147,7 @@ onUnmounted(() => {
 @media (max-width: 768px) {
   .presentation-container {
     height: 100vh;
+    border: none;
   }
 
   .reveal {
@@ -153,7 +158,7 @@ onUnmounted(() => {
   .slide-image {
     max-width: 95%;
     max-height: 70vh;
+    border-radius: 6px;
   }
-
 }
 </style>

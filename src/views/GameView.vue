@@ -71,7 +71,10 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f5f5f5;
+  background-color: var(--nav-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: var(--hover-shadow);
 }
 
 .back-button-area {
@@ -85,7 +88,7 @@ html, body {
   width: 100%;
   height: 100%;
   display: flex;
-  background-color: #f8f8f8;
+  background-color: var(--modal-bg);
   justify-content: center;
   align-items: center;
   position: relative;
@@ -93,17 +96,24 @@ html, body {
 }
 
 .game-iframe {
-  border: none;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
-  background-color: #f8f8f8;
+  background-color: var(--modal-bg);
   transition: all 0.3s ease;
+  width: 100%;
+  height: 100%;
 }
 
 /* 响应式调整 */
 @media (max-width: 768px) {
-  .game-area {
+  .game-container {
     width: 95%;
-    height: 85%;
+    height: 85vh;
+    margin: 0 auto;
+  }
+
+  .game-iframe {
+    border-radius: 6px;
   }
 }
 </style>

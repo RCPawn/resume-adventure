@@ -67,23 +67,25 @@ export default {
     projects: {
         items: [
             {
-                name: "个人网关",
-                description: "敬请期待😊"
+                name: "🛡️网关平台",
+                description: "自主研发的微服务网关平台，深度整合了动态路由热更新、全链路身份安全闭环、RabbitMQ 异步削峰及\n" +
+                    "Sentinel 多维流量防护；配套开发 Vue3 可视化运维控制台，通过 Nacos 与 Actuator 实现路由规则的零停机动态管理与\n" +
+                    "服务健康实时监控，构建了安全可观测的流量入口。"
             },
             {
-                name: "非遗展陈",
-                description: "敬请期待😊"
+                name: "🎪非遗展陈",
+                description: "针对非遗文化设计的数字双生平台，实现 3D 展品全方位展示、实时动态统计与高交互讨论等功能。"
             },
             {
-                name: "榄人千里眼",
+                name: "🌿榄人千里眼",
                 description: "油橄榄园区一体化平台，融合数据可视化、WebGIS与区块链技术的全域资产管理平台"
             },
             {
-                name: "天气App",
+                name: "☁️天气App",
                 description: "后端还未部署（敬请期待😊）"
             },
             {
-                name: "简历冒险",
+                name: "🚗简历冒险",
                 description: "基于Unity3D开发的互动游戏，通过驾驶小车探索我的学习历程（敬请期待😊）"
             }
         ],
