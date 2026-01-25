@@ -16,7 +16,7 @@
         <!-- 元数据胶囊 -->
         <div class="meta-tags">
           <span class="meta-tag date">
-            📅 {{ currentProject?.date || '2024' }}
+            📅 {{ currentProject?.date || '2025' }}
           </span>
           <span v-for="tag in currentProject?.tags" :key="tag" class="meta-tag tech">
             ⚡ {{ tag }}
