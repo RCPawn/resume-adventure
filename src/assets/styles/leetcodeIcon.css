@@ -1,7 +1,28 @@
+/* 1. 定义全局主题变量（放在全局样式文件，如 global.css） */
+:root {
+    /* 白天主题 - 图标默认颜色（适配浅色背景） */
+    --leetcode-icon-filter: none;
+}
+
+/* 黑夜主题（假设你的黑夜主题类名是 .dark） */
+.dark {
+    /* 把图标转为白色（适配深色背景），可根据需求微调参数 */
+    --leetcode-icon-filter: invert(1) brightness(1) contrast(1);
+}
+
+/* 2. 优化后的力扣图标样式 */
 .icon-leetcode {
     display: inline-block;
     width: 18px;
     height: 18px;
     background-image: url('../leetcode.svg');
     background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    /* 核心：应用主题滤镜变量 */
+    filter: var(--leetcode-icon-filter);
+    /* 过渡动画，让颜色切换更丝滑 */
+    transition: filter 0.2s ease;
+    /* 防止滤镜影响布局 */
+    backface-visibility: hidden;
 }

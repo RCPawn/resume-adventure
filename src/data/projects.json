@@ -5,7 +5,7 @@
     "date": "2025-12-23",
     "nameKey": "projects.items.0.name",
     "descriptionKey": "projects.items.0.description",
-    "image": "/images/projects/neural_network.webp",
+    "image": "/images/projects/default_cover.avif",
     "cover": "/images/projects/default_cover.avif",
     "tags": ["Spring Boot 3", "Spring Cloud Alibaba (Nacos, Sentinel)", "Spring Cloud Gateway"],
     "mdFile": "gateway.md",
@@ -13,11 +13,12 @@
   },
   {
     "id": "exhibition",
-    "title": "数字展厅系统",
+    "title": "数字展陈平台",
     "date": "2025-12-23",
     "nameKey": "projects.items.1.name",
     "descriptionKey": "projects.items.1.description",
-    "image": "/images/projects/skill_target.webp",
+    "image": "/images/projects/城堡.png",
+    "cover": "/images/projects/城堡.png",
     "tags": ["Spring Boot", "MyBatis", "WebGL", "Vue3", "MySQL"],
     "mdFile": "exhibition.md",
     "link": "/project/exhibition"
@@ -25,19 +26,19 @@
   {
     "nameKey": "projects.items.2.name",
     "descriptionKey": "projects.items.2.description",
-    "image": "/images/projects/tree.png",
+    "image": "/images/projects/森林.png",
     "link": "/olive-ppt"
   },
   {
     "nameKey": "projects.items.3.name",
     "descriptionKey": "projects.items.3.description",
-    "image": "/images/projects/cloud.png",
+    "image": "/images/projects/云朵.png",
     "link": "/weather"
   },
   {
     "nameKey": "projects.items.4.name",
     "descriptionKey": "projects.items.4.description",
-    "image": "/images/projects/car.webp",
+    "image": "/images/projects/城市.png",
     "link": "/game"
   }
 ]

@@ -19,51 +19,59 @@ export default {
         '☁️ 微服务架构探索者',
         '🎨 热衷于3D和互动设计'
     ],
+
     skills: {
-        title: '技能图谱',
-        subtitle: '百分比为测试数据',
-        skillTarget: '技能目标',
-        current: '当前水平',
-        target: '目标水平',
-        items: [
-            {
-                name: '后端开发',
-                icon: 'fas fa-laptop-code',
-                level: 60,
-                target: 85
+        title: "TECHNICAL_STACK // 技术矩阵",
+        status: "ACTIVE",
+        modules: {
+            java: {
+                name: "Java 核心",
+                desc: "熟练使用 Java 语言与集合框架，熟悉 ThreadLocal 线程隔离应用，了解 JVM 内存模型与 GC 机制。具备多线程开发与并发处理基础。",
+                items: [
+                    {name: "Java SE", tags: ["集合框架", "ThreadLocal", "反射"]},
+                    {name: "JVM", tags: ["JMM", "GC 机制", "内存布局"]},
+                    {name: "Framework", tags: ["Spring Boot", "IoC/AOP", "Bean 生命周期"]}
+                ]
             },
-            {
-                name: '数据库设计',
-                icon: 'fas fa-database',
-                level: 50,
-                target: 75
+            cloud: {
+                name: "微服务治理",
+                desc: "熟悉 Spring Cloud Alibaba 生态（Nacos, Sentinel, OpenFeign）。掌握 Gateway 网关架构及 Netty 响应式编程模型，实现过全链路身份透传方案。",
+                items: [
+                    {name: "Microservices", tags: ["Nacos", "Sentinel", "Feign 拦截器"]},
+                    {name: "Gateway", tags: ["动态路由", "身份闭环", "限流响应"]},
+                    {name: "Network", tags: ["Netty", "响应式编程", "高性能 IO"]}
+                ]
             },
-            {
-                name: '算法与数据结构',
-                icon: 'fas fa-code',
-                level: 55,
-                target: 80
+            data: {
+                name: "数据中间件",
+                desc: "熟练使用 MySQL 索引优化与 MVCC 锁机制。熟悉 Redis 缓存策略（Cache Aside）及一致性方案；具备 RabbitMQ 异步解耦与削峰填谷实战经验。",
+                items: [
+                    {name: "MySQL", tags: ["索引优化", "事务隔离", "MVCC"]},
+                    {name: "Redis", tags: ["双重检查锁", "原子计数", "批量持久化"]},
+                    {name: "RabbitMQ", tags: ["异步解耦", "削峰填谷", "流量平滑"]}
+                ]
             },
-            {
-                name: '人工智能与机器学习',
-                icon: 'fas fa-brain',
-                level: 20,
-                target: 70
+            frontend: {
+                name: "全栈与工程化",
+                desc: "熟悉 Vue3 + Element Plus 开发与组件化经验。具备前后端联调、CORS 跨域处理能力；了解 WebGL 3D 展陈集成与数据可视化看板开发。",
+                items: [
+                    {name: "Vue 生态", tags: ["Vue 3", "组合式 API", "Element Plus"]},
+                    {name: "Engineering", tags: ["CORS 跨域", "全栈联调", "组件化"]},
+                    {name: "Visualization", tags: ["WebGL", "数据看板", "3D 展示"]}
+                ]
             },
-            {
-                name: '游戏与3D开发',
-                icon: 'fas fa-gamepad',
-                level: 30,
-                target: 60
-            },
-            {
-                name: '版本控制与协作',
-                icon: 'fab fa-github',
-                level: 60,
-                target: 80
+            performance: {
+                name: "调优实战",
+                desc: "具备全链路性能诊断能力。通过 RabbitMQ 异步解耦使系统吞吐量提升约 12 倍；利用 HashMap 索引重构递归逻辑，将算法复杂度从 O(n²) 降为 O(n)。",
+                items: [
+                    {name: "Optimization", tags: ["JMeter 压测", "异步日志", "吞吐量提升"]},
+                    {name: "Algorithms", tags: ["递归重构", "空间换时间", "逻辑降维"]},
+                    {name: "Security", tags: ["防重放过滤", "Lua 脚本", "全链路追踪"]}
+                ]
             }
-        ]
+        }
     },
+
     projects: {
         items: [
             {
@@ -94,188 +102,194 @@ export default {
         viewDetails: '查看详情'
     },
 
-
-
     gallery: {
         title: '作品展示',
-        subtitle: '截图留念，证明曾经跑通过',
+        subtitle: '核心功能模块截图，记录系统关键逻辑的实现与运行状态。',
+        viewDetail: '查看详情',
+        items: {
+            work0: { title: '数据驾驶舱', desc: '非遗平台可视化看板，采用双重检查锁优化复杂聚合查询，消除缓存击穿隐患。' },
+            work1: { title: '数字化展厅', desc: '基于 Vue3 实现的非遗资产展示界面，支持 3D 沉浸式交互与响应式布局。' },
+            work2: { title: '传承关系图谱', desc: '利用 HashMap 索引重构递归逻辑，将多级分类树的查询复杂度从 O(n²) 降维至 O(n)。' },
+            work3: { title: '展品详情页', desc: '实施动静分离策略，结合长效缓存与状态实时聚合，大幅降低系统 IO 开销。' },
+            work4: { title: '网关管理控制台', desc: '统一接入网关的可视化管理端，集成全链路鉴权与服务运行状态监控。' },
+            work5: { title: '网关系统架构', desc: '基于 Spring Cloud Gateway 设计，涵盖动态路由、安全防御与异步日志的完整架构。' },
+            work6: { title: '动态路由配置', desc: '基于 Nacos Config 监听机制实现零停机路由刷新，修改规则无需重启网关。' },
+            work7: { title: '流量防卫监控', desc: '深度集成 Sentinel 实现 QPS 流控与熔断降级，通过 Nacos 实现规则持久化。' },
+            work8: { title: '安全防御配置', desc: '基于 Redis + Lua 设计防重放过滤器，利用 Nonce 与时间戳机制拦截重复请求。' },
+            work9: { title: '操作审计日志', desc: '记录网关层接入的所有请求明细，提供全链路追踪与管理后台审计功能。' },
+            work10: { title: '异步日志削峰', desc: '基于 RabbitMQ 实现日志解耦，高延迟环境下使系统吞吐量由 89 提升至 1100+ QPS。' },
+            work11: { title: '3D 场景渲染', desc: 'WebGL 渲染练习，探索 3D 模型在数字化展陈平台中的光影效果与交互性能。' }
+        }
     },
+
     stuffs: {
         back: '返回',
         building: '建设中...',
         developing: '该页面还在开发中，敬请期待！...',
     },
 
-
-
     resume: {
-        education: {
-            title: "教育背景",
-            items: [
-                "软件工程（2022.09 - 2026.07）",
-                "GPA 3.47/4.0 (专业前20%)",
+        "education": {
+            "title": "教育背景",
+            "items": [
+                "西南民族大学 - 本科 - 软件工程（2022.09 - 2026.07）",
+                "GPA 3.47/4.0 (专业排名前 20%)",
                 "连续两年获得校级奖学金 (2023-2025)",
                 "英语水平 CET-6"
             ]
         },
 
-        skills: {
-            title: "专业技能",
-            categories: [
+        "skills": {
+            "title": "专业技能",
+            "categories": [
                 {
-                    name: "Java 核心",
-                    items: [
+                    "name": "Java 核心",
+                    "items": [
                         "熟练使用 Java 语言与集合框架，熟悉 ThreadLocal 线程隔离应用，了解 JVM 内存模型与 GC 机制"
                     ]
                 },
                 {
-                    name: "微服务架构",
-                    items: [
-                        "熟悉 Spring Cloud Alibaba 生态，掌握 Nacos、Sentinel、OpenFeign 核心组件及服务治理",
-                        "掌握 Spring Cloud Gateway 架构，理解 Netty + WebFlux 响应式模型及 Filter 链机制"
-                    ]
-                },
-                {
-                    name: "服务端框架",
-                    items: [
+                    "name": "服务端框架",
+                    "items": [
                         "熟练使用 Spring Boot / Spring MVC 进行后端开发，理解 IoC、AOP 原理及 Bean 生命周期"
                     ]
                 },
                 {
-                    name: "数据库与缓存",
-                    items: [
+                    "name": "微服务架构",
+                    "items": [
+                        "熟悉 Spring Cloud Alibaba 生态，掌握 Nacos、Sentinel、OpenFeign 核心组件；理解 Gateway 网关架构及 Netty 响应式编程模型"
+                    ]
+                },
+                {
+                    "name": "数据库与缓存",
+                    "items": [
                         "熟练使用 MySQL，掌握 SQL 编写，熟悉索引优化，理解事务隔离级别与 MVCC/锁机制",
                         "熟悉 Redis 核心数据结构及应用场景，掌握缓存穿透/击穿/雪崩的解决方案及双写一致性策略"
                     ]
                 },
                 {
-                    name: "前端技术",
-                    items: [
+                    "name": "前端技术",
+                    "items": [
                         "熟悉 Vue3 + Element Plus 开发，具备前后端联调、CORS 跨域处理及组件化开发经验"
                     ]
                 }
             ]
         },
 
-        projects: {
-            title: "项目经历",
-            stackLabel: "技术栈",
-            contributionsLabel: "主要工作",
-            items: [
+        "projects": {
+            "title": "项目经历",
+            "stackLabel": "技术栈",
+            "contributionsLabel": "主要工作",
+            "items": [
                 {
-                    title: "微服务流量治理与统一接入网关平台 (2025.12 - 至今)",
-                    description: "自主研发的微服务统一流量治理平台，深度整合了动态路由热更新、全链路身份安全闭环、Sentinel 高可用防护及 SkyWalking 链路追踪，配套开发 Vue3 可视化运维控制台，通过 Nacos 与 Actuator 实现路由规则的零停机动态管理与服务健康实时监控，构建了安全可观测的流量入口。",
-                    stack: "Spring Boot 3、Spring Cloud Alibaba (Nacos, Sentinel)、Spring Cloud Gateway",
-                    contributions: [
-                        "全链路身份闭环：针对微服务间调用 Token 丢失痛点，设计基于 ThreadLocal + Feign 拦截器的透传方案，在网关层注入 Header，配合内部拦截器实现令牌中继，确保用户 ID 与 Token 在全链路的无缝传递。",
-                        "零停机动态路由：摒弃 YAML 静态配置，基于 Nacos Config 监听机制开发动态路由加载器，监听配置变更并调用 Gateway 底层 API 实时刷新路由表，达成修改路由规则无需重启网关的目标。",
-                        "流量治理与监控：基于 Sentinel 实现核心接口的 QPS 限流与熔断降级，并通过 Nacos 落地规则持久化方案，整合 SkyWalking 探针实现分布式全链路追踪，通过异常处理规范限流响应，并精准定位系统耗时瓶颈。",
-                        "安全防御与文档：基于 Redis + Lua 设计防重放过滤器，利用 Nonce 随机串与时间戳机制拦截重复请求；引入 Knife4j 在网关层聚合所有服务的 Swagger 文档，实现单一入口调试。",
-                        "异步日志与削峰：基于 RabbitMQ 实现日志异步解耦。经 JMeter 压测，在模拟 50ms 写库延迟下，系统吞吐量由 89 QPS 飙升至 1100+ QPS（提升约 12 倍），且在全链路拦截模式下仍保持了直连服务 66% 的高性能水准。"
+                    "title": "微服务流量治理与统一接入网关平台 (2025.12 - 至今)",
+                    "description": "自主研发的微服务网关平台，深度整合了全链路鉴权、动态路由、流量治理、安全防御、异步日志及可视化配置与监控，构建了安全可观测的流量入口。",
+                    "stack": "Spring Boot 3, Spring Cloud Alibaba (Nacos, Sentinel), Spring Cloud Gateway",
+                    "contributions": [
+                        "全链路身份闭环：设计基于 ThreadLocal + Feign 拦截器的透传方案，在网关层注入 Header，配合内部拦截器实现令牌中继，确保用户 ID 与 Token 在全链路的无缝传递。",
+                        "零停机动态路由：基于 Nacos Config 监听机制开发动态路由加载器，监听配置变更并调用 Gateway 底层 API 实时刷新路由表，达成修改路由规则无需重启网关的目标。",
+                        "流量治理与监控：基于 Sentinel 实现核心接口的 QPS 限流与熔断降级，并通过 Nacos 落地规则持久化方案，整合 SkyWalking 探针实现分布式全链路追踪。",
+                        "安全防御与文档：基于 Redis + Lua 设计防重放过滤器，利用 Nonce 随机串与时间戳机制拦截重复请求；引入 Knife4j 在网关层聚合所有服务的 Swagger 文档。",
+                        "异步日志与削峰：基于 RabbitMQ 实现日志异步解耦。经 JMeter 压测，在模拟 50ms 写库延迟下，系统吞吐量由 89 QPS 提升至 1100+ QPS（提升约 12 倍）。"
                     ]
                 },
                 {
-                    title: "非遗虚拟陈列与数据监测平台 (2024.09 - 2025.01)",
-                    description: "针对非遗文化设计的数字双生平台，实现 3D 展品全方位展示、实时动态统计与高交互讨论等功能。",
-                    stack: "Spring Boot、Vue3、WebGL、MyBatis、MySQL",
-                    contributions: [
-                        "业务闭环与全栈建模：独立完成系统全链路开发，设计并落地 UGC 发布系统，重构分类模型为层级架构，利用递归算法与级联选择器实现了对复杂非遗项目谱系的精准管理与数据聚合。",
-                        "数字化看板：构建集成 WebGL 与 ECharts 的数字驾驶舱，实时分析资源分布与交互热度，通过异构数据聚合算法，直观呈现非遗技艺流派与传承人之间的谱系关联。",
-                        "数据一致性与并发安全：独立设计点赞/收藏“状态切换”逻辑并引入行为记录表，结合 Spring 事务确保交互行为与统计数据的强一致性，采用 SQL 原子操作规避并发更新丢失风险并实现计数值非负校验。",
-                        "组件调优与 UI 适配：针对 WebGL 组件利用 Vue3 生命周期管理与 Key 机制解决框架缓存导致的渲染死循环及白屏问题，并采用视口锁定与滚动隔离方案，彻底消除了复杂 3D 页面在后台容器中的布局晃动感。"
+                    "title": "非遗虚拟陈列与数据监测平台 (2024.09 - 2025.01)",
+                    "description": "针对非遗文化设计的数字双生平台，实现 3D 展品全方位展示、实时动态统计与高交互讨论等功能。",
+                    "stack": "Spring Boot, Vue3, WebGL, MyBatis, MySQL, Redis",
+                    "contributions": [
+                        "业务闭环与全栈建模：独立完成系统全链路开发，设计并落地 UGC 发布系统，重构分类模型为层级架构，利用递归算法实现了对复杂非遗项目谱系的精准管理。",
+                        "架构设计与写入优化：针对高频热点写场景，设计写缓冲架构，利用 Redis 原子计数暂存流量，结合 Quartz 实现异步批量持久化，规避数据库行锁竞争。",
+                        "多级缓存与一致保障：针对展品详情页实施动静分离，采用双重检查锁消除缓存击穿隐患；基于 Spring 事务与 Cache Aside 策略解决并发场景下的数据一致性难题。",
+                        "性能调优：完成全链路性能诊断，经 JMeter 压测验证，核心接口 QPS 提升约 7 倍（峰值 990+），实现首屏加载从秒级到毫秒级的跨越。"
                     ]
                 },
                 {
-                    title: "Resume Adventure（个人网站）",
-                    description: "基于SpringBoot+Vue3，独自设计的个人网站，通过AI辅助编程（Claude/ChatGPT）高效完成核心模块开发。",
-                    stack: "SpringBoot, Vue3",
-                    contributions: [
-                        "调用腾讯云大模型知识引擎API，基于个人知识库实现智能问答功能",
-                        "整合Three.js技术，实现项目展示区3D交互效果",
-                        "基于Reveal.js开发在线演示模块，将个人项目经历转化为交互式PPT展示",
-                        "设计开发简洁美观的个人信息展示页面，清晰呈现学习经历、技能与项目成果"
+                    "title": "Resume Adventure（个人网站）",
+                    "description": "基于 Spring Boot + Vue3 独自设计的个人网站，通过 AI 辅助编程高效完成核心模块开发。",
+                    "stack": "Spring Boot, Vue3, Three.js, Reveal.js",
+                    "contributions": [
+                        "调用腾讯云大模型知识引擎 API，基于个人知识库实现智能问答功能。",
+                        "整合 Three.js 技术，实现项目展示区 3D 交互效果。",
+                        "基于 Reveal.js 开发在线演示模块，将个人项目经历转化为交互式 PPT 展示。",
+                        "设计开发简洁美观的个人信息展示页面，清晰呈现学习经历、技能与项目成果。",
                     ],
                     highlight: "项目特点：独立全栈开发项目，实践AI辅助编程工作流，探索前沿技术在实际项目中的应用。"
                 }
             ]
         },
 
-// ... existing algo, courses ...
-        algo: {
-            title: "算法能力",
-            items: [
-                "力扣刷题300+道，覆盖动态规划、回溯、贪心算法等，享受代码AC的过程",
+        "algo": {
+            "title": "算法能力",
+            "items": [
+                "力扣刷题 300+ 道，覆盖动态规划、回溯、贪心算法等，享受代码 AC 的过程",
                 "熟悉常见算法复杂度分析与优化方法",
                 "能够针对实际问题选择合适的算法解决方案"
             ]
         },
-        courses: {
-            title: "专业课程",
-            items: [
+
+        "courses": {
+            "title": "专业课程",
+            "items": [
                 "计算机基础：数据结构、算法分析与设计、计算机组成原理、计算机网络、操作系统",
-                "开发技术：JavaEE、Web前端开发、数据库概论",
-                "人工智能：机器学习基础、PyTorch实践课程"
+                "开发技术：JavaEE、Web 前端开发、数据库概论",
+                "人工智能：机器学习基础、PyTorch 实践课程"
             ]
         },
-        selfLearning: {
-            title: "自我评价",
-            items: [
-                "愿意持续学习，记录学习经历及收获（GitHub仓库）",
+
+        "selfLearning": {
+            "title": "自我评价",
+            "items": [
+                "愿意持续学习，记录学习经历及收获（GitHub 仓库）",
                 "对新兴技术有浓厚兴趣，善于将想法落地实现（个人博客）"
             ]
         },
-        softSkills: {
-            title: "软技能",
-            items: [
+
+        "softSkills": {
+            "title": "软技能",
+            "items": [
                 "拥有实验室项目合作经验，沟通主动，能快速融入团队并配合团队成员完成开发任务"
             ]
         }
     },
 
-
     footer: {
         appName: '开发者空间',
-        tagline:
-            '让编码创造更多可能',
-        copyright:
-            '© {year} 开发者空间. 保留所有权利.',
-        madeWith:
-            '用热爱和代码精心制作',
-        socialLinks:
-            [
-                {url: 'https://github.com/RCPawn', icon: 'fab fa-github'},
-                {url: 'https://www.douyin.com/user/self?from_tab_name=main', icon: 'fab fa-tiktok'},
-                {url: 'https://leetcode.cn/u/guo-he-zu-ew/', icon: 'icon-leetcode'}
-            ],
-        linkGroups:
-            [
-                {
-                    title: '项目',
-                    links: [
-                        {text: '全栈应用', url: '/olive-ppt'},
-                        {text: '3D模型', url: '/model'},
-                        {
-                            text: 'AI实验室',
-                            url: 'https://github.com/RCPawn/ai-generate-prompt-words/blob/main/README.md'
-                        }
-                    ]
-                },
-                {
-                    title: "资源",
-                    links: [
-                        {text: "文档", url: "/coming-soon"},
-                        {text: "教程", url: "/coming-soon"},
-                        {text: "源码", url: "/coming-soon"}
-                    ],
-                },
-                {
-                    title: '关于',
-                    links: [
-                        {text: '简介', url: 'https://github.com/RCPawn'},
-                        {text: '联系', url: '/coming-soon'},
-                        {text: '博客', url: 'https://github.com/RCPawn'}
-                    ]
-                }
-            ]
+        tagline: '让编码创造更多可能',
+        techTitle: '本网站由以下技术驱动',
+        copyEmail: '复制邮箱',
+        emailCopied: '已复制!',
+        copyright: '© {year} 开发者空间. 保留所有权利.',
+        madeWith: 'RCPAWN 用热爱和代码精心制作',
+        socialLinks: [
+            {url: 'https://github.com/RCPawn', icon: 'fab fa-github'},
+            {url: 'https://leetcode.cn/u/guo-he-zu-ew/', icon: 'icon-leetcode'}
+        ],
+        linkGroups: [
+            {
+                title: '项目',
+                links: [
+                    {text: '非遗展陈', url: '/project/exhibition'},
+                    {text: '我的网关', url: '/project/gateway'},
+                    {text: '校企合作', url: '/olive-ppt'}
+                ]
+            },
+            {
+                title: "资源",
+                links: [
+                    {text: "文档", url: "/coming-soon"},
+                    {text: "教程", url: "/coming-soon"},
+                    {text: "源码", url: "/coming-soon"}
+                ]
+            },
+            {
+                title: '关于',
+                links: [
+                    {text: '简介', url: 'https://github.com/RCPawn'},
+                    {text: '联系', url: '/coming-soon'},
+                    {text: '博客', url: 'https://github.com/RCPawn'}
+                ]
+            }
+        ]
     }
 }

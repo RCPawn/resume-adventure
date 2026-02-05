@@ -1,15 +1,15 @@
 <template>
   <div id="gallery" class="main-container">
     <div class="gallery-viewport">
-      <!-- Gallery Header -->
+
       <div class="gallery-header">
         <h2 class="gallery-title">
-          <span class="icon">🖼️</span>{{ t('gallery.title') }}
+          <span class="icon">🎨</span>{{ t('gallery.title') }}
         </h2>
         <p class="gallery-subtitle">{{ t('gallery.subtitle') }}</p>
       </div>
+
       <section class="gallery-section">
-        <!-- First row - scrolling left -->
         <div class="scroll-container row-one">
           <div
               class="scroll-track"
@@ -18,19 +18,25 @@
               @mouseleave="resumeAnimation(1)"
           >
             <div
-                class="gallery-card"
+                class="gallery-card polaroid-style"
                 v-for="(item, idx) in rowOneDuplicated"
                 :key="`row1-${idx}`"
-                :style="{ animationDelay: `${idx * 0.1}s` }"
-                @mouseenter="scaleUp($event)"
-                @mouseleave="scaleDown($event)"
+                @click="openLightbox(item)"
             >
-              <img :src="item.imageUrl" :alt="`Gallery image ${idx}`" class="gallery-image"/>
+              <div class="image-wrapper">
+                <img :src="item.imageUrl" loading="lazy" :alt="t(`gallery.items.${item.id}.title`)"
+                     class="gallery-image"/>
+                <div class="hover-overlay">
+                  <span class="view-icon">🔍</span>
+                </div>
+              </div>
+              <div class="card-footer">
+                <span class="card-tag"># {{ t(`gallery.items.${item.id}.title`) }}</span>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Second row - scrolling right -->
         <div class="scroll-container row-two">
           <div
               class="scroll-track"
@@ -39,19 +45,40 @@
               @mouseleave="resumeAnimation(2)"
           >
             <div
-                class="gallery-card"
+                class="gallery-card film-style"
                 v-for="(item, idx) in rowTwoDuplicated"
                 :key="`row2-${idx}`"
-                :style="{ animationDelay: `${idx * 0.1}s` }"
-                @mouseenter="scaleUp($event)"
-                @mouseleave="scaleDown($event)"
+                @click="openLightbox(item)"
             >
-              <img :src="item.imageUrl" :alt="`Gallery image ${idx}`" class="gallery-image"/>
+              <div class="image-wrapper">
+                <img :src="item.imageUrl" loading="lazy" :alt="t(`gallery.items.${item.id}.title`)"
+                     class="gallery-image"/>
+                <div class="hover-overlay">
+                  <span class="view-icon">🔍</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
     </div>
+
+    <Teleport to="body">
+      <Transition name="fade">
+        <div v-if="isLightboxOpen" class="lightbox-overlay" @click="closeLightbox">
+          <div class="lightbox-content" @click.stop>
+            <button class="close-btn" @click="closeLightbox">&times;</button>
+
+            <img :src="activeItem.imageUrl" class="lightbox-image"/>
+
+            <div class="lightbox-caption">
+              <h3>{{ t(`gallery.items.${activeItem.id}.title`) }}</h3>
+              <p>{{ t(`gallery.items.${activeItem.id}.desc`) }}</p>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
@@ -60,90 +87,54 @@ import {ref, computed, onMounted, onUnmounted} from 'vue';
 import {useI18n} from 'vue-i18n';
 
 const {t} = useI18n();
-// First row data - larger images
+
+// --- 数据准备：新增 id 用于语言包映射 ---
 const rowOneItems = [
-  {imageUrl: "/images/works/0.png"},
-  {imageUrl: "/images/works/b1.png"},
-  {imageUrl: "/images/works/1.png"},
-  {imageUrl: "/images/works/2.png"},
-  {imageUrl: "/images/works/b4.png"},
-  {imageUrl: "/images/works/b6.png"},
-  {imageUrl: "/images/works/b0.png"},
-  {imageUrl: "/images/works/b3.png"},
-  {imageUrl: "/images/works/3.png"},
-  {imageUrl: "/images/works/b1.png"},
-  {imageUrl: "/images/works/b2.png"},
-  {imageUrl: "/images/works/b5.png"},
-  {imageUrl: "/images/works/b1.png"},
-  {imageUrl: "/images/works/0.png"},
-  {imageUrl: "/images/works/b1.png"},
-  {imageUrl: "/images/works/b3.png"},
-  {imageUrl: "/images/works/b6.png"},
-  {imageUrl: "/images/works/2.png"},
-  {imageUrl: "/images/works/b1.png"}
+  {id: 'work0', imageUrl: "/images/works/数据大屏.png"},
+  {id: 'work1', imageUrl: "/images/works/非遗展厅.png"},
+  {id: 'work2', imageUrl: "/images/works/传承图谱.png"},
+  {id: 'work3', imageUrl: "/images/works/展品详情.png"},
+  {id: 'work5', imageUrl: "/images/works/网关架构.png"},
+  {id: 'work4', imageUrl: "/images/works/路由矩阵.png"},
+  {id: 'work6', imageUrl: "/images/works/路由矩阵配置.png"},
+  {id: 'work7', imageUrl: "/images/works/流量防卫.png"},
+  {id: 'work8', imageUrl: "/images/works/流量防卫配置.png"},
+  {id: 'work9', imageUrl: "/images/works/审计日志.png"},
+  {id: 'work10', imageUrl: "/images/works/异步日志.png"},
+  {id: 'work11', imageUrl: "/images/works/甜甜圈.png"},
 ];
 
-// rowTwoItems = rowOneItems.reverse();
 const rowTwoItems = [...rowOneItems].reverse();
 
+const rowOneDuplicated = computed(() => [...rowOneItems, ...rowOneItems, ...rowOneItems]);
+const rowTwoDuplicated = computed(() => [...rowTwoItems, ...rowTwoItems, ...rowTwoItems]);
 
-// Duplicate items for seamless scrolling
-const rowOneDuplicated = computed(() => [
-  ...rowOneItems,
-  ...rowOneItems,
-  ...rowOneItems
-]);
-
-const rowTwoDuplicated = computed(() => [
-  ...rowTwoItems,
-  ...rowTwoItems,
-  ...rowTwoItems
-]);
-
-// Row 1 scrolling logic (left)
+// --- 滚动逻辑 ---
 const rowOneScrollPosition = ref(0);
-const rowOneSpeed = ref(1); // Adjusted for smoother animation
-const rowOneBaseSpeed = 1;
-
-// Row 1 dimensions
-const rowOneCardWidth = 360;
-const rowOneCardGap = 24;
-const rowOneSingleSetWidth = computed(() => {
-  return rowOneItems.length * (rowOneCardWidth + rowOneCardGap);
-});
-
-// Row 2 scrolling logic (right)
+const rowOneSpeed = ref(0.8);
+const rowOneBaseSpeed = 0.8;
 const rowTwoScrollPosition = ref(0);
-const rowTwoSpeed = ref(1.2);
-const rowTwoBaseSpeed = 1.2;
+const rowTwoSpeed = ref(1.0);
+const rowTwoBaseSpeed = 1.0;
 
-// Row 2 dimensions
-const rowTwoCardWidth = 280;
-const rowTwoCardGap = 20;
-const rowTwoSingleSetWidth = computed(() => {
-  return rowTwoItems.length * (rowTwoCardWidth + rowTwoCardGap);
-});
+const ROW1_WIDTH = 320;
+const ROW2_WIDTH = 260;
+const rowOneSingleSetWidth = computed(() => rowOneItems.length * ROW1_WIDTH);
+const rowTwoSingleSetWidth = computed(() => rowTwoItems.length * ROW2_WIDTH);
 
-// Animation frame
 let animationFrameId;
-
 const animate = () => {
-  // Row 1: Left scroll
   rowOneScrollPosition.value -= rowOneSpeed.value;
-  if (rowOneScrollPosition.value <= -rowOneSingleSetWidth.value) {
+  if (Math.abs(rowOneScrollPosition.value) >= rowOneSingleSetWidth.value) {
     rowOneScrollPosition.value += rowOneSingleSetWidth.value;
   }
-
-  // Row 2: Right scroll
   rowTwoScrollPosition.value += rowTwoSpeed.value;
   if (rowTwoScrollPosition.value >= 0) {
     rowTwoScrollPosition.value -= rowTwoSingleSetWidth.value;
   }
-
   animationFrameId = requestAnimationFrame(animate);
 };
 
-// Hover effects
 const pauseAnimation = (row) => {
   if (row === 1) rowOneSpeed.value = 0;
   if (row === 2) rowTwoSpeed.value = 0;
@@ -154,238 +145,328 @@ const resumeAnimation = (row) => {
   if (row === 2) rowTwoSpeed.value = rowTwoBaseSpeed;
 };
 
-const scaleUp = (event) => {
-  event.currentTarget.classList.add('scaled');
+// --- Lightbox 逻辑 ---
+const isLightboxOpen = ref(false);
+const activeItem = ref({});
+
+const openLightbox = (item) => {
+  activeItem.value = item;
+  isLightboxOpen.value = true;
+  document.body.style.overflow = 'hidden';
 };
 
-const scaleDown = (event) => {
-  event.currentTarget.classList.remove('scaled');
+const closeLightbox = () => {
+  isLightboxOpen.value = false;
+  document.body.style.overflow = '';
 };
 
 onMounted(() => {
-  // Initialize row positions
   rowTwoScrollPosition.value = -rowTwoSingleSetWidth.value;
-
-  // Start animation
   animationFrameId = requestAnimationFrame(animate);
 });
 
 onUnmounted(() => {
-  if (animationFrameId) {
-    cancelAnimationFrame(animationFrameId);
-  }
+  if (animationFrameId) cancelAnimationFrame(animationFrameId);
 });
 </script>
 
 <style scoped>
+/* =================================
+   布局容器
+   ================================= */
 .main-container {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* 减少内边距，紧凑布局 */
-  padding: 2rem 1rem;
+  padding: 4rem 0;
   overflow: hidden;
-  background-color: var(--nav-bg);
 }
 
-/* 视口容器：保证横向隐藏溢出，并适当增加上下留白 */
 .gallery-viewport {
   width: 100%;
-  overflow-x: hidden;
   position: relative;
-  padding: 1rem 0;
 }
 
-/* 基础布局 */
-.gallery-section {
-  width: 100%;
-  margin: 0 auto;
-  padding: 3rem 2rem;
-  overflow: hidden;
-  background: var(--nav-bg);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-}
-
-/* Gallery header */
+/* =================================
+   标题区域
+   ================================= */
 .gallery-header {
   text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: 3rem;
+  padding: 0 1rem;
 }
 
-/* 新增图标动画样式 */
 .icon {
-  animation: float 3s ease-in-out infinite;
   display: inline-block;
-  transform: translateZ(0);
-  filter: drop-shadow(0 2px 5px var(--hover-shadow));
-  will-change: transform;
-  margin-right: 0.1rem;
-  font-size: 2.5rem;
-  color: var(--icon-color);
+  font-size: 2rem;
+  margin-right: 12px;
+  animation: floatIcon 3s ease-in-out infinite;
 }
 
-@keyframes float {
+@keyframes floatIcon {
   0%, 100% {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-6px);
   }
 }
 
-/* 保持原有标题样式 */
 .gallery-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem 0;
   color: var(--text-color);
-  letter-spacing: -0.5px;
-  display: inline-flex;
-  align-items: center;
+  letter-spacing: -1px;
 }
 
 .gallery-subtitle {
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: var(--secondary-color);
-  font-weight: 400;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
-/* 滚动容器：使用视口宽度，保证居中显示，并为各行添加适当间距 */
+/* =================================
+   滚动轨道通用样式
+   ================================= */
 .scroll-container {
-  width: 100vw;
-  margin: 0 auto 2rem auto; /* 底部增加间距分隔行 */
-  transform: translateX(0);
+  width: 100%;
   padding: 1rem 0;
-  position: relative;
   overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
 }
 
-/* 调整滚动轨道，保持平滑过渡 */
 .scroll-track {
   display: flex;
-  will-change: transform;
-  transition: transform 0.2s ease-out;
+  width: max-content;
 }
 
-/* 第一行 - 大卡片 */
-.row-one .gallery-card {
-  width: 620px;
-  height: 400px;
-  margin-right: 32px; /* 稍微加大卡片之间的间距 */
-  border-radius: 14px;
-  border: 1px solid var(--border-color);
-}
-
-/* 第二行 - 小卡片 */
-.row-two .gallery-card {
-  width: 280px;
-  height: 200px;
-  margin-right: 24px; /* 同样调整间距 */
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
-}
-
-/* 卡片基础样式 */
+/* =================================
+   卡片设计
+   ================================= */
 .gallery-card {
   flex-shrink: 0;
   position: relative;
-  overflow: hidden;
-  box-shadow: var(--hover-shadow);
-  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-  animation: fadeIn 0.8s ease-out forwards;
+  cursor: pointer;
   background-color: var(--modal-bg);
-  transform-origin: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  overflow: hidden;
+  user-select: none;
 }
 
-/* 图片样式 */
+.row-one .polaroid-style {
+  width: 300px;
+  height: 240px;
+  margin-right: 20px;
+  padding: 10px 10px 40px 10px;
+  border-radius: 4px;
+}
+
+.row-one .polaroid-style:nth-child(even) {
+  transform: rotate(1deg);
+}
+
+.row-one .polaroid-style:nth-child(odd) {
+  transform: rotate(-1deg);
+}
+
+.row-two .film-style {
+  width: 240px;
+  height: 160px;
+  margin-right: 20px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.image-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  border-radius: 2px;
+  background-color: var(--btn-bg);
+}
+
 .gallery-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.4s ease-out;
+  transition: transform 0.5s ease;
 }
 
-/* 卡片悬停效果 */
+.card-footer {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.card-tag {
+  color: var(--secondary-color);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* =================================
+   悬停效果
+   ================================= */
 .gallery-card:hover {
-  transform: translateY(-8px);
-  box-shadow: var(--hover-shadow);
+  transform: scale(1.05) rotate(0deg) !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+  z-index: 10;
 }
 
-/* 保证每行最后一张卡片不会紧靠屏幕右侧 */
-.row-one .gallery-card:last-child,
-.row-two .gallery-card:last-child {
-  margin-right: calc(100vw - 2rem);
+.hover-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-/* 渐现动画 */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(15px);
+.gallery-card:hover .hover-overlay {
+  opacity: 1;
+}
+
+.view-icon {
+  font-size: 1.5rem;
+  color: white;
+  transition: transform 0.3s ease;
+}
+
+.gallery-card:hover .gallery-image {
+  transform: scale(1.1);
+}
+
+/* =================================
+   Lightbox 灯箱 (核心修复)
+   ================================= */
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.lightbox-content {
+  position: relative; /* 必须为按钮提供定位基准 */
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.lightbox-image {
+  max-width: 100%;
+  max-height: 75vh;
+  border-radius: 8px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.lightbox-caption {
+  margin-top: 1.5rem;
+  color: white;
+  text-align: center;
+}
+
+.lightbox-caption h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.lightbox-caption p {
+  margin: 0.5rem 0 0;
+  opacity: 0.8;
+  font-size: 1rem;
+  max-width: 600px;
+}
+
+/* 按钮定位修复 */
+.close-btn {
+  position: absolute;
+  top: -10px;
+  right: -50px; /* 默认在图片外部右上角 */
+  background: none;
+  border: none;
+  color: white;
+  font-size: 3rem;
+  cursor: pointer;
+  line-height: 1;
+  opacity: 0.7;
+  transition: all 0.2s;
+  z-index: 10001;
+}
+
+.close-btn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Vue Transition */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+
+/* =================================
+   响应式适配
+   ================================= */
+@media (max-width: 1024px) {
+  .close-btn {
+    right: 0px;
+    top: -50px; /* 屏幕较窄时放在图片上方中间或右侧 */
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
-/* 响应式调整 */
 @media (max-width: 768px) {
-  .gallery-section {
-    padding: 2rem 1rem;
+  .row-one .polaroid-style {
+    width: 220px;
+    height: 180px;
+    padding: 6px 6px 30px 6px;
   }
 
-  .gallery-header {
-    margin-bottom: 2rem;
+  .row-two .film-style {
+    width: 180px;
+    height: 120px;
   }
 
   .gallery-title {
     font-size: 1.8rem;
   }
 
-  .gallery-subtitle {
-    font-size: 1rem;
-  }
-
-  .scroll-container {
-    padding: 0.8rem 0;
-    margin-bottom: 1.5rem;
-  }
-
-  .row-one .gallery-card {
-    width: 300px;
-    height: 180px;
-    margin-right: 20px;
-    border-radius: 12px;
-  }
-
-  .row-two .gallery-card {
-    width: 220px;
-    height: 140px;
-    margin-right: 18px;
-    border-radius: 10px;
-  }
-}
-
-@media (max-width: 480px) {
-  .gallery-title {
-    font-size: 1.6rem;
-  }
-
-  .row-one .gallery-card {
-    width: 240px;
-    height: 160px;
-    margin-right: 16px;
-    border-radius: 10px;
-  }
-
-  .row-two .gallery-card {
-    width: 180px;
-    height: 120px;
-    margin-right: 14px;
-    border-radius: 8px;
+  /* 移动端按钮放在图片内部右上角 */
+  .close-btn {
+    top: 10px;
+    right: 10px;
+    font-size: 2.2rem;
+    background: rgba(0, 0, 0, 0.4);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 </style>

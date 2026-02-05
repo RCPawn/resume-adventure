@@ -27,7 +27,7 @@ const isOpen = ref(false);
 const isMinimized = ref(false);
 const userInput = ref('');
 const messages = ref([
-  {content: '你好！我是 rcpawn 的小助手 echo，有什么可以帮你的吗？', type: 'ai'}
+  {content: '你好！我是 rcpawn 的小助手，有什么可以帮你的吗？', type: 'ai'}
 ]);
 
 const dragState = reactive({

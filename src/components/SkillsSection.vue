@@ -1,332 +1,406 @@
 <template>
-  <div id="skills" class="tech-stack-container">
-    <!-- 标题区域 -->
-    <div class="header-section" data-aos="fade-up">
-      <!-- 新增一个 wrapper 让图标和标题横向排列 -->
-      <div class="title-wrapper">
-        <span class="emoji-icon">⚡</span>
-        <h2 class="section-title">专业 <span class="highlight">技能</span></h2>
-      </div>
-<!--      <p class="section-subtitle">核心技术栈</p>-->
-    </div>
+  <section id="skills" class="skills-wrapper">
+    <div class="cyber-container">
 
-    <!-- 技能卡片网格 -->
-    <div class="bento-grid">
-
-      <!-- 卡片 1: Java与核心框架 (只留最硬核的) -->
-      <div class="tech-card core-backend" @mousemove="handleMouseMove" @mouseleave="resetCard">
-        <div class="card-bg"></div>
-        <div class="card-content">
-          <div class="card-header">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" class="tech-logo" alt="Java" />
-            <h3>Java & Spring</h3>
-          </div>
-          <p class="card-desc">后端开发的基石与核心框架。</p>
-          <div class="tag-container">
-            <!-- ThreadLocal 是你项目的亮点，必须留 -->
-            <span class="tech-tag highlight-tag">🧵 ThreadLocal</span>
-            <span class="tech-tag">☕ Java 17</span>
-            <span class="tech-tag">🧠 JVM</span>
-            <span class="tech-tag">🍃 Spring Boot 3</span>
+      <header class="cyber-header">
+        <div class="header-left">
+          <span class="glitch-title" data-text="SYSTEM_CAPABILITY">SYSTEM_CAPABILITY</span>
+          <div class="path-info">// {{ t('skills.title') }}</div>
+        </div>
+        <div class="header-right">
+          <div class="status-box">
+            <span class="pulse-dot"></span>
+            <span class="status-text">{{ t('skills.status') }}</span>
           </div>
         </div>
-      </div>
+      </header>
 
-      <!-- 卡片 2: 微服务架构 (这是你的杀手锏，竖长条展示) -->
-      <div class="tech-card microservices" @mousemove="handleMouseMove" @mouseleave="resetCard">
-        <div class="card-bg"></div>
-        <div class="card-content">
-          <div class="card-header">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" class="tech-logo" alt="Spring Cloud" />
-            <h3>Cloud Native</h3>
-          </div>
-          <p class="card-desc">基于 Spring Cloud Alibaba 的并发治理方案。</p>
-          <div class="tag-container">
-            <span class="tech-tag">☁️ Spring Cloud Alibaba</span>
-            <span class="tech-tag highlight-tag">☸️ Nacos</span>
-            <span class="tech-tag">🛡️ Sentinel</span>
-            <span class="tech-tag">🚪 Gateway</span>
-            <span class="tech-tag">⚡ OpenFeign</span>
-            <!-- Netty 是网关底层，写在这里很显深度 -->
-            <span class="tech-tag">🚀 Netty</span>
-          </div>
-        </div>
-      </div>
+      <div class="terminal-layout">
 
-      <!-- 卡片 3: 数据存储与中间件 (去掉了冗余描述) -->
-      <div class="tech-card data-infra" @mousemove="handleMouseMove" @mouseleave="resetCard">
-        <div class="card-bg"></div>
-        <div class="card-content">
-          <div class="card-header">
-            <div class="multi-logos">
-              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" class="mini-logo" />
-              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg" class="mini-logo" />
+        <nav class="side-modules">
+          <div
+              v-for="(mod, key, index) in modules"
+              :key="key"
+              class="module-card"
+              :class="{ active: activeKey === key }"
+              @mouseenter="playTickSound"
+              @click="switchModule(key)"
+          >
+            <div class="card-bg"></div>
+            <div class="card-content">
+              <span class="mod-no">0{{ index + 1 }}</span>
+              <span class="mod-name">{{ mod.name }}</span>
             </div>
-            <h3>Data & Middleware</h3>
+            <div class="active-glow"></div>
           </div>
-          <div class="tag-container">
-            <span class="tech-tag">🐬 MySQL</span>
-            <!-- 简历里写了MVCC/锁，这里用一个词概括，显得懂底层 -->
-            <span class="tech-tag">🔒 MVCC & Lock</span>
-            <span class="tech-tag">⚡ Redis</span>
-            <span class="tech-tag">🐰 RabbitMQ</span>
-          </div>
-        </div>
-      </div>
+        </nav>
 
-      <!-- 卡片 4: 全栈能力 (只展示你能落地的) -->
-      <div class="tech-card fullstack" @mousemove="handleMouseMove" @mouseleave="resetCard">
-        <div class="card-bg"></div>
-        <div class="card-content">
-          <div class="card-header">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg" class="tech-logo" alt="Vue" />
-            <h3>Frontend</h3>
-          </div>
-          <div class="tag-container">
-            <span class="tech-tag">Vue 3</span>
-            <span class="tech-tag">Element Plus</span>
-            <!-- 加上 WebGL 呼应你的3D主页 -->
-            <span class="tech-tag highlight-tag">🧊 WebGL</span>
-          </div>
-        </div>
-      </div>
+        <main class="hologram-display">
+          <div class="screen-grid"></div>
+          <div class="screen-scanline"></div>
 
+          <div class="display-top">
+            <span class="stream-id">DATA_STREAM: {{ activeKey.toUpperCase() }}</span>
+            <span class="real-time">{{ currentTime }}</span>
+          </div>
+
+          <div class="description-view">
+            <p class="typewriter">
+              <span class="prompt">></span> {{ displayedText }}<span class="cursor">_</span>
+            </p>
+          </div>
+
+          <div class="skills-matrix">
+            <div
+                v-for="(item, idx) in currentData.items"
+                :key="idx"
+                class="skill-chip"
+                @mouseenter="playTickSound"
+            >
+              <div class="chip-icon">{{ getIcon(activeKey, idx) }}</div>
+              <div class="chip-info">
+                <h4 class="chip-title">{{ item.name }}</h4>
+                <div class="chip-tags">
+                  <span v-for="tag in item.tags" :key="tag" class="tag">#{{ tag }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup>
-// 3D 倾斜逻辑保持不变
-const handleMouseMove = (e) => {
-  const card = e.currentTarget;
-  const rect = card.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
-  const centerX = rect.width / 2;
-  const centerY = rect.height / 2;
-  // 减小旋转角度，让交互更微小精致
-  const rotateX = ((y - centerY) / centerY) * -5;
-  const rotateY = ((x - centerX) / centerX) * 5;
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-  card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.01)`;
+const { t, tm, locale } = useI18n();
+const activeKey = ref('java');
+const displayedText = ref('');
+const currentTime = ref('');
+let typeTimer = null;
 
-  const bg = card.querySelector('.card-bg');
-  bg.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 80%)`;
+const modules = computed(() => tm('skills.modules'));
+const currentData = computed(() => tm(`skills.modules.${activeKey.value}`));
+
+// 图标映射
+const iconMap = {
+  java: ['☕', '🧠', '🌱'],
+  cloud: ['☁️', '🚦', '🌐'],
+  data: ['💾', '⚡', '🐇'],
+  frontend: ['🎨', '🛠️', '🖥️'],
+  performance: ['🚀', '📈', '🛡️']
+};
+const getIcon = (key, idx) => iconMap[key]?.[idx] || '💎';
+
+// --- 🔉 优化后的音效系统 ---
+let audioCtx = null;
+const initAudio = () => {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 };
 
-const resetCard = (e) => {
-  const card = e.currentTarget;
-  card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
-  const bg = card.querySelector('.card-bg');
-  bg.style.background = 'transparent';
+// 交互微声
+const playTickSound = () => {
+  if (!audioCtx) return;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(1000, audioCtx.currentTime);
+  gain.gain.setValueAtTime(0.01, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.start(); osc.stop(audioCtx.currentTime + 0.05);
 };
+
+// 机械键盘打字音
+const playTypeSound = () => {
+  if (!audioCtx) return;
+  const bufferSize = audioCtx.sampleRate * 0.02;
+  const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+
+  const noise = audioCtx.createBufferSource();
+  noise.buffer = buffer;
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = 'highpass';
+  filter.frequency.value = 2000;
+  const gain = audioCtx.createGain();
+  gain.gain.setValueAtTime(0.01, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.02);
+
+  noise.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
+  noise.start();
+};
+
+// --- ⌨️ 打字机逻辑 ---
+const startTyping = (text) => {
+  if (typeTimer) clearInterval(typeTimer);
+  displayedText.value = '';
+  let i = 0;
+  typeTimer = setInterval(() => {
+    if (i < text.length) {
+      displayedText.value += text.charAt(i);
+      playTypeSound(); // 每打一个字播放一次音效
+      i++;
+    } else {
+      clearInterval(typeTimer);
+    }
+  }, 25);
+};
+
+const switchModule = (key) => {
+  if (activeKey.value === key) return;
+  activeKey.value = key;
+  // 切换时播放一个稍重的点击声
+  if (audioCtx) {
+    const osc = audioCtx.createOscillator();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+  }
+};
+
+watch([activeKey, locale], () => startTyping(currentData.value.desc), { immediate: true });
+
+onMounted(() => {
+  setInterval(() => { currentTime.value = new Date().toTimeString().split(' ')[0]; }, 1000);
+  document.addEventListener('mousedown', initAudio, { once: true });
+});
+onUnmounted(() => clearInterval(typeTimer));
 </script>
 
 <style scoped>
-/* 新增：让图标和标题在同一行居中 */
-.title-wrapper {
+.skills-wrapper {
+  padding: 50px 0;
+  overflow: hidden;
+}
+
+.cyber-container {
+  /* 优化：稍微调大宽度，并向右微调对齐 */
+  max-width: 1100px;
+  margin-left: calc(50% - 530px); /* 动态计算实现稍微靠右 */
+  margin-right: auto;
+  padding: 0 40px;
+}
+
+/* 头部样式 */
+.cyber-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 30px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 15px;
+}
+
+.glitch-title {
+  font-size: 1.8rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: var(--text-color);
+  position: relative;
+}
+
+.path-info {
+  font-size: 0.8rem;
+  color: var(--primary-color);
+  margin-top: 5px;
+  opacity: 0.8;
+}
+
+.status-box {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 5px; /* 图标和文字之间的间距 */
-  margin-bottom: 0.5rem;
+  gap: 10px;
+  font-size: 0.75rem;
+  padding: 5px 12px;
+  background: var(--btn-bg);
+  border-radius: 4px;
 }
 
-/* 核心布局与上一版一致，微调间距 */
-.tech-stack-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 4rem 2rem;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: transparent;
+.pulse-dot {
+  width: 8px; height: 8px;
+  background: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #10b981;
+  animation: pulse 2s infinite;
 }
 
-.header-section {
-  text-align: center;
-  margin-bottom: 3rem; /* 间距调小一点 */
-}
-
-.emoji-icon {
-  font-size: 2.8rem;
-  display: block;
-  animation: bounce 2s infinite;
-  color: var(--icon-color);
-}
-
-.section-title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: var(--text-color);
-  margin: 0;
-  letter-spacing: -1px;
-}
-
-.highlight {
-  background: linear-gradient(120deg, var(--primary-color) 0%, #8fd3f4 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.section-subtitle {
-  color: var(--secondary-color);
-  font-size: 1.1rem;
-  margin-top: 0.5rem;
-}
-
-.bento-grid {
+/* 布局结构 */
+.terminal-layout {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, auto);
-  gap: 1.5rem;
+  grid-template-columns: 260px 1fr;
+  gap: 20px;
+  height: 520px;
 }
 
-.tech-card {
-  background: var(--modal-bg);
-  border-radius: 20px;
-  padding: 1.8rem; /* 内边距稍微调小 */
+/* 左侧磁带导航 */
+.side-modules {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.module-card {
   position: relative;
+  height: 70px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   overflow: hidden;
-  box-shadow: var(--hover-shadow);
   border: 1px solid var(--border-color);
-  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  cursor: default;
-  backdrop-filter: blur(10px);
 }
 
 .card-bg {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.15;
-  pointer-events: none;
-  z-index: 0;
-  transition: background 0.2s;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: var(--modal-bg);
+  z-index: 1;
 }
 
 .card-content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 15px;
+}
+
+.mod-no {
+  font-size: 0.7rem;
+  color: var(--primary-color);
+  font-family: serif;
+  font-style: italic;
+}
+
+.mod-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 1px;
+}
+
+.active-glow {
+  position: absolute;
+  right: -20px; top: 0; width: 40px; height: 100%;
+  background: var(--primary-color);
+  filter: blur(20px);
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.module-card:hover {
+  transform: translateX(10px);
+  border-color: var(--text-color);
+}
+
+.module-card.active {
+  background: var(--text-color);
+  border-color: var(--text-color);
+  transform: translateX(15px);
+}
+
+.module-card.active .card-bg { background: var(--text-color); }
+.module-card.active .mod-name, .module-card.active .mod-no { color: var(--bg-color); }
+.module-card.active .active-glow { opacity: 0.6; }
+
+/* 右侧全息屏 */
+.hologram-display {
+  background: var(--modal-bg);
+  border: 1px solid var(--border-color);
+  position: relative;
+  padding: 35px;
   display: flex;
   flex-direction: column;
 }
 
-/* 布局分配 */
-.core-backend {
-  grid-column: span 2;
-  background: linear-gradient(145deg, var(--modal-bg) 0%, var(--nav-bg) 100%);
+.screen-grid {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-image: radial-gradient(var(--grid-line) 1px, transparent 1px);
+  background-size: 20px 20px;
+  pointer-events: none;
 }
 
-.microservices {
-  grid-row: span 2;
-  background: linear-gradient(145deg, var(--modal-bg) 0%, var(--nav-bg) 100%);
-}
-
-.data-infra {
-  background: linear-gradient(145deg, var(--modal-bg) 0%, var(--nav-bg) 100%);
-}
-
-.fullstack {
-  background: linear-gradient(145deg, var(--modal-bg) 0%, var(--nav-bg) 100%);
-}
-
-.card-header {
+.display-top {
   display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  margin-bottom: 0.8rem;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: var(--secondary-color);
+  margin-bottom: 25px;
+  font-family: monospace;
 }
 
-.card-header h3 {
-  font-size: 1.2rem;
-  font-weight: 700;
+.description-view {
+  min-height: 80px;
+  margin-bottom: 35px;
+}
+
+.typewriter {
+  font-size: 1.05rem;
+  line-height: 1.8;
   color: var(--text-color);
   margin: 0;
 }
 
-.tech-logo {
-  width: 36px;
-  height: 36px;
+.prompt { color: var(--primary-color); font-weight: bold; }
+
+/* 技能矩阵：回归卡片式 */
+.skills-matrix {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
 }
 
-.multi-logos {
+.skill-chip {
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  padding: 15px;
   display: flex;
-  gap: -8px;
-}
-.mini-logo {
-  width: 32px;
-  height: 32px;
+  align-items: center;
+  gap: 15px;
+  transition: 0.3s;
 }
 
-.card-desc {
-  color: var(--secondary-color);
-  font-size: 0.9rem;
-  margin-bottom: 1.2rem;
-  line-height: 1.4;
-  opacity: 0.8; /* 描述文字稍微淡一点，突出标签 */
+.skill-chip:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-3px);
+  box-shadow: var(--hover-shadow);
 }
 
-/* 标签容器 */
-.tag-container {
+.chip-icon { font-size: 1.8rem; }
+.chip-title {
+  margin: 0 0 5px 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.chip-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
-  margin-top: auto;
+  gap: 6px;
 }
 
-/* 标签样式优化 */
-.tech-tag {
-  padding: 0.4rem 0.8rem;
+.tag {
+  font-size: 0.65rem;
+  color: var(--primary-color);
   background: var(--btn-bg);
-  color: var(--secondary-color);
-  border-radius: 8px;
-  font-size: 0.85rem;
-  font-weight: 600; /* 字体加粗一点 */
-  transition: all 0.3s;
-  border: 1px solid var(--border-color);
+  padding: 1px 5px;
+  border-radius: 2px;
 }
 
-.tech-tag:hover {
-  background: var(--btn-bg);
-  border-color: var(--primary-color);
-  transform: translateY(-2px);
-  box-shadow: var(--hover-shadow);
-  color: var(--text-color);
-}
+.cursor { animation: blink 1s step-end infinite; color: var(--primary-color); }
 
-.highlight-tag {
-  background: var(--btn-bg);
-  color: var(--primary-color); /* 颜色加深一点，更醒目 */
-  border-color: var(--primary-color);
-}
+@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+@keyframes blink { 50% { opacity: 0; } }
 
-@media (max-width: 992px) {
-  .bento-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .core-backend {
-    grid-column: span 2;
-  }
-  .microservices {
-    grid-row: auto;
-    grid-column: span 2;
-  }
-}
-
-@media (max-width: 768px) {
-  .bento-grid {
-    display: flex;
-    flex-direction: column;
-  }
-  .section-title {
-    font-size: 2rem;
-  }
-}
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+@media (max-width: 900px) {
+  .cyber-container { margin: 0 auto; padding: 0 20px; }
+  .terminal-layout { grid-template-columns: 1fr; height: auto; }
+  .side-modules { flex-direction: row; overflow-x: auto; padding-bottom: 10px; }
+  .module-card { min-width: 160px; transform: none !important; }
 }
 </style>

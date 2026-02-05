@@ -19,51 +19,59 @@ export default {
         '☁️ Microservice Architecture Explorer',
         '🎨 Enthusiast of 3D & Interactive Design'
     ],
+
     skills: {
-        title: 'Skills & Map',
-        subtitle: 'The % are for reference only',
-        skillTarget: 'Skill Target',
-        current: 'Current Level',
-        target: 'Target Level',
-        items: [
-            {
-                name: 'BackendDev',
-                icon: 'fas fa-laptop-code',
-                level: 60,
-                target: 85
+        title: "TECHNICAL_STACK // MATRIX",
+        status: "ACTIVE",
+        modules: {
+            java: {
+                name: "Java Core",
+                desc: "Proficient in Java & Collections. Familiar with ThreadLocal and JVM memory model/GC mechanisms. Solid foundation in multi-threading.",
+                items: [
+                    { name: "Java SE", tags: ["Collections", "ThreadLocal", "Reflection"] },
+                    { name: "JVM", tags: ["Memory Model", "GC", "Monitoring"] },
+                    { name: "Framework", tags: ["Spring Boot", "IoC/AOP", "Bean Lifecycle"] }
+                ]
             },
-            {
-                name: 'Database Design',
-                icon: 'fas fa-database',
-                level: 50,
-                target: 75
+            cloud: {
+                name: "Cloud Native",
+                desc: "Familiar with Spring Cloud Alibaba (Nacos, Sentinel). Mastered Gateway architecture and Netty reactive programming for full-link identity relay.",
+                items: [
+                    { name: "Microservices", tags: ["Nacos", "Sentinel", "Feign"] },
+                    { name: "Gateway", tags: ["Dynamic Route", "Token Relay", "Limit"] },
+                    { name: "Network", tags: ["Netty", "Reactive", "High-perf IO"] }
+                ]
             },
-            {
-                name: 'Algorithms',
-                icon: 'fas fa-code',
-                level: 55,
-                target: 80
+            data: {
+                name: "Data & Middleware",
+                desc: "Proficient in MySQL Indexing & MVCC. Familiar with Redis caching strategies and RabbitMQ for async decoupling and peak shaving.",
+                items: [
+                    { name: "MySQL", tags: ["Indexing", "Isolation", "MVCC"] },
+                    { name: "Redis", tags: ["DCL Lock", "Atomic", "Cache Aside"] },
+                    { name: "RabbitMQ", tags: ["Async", "Peak Shaving", "Reliability"] }
+                ]
             },
-            {
-                name: 'AI & Machine Learning',
-                icon: 'fas fa-brain',
-                level: 20,
-                target: 70
+            frontend: {
+                name: "Full Stack",
+                desc: "Familiar with Vue3 + Element Plus. Skilled in full-stack debugging, CORS, and componentization. Basic knowledge of WebGL and dashboards.",
+                items: [
+                    { name: "Vue Eco", tags: ["Vue 3", "Composition API", "Element Plus"] },
+                    { name: "Engineering", tags: ["CORS", "Debugging", "Components"] },
+                    { name: "Visualization", tags: ["WebGL", "Dashboard", "3D Display"] }
+                ]
             },
-            {
-                name: 'Game & 3D Dev',
-                icon: 'fas fa-gamepad',
-                level: 30,
-                target: 60
-            },
-            {
-                name: 'Version Control',
-                icon: 'fab fa-github',
-                level: 60,
-                target: 80
+            performance: {
+                name: "Performance",
+                desc: "Full-link diagnosis capability. Improved throughput by 12x via RabbitMQ; optimized algorithm from O(n²) to O(n) using HashMap indexing.",
+                items: [
+                    { name: "Optimization", tags: ["JMeter", "Async Log", "Throughput"] },
+                    { name: "Algorithms", tags: ["Refactoring", "Logic", "HashMap Opt"] },
+                    { name: "Security", tags: ["Replay Attack", "Lua", "Tracing"] }
+                ]
             }
-        ]
+        }
     },
+
     projects: {
         items: [
             {
@@ -104,7 +112,6 @@ export default {
         viewDetails: 'View Details'
     },
 
-
     stuffs: {
         back: 'Back',
         building: 'Building...',
@@ -112,142 +119,158 @@ export default {
     },
 
     resume: {
-        education: {
-            title: "Education",
-            items: [
-                "Software Engineering (2022.09 - 2026.07)",
-                "GPA 3.47/4.0 (Top 20% in Major)",
-                "University-Level Scholarship Recipient (Consecutive years 2023-2025)",
-                "English Proficiency: CET-6"
+        "education": {
+            "title": "Education",
+            "items": [
+                "Southwest Minzu University - B.S. in Software Engineering (2022.09 - 2026.07)",
+                "GPA: 3.47 / 4.00 (Ranked Top 20%)",
+                "University-level Scholarship for two consecutive years (2023-2025)",
+                "English Level: CET-6"
             ]
         },
 
-// ... existing education ...
-
-        skills: {
-            title: "Professional Skills",
-            categories: [
+        "skills": {
+            "title": "Professional Skills",
+            "categories": [
                 {
-                    name: "Java Core",
-                    items: [
-                        "Proficient in Java language and Collection Framework; Familiar with ThreadLocal thread isolation applications; Understanding of JVM memory model and GC mechanisms."
+                    "name": "Java Core",
+                    "items": [
+                        "Proficient in Java and Collections Framework; familiar with ThreadLocal for thread isolation; understood JVM memory models and GC mechanisms."
                     ]
                 },
                 {
-                    name: "Microservices Architecture",
-                    items: [
-                        "Familiar with Spring Cloud Alibaba ecosystem; Mastered core components like Nacos, Sentinel, and OpenFeign for service governance.",
-                        "Mastered Spring Cloud Gateway architecture; Understanding of Netty + WebFlux reactive model and Filter chain mechanisms."
+                    "name": "Backend Frameworks",
+                    "items": [
+                        "Proficient in Spring Boot / Spring MVC; understood IoC, AOP principles, and Bean lifecycle."
                     ]
                 },
                 {
-                    name: "Server-side Frameworks",
-                    items: [
-                        "Proficient in Spring Boot / Spring MVC for backend development; Understanding of IoC, AOP principles, and Bean lifecycle."
+                    "name": "Microservices",
+                    "items": [
+                        "Familiar with Spring Cloud Alibaba (Nacos, Sentinel, OpenFeign); understood Gateway architecture and Netty reactive programming."
                     ]
                 },
                 {
-                    name: "Database & Caching",
-                    items: [
-                        "Proficient in MySQL and SQL writing; Familiar with index optimization; Understanding of transaction isolation levels and MVCC/Locking mechanisms.",
-                        "Familiar with Redis core data structures and scenarios; Mastered solutions for Cache Penetration/Breakdown/Avalanche and double-write consistency strategies."
+                    "name": "Database & Caching",
+                    "items": [
+                        "Proficient in MySQL and SQL writing; experienced in index optimization and transaction isolation (MVCC/Locking).",
+                        "Familiar with Redis data structures and application scenarios; mastered solutions for cache penetration/breakdown/avalanche and data consistency."
                     ]
                 },
                 {
-                    name: "Frontend Technologies",
-                    items: [
-                        "Familiar with Vue3 + Element Plus development; Experienced in frontend-backend integration, CORS handling, and component-based development."
+                    "name": "Frontend",
+                    "items": [
+                        "Familiar with Vue3 + Element Plus; experienced in API integration, CORS handling, and component-based development."
                     ]
                 }
             ]
         },
 
-        projects: {
-            title: "Project Experience",
-            stackLabel: "Tech Stack",
-            contributionsLabel: "Key Contributions",
-            items: [
+        "projects": {
+            "title": "Project Experience",
+            "stackLabel": "Tech Stack",
+            "contributionsLabel": "Key Contributions",
+            "items": [
                 {
-                    title: "Microservice Traffic Governance & Unified Gateway Platform (2025.12 - Present)",
-                    description: "Independently developed a unified microservice traffic governance platform integrating dynamic route hot-updates, full-link identity security loop, Sentinel high-availability protection, and SkyWalking tracing. Developed a matching Vue3 visual operations console. Achieved zero-downtime dynamic management of routing rules and real-time service health monitoring via Nacos and Actuator, building a secure and observable traffic entrance.",
-                    stack: "Spring Boot 3, Spring Cloud Alibaba (Nacos, Sentinel), Spring Cloud Gateway",
-                    contributions: [
-                        "Full-link Identity Loop: Addressed the token loss issue in inter-service calls by designing a pass-through scheme based on ThreadLocal + Feign Interceptors. Injected headers at the gateway layer and coordinated with internal interceptors to achieve token relay, ensuring seamless propagation of User ID and Token across the entire link.",
-                        "Zero-Downtime Dynamic Routing: Abandoned static YAML configuration and developed a dynamic route loader based on the Nacos Config listening mechanism. It listens for configuration changes and calls the Gateway underlying API to refresh the routing table in real-time, achieving route rule modification without restarting the gateway.",
-                        "Traffic Governance & Monitoring: Implemented QPS rate limiting and circuit breaking for core interfaces based on Sentinel, utilizing Nacos for rule persistence. Integrated SkyWalking probes for distributed full-link tracing, standardized rate-limiting responses via exception handling, and accurately pinpointed system bottlenecks.",
-                        "Visual Management Platform: Independently built a Vue3 admin dashboard, configured global CORS, and integrated with Actuator endpoints to realize visual inspection of routing rules and monitoring of service health status."
+                    "title": "Microservices Traffic Governance & Gateway Platform (2025.12 - Present)",
+                    "description": "A self-developed microservices gateway platform integrating authentication, dynamic routing, traffic governance, and security monitoring.",
+                    "stack": "Spring Boot 3, Spring Cloud Alibaba (Nacos, Sentinel), Spring Cloud Gateway",
+                    "contributions": [
+                        "Full-link Identity: Designed a pass-through solution based on ThreadLocal + Feign interceptors to ensure seamless relay of User IDs and Tokens.",
+                        "Dynamic Routing: Developed a routing loader based on Nacos Config to refresh routing tables in real-time via Gateway APIs without restarts.",
+                        "Traffic Governance: Implemented QPS limiting and circuit breaking with Sentinel; integrated SkyWalking for distributed tracing.",
+                        "Security & Docs: Designed anti-replay filters using Redis + Lua with Nonce and timestamp mechanisms; aggregated Swagger docs via Knife4j.",
+                        "Async Logging: Used RabbitMQ for decoupling. JMeter tests showed throughput increased from 89 to 1100+ QPS (approx. 12x boost)."
                     ]
                 },
                 {
-                    title: "Intangible Cultural Heritage Virtual Display & Data Monitoring Platform (2024.09 - 2025.01)",
-                    description: "A digital twin platform designed for Intangible Cultural Heritage (ICH), realizing all-around 3D exhibit display, real-time dynamic statistics, and high-interaction discussions.",
-                    stack: "Spring Boot, Vue3, WebGL, MyBatis, MySQL",
-                    contributions: [
-                        "Business Loop & Full-Stack Modeling: Independently completed full-link system development. Designed and implemented the UGC publishing system. Refactored the classification model into a hierarchical structure, utilizing recursive algorithms and cascaded selectors to achieve precise management and data aggregation of complex ICH project genealogies.",
-                        "Digital Dashboard: Built a digital cockpit integrating WebGL and ECharts to analyze resource distribution and interaction heat in real-time. Used heterogeneous data aggregation algorithms to intuitively present the lineage connections between ICH schools and inheritors.",
-                        "Data Consistency & Concurrency Safety: Independently designed the Like/Collect 'state toggle' logic and introduced user action logs. Combined with Spring Transactions (@Transactional) to ensure strong consistency between interaction behaviors and statistical data. Adopted SQL atomic operations to avoid concurrent update data loss and implemented non-negative validation for counters.",
-                        "Component Tuning & UI Adaptation: Resolved infinite rendering loops and white screen issues caused by framework caching in WebGL components by utilizing Vue3 Lifecycle management and the Key mechanism. Adopted viewport locking and scroll isolation schemes to completely eliminate layout jitter of complex 3D pages in backend containers."
+                    "title": "Intangible Cultural Heritage Digital Twin Platform (2024.09 - 2025.01)",
+                    "description": "A digital twin platform designed for cultural heritage, featuring 3D exhibition, real-time statistics, and high-interaction community features.",
+                    "stack": "Spring Boot, Vue3, WebGL, MyBatis, MySQL, Redis",
+                    "contributions": [
+                        "Full-stack Modeling: Independently developed the system and UGC publishing; refactored categorization using recursive algorithms for lineage management.",
+                        "Architecture Optimization: Designed a write-buffer architecture using Redis atomic counters and Quartz for batch persistence to reduce DB row lock contention.",
+                        "Caching & Consistency: Implemented static/dynamic separation; used Double-Checked Locking (DCL) for cache breakdown and Cache Aside for consistency.",
+                        "Performance Tuning: Conducted full-link diagnostics; JMeter tests verified a 7x increase in core API QPS (peak 990+), achieving millisecond-level loading."
                     ]
                 },
                 {
-                    title: "Resume Adventure (Personal Website)",
-                    description: "A personal website independently designed based on SpringBoot + Vue3, efficiently completing core module development via AI-assisted programming (Claude/ChatGPT).",
-                    stack: "SpringBoot, Vue3",
-                    contributions: [
-                        "Integrated Tencent Cloud LLM Knowledge Engine API to implement intelligent Q&A based on personal knowledge base.",
-                        "Integrated Three.js technology to achieve 3D interactive effects in the project showcase area.",
-                        "Developed an online presentation module based on Reveal.js, transforming project experiences into interactive PPTs.",
-                        "Designed and developed a clean and aesthetic personal information display page to clearly present learning experiences, skills, and project results."
-                    ],
-                    highlight: "Highlights: Independent full-stack development, practiced AI-assisted programming workflow, and explored the application of cutting-edge technologies in actual projects."
+                    "title": "Resume Adventure (Personal Website)",
+                    "description": "An independently designed website based on Spring Boot + Vue3, utilizing AI-assisted programming to develop core modules efficiently.",
+                    "stack": "Spring Boot, Vue3, Three.js, Reveal.js",
+                    "contributions": [
+                        "Implemented smart Q&A features using Tencent Cloud LLM API based on a personal knowledge base.",
+                        "Integrated Three.js for 3D interactive effects in the project showcase area.",
+                        "Developed online presentation modules with Reveal.js to transform project experiences into interactive PPTs.",
+                        "Designed a clean UI to present education, skills, and project achievements clearly."
+                    ]
                 }
             ]
         },
 
-// ... existing algo, courses ...
-        algo: {
-            title: "Algorithm Skills",
-            items: [
-                "Solved over 300 LeetCode problems covering dynamic programming, backtracking, greedy algorithms, etc., enjoying the process of achieving code acceptance.",
-                "Familiar with common algorithm complexity analysis and optimization methods.",
-                "Capable of selecting appropriate algorithmic solutions for real-world problems."
+        "algo": {
+            "title": "Algorithm Skills",
+            "items": [
+                "Solved 300+ LeetCode problems, covering DP, Backtracking, and Greedy algorithms.",
+                "Familiar with complexity analysis and optimization methods.",
+                "Capable of selecting appropriate algorithmic solutions for practical problems."
             ]
         },
-        courses: {
-            title: "Professional Courses",
-            items: [
-                "Computer Fundamentals: Data Structures, Algorithm Analysis and Design, Computer Organization, Computer Networks, Operating Systems",
-                "Development Technologies: JavaEE, Web Frontend Development, Database Fundamentals",
-                "Artificial Intelligence: Machine Learning Basics, PyTorch Practical Course"
+
+        "courses": {
+            "title": "Core Courses",
+            "items": [
+                "CS Fundamentals: Data Structures, Algorithms, Computer Organization, Networking, Operating Systems",
+                "Development: JavaEE, Web Development, Database Systems",
+                "AI: Machine Learning Fundamentals, PyTorch Practice"
             ]
         },
-        selfLearning: {
-            title: "Self-Evaluation",
-            items: [
-                "Willing to learn continuously, recording learning experiences and gains (GitHub).",
-                "Strong interest in emerging technologies, skilled in implementing ideas into reality (Personal Blog)."
+
+        "selfLearning": {
+            "title": "Self-Evaluation",
+            "items": [
+                "Willing to learn continuously and document the journey (GitHub repositories).",
+                "Strong interest in emerging technologies and skilled at turning ideas into reality (Personal Blog)."
             ]
         },
-        softSkills: {
-            title: "Soft Skills",
-            items: [
-                "Possess experience in lab project collaboration, proactive in communication, able to quickly integrate into teams and cooperate with members to complete development tasks."
+
+        "softSkills": {
+            "title": "Soft Skills",
+            "items": [
+                "Experienced in laboratory collaboration; proactive communicator who integrates quickly into teams."
             ]
         }
     },
 
-
     gallery: {
-        title: 'Portfolio',
-        subtitle: 'Screenshots as a souvenir, proving that I once made it through',
+        title: 'Creative Gallery',
+        subtitle: 'Snapshots of implemented modules and core system functionalities.',
+        viewDetail: 'View Details',
+        items: {
+            work0: { title: 'Data Dashboard', desc: 'Real-time monitoring panel built with Vue3 and ECharts to visualize multi-dimensional business metrics.' },
+            work1: { title: 'Heritage Digital Hall', desc: 'Frontend development for a cultural exhibition interface, featuring responsive layouts and interactive content.' },
+            work2: { title: 'Knowledge Graph', desc: 'Visualization of complex data relationships using force-directed graphs with node interaction support.' },
+            work3: { title: 'Exhibit Details', desc: 'High-fidelity UI implementation of artifact detail pages with cross-device optimization.' },
+            work4: { title: 'Gateway Console', desc: 'Admin interface for managing microservices gateway, including route forwarding and status monitoring.' },
+            work5: { title: 'Gateway Architecture', desc: 'Logical diagram illustrating the request lifecycle: interception, authentication, and routing.' },
+            work6: { title: 'Route Matrix Config', desc: 'Module for dynamic route configuration, supporting environment-specific mapping and hot deployment.' },
+            work7: { title: 'Traffic Defense Monitor', desc: 'Real-time visualization of QPS, concurrency, and error rates with threshold alerting.' },
+            work8: { title: 'Traffic Policy Config', desc: 'Management of rate-limiting, whitelisting, and circuit-breaking policies to ensure system stability.' },
+            work9: { title: 'Audit Logs', desc: 'Operation auditing system featuring multi-criteria filtering, traceability, and data export.' },
+            work10: { title: 'Async Logging System', desc: 'Asynchronous log collection and storage module designed to minimize main thread latency.' },
+            work11: { title: '3D Render Practice', desc: '3D scene rendering practice covering lighting, material textures, and geometric modeling.' }
+        }
     },
 
 
     footer: {
         appName: 'Dev Space',
         tagline: 'Where code meets creativity',
+        techTitle: 'Powering this site',
+        copyEmail: 'Copy Email',
+        emailCopied: 'Copied!',
         copyright: '© {year} Dev Space. All rights reserved.',
-        madeWith: 'Made with passion & code',
+        madeWith: 'Designed & Built by RCPAWN',
         socialLinks: [
             {url: 'https://github.com/RCPawn', icon: 'fab fa-github'},
             {url: 'https://www.douyin.com/user/self?from_tab_name=main', icon: 'fab fa-tiktok'},
@@ -257,18 +280,18 @@ export default {
             {
                 title: 'Projects',
                 links: [
-                    {text: 'Full Stack Apps', url: '/olive-ppt'},
-                    {text: '3D Model', url: '/model'},
-                    {text: 'AI Lab', url: 'https://github.com/RCPawn/ai-generate-prompt-words/blob/main/README.md'}
+                    {text: 'Heritage', url: '/project/exhibition'},
+                    {text: 'Gateway', url: '/project/gateway'},
+                    {text: 'Cooperation', url: '/olive-ppt'}
                 ]
             },
             {
                 title: "Resources",
                 links: [
-                    {text: "Documentation", url: "/coming-soon"},
+                    {text: "Doc", url: "/coming-soon"},
                     {text: "Tutorials", url: "/coming-soon"},
-                    {text: "Blog", url: "/coming-soon"}
-                ],
+                    {text: "Code", url: "/coming-soon"}
+                ]
             },
             {
                 title: 'About',

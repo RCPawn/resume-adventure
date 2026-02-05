@@ -1,449 +1,361 @@
 <template>
-  <div id="projects" class="projects-container">
-    <div class="main-container" :class="{'mobile-layout': isMobile}">
-      <!-- 标题部分 -->
-      <div class="usecases-nav" :class="{'mobile-header': isMobile}">
-        <div class="sticky-header">
-          <h1 class="gradient-text">📜{{ t('projects.title') }}</h1>
-          <p class="subtitle">{{ t('projects.subtitle') }}</p>
-          <div class="decoration-dots"></div>
-        </div>
-      </div>
+  <section id="projects" class="projects-wrapper">
+    <div class="cyber-container">
+      <div class="main-layout">
 
-      <!-- 项目列表 - 桌面视图 -->
-      <div v-if="!isMobile" class="projects-list">
-        <div
-            v-for="(project, index) in projects"
-            :key="project.name"
-            class="project-card"
-            :class="{
-              'active': activeIndex === index,
-              'prev': getPrevIndex() === index,
-              'next': getNextIndex() === index
-            }"
-            @click="handleProjectClick(project)"
-        >
-          <div class="project-image-container">
-            <img :src="project.image" :alt="project.name" class="project-image"/>
-            <div class="project-overlay"></div>
+        <aside class="index-bus">
+          <div class="sticky-content">
+            <div class="title-group">
+              <span class="prefix">// ARCHIVE_INDEX</span>
+              <h1 class="main-title">{{ t('projects.title') }}</h1>
+              <p class="subtitle">{{ t('projects.subtitle') }}</p>
+            </div>
+
+            <div class="scroll-indicator">
+              <div
+                  v-for="(p, i) in projects"
+                  :key="i"
+                  class="indicator-dot"
+                  :class="{ active: currentActive === i }"
+              >
+                <span class="dot-label">P_{{ (i+1).toString().padStart(2,'0') }}</span>
+              </div>
+            </div>
+            <div class="decoration-dots"></div>
           </div>
-          <div class="project-info">
-            <span class="project-number">{{ (index + 1).toString().padStart(2, '0') }}</span>
-            <h3 class="project-title">{{ project.name }}</h3>
-            <p class="project-description">{{ project.description }}</p>
+        </aside>
+
+        <div class="data-stream" ref="scrollContainer">
+          <div
+              v-for="(project, index) in projects"
+              :key="project.name"
+              class="project-node"
+              :data-index="index"
+              @mouseenter="playTickSound"
+              @click="handleProjectClick(project)"
+          >
+            <div class="node-background">
+              <img :src="project.image" :alt="project.name" class="bg-image" />
+              <div class="image-tint"></div>
+              <div class="glitch-overlay"></div>
+            </div>
+
+            <div class="node-overlay">
+              <div class="scan-bar"></div>
+              <div class="neon-border"></div>
+            </div>
+
+            <div class="node-content-glass">
+              <div class="content-inner">
+                <div class="node-header">
+                  <span class="node-serial">ID: {{ (index + 1).toString().padStart(2, '0') }}</span>
+                  <h3 class="node-title">{{ project.name }}</h3>
+                </div>
+
+                <p class="node-desc">{{ project.description }}</p>
+
+                <div class="node-footer">
+                  <div class="tag-cloud">
+                    <span v-for="tag in (project.tags || ['SYSTEM'])" :key="tag" class="p-tag">
+                      #{{ tag }}
+                    </span>
+                  </div>
+                  <div class="detail-link">
+                    <span class="link-text">查看详情</span>
+                    <span class="link-arrow"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- 原来的模态框 -->
-      <div v-if="showModal" class="modal-overlay" @click="closeModal">
-        <div class="modal-content" :class="{'mobile-modal': isMobile}" @click.stop>
-          <button class="close-button" @click="closeModal">×</button>
-          <SkillTarget/>
-        </div>
-      </div>
-
-      <!-- 天气模态框 -->
-      <WeatherModal
-          :show="showWeatherModal"
-          :isMobile="isMobile"
-          @close="closeWeatherModal"
-      />
-
+      <WeatherModal :show="showWeatherModal" :isMobile="isMobile" @close="closeWeatherModal" />
     </div>
-
-  </div>
+  </section>
 </template>
 
 <script setup>
-import {ref, computed, onMounted, watch} from 'vue';
-import {useI18n} from 'vue-i18n';
-import {useRouter, useRoute} from 'vue-router';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 import projectsData from '@/data/projects.json';
-import SkillTarget from '@/components/TargetWindow.vue';
-import WeatherModal from '@/components/WeatherModel.vue'; // 导入天气组件
+import WeatherModal from '@/components/WeatherModel.vue';
 
-const {t, tm} = useI18n();
+const { t } = useI18n();
 const router = useRouter();
-const route = useRoute(); // 获取当前路由
-const showModal = ref(false);
-const showWeatherModal = ref(false); // 天气模态框状态
-const activeIndex = ref(0);
+const showWeatherModal = ref(false);
+const currentActive = ref(0);
 const isMobile = ref(false);
 
-// 监听路由变化，检测是否需要显示天气弹窗
-watch(() => route.path, (newPath) => {
-  if (newPath === '/weather') {
-    showWeatherModal.value = true;
-  }
-}, { immediate: true });
+const projects = computed(() => projectsData.map(p => ({
+  ...p,
+  name: t(p.nameKey),
+  description: t(p.descriptionKey),
+})));
 
-// 检测设备类型
-const checkDeviceType = () => {
-  isMobile.value = window.innerWidth <= 768;
+// --- 🔉 音效逻辑 ---
+let audioCtx = null;
+const initAudio = () => { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); };
+const playTickSound = () => {
+  if (!audioCtx) initAudio();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(1400, audioCtx.currentTime);
+  gain.gain.setValueAtTime(0.008, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.03);
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.start(); osc.stop(audioCtx.currentTime + 0.03);
 };
 
-// 监听窗口大小变化
+// --- 滚动监听 ---
+let observer = null;
 onMounted(() => {
-  checkDeviceType();
-  window.addEventListener('resize', checkDeviceType);
-
-  // 初始化时检查是否在天气路径
-  if (route.path === '/weather') {
-    showWeatherModal.value = true;
-  }
+  document.addEventListener('mousedown', initAudio, { once: true });
+  observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) currentActive.value = parseInt(entry.target.dataset.index); });
+  }, { threshold: 0.6 });
+  document.querySelectorAll('.project-node').forEach(node => observer.observe(node));
 });
+onUnmounted(() => { if (observer) observer.disconnect(); });
 
-const projects = computed(() => {
-  return projectsData.map(project => ({
-    name: t(project.nameKey),
-    description: t(project.descriptionKey),
-    image: project.image,
-    link: project.link,
-    icon: project.icon
-  }));
-});
-
-const getPrevIndex = () => {
-  return (activeIndex.value - 1 + projects.value.length) % projects.value.length;
+const handleProjectClick = (p) => {
+  if (p.link === '/weather') showWeatherModal.value = true;
+  else if (p.link) router.push(p.link);
 };
-
-const getNextIndex = () => {
-  return (activeIndex.value + 1) % projects.value.length;
-};
-
-const handleProjectClick = (project) => {
-  if (project.link === '/roadmap') {
-    showModal.value = true;
-  } else if (project.link === '/weather') {
-    showWeatherModal.value = true; // 打开天气模态框
-  } else if (project.link) {
-    router.push(project.link);
-  }
-};
-
-const closeModal = () => {
-  showModal.value = false;
-};
-
-const closeWeatherModal = () => {
-  showWeatherModal.value = false;
-  // 返回上一个路由，如果是直接访问 /weather
-  if (route.path === '/weather') {
-    router.push('/');
-  }
-};
-
+const closeWeatherModal = () => { showWeatherModal.value = false; };
 </script>
 
 <style scoped>
-.projects-container {
-  position: relative;
-  width: 100%;
+.projects-wrapper {
+  padding: 100px 0;
 }
 
-.main-container {
-  position: relative;
+.cyber-container {
+  max-width: 1100px;
+  margin-left: calc(50% - 530px);
+  margin-right: auto;
+  padding: 0 43px;
+}
+
+.main-layout {
   display: flex;
-  width: 100%;
-  max-width: 1200px;
-  margin: 10rem auto;
-  min-height: 100vh;
-  background: linear-gradient(135deg, var(--bg-color) 0%, var(--bg-color) 100%);
-  padding: 2rem;
-  box-sizing: border-box;
-  z-index: 99;
+  gap: 20px;
 }
 
-.usecases-nav {
-  width: 35%;
-  padding: 2rem;
+/* 左侧固定区：尺寸完全保留 */
+.index-bus { width: 260px; }
+.sticky-content { position: sticky; top: 120px; }
+.prefix { font-family: monospace; color: var(--primary-color); font-size: 0.8rem; font-weight: bold; }
+.main-title { font-size: 2.2rem; font-weight: 800; margin: 10px 0; color: var(--text-color); }
+.subtitle { color: var(--secondary-color); font-size: 0.95rem; line-height: 1.6; margin-bottom: 40px; }
+
+.scroll-indicator {
+  display: flex; flex-direction: column; gap: 15px;
+  border-left: 1px solid var(--border-color); padding-left: 20px;
+}
+.indicator-dot { font-size: 0.7rem; font-family: monospace; color: var(--secondary-color); opacity: 0.3; transition: 0.3s; }
+.indicator-dot.active { color: var(--primary-color); opacity: 1; transform: translateX(5px); font-weight: bold; }
+
+/* 右侧全景数据流：尺寸完全保留 */
+.data-stream { width: calc(100% - 260px - 20px); display: flex; flex-direction: column; gap: 60px; }
+
+/* ========== 核心优化：图片显示+底部阴影 ========== */
+.project-node {
   position: relative;
+  min-height: 480px;
+  background: var(--modal-bg);
+  border: 1px solid rgba(var(--primary-rgb), 0.2);
+  overflow: hidden;
+  cursor: pointer;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  align-items: flex-end;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transform: none;
+  box-shadow: 0 0 0 rgba(var(--primary-rgb), 0);
 }
 
-.sticky-header {
-  position: sticky;
-  top: 10rem;
-  z-index: 10;
-  margin-bottom: 2rem;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.project-node:hover {
+  transform: translateY(-5px);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 30px rgba(var(--primary-rgb), 0.3),
+  inset 0 0 10px rgba(var(--primary-rgb), 0.1);
 }
 
-.gradient-text {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  text-align: center;
-  color: var(--text-color);
-  letter-spacing: -0.5px;
-  position: relative;
-}
-
-.subtitle {
-  font-size: 1.1rem;
-  color: var(--secondary-color);
-  text-align: center;
-  margin-bottom: 2rem;
-  line-height: 1.6;
-  position: relative;
-  padding: 0 1rem;
-}
-
-.subtitle::before,
-.subtitle::after {
-  content: '';
+/* 修复图片放大导致不完整：取消缩放，保持完整显示 */
+.node-background {
   position: absolute;
-  width: 30px;
-  height: 2px;
-  background: var(--border-color);
-  opacity: 0.3;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 1;
+}
+.bg-image {
+  width: 100%; height: 100%;
+  object-fit: cover; /* 保持图片比例覆盖容器，不裁剪关键内容 */
+  opacity: 0.8; /* 提高透明度，让图片更清晰完整 */
+  transition: opacity 0.8s ease; /* 去掉缩放动画，保留透明度过渡 */
+  transform: translate(0, 0); /* 固定位置，不偏移 */
+}
+.project-node:hover .bg-image {
+  transform: translate(0, 0); /* 取消hover缩放，保持图片完整 */
+  opacity: 0.9; /* 轻微提高透明度，不影响完整性 */
 }
 
-.subtitle::before {
-  left: -20px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.subtitle::after {
-  right: -20px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.sticky-header::before {
-  content: '✨';
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  animation: float 3s ease-in-out infinite;
-  filter: drop-shadow(0 2px 5px var(--hover-shadow));
-}
-
-.sticky-header::after {
-  content: '';
-  position: absolute;
-  bottom: -1rem;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80%;
-  height: 1px;
-  background: linear-gradient(90deg,
-  transparent 0%,
-  var(--border-color) 20%,
-  var(--border-color) 80%,
-  transparent 100%
+/* 优化底部阴影：更柔和，贴近示例图风格 */
+.image-tint {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.1) 0%,
+      rgba(0,0,0,0.2) 40%,
+      rgba(0,0,0,0.4) 80%, /* 降低中间层阴影 */
+      rgba(0,0,0,0.5) 100% /* 减轻底部阴影，更柔和 */
   );
 }
 
-.decoration-dots {
+/* 故障风光影层 */
+.glitch-overlay {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 1;
+  background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(var(--primary-rgb), 0.02) 50%,
+      transparent 100%
+  );
+  pointer-events: none;
+  animation: glitchMove 8s linear infinite;
+}
+
+/* 装饰层：保持原有样式 */
+.node-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+.scan-bar {
+  position: absolute; top: 0; left: 0; width: 100%; height: 1px;
+  background: var(--primary-color);
+  opacity: 0.6;
+  filter: blur(1px);
+  animation: scanLoop 4s linear infinite;
+}
+.neon-border {
   position: absolute;
-  top: 50%;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: radial-gradient(circle, var(--text-color) 1px, transparent 1px);
-  background-size: 20px 20px;
-  opacity: 0.1;
+  top: 2px; left: 2px; right: 2px; bottom: 2px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: linear-gradient(var(--modal-bg), var(--modal-bg)) padding-box,
+  linear-gradient(90deg,
+      transparent,
+      rgba(var(--primary-rgb), 0.6),
+      transparent) border-box;
+  background-size: 200% 100%;
+  animation: borderFlow 3s linear infinite;
   pointer-events: none;
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-.projects-list {
-  width: 65%;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.project-card {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  background: var(--modal-bg);
-  border-radius: 16px;
-  padding: 1.5rem;
-  transform: translateY(20px);
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
-  box-shadow: var(--hover-shadow);
+/* 透明内容层：保持原有样式 */
+.node-content-glass {
   position: relative;
-  overflow: hidden;
-  border: 1px solid var(--border-color);
-}
-
-.project-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--hover-shadow);
-}
-
-.project-image-container {
-  width: 55%;
-  position: relative;
-  overflow: hidden;
-  border-radius: 12px;
-  box-shadow: var(--hover-shadow);
-  border: 1px solid var(--border-color);
-}
-
-.project-image {
+  z-index: 3;
   width: 100%;
-  height: auto;
-  border-radius: 12px;
-  object-fit: cover;
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  filter: brightness(0.95);
+  padding: 40px;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transition: 0.3s;
 }
 
-.project-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.2) 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.project-card:hover .project-image {
-  transform: scale(1.05);
-  filter: brightness(1);
-}
-
-.project-card:hover .project-overlay {
-  opacity: 1;
-}
-
-.project-info {
-  width: 45%;
-}
-
-.project-number {
-  display: block;
-  color: var(--primary-color);
-  opacity: 0.7;
-  margin-bottom: 0.5rem;
-}
-
-.project-title {
-  font-size: 1.75rem;
-  color: var(--text-color);
-  margin-bottom: 1rem;
-}
-
-.project-description {
-  color: var(--secondary-color);
-  margin-bottom: 1rem;
-}
-
-.modal-overlay {
-  position: fixed;
-  z-index: 9998;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(8px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal-content {
-  background: var(--modal-bg);
-  border-radius: 24px;
-  max-width: 1000px;
-  width: 90%;
-  max-height: 85vh;
-  overflow-y: auto;
-  position: relative;
-  z-index: 10000;
-  box-shadow: var(--hover-shadow);
-  scrollbar-width: thin;
-  scrollbar-color: var(--border-color) transparent;
-  border: 1px solid var(--border-color);
-}
-
-.modal-content::-webkit-scrollbar {
-  width: 6px;
-}
-
-.modal-content::-webkit-scrollbar-track {
+.project-node:hover .node-content-glass {
   background: transparent;
 }
 
-.modal-content::-webkit-scrollbar-thumb {
-  background-color: var(--border-color);
-  border-radius: 3px;
+.node-header { margin-bottom: 20px; }
+.node-serial {
+  font-family: monospace;
+  color: var(--primary-color);
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-shadow: 0 0 5px rgba(var(--primary-rgb), 0.5);
+}
+.node-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin: 8px 0;
+  color: #ffffff;
+  background: linear-gradient(120deg, #fff, rgba(var(--primary-rgb), 0.9));
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow: 0 0 8px rgba(var(--primary-rgb), 0.2);
 }
 
-.close-button {
-  position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
-  background: var(--btn-bg);
-  border: 1px solid var(--border-color);
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  font-size: 1.5rem;
-  line-height: 1;
-  cursor: pointer;
-  color: var(--text-color);
-  transition: all 0.3s ease;
+.node-desc {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+  line-height: 1.8;
+  margin-bottom: 30px;
+  max-width: 90%;
+}
+
+.node-footer { display: flex; justify-content: space-between; align-items: center; }
+.p-tag {
+  font-size: 0.7rem;
+  color: var(--primary-color);
+  background: rgba(var(--primary-rgb), 0.15);
+  padding: 3px 9px;
+  border-radius: 3px;
+  margin-right: 10px;
+  font-family: monospace;
+  transition: all 0.2s;
+}
+.project-node:hover .p-tag {
+  background: rgba(var(--primary-rgb), 0.25);
+  box-shadow: 0 0 5px rgba(var(--primary-rgb), 0.3);
+}
+
+.detail-link {
   display: flex;
   align-items: center;
-  justify-content: center;
-  box-shadow: var(--hover-shadow);
-}
-
-.close-button:hover {
-  background: var(--btn-bg);
+  gap: 10px;
   color: var(--primary-color);
-  transform: scale(1.1);
-  box-shadow: var(--hover-shadow);
+  font-family: monospace;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(var(--primary-rgb), 0.5);
 }
-
-@keyframes modalFadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+.link-arrow {
+  width: 12px;
+  height: 2px;
+  background: var(--primary-color);
+  position: relative;
+  transition: 0.3s;
+  filter: blur(0.5px);
 }
-
-.modal-content {
-  animation: modalFadeIn 0.3s ease-out forwards;
+.link-arrow::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: -3px;
+  width: 6px;
+  height: 6px;
+  border-top: 2px solid var(--primary-color);
+  border-right: 2px solid var(--primary-color);
+  transform: rotate(45deg);
+  filter: blur(0.5px);
 }
+.project-node:hover .link-arrow { width: 20px; }
 
-/* 项目卡片过渡动画增强 */
-.mobile-project-card {
-  box-shadow: var(--hover-shadow);
-  transform: scale(0.98);
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
-  border: 1px solid var(--border-color);
-}
+/* 动画保持不变 */
+@keyframes scanLoop { 0% { top: 0; } 100% { top: 100%; } }
+@keyframes glitchMove { 0% { background-position: 0 0; } 100% { background-position: 200% 0; } }
+@keyframes borderFlow { 0% { background-position: 0 0; } 100% { background-position: 200% 0; } }
 
-.mobile-projects-wrapper:hover .mobile-project-card {
-  transform: scale(1);
-  box-shadow: var(--hover-shadow);
+/* 响应式：完全保留 */
+@media (max-width: 900px) {
+  .cyber-container { margin: 0 auto; padding: 0 20px; }
+  .main-layout { flex-direction: column; }
+  .index-bus, .data-stream { width: 100%; }
+  .sticky-content { position: relative; top: 0; margin-bottom: 40px; }
+  .project-node { transform: none; }
+  .project-node:hover { transform: translateY(-5px) rotateX(0); }
 }
 </style>
