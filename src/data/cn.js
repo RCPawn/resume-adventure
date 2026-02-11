@@ -44,7 +44,7 @@ export default {
             },
             data: {
                 name: "数据中间件",
-                desc: "熟练使用 MySQL 索引优化与 MVCC 锁机制。熟悉 Redis 缓存策略（Cache Aside）及一致性方案；具备 RabbitMQ 异步解耦与削峰填谷实战经验。",
+                desc: "熟练使用 MySQL 索引优化与 MVCC 锁机制。熟悉 Redis 缓存策略（Cache Aside）及一致性方案；具备 RabbitMQ 异步解耦与削峰填谷实践经验。",
                 items: [
                     {name: "MySQL", tags: ["索引优化", "事务隔离", "MVCC"]},
                     {name: "Redis", tags: ["双重检查锁", "原子计数", "批量持久化"]},
