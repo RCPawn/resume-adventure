@@ -1,25 +1,25 @@
 [
   {
     "id": "gateway",
-    "title": "微服务网关平台",
+    "title": "微服务流量治理与统一接入网关平台",
     "date": "2025-12-23",
     "nameKey": "projects.items.0.name",
     "descriptionKey": "projects.items.0.description",
     "image": "/images/projects/default_cover.avif",
     "cover": "/images/projects/default_cover.avif",
-    "tags": ["Spring Boot 3", "Spring Cloud Alibaba (Nacos, Sentinel)", "Spring Cloud Gateway"],
+    "tags": ["Spring Boot 3", "Spring Cloud Gateway", "Spring Cloud Alibaba (Nacos, Sentinel)", "Redis", "Vue3"],
     "mdFile": "gateway.md",
     "link": "/project/gateway"
   },
   {
     "id": "exhibition",
-    "title": "数字展陈平台",
+    "title": "非遗虚拟展陈与数据监测平台",
     "date": "2025-12-23",
     "nameKey": "projects.items.1.name",
     "descriptionKey": "projects.items.1.description",
     "image": "/images/projects/城堡.png",
     "cover": "/images/projects/城堡.png",
-    "tags": ["Spring Boot", "MyBatis", "WebGL", "Vue3", "MySQL"],
+    "tags": ["Spring Boot", "MyBatis", "WebGL", "Vue3", "MySQL", "Redis"],
     "mdFile": "exhibition.md",
     "link": "/project/exhibition"
   },
@@ -30,15 +30,15 @@
     "link": "/olive-ppt"
   },
   {
-    "nameKey": "projects.items.3.name",
-    "descriptionKey": "projects.items.3.description",
-    "image": "/images/projects/云朵.png",
-    "link": "/weather"
-  },
-  {
     "nameKey": "projects.items.4.name",
     "descriptionKey": "projects.items.4.description",
     "image": "/images/projects/城市.png",
     "link": "/game"
+  },
+  {
+    "nameKey": "projects.items.3.name",
+    "descriptionKey": "projects.items.3.description",
+    "image": "/images/projects/云朵.png",
+    "link": "/weather"
   }
 ]
