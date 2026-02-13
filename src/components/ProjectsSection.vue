@@ -168,21 +168,21 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
   position: relative;
   min-height: 480px;
   background: var(--modal-bg);
-  border: 1px solid rgba(var(--primary-rgb), 0.2);
+  border: 1px solid rgba(var(--primary-color), 0.2);
   overflow: hidden;
   cursor: pointer;
   display: flex;
   align-items: flex-end;
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
   transform: none;
-  box-shadow: 0 0 0 rgba(var(--primary-rgb), 0);
+  box-shadow: 0 0 0 rgba(var(--primary-color), 0);
 }
 
 .project-node:hover {
   transform: translateY(-5px);
   border-color: var(--primary-color);
-  box-shadow: 0 0 30px rgba(var(--primary-rgb), 0.3),
-  inset 0 0 10px rgba(var(--primary-rgb), 0.1);
+  box-shadow: 0 0 30px rgba(var(--primary-color), 0.3),
+  inset 0 0 10px rgba(var(--primary-color), 0.1);
 }
 
 /* 修复图片放大导致不完整：取消缩放，保持完整显示 */
@@ -222,7 +222,7 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
   background: linear-gradient(
       90deg,
       transparent 0%,
-      rgba(var(--primary-rgb), 0.02) 50%,
+      rgba(var(--primary-color), 0.02) 50%,
       transparent 100%
   );
   pointer-events: none;
@@ -246,7 +246,7 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
   background: linear-gradient(var(--modal-bg), var(--modal-bg)) padding-box,
   linear-gradient(90deg,
       transparent,
-      rgba(var(--primary-rgb), 0.6),
+      rgba(var(--primary-color), 0.6),
       transparent) border-box;
   background-size: 200% 100%;
   animation: borderFlow 3s linear infinite;
@@ -275,17 +275,17 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
   color: var(--primary-color);
   font-size: 0.7rem;
   letter-spacing: 2px;
-  text-shadow: 0 0 5px rgba(var(--primary-rgb), 0.5);
+  text-shadow: 0 0 5px rgba(var(--primary-color), 0.5);
 }
 .node-title {
   font-size: 1.6rem;
   font-weight: 800;
   margin: 8px 0;
   color: #ffffff;
-  background: linear-gradient(120deg, #fff, rgba(var(--primary-rgb), 0.9));
+  background: linear-gradient(120deg, #fff, rgba(var(--primary-color), 0.9));
   -webkit-background-clip: text;
   background-clip: text;
-  text-shadow: 0 0 8px rgba(var(--primary-rgb), 0.2);
+  text-shadow: 0 0 8px rgba(var(--primary-color), 0.2);
 }
 
 .node-desc {
@@ -301,7 +301,7 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
 .p-tag {
   font-size: 0.7rem;
   color: var(--primary-color);
-  background: rgba(var(--primary-rgb), 0.15);
+  background: rgba(var(--primary-color), 0.15);
   padding: 3px 9px;
   border-radius: 3px;
   margin-right: 10px;
@@ -309,8 +309,8 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
   transition: all 0.2s;
 }
 .project-node:hover .p-tag {
-  background: rgba(var(--primary-rgb), 0.25);
-  box-shadow: 0 0 5px rgba(var(--primary-rgb), 0.3);
+  background: rgba(var(--primary-color), 0.25);
+  box-shadow: 0 0 5px rgba(var(--primary-color), 0.3);
 }
 
 .detail-link {
@@ -320,7 +320,7 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
   color: var(--primary-color);
   font-family: monospace;
   font-weight: bold;
-  text-shadow: 0 0 5px rgba(var(--primary-rgb), 0.5);
+  text-shadow: 0 0 5px rgba(var(--primary-color), 0.5);
 }
 .link-arrow {
   width: 12px;
