@@ -37,7 +37,9 @@
 
 > 优化后（待更新，网关性能应该是还可以，之前电脑状态好，测试能够几乎水平线稳定1000+）
 >
-> 注：限制 SkyWalking 采样率后性能有所提升，但这会导致出现 User -> service 的拓扑连线：
+> 注：限制 SkyWalking 采样率后性能有所提升，但这会导致出现 User -> service 的拓扑连线
+
+![1000](gateway.assets/1000.png)
 
 ![image-20260211191634913](gateway.assets/image-20260211191634913.png)
 
