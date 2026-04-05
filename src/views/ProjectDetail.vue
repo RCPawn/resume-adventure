@@ -2,31 +2,23 @@
   <div class="page-container">
     <div class="hero-section" :style="{ backgroundImage: `url(${currentProject?.cover || defaultCover})` }">
       <div class="hero-overlay"></div>
-
       <div class="hero-nav">
         <GoBackButton class="hero-back-btn" />
       </div>
-
       <div class="hero-content">
         <h1 class="project-title">{{ currentProject?.title }}</h1>
         <p class="project-desc">{{ currentProject?.description }}</p>
-
         <div class="meta-tags">
           <span class="meta-tag date">📅 {{ currentProject?.date || '2025' }}</span>
           <span v-for="tag in currentProject?.tags" :key="tag" class="meta-tag tech">⚡{{ tag }}</span>
-
           <span class="meta-tag views">
             <svg class="stat-icon" viewBox="0 0 24 24" width="20" height="20">
-              <path
-                  fill="currentColor"
-                  d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
-              />
+              <path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
             </svg>
             <span class="views-text">
-              <span id="busuanzi_page_pv">--</span>
+              <span id="busuanzi_page_pv">--</span> 次
             </span>
           </span>
-
           <a v-if="currentProject?.repoLink" :href="currentProject.repoLink" target="_blank" class="meta-tag link" rel="noreferrer">
             🔗 源码仓库
           </a>
@@ -39,11 +31,7 @@
         <div class="spinner"></div>
         加载精彩内容中...
       </div>
-
-      <div v-else-if="error" class="error-state">
-        😕 {{ error }}
-      </div>
-
+      <div v-else-if="error" class="error-state">😕 {{ error }}</div>
       <div v-else class="content-flex">
         <aside v-if="toc.length" class="toc" :class="{ 'toc-hidden': isTocHidden }">
           <div class="toc-header" @click="toggleToc" role="button" tabindex="0" @keydown.enter="toggleToc">
@@ -56,12 +44,11 @@
             <button class="toc-toggle" aria-label="切换目录">
               <span class="chev" :class="{ open: !isTocHidden }">
                 <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
-                  <path fill="currentColor" d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+                  <path fill="currentColor" d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/>
                 </svg>
               </span>
             </button>
           </div>
-
           <nav class="toc-list" v-if="!isTocHidden">
             <ul>
               <li v-for="item in toc" :key="item.slug" :class="`level-${item.level}`">
@@ -70,7 +57,6 @@
             </ul>
           </nav>
         </aside>
-
         <main class="markdown-column">
           <div class="markdown-wrapper">
             <div class="markdown-body" v-html="htmlContent"></div>
@@ -90,11 +76,9 @@ import GoBackButton from '@/components/GoBackButton.vue'
 import 'github-markdown-css/github-markdown.css'
 
 const route = useRoute()
-
 const defaultCover = 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop'
 
 const md = new MarkdownIt({ html: true, linkify: true, typographer: true })
-
 const defaultHeadingOpen = md.renderer.rules.heading_open || function (tokens, idx, options, env, self) {
   return self.renderToken(tokens, idx, options)
 }
@@ -104,13 +88,10 @@ const defaultImageRender = md.renderer.rules.image || function (tokens, idx, opt
 
 const slugify = (str) => {
   if (!str) return ''
-  return String(str)
-      .trim()
-      .toLowerCase()
+  return String(str).trim().toLowerCase()
       .replace(/[\s+~\/]+/g, '-')
       .replace(/[^\w\-一-龥\u4E00-\u9FFF]+/g, '')
-      .replace(/-+/g, '-')
-      .replace(/(^-|-$)/g, '')
+      .replace(/-+/g, '-').replace(/(^-|-$)/g, '')
 }
 
 md.renderer.rules.heading_open = function (tokens, idx, options, env, self) {
@@ -129,9 +110,8 @@ md.renderer.rules.image = function (tokens, idx, options, env, self) {
   const srcIndex = token.attrIndex('src')
   if (srcIndex >= 0) {
     let src = token.attrs[srcIndex][1] || ''
-    if (!src.startsWith('http') && !src.startsWith('/') && !src.startsWith('data:')) {
+    if (!src.startsWith('http') && !src.startsWith('/') && !src.startsWith('data:'))
       token.attrs[srcIndex][1] = `/projects/${src}`
-    }
   }
   token.attrPush(['loading', 'lazy'])
   token.attrJoin('class', 'md-img')
@@ -143,7 +123,6 @@ const error = ref('')
 const htmlContent = ref('')
 const toc = ref([])
 const isTocHidden = ref(false)
-
 const currentProject = computed(() => projectsData.find(p => p.id === route.params.id))
 
 const scrollToId = (id) => {
@@ -153,7 +132,6 @@ const scrollToId = (id) => {
     if (window.innerWidth <= 768) isTocHidden.value = true
   }
 }
-
 const toggleToc = () => { isTocHidden.value = !isTocHidden.value }
 
 const fetchMarkdown = async () => {
@@ -188,37 +166,62 @@ const fetchMarkdown = async () => {
   }
 }
 
-// ✅ 核心修复：每次进入页面都重新插入脚本，让不蒜子自动重新扫描 DOM
+// ✅ 不蒜子统计 —— 与 FooterSection 完全一致的实现
+// =============================================
+
 const BUSUANZI_SCRIPT_ID = 'busuanzi-script'
 const BUSUANZI_SCRIPT_URL = 'https://cdn.busuanzi.cc/busuanzi/3.6.9/busuanzi.min.js'
+const BUSUANZI_FETCH_URL = '//busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback'
 
-const reinitBusuanzi = () => {
-  // 1. 清除不蒜子在 window 上挂载的所有状态，防止旧数据干扰
-  delete window.bszCaller
-  delete window.bszTag
+const loadBusuanziScript = () => {
+  return new Promise((resolve) => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      resolve(false)
+      return
+    }
 
-  // 2. 移除旧脚本标签
-  const old = document.getElementById(BUSUANZI_SCRIPT_ID)
-  if (old) old.remove()
+    const existing = document.getElementById(BUSUANZI_SCRIPT_ID)
+    if (existing) {
+      resolve(true)
+      return
+    }
 
-  // 3. 重置元素显示，避免残留旧值
-  const pvEl = document.getElementById('busuanzi_page_pv')
-  if (pvEl) pvEl.textContent = '--'
+    const script = document.createElement('script')
+    script.id = BUSUANZI_SCRIPT_ID
+    script.src = BUSUANZI_SCRIPT_URL
+    script.async = true
 
-  // 4. 重新插入脚本，不蒜子加载后会自动扫描页面中所有 busuanzi_ ID 元素并填充数据
-  const script = document.createElement('script')
-  script.id = BUSUANZI_SCRIPT_ID
-  script.src = BUSUANZI_SCRIPT_URL
-  script.async = true
-  document.body.appendChild(script)
+    script.onload = () => resolve(true)
+    script.onerror = () => resolve(false)
+
+    document.body.appendChild(script)
+  })
+}
+
+const refreshBusuanzi = async () => {
+  await nextTick()
+
+  window.setTimeout(() => {
+    try {
+      if (window.bszCaller && typeof window.bszCaller.fetch === 'function') {
+        window.bszCaller.fetch(BUSUANZI_FETCH_URL, () => {})
+      }
+    } catch (err) {
+      // 忽略错误
+    }
+  }, 180)
 }
 
 onMounted(async () => {
   if (window.innerWidth <= 768) isTocHidden.value = true
+
   await fetchMarkdown()
   await nextTick()
-  // 等 DOM 完全渲染后再初始化，确保 busuanzi_page_pv 元素已存在
-  reinitBusuanzi()
+
+  const scriptLoaded = await loadBusuanziScript().catch(() => false)
+  if (!scriptLoaded) return
+
+  refreshBusuanzi()
 })
 
 watch(
@@ -226,7 +229,7 @@ watch(
     async () => {
       await fetchMarkdown()
       await nextTick()
-      reinitBusuanzi()
+      refreshBusuanzi()
     }
 )
 </script>

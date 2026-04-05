@@ -91,7 +91,7 @@
             />
           </svg>
           <span class="stat-label">总访问量</span>
-          <span id="busuanzi_site_pv" class="stat-value" aria-live="polite">{{ sitePvText }}</span>
+          <span id="busuanzi_site_pv" class="stat-value" aria-live="polite">{{ sitePvText }} 次</span>
         </div>
 
         <div class="stat-card">
@@ -102,7 +102,7 @@
             />
           </svg>
           <span class="stat-label">今日访客</span>
-          <span id="busuanzi_today_uv" class="stat-value" aria-live="polite">{{ todayUvText }}</span>
+          <span id="busuanzi_today_uv" class="stat-value" aria-live="polite">{{ todayUvText }} 人</span>
         </div>
 
         <div class="stat-card">
