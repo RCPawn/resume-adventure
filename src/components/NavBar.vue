@@ -154,7 +154,7 @@ onMounted(() => {
   if (savedLanguage) {
     locale.value = savedLanguage
   }
-  document.querySelectorAll('.napkin-nav-link:not(router-link)').forEach(link => {
+  document.querySelectorAll('.napkin-nav-link:not([onclick])').forEach(link => {
     link.addEventListener('click', handleNavLinkClick)
   })
 })
@@ -369,5 +369,40 @@ onMounted(() => {
   .napkin-nav-links { display: none; }
   .napkin-control-btn span { display: none; }
   .napkin-control-btn { padding: 0 8px; width: 36px; } /* 移动端只留图标，方形按钮 */
+}
+
+/* 大屏优化（27寸及以上） */
+@media (min-width: 1600px) {
+  .napkin-nav {
+    padding: 1rem 3rem;
+  }
+  
+  .napkin-logo {
+    font-size: 1.7rem;
+  }
+  
+  .napkin-nav-links {
+    gap: 3rem;
+  }
+  
+  .napkin-nav-link {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  
+  .napkin-controls {
+    gap: 1rem;
+  }
+  
+  .napkin-control-btn {
+    height: 40px;
+    padding: 0 16px;
+    font-size: 0.95rem;
+  }
+  
+  .napkin-icon {
+    width: 20px;
+    height: 20px;
+  }
 }
 </style>

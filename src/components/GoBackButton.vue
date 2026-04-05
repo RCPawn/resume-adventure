@@ -98,13 +98,4 @@ html.dark .back-arrow:active {
     transform: scale(1.08);
   }
 }
-
-/* 可选：添加全局CSS变量（如果你的项目中没有primary-color-rgb） */
-:root {
-  --primary-color-rgb: 59, 130, 246; /* 对应#3b82f6的RGB值 */
-}
-
-html.dark {
-  --primary-color-rgb: 96, 165, 250; /* 对应#60a5fa的RGB值 */
-}
 </style>

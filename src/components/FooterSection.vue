@@ -8,12 +8,20 @@
 
         <div class="social-actions">
           <div class="social-links">
-            <a v-for="(social, index) in tm('footer.socialLinks')" :key="index" :href="social.url" class="social-btn" target="_blank">
+            <a v-for="(social, index) in tm('footer.socialLinks')" :key="index" :href="social.url" class="social-btn" target="_blank" :title="social.icon">
               <i :class="social.icon"></i>
             </a>
           </div>
           <button class="email-btn" @click="copyEmail" :class="{ 'copied': emailCopied }">
-            <span class="icon">✉️</span>
+            <span class="btn-icon">
+              <svg v-if="!emailCopied" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+              <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </span>
             {{ emailCopied ? t('footer.emailCopied') : t('footer.copyEmail') }}
           </button>
         </div>
@@ -73,67 +81,60 @@ const copyEmail = () => {
 
 <style scoped>
 .footer-section {
-  padding: 4rem 2rem 1.5rem;
-  background-color: var(--nav-bg); /* 跟随主题 */
+  padding: 5rem 2rem 2rem;
+  background-color: var(--nav-bg);
   border-top: 1px solid var(--border-color);
   font-family: 'Inter', sans-serif;
   position: relative;
   overflow: hidden;
 }
 
+.footer-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+  opacity: 0.3;
+}
+
 .footer-container {
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1.2fr 1fr 0.8fr; /* 左中右比例 */
+  grid-template-columns: 1.2fr 1fr 1fr;
   gap: 4rem;
   margin-bottom: 3rem;
 }
 
 /* --- 左侧品牌区 --- */
 .brand-name {
-  font-size: 1.8rem;
+  font-size: 2rem;
   font-weight: 800;
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.6rem;
   color: var(--text-color);
   letter-spacing: -1px;
+  background: linear-gradient(135deg, var(--text-color), var(--primary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .brand-tagline {
   color: var(--secondary-color);
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   font-size: 1rem;
+  line-height: 1.6;
   max-width: 300px;
-}
-
-/* 状态胶囊 */
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
-  background: var(--btn-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 20px;
-  font-size: 0.85rem;
-  color: var(--text-color);
-  margin-bottom: 1.5rem;
-}
-
-.status-dot {
-  width: 8px;
-  height: 8px;
-  background-color: #10b981; /* 绿色在线状态 */
-  border-radius: 50%;
-  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
-  animation: pulse 2s infinite;
 }
 
 /* 社交与邮箱 */
 .social-actions {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.2rem;
 }
 
 .social-links {
@@ -142,82 +143,142 @@ const copyEmail = () => {
 }
 
 .social-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  background: var(--modal-bg);
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--modal-bg), var(--btn-bg));
   border: 1px solid var(--border-color);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--secondary-color);
-  transition: all 0.2s;
-  box-shadow: var(--hover-shadow);
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.social-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-color-light, var(--primary-color)));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.social-btn:hover::before {
+  opacity: 1;
 }
 
 .social-btn:hover {
+  color: white;
   border-color: var(--primary-color);
-  color: var(--primary-color);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(var(--primary-color-rgb, 96, 165, 250), 0.3);
+}
+
+.social-btn i {
+  position: relative;
+  z-index: 1;
+  font-size: 1.1rem;
 }
 
 .email-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 0 16px;
-  height: 40px;
-  border-radius: 8px;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 12px;
   border: 1px solid var(--border-color);
-  background: var(--modal-bg);
+  background: linear-gradient(135deg, var(--modal-bg), var(--btn-bg));
   color: var(--text-color);
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 0.9rem;
-  transition: all 0.2s;
-  box-shadow: var(--hover-shadow);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.email-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-color-light, var(--primary-color)));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.email-btn:hover::before {
+  opacity: 1;
 }
 
 .email-btn:hover {
-  background: var(--btn-bg);
+  color: white;
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(var(--primary-color-rgb, 96, 165, 250), 0.25);
+}
+
+.email-btn .btn-icon {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+}
+
+.email-btn span:not(.btn-icon) {
+  position: relative;
+  z-index: 1;
+}
+
+.email-btn.copied::before {
+  opacity: 1;
+  background: linear-gradient(135deg, #10b981, #059669);
 }
 
 .email-btn.copied {
-  background: #10b981;
   color: white;
   border-color: #10b981;
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
 }
 
 /* --- 中间技术栈区 --- */
 .footer-tech h3 {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
   color: var(--secondary-color);
-  margin-bottom: 1rem;
+  margin-bottom: 1.2rem;
+  font-weight: 600;
 }
 
 .tech-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
 }
 
 .tech-tag {
-  padding: 4px 10px;
+  padding: 6px 14px;
   background: var(--btn-bg);
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 0.85rem;
   color: var(--text-color);
-  border: 1px solid transparent;
-  transition: all 0.2s;
+  border: 1px solid var(--border-color);
+  transition: all 0.25s ease;
   cursor: default;
+  font-weight: 500;
 }
 
 .tech-tag:hover {
   border-color: var(--primary-color);
   color: var(--primary-color);
   background: var(--modal-bg);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(var(--primary-color-rgb, 96, 165, 250), 0.2);
 }
 
 /* --- 右侧导航区 --- */
@@ -229,7 +290,7 @@ const copyEmail = () => {
 .nav-group h4 {
   font-size: 0.95rem;
   font-weight: 600;
-  margin-bottom: 1rem;
+  margin-bottom: 1.2rem;
   color: var(--text-color);
 }
 
@@ -240,24 +301,41 @@ const copyEmail = () => {
 }
 
 .nav-group li {
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.8rem;
 }
 
 .nav-group a {
   text-decoration: none;
   color: var(--secondary-color);
   font-size: 0.9rem;
-  transition: color 0.2s;
+  transition: all 0.2s ease;
+  position: relative;
+  display: inline-block;
+}
+
+.nav-group a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--primary-color);
+  transition: width 0.3s ease;
 }
 
 .nav-group a:hover {
   color: var(--primary-color);
 }
 
+.nav-group a:hover::after {
+  width: 100%;
+}
+
 /* --- 底部版权 --- */
 .footer-bottom {
   border-top: 1px solid var(--border-color);
-  padding-top: 1.5rem;
+  padding-top: 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -277,12 +355,6 @@ const copyEmail = () => {
   display: inline-block;
 }
 
-@keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
-  70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-}
-
 @keyframes heartbeat {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.1); }
@@ -291,12 +363,12 @@ const copyEmail = () => {
 /* 响应式 */
 @media (max-width: 1024px) {
   .footer-container {
-    grid-template-columns: 1fr; /* 变成单列 */
+    grid-template-columns: 1fr;
     gap: 3rem;
     text-align: center;
   }
 
-  .brand-tagline, .status-badge {
+  .brand-tagline {
     margin-left: auto;
     margin-right: auto;
   }
@@ -316,6 +388,54 @@ const copyEmail = () => {
   .footer-bottom {
     flex-direction: column;
     text-align: center;
+  }
+}
+
+/* 大屏优化（27寸及以上） */
+@media (min-width: 1600px) {
+  .footer-section {
+    padding: 6rem 2rem 2.5rem;
+  }
+  
+  .footer-container {
+    max-width: 1400px;
+    gap: 5rem;
+  }
+  
+  .brand-name {
+    font-size: 2.2rem;
+  }
+  
+  .brand-tagline {
+    font-size: 1.1rem;
+    max-width: 350px;
+  }
+  
+  .social-btn {
+    width: 46px;
+    height: 46px;
+  }
+  
+  .email-btn {
+    padding: 12px 20px;
+    font-size: 0.95rem;
+  }
+  
+  .footer-tech h3 {
+    font-size: 0.95rem;
+  }
+  
+  .tech-tag {
+    font-size: 0.9rem;
+    padding: 7px 16px;
+  }
+  
+  .nav-group h4 {
+    font-size: 1rem;
+  }
+  
+  .nav-group a {
+    font-size: 0.95rem;
   }
 }
 </style>

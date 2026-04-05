@@ -527,6 +527,64 @@ onMounted(() => {
   .project-title { font-size: 2rem; }
 }
 
+/* 大屏优化（27寸及以上） */
+@media (min-width: 1600px) {
+  .content-container {
+    max-width: 1400px;
+  }
+  
+  .hero-section {
+    height: 65vh;
+  }
+  
+  .hero-content {
+    max-width: 1100px;
+    padding: 0 30px 80px 30px;
+  }
+  
+  .project-title {
+    font-size: 4rem;
+  }
+  
+  .project-desc {
+    font-size: 1.4rem;
+    max-width: 700px;
+  }
+  
+  .content-flex {
+    gap: 30px;
+  }
+  
+  .toc {
+    width: 280px;
+    flex: 0 0 280px;
+    padding: 16px;
+  }
+  
+  .markdown-wrapper {
+    padding: 60px;
+    border-radius: 28px;
+  }
+  
+  .markdown-body {
+    font-size: 1.1rem;
+  }
+  
+  :deep(.markdown-body h2) {
+    font-size: 2rem;
+  }
+  
+  :deep(.markdown-body p) {
+    font-size: 1.15rem;
+    line-height: 1.9;
+  }
+  
+  :deep(.markdown-body img) {
+    border-radius: 14px;
+    margin: 25px 0;
+  }
+}
+
 /* Loading & Error 保持原样 */
 .loading-state, .error-state {
   text-align: center;

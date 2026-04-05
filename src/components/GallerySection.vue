@@ -88,26 +88,39 @@ import {useI18n} from 'vue-i18n';
 
 const {t} = useI18n();
 
-// --- 数据准备：新增 id 用于语言包映射 ---
+// --- 数据准备：从展览、网关、技术亮点中精选 18 张截图 ---
 const rowOneItems = [
+  // 非遗展览项目
   {id: 'work0', imageUrl: "/images/works/数据大屏.png"},
   {id: 'work1', imageUrl: "/images/works/非遗展厅.png"},
   {id: 'work2', imageUrl: "/images/works/传承图谱.png"},
   {id: 'work3', imageUrl: "/images/works/展品详情.png"},
-  {id: 'work5', imageUrl: "/images/works/网关架构.png"},
-  {id: 'work4', imageUrl: "/images/works/路由矩阵.png"},
+  // 网关平台
+  {id: 'work4', imageUrl: "/images/works/网关控制台.png"},
+  {id: 'work5', imageUrl: "/images/works/流量防卫.png"},
   {id: 'work6', imageUrl: "/images/works/路由矩阵配置.png"},
-  {id: 'work7', imageUrl: "/images/works/流量防卫.png"},
-  {id: 'work8', imageUrl: "/images/works/流量防卫配置.png"},
-  {id: 'work9', imageUrl: "/images/works/审计日志.png"},
-  {id: 'work10', imageUrl: "/images/works/异步日志.png"},
-  {id: 'work11', imageUrl: "/images/works/甜甜圈.png"},
+  {id: 'work7', imageUrl: "/images/works/审计日志.png"},
+  // 更多亮点
+  {id: 'work8', imageUrl: "/images/works/甜甜圈.png"},
 ];
 
-const rowTwoItems = [...rowOneItems].reverse();
+const rowTwoItems = [
+  // 网关平台
+  {id: 'work10', imageUrl: "/images/works/网关架构.png"},
+  {id: 'work11', imageUrl: "/images/works/流量防卫配置.png"},
+  {id: 'work12', imageUrl: "/images/works/路由矩阵.png"},
+  {id: 'work13', imageUrl: "/images/works/异步日志.png"},
+  // 展览项目补充
+  {id: 'work14', imageUrl: "/projects/exhibition.assets/image-20260405002226145.png"},
+  {id: 'work15', imageUrl: "/projects/exhibition.assets/image-20260405002328381.png"},
+  {id: 'work16', imageUrl: "/projects/gateway.assets/image-20260217132934258.png"},
+  {id: 'work17', imageUrl: "/projects/exhibition.assets/image-20260405001815342.png"},
+];
+
+const rowTwoReversed = [...rowTwoItems].reverse();
 
 const rowOneDuplicated = computed(() => [...rowOneItems, ...rowOneItems, ...rowOneItems]);
-const rowTwoDuplicated = computed(() => [...rowTwoItems, ...rowTwoItems, ...rowTwoItems]);
+const rowTwoDuplicated = computed(() => [...rowTwoReversed, ...rowTwoReversed, ...rowTwoReversed]);
 
 // --- 滚动逻辑 ---
 const rowOneScrollPosition = ref(0);
@@ -160,13 +173,21 @@ const closeLightbox = () => {
   document.body.style.overflow = '';
 };
 
+const handleEscapeKey = (e) => {
+  if (e.key === 'Escape' && isLightboxOpen.value) {
+    closeLightbox();
+  }
+};
+
 onMounted(() => {
   rowTwoScrollPosition.value = -rowTwoSingleSetWidth.value;
   animationFrameId = requestAnimationFrame(animate);
+  document.addEventListener('keydown', handleEscapeKey);
 });
 
 onUnmounted(() => {
   if (animationFrameId) cancelAnimationFrame(animationFrameId);
+  document.removeEventListener('keydown', handleEscapeKey);
 });
 </script>
 
@@ -180,7 +201,7 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 4rem 0;
+  padding: 120px 0 100px 0;
   overflow: hidden;
 }
 
@@ -194,7 +215,7 @@ onUnmounted(() => {
    ================================= */
 .gallery-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 4rem;
   padding: 0 1rem;
 }
 
@@ -467,6 +488,37 @@ onUnmounted(() => {
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+}
+
+/* 大屏优化（27寸及以上） */
+@media (min-width: 1600px) {
+  .gallery-title {
+    font-size: 2.5rem;
+  }
+  
+  .gallery-subtitle {
+    font-size: 1.1rem;
+    max-width: 580px;
+  }
+  
+  .row-one .polaroid-style {
+    width: 340px;
+    height: 270px;
+  }
+  
+  .row-two .film-style {
+    width: 280px;
+    height: 190px;
+  }
+  
+  .scroll-container {
+    padding: 1.2rem 0;
+  }
+  
+  .row-one .polaroid-style,
+  .row-two .film-style {
+    margin-right: 25px;
   }
 }
 </style>

@@ -3,8 +3,8 @@
     <NavBar/>
     <Chatbot/>
     <HeroSection/>
-    <SkillsSection/>
     <ProjectsSection/>
+    <SkillsSection/>
     <ExperienceSection/>
     <FooterSection/>
   </div>

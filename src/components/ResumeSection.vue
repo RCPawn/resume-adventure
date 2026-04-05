@@ -513,4 +513,32 @@ ul li::before {
     display: none; /* 在移动视图下隐藏此按钮，因为已经是堆叠布局 */
   }
 }
+
+/* 大屏优化（27寸及以上） */
+@media (min-width: 1600px) {
+  .resume-container {
+    max-width: 1400px;
+  }
+  
+  .resume-sidebar {
+    width: 270px;
+  }
+  
+  .nav-item {
+    padding: 15px 26px;
+    font-size: 16px;
+  }
+  
+  .section-title {
+    font-size: 26px;
+  }
+  
+  .content-scrollable {
+    padding-right: 20px;
+  }
+  
+  .project-item {
+    padding: 22px;
+  }
+}
 </style>

@@ -19,16 +19,25 @@
 </template>
 
 <script setup>
-import {ref, reactive, onMounted} from 'vue';
+import {ref, reactive, onMounted, watch} from 'vue';
 import ChatbotButton from './ChatbotButton.vue';
 import ChatbotWindow from './ChatbotWindow.vue';
 
 const isOpen = ref(false);
 const isMinimized = ref(false);
 const userInput = ref('');
-const messages = ref([
-  {content: '你好！我是 rcpawn 的小助手，有什么可以帮你的吗？', type: 'ai'}
-]);
+const messages = ref(
+  (() => {
+    const saved = localStorage.getItem('chat_history');
+    return saved ? JSON.parse(saved) : [
+      {content: '你好！我是 rcpawn 的小助手，有什么可以帮你的吗？', type: 'ai'}
+    ];
+  })()
+);
+
+watch(messages, (newVal) => {
+  localStorage.setItem('chat_history', JSON.stringify(newVal));
+}, { deep: true });
 
 const dragState = reactive({
   isDragging: false,

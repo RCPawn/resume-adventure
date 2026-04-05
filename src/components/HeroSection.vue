@@ -192,4 +192,15 @@ const { t, tm } = useI18n();
   .model-area { justify-self: center; height: 45vh; }
   .sticky-note { right: 0; top: -40px; }
 }
+
+/* 大屏优化（27寸及以上） */
+@media (min-width: 1600px) {
+  .container-fluid { max-width: 1600px; }
+  .layout-grid { gap: 8rem; }
+  .highlight-name { font-size: 6.8rem; }
+  .greeting { font-size: 2.3rem; }
+  .sub-heading { font-size: 1.3rem; }
+  .skill-item { font-size: 1.4rem; }
+  .model-area { height: 70vh; }
+}
 </style>

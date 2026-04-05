@@ -174,7 +174,7 @@ onUnmounted(() => clearInterval(typeTimer));
 
 <style scoped>
 .skills-wrapper {
-  padding: 50px 0;
+  padding: 100px 0;
   overflow: hidden;
 }
 
@@ -402,5 +402,18 @@ onUnmounted(() => clearInterval(typeTimer));
   .terminal-layout { grid-template-columns: 1fr; height: auto; }
   .side-modules { flex-direction: row; overflow-x: auto; padding-bottom: 10px; }
   .module-card { min-width: 160px; transform: none !important; }
+}
+
+/* 大屏优化（27寸及以上） */
+@media (min-width: 1600px) {
+  .cyber-container { max-width: 1300px; margin-left: calc(50% - 630px); }
+  .terminal-layout { height: 580px; }
+  .glitch-title { font-size: 2.1rem; }
+  .module-card { height: 80px; }
+  .mod-name { font-size: 1.05rem; }
+  .hologram-display { padding: 40px; }
+  .typewriter { font-size: 1.15rem; }
+  .skills-matrix { gap: 22px; }
+  .skill-chip { padding: 18px; }
 }
 </style>

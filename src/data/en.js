@@ -247,18 +247,29 @@ export default {
         subtitle: 'Snapshots of implemented modules and core system functionalities.',
         viewDetail: 'View Details',
         items: {
+            // Row 1: Heritage Exhibition
             work0: { title: 'Data Dashboard', desc: 'Real-time monitoring panel built with Vue3 and ECharts to visualize multi-dimensional business metrics.' },
             work1: { title: 'Heritage Digital Hall', desc: 'Frontend development for a cultural exhibition interface, featuring responsive layouts and interactive content.' },
             work2: { title: 'Knowledge Graph', desc: 'Visualization of complex data relationships using force-directed graphs with node interaction support.' },
             work3: { title: 'Exhibit Details', desc: 'High-fidelity UI implementation of artifact detail pages with cross-device optimization.' },
+            // Gateway Platform
             work4: { title: 'Gateway Console', desc: 'Admin interface for managing microservices gateway, including route forwarding and status monitoring.' },
-            work5: { title: 'Gateway Architecture', desc: 'Logical diagram illustrating the request lifecycle: interception, authentication, and routing.' },
+            work5: { title: 'Traffic Defense Monitor', desc: 'Real-time visualization of QPS, concurrency, and error rates with threshold alerting.' },
             work6: { title: 'Route Matrix Config', desc: 'Module for dynamic route configuration, supporting environment-specific mapping and hot deployment.' },
-            work7: { title: 'Traffic Defense Monitor', desc: 'Real-time visualization of QPS, concurrency, and error rates with threshold alerting.' },
-            work8: { title: 'Traffic Policy Config', desc: 'Management of rate-limiting, whitelisting, and circuit-breaking policies to ensure system stability.' },
-            work9: { title: 'Audit Logs', desc: 'Operation auditing system featuring multi-criteria filtering, traceability, and data export.' },
-            work10: { title: 'Async Logging System', desc: 'Asynchronous log collection and storage module designed to minimize main thread latency.' },
-            work11: { title: '3D Render Practice', desc: '3D scene rendering practice covering lighting, material textures, and geometric modeling.' }
+            work7: { title: 'Audit Logs', desc: 'Operation auditing system featuring multi-criteria filtering, traceability, and data export.' },
+            // More Highlights
+            work8: { title: '3D Render Practice', desc: '3D scene rendering practice covering lighting, material textures, and geometric modeling.' },
+            
+            // Row 2: Additional Images
+            work10: { title: 'Gateway Architecture', desc: 'Logical diagram illustrating the request lifecycle: interception, authentication, and routing.' },
+            work11: { title: 'Security Policy Config', desc: 'Management of rate-limiting, whitelisting, and circuit-breaking policies to ensure system stability.' },
+            work12: { title: 'Route Topology', desc: 'Service routing topology showing the complete request path from client through gateway to downstream services.' },
+            work13: { title: 'Async Logging System', desc: 'Asynchronous log collection and storage module designed to minimize main thread latency.' },
+            // Exhibition Extras
+            work14: { title: 'Waterfall Gallery', desc: 'CSS Columns-based waterfall layout for heritage photography with immersive lightbox viewing mode.' },
+            work15: { title: 'Audio Archive', desc: 'Integration of audio player with 3D models for an immersive audio-visual heritage experience.' },
+            work16: { title: 'Live Traffic Waveform', desc: 'ECharts dynamic rendering of gateway QPS, error rates, and response time curves for real-time health monitoring.' },
+            work17: { title: 'Portal Homepage', desc: 'Minimalist portal design showcasing Bai ethnic cultural essence, guiding users into an immersive exploration journey.' },
         }
     },
 

@@ -70,9 +70,8 @@ const injectGlobalCursor = () => {
 
   // 👉 只在这里加了一句：输入框/编辑区用原生 I 光标
   styleEl.innerHTML = `
-    *:not(input):not(textarea):not([contenteditable]) {
+    *:not(input):not(textarea):not([contenteditable]):not(.chat-window):not(.chat-window *) {
       cursor: url('${url}') 3 3, auto !important;
-      cursor: url('${url}') 3 3, pointer !important;
     }
     input, textarea, [contenteditable] {
       cursor: text !important;
@@ -206,7 +205,7 @@ onUnmounted(() => {
   width: 100vw;
   height: 100vh;
   pointer-events: none;
-  z-index: 999999;
+  z-index: 9999;
   user-select: none;
 }
 

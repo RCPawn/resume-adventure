@@ -131,7 +131,7 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
 
 <style scoped>
 .projects-wrapper {
-  padding: 100px 0;
+  padding: 120px 0 100px 0;
 }
 
 .cyber-container {
@@ -357,5 +357,16 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
   .sticky-content { position: relative; top: 0; margin-bottom: 40px; }
   .project-node { transform: none; }
   .project-node:hover { transform: translateY(-5px) rotateX(0); }
+}
+
+/* 大屏优化（27寸及以上） */
+@media (min-width: 1600px) {
+  .cyber-container { max-width: 1300px; margin-left: calc(50% - 630px); }
+  .project-node { min-height: 540px; }
+  .main-title { font-size: 2.5rem; }
+  .subtitle { font-size: 1.05rem; }
+  .node-title { font-size: 1.8rem; }
+  .node-desc { font-size: 1.05rem; max-width: 95%; }
+  .node-content-glass { padding: 48px; }
 }
 </style>
