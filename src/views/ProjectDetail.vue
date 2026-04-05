@@ -23,7 +23,7 @@
               />
             </svg>
             <span class="views-text">
-              <span id="busuanzi_page_pv">加载中...</span>
+              <span id="busuanzi_page_pv">--</span>
             </span>
           </span>
 
@@ -93,16 +93,11 @@ const route = useRoute()
 
 const defaultCover = 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop'
 
-const md = new MarkdownIt({
-  html: true,
-  linkify: true,
-  typographer: true
-})
+const md = new MarkdownIt({ html: true, linkify: true, typographer: true })
 
 const defaultHeadingOpen = md.renderer.rules.heading_open || function (tokens, idx, options, env, self) {
   return self.renderToken(tokens, idx, options)
 }
-
 const defaultImageRender = md.renderer.rules.image || function (tokens, idx, options, env, self) {
   return self.renderToken(tokens, idx, options)
 }
@@ -121,29 +116,23 @@ const slugify = (str) => {
 md.renderer.rules.heading_open = function (tokens, idx, options, env, self) {
   const next = tokens[idx + 1]
   let title = ''
-  if (next && next.type === 'inline') {
-    title = next.content
-  }
-
+  if (next && next.type === 'inline') title = next.content
   const id = slugify(title || `heading-${idx}`)
   const existing = tokens[idx].attrIndex && tokens[idx].attrIndex('id')
   if (existing === -1) tokens[idx].attrPush(['id', id])
   else tokens[idx].attrs[existing][1] = id
-
   return defaultHeadingOpen(tokens, idx, options, env, self)
 }
 
 md.renderer.rules.image = function (tokens, idx, options, env, self) {
   const token = tokens[idx]
   const srcIndex = token.attrIndex('src')
-
   if (srcIndex >= 0) {
     let src = token.attrs[srcIndex][1] || ''
     if (!src.startsWith('http') && !src.startsWith('/') && !src.startsWith('data:')) {
       token.attrs[srcIndex][1] = `/projects/${src}`
     }
   }
-
   token.attrPush(['loading', 'lazy'])
   token.attrJoin('class', 'md-img')
   return defaultImageRender(tokens, idx, options, env, self)
@@ -152,13 +141,10 @@ md.renderer.rules.image = function (tokens, idx, options, env, self) {
 const loading = ref(true)
 const error = ref('')
 const htmlContent = ref('')
-
-const currentProject = computed(() => {
-  return projectsData.find(p => p.id === route.params.id)
-})
-
 const toc = ref([])
 const isTocHidden = ref(false)
+
+const currentProject = computed(() => projectsData.find(p => p.id === route.params.id))
 
 const scrollToId = (id) => {
   const el = document.getElementById(id)
@@ -168,28 +154,21 @@ const scrollToId = (id) => {
   }
 }
 
-const toggleToc = () => {
-  isTocHidden.value = !isTocHidden.value
-}
+const toggleToc = () => { isTocHidden.value = !isTocHidden.value }
 
 const fetchMarkdown = async () => {
   loading.value = true
   error.value = ''
   toc.value = []
-
   try {
     if (!currentProject.value) throw new Error('未找到项目')
     const fileName = currentProject.value.mdFile
     if (!fileName) throw new Error('暂无内容')
-
     const response = await fetch(`/projects/${fileName}`)
     if (!response.ok) throw new Error('加载失败')
-
     const text = await response.text()
-
     const tokens = md.parse(text, {})
     const list = []
-
     for (let i = 0; i < tokens.length; i++) {
       const t = tokens[i]
       if (t.type === 'heading_open') {
@@ -197,13 +176,9 @@ const fetchMarkdown = async () => {
         const next = tokens[i + 1]
         const title = next && next.type === 'inline' ? next.content : ''
         const slug = slugify(title || `heading-${i}`)
-
-        if (level >= 2 && level <= 4) {
-          list.push({ level, title, slug })
-        }
+        if (level >= 2 && level <= 4) list.push({ level, title, slug })
       }
     }
-
     toc.value = list
     htmlContent.value = md.render(text)
   } catch (err) {
@@ -213,74 +188,37 @@ const fetchMarkdown = async () => {
   }
 }
 
+// ✅ 核心修复：每次进入页面都重新插入脚本，让不蒜子自动重新扫描 DOM
 const BUSUANZI_SCRIPT_ID = 'busuanzi-script'
 const BUSUANZI_SCRIPT_URL = 'https://cdn.busuanzi.cc/busuanzi/3.6.9/busuanzi.min.js'
-let busuanziReady = false
 
-const loadBusuanziScript = () => {
-  return new Promise((resolve) => {
-    if (window.bszCaller) {
-      busuanziReady = true
-      resolve(true)
-      return
-    }
+const reinitBusuanzi = () => {
+  // 1. 清除不蒜子在 window 上挂载的所有状态，防止旧数据干扰
+  delete window.bszCaller
+  delete window.bszTag
 
-    const existing = document.getElementById(BUSUANZI_SCRIPT_ID)
-    if (existing) {
-      // 脚本元素已存在但 bszCaller 还未就绪，等待轮询
-      const check = setInterval(() => {
-        if (window.bszCaller) {
-          clearInterval(check)
-          busuanziReady = true
-          resolve(true)
-        }
-      }, 100)
-      return
-    }
+  // 2. 移除旧脚本标签
+  const old = document.getElementById(BUSUANZI_SCRIPT_ID)
+  if (old) old.remove()
 
-    const script = document.createElement('script')
-    script.id = BUSUANZI_SCRIPT_ID
-    script.src = BUSUANZI_SCRIPT_URL
-    script.async = true
-    script.onload = () => {
-      busuanziReady = true
-      resolve(true)
-    }
-    script.onerror = () => resolve(false)
+  // 3. 重置元素显示，避免残留旧值
+  const pvEl = document.getElementById('busuanzi_page_pv')
+  if (pvEl) pvEl.textContent = '--'
 
-    document.body.appendChild(script)
-  })
-}
-
-const refreshBusuanziStats = async () => {
-  console.log('[详情页] refreshBusuanziStats 开始执行')
-  
-  await loadBusuanziScript()
-  console.log('[详情页] 脚本加载后 bszCaller 是否存在:', !!window.bszCaller)
-  
-  await nextTick()
-  
-  setTimeout(() => {
-    const pvEl = document.getElementById('busuanzi_page_pv')
-    console.log('[详情页] 查找 busuanzi_page_pv 元素:', pvEl)
-    
-    if (window.bszCaller && typeof window.bszCaller.fetch === 'function') {
-      console.log('[详情页] 调用 bszCaller.fetch')
-      window.bszCaller.fetch('//busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback', () => {
-        console.log('[详情页] bszCaller.fetch 回调执行成功')
-        console.log('[详情页] 当前 busuanzi_page_pv 的值:', pvEl?.textContent)
-      })
-    } else {
-      console.warn('[详情页] bszCaller 不可用，统计功能将无法工作')
-    }
-  }, 500)
+  // 4. 重新插入脚本，不蒜子加载后会自动扫描页面中所有 busuanzi_ ID 元素并填充数据
+  const script = document.createElement('script')
+  script.id = BUSUANZI_SCRIPT_ID
+  script.src = BUSUANZI_SCRIPT_URL
+  script.async = true
+  document.body.appendChild(script)
 }
 
 onMounted(async () => {
   if (window.innerWidth <= 768) isTocHidden.value = true
   await fetchMarkdown()
   await nextTick()
-  refreshBusuanziStats()
+  // 等 DOM 完全渲染后再初始化，确保 busuanzi_page_pv 元素已存在
+  reinitBusuanzi()
 })
 
 watch(
@@ -288,7 +226,7 @@ watch(
     async () => {
       await fetchMarkdown()
       await nextTick()
-      refreshBusuanziStats()
+      reinitBusuanzi()
     }
 )
 </script>

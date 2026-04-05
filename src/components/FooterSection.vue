@@ -133,8 +133,8 @@ const { t, tm } = useI18n()
 const route = useRoute()
 
 const emailCopied = ref(false)
-const sitePvText = ref('加载中...')
-const todayUvText = ref('加载中...')
+const sitePvText = ref('--')
+const todayUvText = ref('--')
 const techStack = ['Vue3', 'Vite', 'I18n', 'Reveal.js', 'Markdown-it', '@google/model-viewer']
 
 const isExternal = (url) => /^https?:\/\//i.test(url)
