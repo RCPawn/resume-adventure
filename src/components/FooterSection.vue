@@ -1,24 +1,53 @@
 <template>
   <footer id="footer" class="footer-section">
     <div class="footer-container">
-
       <div class="footer-brand">
         <h2 class="brand-name">{{ t('footer.appName') }}</h2>
         <p class="brand-tagline">{{ t('footer.tagline') }}</p>
 
         <div class="social-actions">
           <div class="social-links">
-            <a v-for="(social, index) in tm('footer.socialLinks')" :key="index" :href="social.url" class="social-btn" target="_blank" :title="social.icon">
+            <a
+                v-for="(social, index) in tm('footer.socialLinks')"
+                :key="index"
+                :href="social.url"
+                class="social-btn"
+                target="_blank"
+                :title="social.icon"
+                rel="noreferrer"
+            >
               <i :class="social.icon"></i>
             </a>
           </div>
-          <button class="email-btn" @click="copyEmail" :class="{ 'copied': emailCopied }">
+
+          <button
+              class="email-btn"
+              @click="copyEmail"
+              :class="{ copied: emailCopied }"
+              :aria-label="emailCopied ? '邮箱已复制' : '复制邮箱'"
+          >
             <span class="btn-icon">
-              <svg v-if="!emailCopied" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                  v-if="!emailCopied"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+              >
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                 <polyline points="22,6 12,13 2,6"></polyline>
               </svg>
-              <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                  v-else
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+              >
                 <polyline points="20 6 9 17 4 12"></polyline>
               </svg>
             </span>
@@ -39,7 +68,7 @@
           <h4>{{ group.title }}</h4>
           <ul>
             <li v-for="(link, linkIndex) in group.links" :key="linkIndex">
-              <a :href="link.url" :target="isExternal(link.url) ? '_blank' : '_self'">
+              <a :href="link.url" :target="isExternal(link.url) ? '_blank' : '_self'" rel="noreferrer">
                 {{ link.text }}
               </a>
             </li>
@@ -52,29 +81,42 @@
       <p class="copyright">
         {{ t('footer.copyright', { year: new Date().getFullYear() }) }}
       </p>
+
       <div class="site-stats">
         <div class="stat-card">
           <svg class="stat-icon" viewBox="0 0 24 24" width="20" height="20">
-            <path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+            <path
+                fill="currentColor"
+                d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+            />
           </svg>
           <span class="stat-label">总访问量</span>
-          <span id="busuanzi_value_site_pv" class="stat-value">0</span>
+          <span id="busuanzi_site_pv" class="stat-value" aria-live="polite">{{ sitePvText }}</span>
         </div>
+
         <div class="stat-card">
           <svg class="stat-icon" viewBox="0 0 24 24" width="20" height="20">
-            <path fill="currentColor" d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+            <path
+                fill="currentColor"
+                d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"
+            />
           </svg>
           <span class="stat-label">今日访客</span>
-          <span id="busuanzi_value_today_uv" class="stat-value">0</span>
+          <span id="busuanzi_today_uv" class="stat-value" aria-live="polite">{{ todayUvText }}</span>
         </div>
+
         <div class="stat-card">
           <svg class="stat-icon" viewBox="0 0 24 24" width="20" height="20">
-            <path fill="currentColor" d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/>
+            <path
+                fill="currentColor"
+                d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"
+            />
           </svg>
           <span class="stat-label">已运行</span>
           <span class="stat-value">{{ runningDays }} 天</span>
         </div>
       </div>
+
       <p class="made-with">
         {{ t('footer.madeWith') }} <span class="heart">❤</span>
       </p>
@@ -83,29 +125,221 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-const { t, tm } = useI18n();
-const emailCopied = ref(false);
-const isExternal = (url) => url.startsWith('http');
+import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+
+const { t, tm } = useI18n()
+const route = useRoute()
+
+const emailCopied = ref(false)
+const sitePvText = ref('加载中...')
+const todayUvText = ref('加载中...')
 const techStack = ['Vue3', 'Vite', 'I18n', 'Reveal.js', 'Markdown-it', '@google/model-viewer']
 
-// 计算博客运行天数（从 2025-02-07 22:55 开始）
-const startDate = new Date('2025-02-07T22:55:00');
-const runningDays = computed(() => {
-  const now = new Date();
-  const diff = now - startDate;
-  return Math.floor(diff / (1000 * 60 * 60 * 24));
-});
+const isExternal = (url) => /^https?:\/\//i.test(url)
 
-// 复制邮箱功能
-const copyEmail = () => {
-  const email = 'shangxi0275@163.com';
-  navigator.clipboard.writeText(email).then(() => {
-    emailCopied.value = true;
-    setTimeout(() => { emailCopied.value = false; }, 2000);
-  });
-};
+const startDate = new Date('2025-02-07T22:55:00')
+const runningDays = computed(() => {
+  const now = new Date()
+  const diff = now - startDate
+  return Math.floor(diff / (1000 * 60 * 60 * 24))
+})
+
+const copyEmail = async () => {
+  const email = 'shangxi0275@163.com'
+  try {
+    await navigator.clipboard.writeText(email)
+    emailCopied.value = true
+    setTimeout(() => {
+      emailCopied.value = false
+    }, 2000)
+  } catch (err) {
+    console.error('复制邮箱失败:', err)
+  }
+}
+
+const BUSUANZI_SCRIPT_ID = 'busuanzi-script'
+const BUSUANZI_SCRIPT_URL = 'https://cdn.busuanzi.cc/busuanzi/3.6.9/busuanzi.min.js'
+const BUSUANZI_FETCH_URL = '//busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback'
+const CACHE_KEY = 'footer_busuanzi_cache_v1'
+const REFRESH_INTERVAL = 60000
+
+let refreshTimer = null
+
+const readCache = () => {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY)
+    return raw ? JSON.parse(raw) : null
+  } catch {
+    return null
+  }
+}
+
+const saveCache = (payload) => {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(payload))
+  } catch {
+    // 忽略缓存写入失败
+  }
+}
+
+const isValidNumberText = (text) => {
+  return /^\d+$/.test(String(text).trim()) && String(text).trim() !== '0'
+}
+
+const getCurrentStatsFromDom = () => {
+  const sitePvEl = document.getElementById('busuanzi_site_pv')
+  const todayUvEl = document.getElementById('busuanzi_today_uv')
+
+  return {
+    sitePv: sitePvEl?.textContent?.trim() || '',
+    todayUv: todayUvEl?.textContent?.trim() || ''
+  }
+}
+
+const applyStatsToDom = (stats) => {
+  const sitePvEl = document.getElementById('busuanzi_site_pv')
+  const todayUvEl = document.getElementById('busuanzi_today_uv')
+
+  if (sitePvEl && stats.sitePv) sitePvEl.textContent = stats.sitePv
+  if (todayUvEl && stats.todayUv) todayUvEl.textContent = stats.todayUv
+
+  if (stats.sitePv) sitePvText.value = stats.sitePv
+  if (stats.todayUv) todayUvText.value = stats.todayUv
+}
+
+const hydrateFromCache = () => {
+  const cache = readCache()
+  if (cache) {
+    if (cache.sitePv) sitePvText.value = cache.sitePv
+    if (cache.todayUv) todayUvText.value = cache.todayUv
+    // 先把缓存值同步到 DOM，避免路由切换后短暂出现 0
+    applyStatsToDom(cache)
+  }
+}
+
+const loadBusuanziScript = () => {
+  return new Promise((resolve, reject) => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      resolve(false)
+      return
+    }
+
+    const existing = document.getElementById(BUSUANZI_SCRIPT_ID)
+    if (existing) {
+      resolve(true)
+      return
+    }
+
+    const script = document.createElement('script')
+    script.id = BUSUANZI_SCRIPT_ID
+    script.src = BUSUANZI_SCRIPT_URL
+    script.async = true
+
+    script.onload = () => resolve(true)
+    script.onerror = (err) => reject(err)
+
+    document.body.appendChild(script)
+  })
+}
+
+const refreshBusuanzi = async () => {
+  if (typeof window === 'undefined') return
+
+  await nextTick()
+
+  // 等 Footer DOM 稳定后再触发刷新，避免路由切换瞬间拿到空节点
+  window.setTimeout(() => {
+    try {
+      if (window.bszCaller && typeof window.bszCaller.fetch === 'function') {
+        window.bszCaller.fetch(BUSUANZI_FETCH_URL, () => {})
+      }
+    } catch (err) {
+      console.warn('不蒜子刷新调用失败:', err)
+    }
+
+    // 再延迟读一次 DOM，把成功结果缓存下来；失败时保留缓存值，不显示 0
+    window.setTimeout(() => {
+      const current = getCurrentStatsFromDom()
+
+      const hasValidSitePv = isValidNumberText(current.sitePv)
+      const hasValidTodayUv = isValidNumberText(current.todayUv)
+
+      if (hasValidSitePv || hasValidTodayUv) {
+        const nextCache = {
+          sitePv: hasValidSitePv ? current.sitePv : sitePvText.value,
+          todayUv: hasValidTodayUv ? current.todayUv : todayUvText.value
+        }
+        saveCache(nextCache)
+        applyStatsToDom(nextCache)
+        return
+      }
+
+      // 如果这次没拿到有效值，就恢复上一次成功缓存，避免显示 0
+      const cache = readCache()
+      if (cache) {
+        applyStatsToDom(cache)
+      }
+    }, 1200)
+  }, 180)
+}
+
+const startAutoRefresh = () => {
+  stopAutoRefresh()
+  refreshTimer = window.setInterval(() => {
+    refreshBusuanzi()
+  }, REFRESH_INTERVAL)
+}
+
+const stopAutoRefresh = () => {
+  if (refreshTimer) {
+    clearInterval(refreshTimer)
+    refreshTimer = null
+  }
+}
+
+const handleVisibilityChange = () => {
+  if (document.visibilityState === 'visible') {
+    refreshBusuanzi()
+  }
+}
+
+const handlePageShow = () => {
+  refreshBusuanzi()
+}
+
+onMounted(async () => {
+  hydrateFromCache()
+
+  await loadBusuanziScript().catch((err) => {
+    console.warn('不蒜子脚本加载失败:', err)
+  })
+
+  refreshBusuanzi()
+  startAutoRefresh()
+
+  document.addEventListener('visibilitychange', handleVisibilityChange)
+  window.addEventListener('pageshow', handlePageShow)
+})
+
+watch(
+    () => route.fullPath,
+    () => {
+      refreshBusuanzi()
+    },
+    { flush: 'post' }
+)
+
+onUnmounted(() => {
+  stopAutoRefresh()
+  document.removeEventListener('visibilitychange', handleVisibilityChange)
+  window.removeEventListener('pageshow', handlePageShow)
+})
+
+defineExpose({
+  refreshBusuanzi
+})
 </script>
 
 <style scoped>

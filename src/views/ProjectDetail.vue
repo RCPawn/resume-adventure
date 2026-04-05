@@ -22,7 +22,7 @@
             <path fill="currentColor"
                   d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
           </svg>
-            <span class="views-text"><span id="busuanzi_value_page_pv">0</span></span>
+            <span class="views-text"><span id="busuanzi_value_page_pv">加载中...</span></span>
           </span>
           <a v-if="currentProject?.repoLink" :href="currentProject.repoLink" target="_blank" class="meta-tag link">
             🔗 源码仓库
@@ -82,7 +82,7 @@
 </template>
 
 <script setup>
-import {ref, onMounted, computed} from 'vue'
+import {ref, onMounted, computed, watch} from 'vue'
 import {useRoute} from 'vue-router'
 import MarkdownIt from 'markdown-it'
 import projectsData from '@/data/projects.json'
@@ -226,10 +226,35 @@ const fetchMarkdown = async () => {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
   if (window.innerWidth <= 768) isTocHidden.value = true
-  fetchMarkdown()
+  await fetchMarkdown()
+  
+  // 刷新不蒜子统计数据
+  refreshBusuanziStats()
 })
+
+// 路由参数变化时重新加载
+watch(() => route.params.id, async () => {
+  await fetchMarkdown()
+  refreshBusuanziStats()
+})
+
+// 刷新不蒜子统计
+const refreshBusuanziStats = () => {
+  // 延迟确保DOM已更新
+  setTimeout(() => {
+    if (window.bszCaller) {
+      try {
+        window.bszCaller.fetch('//busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback', () => {
+          console.log('详情页不蒜子统计已更新')
+        })
+      } catch (e) {
+        console.warn('详情页不蒜子统计更新失败:', e)
+      }
+    }
+  }, 200)
+}
 
 </script>
 
