@@ -1,37 +1,39 @@
 <template>
   <div class="page-container">
-    <!-- 1. 顶部沉浸式 Hero 区域 -->
     <div class="hero-section" :style="{ backgroundImage: `url(${currentProject?.cover || defaultCover})` }">
       <div class="hero-overlay"></div>
 
-      <!-- 顶部导航栏占位 -->
       <div class="hero-nav">
-        <GoBackButton class="hero-back-btn"/>
+        <GoBackButton class="hero-back-btn" />
       </div>
 
       <div class="hero-content">
         <h1 class="project-title">{{ currentProject?.title }}</h1>
         <p class="project-desc">{{ currentProject?.description }}</p>
 
-        <!-- 元数据胶囊 -->
         <div class="meta-tags">
           <span class="meta-tag date">📅 {{ currentProject?.date || '2025' }}</span>
-          <span v-for="tag in currentProject?.tags" :key="tag" class="meta-tag tech">  ⚡{{ tag }}</span>
-          <span id="busuanzi_container_page_pv" class="meta-tag views">
+          <span v-for="tag in currentProject?.tags" :key="tag" class="meta-tag tech">⚡{{ tag }}</span>
+
+          <span class="meta-tag views">
             <svg class="stat-icon" viewBox="0 0 24 24" width="20" height="20">
-            <path fill="currentColor"
-                  d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-          </svg>
-            <span class="views-text"><span id="busuanzi_value_page_pv">加载中...</span></span>
+              <path
+                  fill="currentColor"
+                  d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+              />
+            </svg>
+            <span class="views-text">
+              <span id="busuanzi_page_pv">加载中...</span>
+            </span>
           </span>
-          <a v-if="currentProject?.repoLink" :href="currentProject.repoLink" target="_blank" class="meta-tag link">
+
+          <a v-if="currentProject?.repoLink" :href="currentProject.repoLink" target="_blank" class="meta-tag link" rel="noreferrer">
             🔗 源码仓库
           </a>
         </div>
       </div>
     </div>
 
-    <!-- 2. 内容阅读区域 (向上浮动) -->
     <div class="content-container">
       <div v-if="loading" class="loading-state">
         <div class="spinner"></div>
@@ -43,7 +45,6 @@
       </div>
 
       <div v-else class="content-flex">
-        <!-- TOC 面板（桌面显示为侧边栏，移动端折叠） -->
         <aside v-if="toc.length" class="toc" :class="{ 'toc-hidden': isTocHidden }">
           <div class="toc-header" @click="toggleToc" role="button" tabindex="0" @keydown.enter="toggleToc">
             <div class="toc-title">
@@ -55,7 +56,7 @@
             <button class="toc-toggle" aria-label="切换目录">
               <span class="chev" :class="{ open: !isTocHidden }">
                 <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
-                  <path fill="currentColor" d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/>
+                  <path fill="currentColor" d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
                 </svg>
               </span>
             </button>
@@ -70,7 +71,6 @@
           </nav>
         </aside>
 
-        <!-- Markdown 内容 -->
         <main class="markdown-column">
           <div class="markdown-wrapper">
             <div class="markdown-body" v-html="htmlContent"></div>
@@ -82,58 +82,50 @@
 </template>
 
 <script setup>
-import {ref, onMounted, computed, watch} from 'vue'
-import {useRoute} from 'vue-router'
+import { ref, onMounted, computed, watch, nextTick } from 'vue'
+import { useRoute } from 'vue-router'
 import MarkdownIt from 'markdown-it'
 import projectsData from '@/data/projects.json'
-import GoBackButton from "@/components/GoBackButton.vue";
-
-// 引入 GitHub 风格 Markdown 样式
+import GoBackButton from '@/components/GoBackButton.vue'
 import 'github-markdown-css/github-markdown.css'
 
 const route = useRoute()
 
-// 默认封面（如果项目没配图，用这个渐变兜底）
 const defaultCover = 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop'
 
-/* ============ markdown-it 初始化 ============ */
 const md = new MarkdownIt({
   html: true,
   linkify: true,
   typographer: true
 })
 
-// 保存默认 heading renderer 与 image renderer（以便包装）
 const defaultHeadingOpen = md.renderer.rules.heading_open || function (tokens, idx, options, env, self) {
-  return self.renderToken(tokens, idx, options);
-};
-const defaultImageRender = md.renderer.rules.image || function (tokens, idx, options, env, self) {
-  return self.renderToken(tokens, idx, options);
-};
+  return self.renderToken(tokens, idx, options)
+}
 
-/* slugify：生成锚点 id（参考 GitHub 风格） */
+const defaultImageRender = md.renderer.rules.image || function (tokens, idx, options, env, self) {
+  return self.renderToken(tokens, idx, options)
+}
+
 const slugify = (str) => {
   if (!str) return ''
   return String(str)
       .trim()
       .toLowerCase()
-      // 替换中文标点等为 -
       .replace(/[\s+~\/]+/g, '-')
-      .replace(/[^\w\-一-龥\u4E00-\u9FFF]+/g, '') // 保留字母数字和中文
+      .replace(/[^\w\-一-龥\u4E00-\u9FFF]+/g, '')
       .replace(/-+/g, '-')
       .replace(/(^-|-$)/g, '')
 }
 
-/* 将 heading_open 插入 id，以便 TOC 链接生效 */
 md.renderer.rules.heading_open = function (tokens, idx, options, env, self) {
-  // 下一个 token 通常是 inline，包含真实文本
   const next = tokens[idx + 1]
   let title = ''
   if (next && next.type === 'inline') {
     title = next.content
   }
+
   const id = slugify(title || `heading-${idx}`)
-  // 如果已经存在 id 则不覆盖
   const existing = tokens[idx].attrIndex && tokens[idx].attrIndex('id')
   if (existing === -1) tokens[idx].attrPush(['id', id])
   else tokens[idx].attrs[existing][1] = id
@@ -141,23 +133,22 @@ md.renderer.rules.heading_open = function (tokens, idx, options, env, self) {
   return defaultHeadingOpen(tokens, idx, options, env, self)
 }
 
-/* 图片路径自动修正 + 加懒加载 + class */
 md.renderer.rules.image = function (tokens, idx, options, env, self) {
-  const token = tokens[idx];
-  const srcIndex = token.attrIndex('src');
+  const token = tokens[idx]
+  const srcIndex = token.attrIndex('src')
+
   if (srcIndex >= 0) {
     let src = token.attrs[srcIndex][1] || ''
     if (!src.startsWith('http') && !src.startsWith('/') && !src.startsWith('data:')) {
       token.attrs[srcIndex][1] = `/projects/${src}`
     }
   }
-  // 给图片加懒加载 & 类名
-  token.attrPush(['loading', 'lazy']);
-  token.attrJoin('class', 'md-img')
-  return defaultImageRender(tokens, idx, options, env, self);
-};
 
-/* ============ 组件的响应式数据 ============ */
+  token.attrPush(['loading', 'lazy'])
+  token.attrJoin('class', 'md-img')
+  return defaultImageRender(tokens, idx, options, env, self)
+}
+
 const loading = ref(true)
 const error = ref('')
 const htmlContent = ref('')
@@ -166,16 +157,13 @@ const currentProject = computed(() => {
   return projectsData.find(p => p.id === route.params.id)
 })
 
-/* TOC 数据结构：{ level: number, title: string, slug: string } */
 const toc = ref([])
 const isTocHidden = ref(false)
 
-/* 平滑滚动到锚点（并在窄屏时自动折叠 TOC） */
 const scrollToId = (id) => {
   const el = document.getElementById(id)
   if (el) {
-    el.scrollIntoView({behavior: 'smooth', block: 'start'})
-    // 若为移动端，自动折叠目录以便查看内容
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' })
     if (window.innerWidth <= 768) isTocHidden.value = true
   }
 }
@@ -184,11 +172,11 @@ const toggleToc = () => {
   isTocHidden.value = !isTocHidden.value
 }
 
-/* fetchMarkdown：保持你的逻辑，外加解析 TOC */
 const fetchMarkdown = async () => {
   loading.value = true
   error.value = ''
   toc.value = []
+
   try {
     if (!currentProject.value) throw new Error('未找到项目')
     const fileName = currentProject.value.mdFile
@@ -199,9 +187,9 @@ const fetchMarkdown = async () => {
 
     const text = await response.text()
 
-    // 1) 解析 tokens 生成 TOC（不依赖外部插件）
     const tokens = md.parse(text, {})
     const list = []
+
     for (let i = 0; i < tokens.length; i++) {
       const t = tokens[i]
       if (t.type === 'heading_open') {
@@ -209,15 +197,14 @@ const fetchMarkdown = async () => {
         const next = tokens[i + 1]
         const title = next && next.type === 'inline' ? next.content : ''
         const slug = slugify(title || `heading-${i}`)
-        // 只收集 h2/h3/h4（你可以按需调整）
+
         if (level >= 2 && level <= 4) {
-          list.push({level, title, slug})
+          list.push({ level, title, slug })
         }
       }
     }
-    toc.value = list
 
-    // 2) 渲染 HTML（heading_open 的 renderer 会把 id 注入）
+    toc.value = list
     htmlContent.value = md.render(text)
   } catch (err) {
     error.value = err.message || String(err)
@@ -226,36 +213,29 @@ const fetchMarkdown = async () => {
   }
 }
 
-onMounted(async () => {
-  if (window.innerWidth <= 768) isTocHidden.value = true
-  await fetchMarkdown()
-  
-  // 刷新不蒜子统计数据
-  refreshBusuanziStats()
-})
-
-// 路由参数变化时重新加载
-watch(() => route.params.id, async () => {
-  await fetchMarkdown()
-  refreshBusuanziStats()
-})
-
-// 刷新不蒜子统计
 const refreshBusuanziStats = () => {
-  // 延迟确保DOM已更新
   setTimeout(() => {
-    if (window.bszCaller) {
-      try {
-        window.bszCaller.fetch('//busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback', () => {
-          console.log('详情页不蒜子统计已更新')
-        })
-      } catch (e) {
-        console.warn('详情页不蒜子统计更新失败:', e)
-      }
+    if (window.bszCaller && typeof window.bszCaller.fetch === 'function') {
+      window.bszCaller.fetch('//busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback', () => {})
     }
   }, 200)
 }
 
+onMounted(async () => {
+  if (window.innerWidth <= 768) isTocHidden.value = true
+  await fetchMarkdown()
+  await nextTick()
+  refreshBusuanziStats()
+})
+
+watch(
+    () => route.params.id,
+    async () => {
+      await fetchMarkdown()
+      await nextTick()
+      refreshBusuanziStats()
+    }
+)
 </script>
 
 <style scoped>
