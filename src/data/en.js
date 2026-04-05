@@ -284,8 +284,8 @@ export default {
         madeWith: 'Designed & Built by RCPAWN',
         socialLinks: [
             {url: 'https://github.com/RCPawn', icon: 'fab fa-github'},
-            {url: 'https://www.douyin.com/user/self?from_tab_name=main', icon: 'fab fa-tiktok'},
-            {url: 'https://leetcode.cn/u/guo-he-zu-ew/', icon: 'icon-leetcode'}
+            //{url: 'https://www.douyin.com/user/self?from_tab_name=main', icon: 'fab fa-tiktok'},
+            //{url: 'https://leetcode.cn/u/guo-he-zu-ew/', icon: 'icon-leetcode'}
         ],
         linkGroups: [
             {

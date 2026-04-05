@@ -274,7 +274,7 @@ export default {
         madeWith: 'RCPAWN 用热爱和代码精心制作',
         socialLinks: [
             {url: 'https://github.com/RCPawn', icon: 'fab fa-github'},
-            {url: 'https://leetcode.cn/u/guo-he-zu-ew/', icon: 'icon-leetcode'}
+            //{url: 'https://leetcode.cn/u/guo-he-zu-ew/', icon: 'icon-leetcode'}
         ],
         linkGroups: [
             {

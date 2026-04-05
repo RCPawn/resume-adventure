@@ -6,7 +6,7 @@
 
       <!-- 顶部导航栏占位 -->
       <div class="hero-nav">
-        <GoBackButton class="hero-back-btn" />
+        <GoBackButton class="hero-back-btn"/>
       </div>
 
       <div class="hero-content">
@@ -17,6 +17,13 @@
         <div class="meta-tags">
           <span class="meta-tag date">📅 {{ currentProject?.date || '2025' }}</span>
           <span v-for="tag in currentProject?.tags" :key="tag" class="meta-tag tech">  ⚡{{ tag }}</span>
+          <span id="busuanzi_container_page_pv" class="meta-tag views">
+            <svg class="stat-icon" viewBox="0 0 24 24" width="20" height="20">
+            <path fill="currentColor"
+                  d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+          </svg>
+            <span class="views-text"><span id="busuanzi_value_page_pv">0</span></span>
+          </span>
           <a v-if="currentProject?.repoLink" :href="currentProject.repoLink" target="_blank" class="meta-tag link">
             🔗 源码仓库
           </a>
@@ -27,7 +34,8 @@
     <!-- 2. 内容阅读区域 (向上浮动) -->
     <div class="content-container">
       <div v-if="loading" class="loading-state">
-        <div class="spinner"></div> 加载精彩内容中...
+        <div class="spinner"></div>
+        加载精彩内容中...
       </div>
 
       <div v-else-if="error" class="error-state">
@@ -74,8 +82,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import {ref, onMounted, computed} from 'vue'
+import {useRoute} from 'vue-router'
 import MarkdownIt from 'markdown-it'
 import projectsData from '@/data/projects.json'
 import GoBackButton from "@/components/GoBackButton.vue";
@@ -96,10 +104,10 @@ const md = new MarkdownIt({
 })
 
 // 保存默认 heading renderer 与 image renderer（以便包装）
-const defaultHeadingOpen = md.renderer.rules.heading_open || function(tokens, idx, options, env, self) {
+const defaultHeadingOpen = md.renderer.rules.heading_open || function (tokens, idx, options, env, self) {
   return self.renderToken(tokens, idx, options);
 };
-const defaultImageRender = md.renderer.rules.image || function(tokens, idx, options, env, self) {
+const defaultImageRender = md.renderer.rules.image || function (tokens, idx, options, env, self) {
   return self.renderToken(tokens, idx, options);
 };
 
@@ -166,7 +174,7 @@ const isTocHidden = ref(false)
 const scrollToId = (id) => {
   const el = document.getElementById(id)
   if (el) {
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    el.scrollIntoView({behavior: 'smooth', block: 'start'})
     // 若为移动端，自动折叠目录以便查看内容
     if (window.innerWidth <= 768) isTocHidden.value = true
   }
@@ -203,7 +211,7 @@ const fetchMarkdown = async () => {
         const slug = slugify(title || `heading-${i}`)
         // 只收集 h2/h3/h4（你可以按需调整）
         if (level >= 2 && level <= 4) {
-          list.push({ level, title, slug })
+          list.push({level, title, slug})
         }
       }
     }
@@ -219,7 +227,6 @@ const fetchMarkdown = async () => {
 }
 
 onMounted(() => {
-  // 若是窄屏默认折叠目录
   if (window.innerWidth <= 768) isTocHidden.value = true
   fetchMarkdown()
 })
@@ -277,7 +284,7 @@ onMounted(() => {
   margin: 0 auto;
   padding: 0 20px 60px 20px;
   color: white;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .project-title {
@@ -293,6 +300,68 @@ onMounted(() => {
   opacity: 0.9;
   margin-bottom: 24px;
   max-width: 600px;
+}
+
+.meta-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.meta-tag {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.meta-tag.date {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.meta-tag.tech {
+  background: rgba(96, 165, 250, 0.2);
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  color: #60a5fa;
+}
+
+.meta-tag.views {
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #10b981;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+}
+
+.views-icon {
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+
+.views-text {
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.meta-tag.link {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  text-decoration: none;
+  color: white;
+}
+
+.meta-tag.link:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
 }
 
 /* =================================
@@ -376,7 +445,7 @@ onMounted(() => {
 .chev {
   display: inline-block;
   transform: rotate(-90deg);
-  transition: transform .28s cubic-bezier(.2,.9,.2,1);
+  transition: transform .28s cubic-bezier(.2, .9, .2, 1);
 }
 
 .chev.open {
@@ -400,9 +469,21 @@ onMounted(() => {
 }
 
 /* 根据标题层级稍作缩进 */
-.toc-list li.level-2 { padding-left: 0px; }
-.toc-list li.level-3 { padding-left: 10px; font-size:0.92rem; color:var(--secondary-color); }
-.toc-list li.level-4 { padding-left: 18px; font-size:0.9rem; color:var(--secondary-color); }
+.toc-list li.level-2 {
+  padding-left: 0px;
+}
+
+.toc-list li.level-3 {
+  padding-left: 10px;
+  font-size: 0.92rem;
+  color: var(--secondary-color);
+}
+
+.toc-list li.level-4 {
+  padding-left: 18px;
+  font-size: 0.9rem;
+  color: var(--secondary-color);
+}
 
 /* TOC 链接样式 */
 .toc-list a {
@@ -410,7 +491,11 @@ onMounted(() => {
   text-decoration: none;
   transition: color .15s;
 }
-.toc-list a:hover { color: var(--primary-color); text-decoration: underline; }
+
+.toc-list a:hover {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
 
 /* =================================
    Markdown 卡片（玻璃拟态） - 保持原样但微调
@@ -420,7 +505,7 @@ onMounted(() => {
   border: 1px solid var(--border-color);
   border-radius: 24px;
   padding: 50px;
-  box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
   min-height: 400px;
   overflow: hidden;
 }
@@ -438,7 +523,7 @@ onMounted(() => {
 /* 图片 */
 :deep(.markdown-body img) {
   border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
   margin: 20px 0;
   max-width: 100%;
   border: 1px solid var(--border-color);
@@ -470,6 +555,7 @@ onMounted(() => {
   position: relative;
   padding-left: 16px;
 }
+
 :deep(.markdown-body h2::before) {
   content: '';
   position: absolute;
@@ -520,11 +606,38 @@ onMounted(() => {
 
 /* 小屏设备：TOC 折叠并可切换 */
 @media (max-width: 768px) {
-  .content-flex { flex-direction: column; gap: 12px; }
-  .toc { width: 100%; height: auto; position: relative; top: auto; }
-  .toc.toc-hidden .toc-list { display: none; }
-  .markdown-wrapper { padding: 24px; border-radius: 16px; }
-  .project-title { font-size: 2rem; }
+  .content-flex {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .toc {
+    width: 100%;
+    height: auto;
+    position: relative;
+    top: auto;
+  }
+
+  .toc.toc-hidden .toc-list {
+    display: none;
+  }
+
+  .markdown-wrapper {
+    padding: 24px;
+    border-radius: 16px;
+  }
+
+  .project-title {
+    font-size: 2rem;
+  }
+
+  .meta-tags {
+    gap: 10px;
+  }
+
+  .meta-tag {
+    flex-shrink: 1;
+  }
 }
 
 /* 大屏优化（27寸及以上） */
@@ -532,53 +645,53 @@ onMounted(() => {
   .content-container {
     max-width: 1400px;
   }
-  
+
   .hero-section {
     height: 65vh;
   }
-  
+
   .hero-content {
     max-width: 1100px;
     padding: 0 30px 80px 30px;
   }
-  
+
   .project-title {
     font-size: 4rem;
   }
-  
+
   .project-desc {
     font-size: 1.4rem;
     max-width: 700px;
   }
-  
+
   .content-flex {
     gap: 30px;
   }
-  
+
   .toc {
     width: 280px;
     flex: 0 0 280px;
     padding: 16px;
   }
-  
+
   .markdown-wrapper {
     padding: 60px;
     border-radius: 28px;
   }
-  
+
   .markdown-body {
     font-size: 1.1rem;
   }
-  
+
   :deep(.markdown-body h2) {
     font-size: 2rem;
   }
-  
+
   :deep(.markdown-body p) {
     font-size: 1.15rem;
     line-height: 1.9;
   }
-  
+
   :deep(.markdown-body img) {
     border-radius: 14px;
     margin: 25px 0;
@@ -604,5 +717,10 @@ onMounted(() => {
   animation: spin 1s linear infinite;
   margin: 0 auto 20px;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 </style>

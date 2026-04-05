@@ -52,6 +52,29 @@
       <p class="copyright">
         {{ t('footer.copyright', { year: new Date().getFullYear() }) }}
       </p>
+      <div class="site-stats">
+        <div class="stat-card">
+          <svg class="stat-icon" viewBox="0 0 24 24" width="20" height="20">
+            <path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+          </svg>
+          <span class="stat-label">总访问量</span>
+          <span id="busuanzi_value_site_pv" class="stat-value">0</span>
+        </div>
+        <div class="stat-card">
+          <svg class="stat-icon" viewBox="0 0 24 24" width="20" height="20">
+            <path fill="currentColor" d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+          </svg>
+          <span class="stat-label">今日访客</span>
+          <span id="busuanzi_value_today_uv" class="stat-value">0</span>
+        </div>
+        <div class="stat-card">
+          <svg class="stat-icon" viewBox="0 0 24 24" width="20" height="20">
+            <path fill="currentColor" d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/>
+          </svg>
+          <span class="stat-label">已运行</span>
+          <span class="stat-value">{{ runningDays }} 天</span>
+        </div>
+      </div>
       <p class="made-with">
         {{ t('footer.madeWith') }} <span class="heart">❤</span>
       </p>
@@ -60,21 +83,27 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 const { t, tm } = useI18n();
 const emailCopied = ref(false);
 const isExternal = (url) => url.startsWith('http');
 const techStack = ['Vue3', 'Vite', 'I18n', 'Reveal.js', 'Markdown-it', '@google/model-viewer']
 
+// 计算博客运行天数（从 2025-02-07 22:55 开始）
+const startDate = new Date('2025-02-07T22:55:00');
+const runningDays = computed(() => {
+  const now = new Date();
+  const diff = now - startDate;
+  return Math.floor(diff / (1000 * 60 * 60 * 24));
+});
+
 // 复制邮箱功能
 const copyEmail = () => {
-  const email = 'shangxi0275@163.com'; // 记得替换成你的真实邮箱
+  const email = 'shangxi0275@163.com';
   navigator.clipboard.writeText(email).then(() => {
     emailCopied.value = true;
-    setTimeout(() => {
-      emailCopied.value = false;
-    }, 2000);
+    setTimeout(() => { emailCopied.value = false; }, 2000);
   });
 };
 </script>
@@ -116,10 +145,6 @@ const copyEmail = () => {
   margin: 0 0 0.6rem;
   color: var(--text-color);
   letter-spacing: -1px;
-  background: linear-gradient(135deg, var(--text-color), var(--primary-color));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .brand-tagline {
@@ -146,42 +171,30 @@ const copyEmail = () => {
   width: 42px;
   height: 42px;
   border-radius: 12px;
-  background: linear-gradient(135deg, var(--modal-bg), var(--btn-bg));
+  background: var(--btn-bg);
   border: 1px solid var(--border-color);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--secondary-color);
+  color: var(--text-color);
   text-decoration: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  overflow: hidden;
-}
-
-.social-btn::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-color-light, var(--primary-color)));
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.social-btn:hover::before {
-  opacity: 1;
 }
 
 .social-btn:hover {
-  color: white;
+  background: var(--modal-bg);
   border-color: var(--primary-color);
+  color: var(--primary-color);
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(var(--primary-color-rgb, 96, 165, 250), 0.3);
+  box-shadow: 0 8px 20px rgba(var(--primary-color-rgb, 96, 165, 250), 0.15);
 }
 
 .social-btn i {
   position: relative;
   z-index: 1;
   font-size: 1.1rem;
+  color: inherit;
 }
 
 .email-btn {
@@ -191,7 +204,7 @@ const copyEmail = () => {
   padding: 10px 18px;
   border-radius: 12px;
   border: 1px solid var(--border-color);
-  background: linear-gradient(135deg, var(--modal-bg), var(--btn-bg));
+  background: var(--btn-bg);
   color: var(--text-color);
   cursor: pointer;
   font-weight: 600;
@@ -206,20 +219,17 @@ const copyEmail = () => {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-color-light, var(--primary-color)));
+  background: var(--modal-bg);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
 
-.email-btn:hover::before {
-  opacity: 1;
-}
-
 .email-btn:hover {
-  color: white;
+  background: var(--modal-bg);
   border-color: var(--primary-color);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(var(--primary-color-rgb, 96, 165, 250), 0.25);
+  color: var(--primary-color);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(var(--primary-color-rgb, 96, 165, 250), 0.15);
 }
 
 .email-btn .btn-icon {
@@ -236,13 +246,13 @@ const copyEmail = () => {
 
 .email-btn.copied::before {
   opacity: 1;
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: var(--modal-bg);
 }
 
 .email-btn.copied {
-  color: white;
   border-color: #10b981;
-  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
+  color: #10b981;
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.15);
 }
 
 /* --- 中间技术栈区 --- */
@@ -343,10 +353,67 @@ const copyEmail = () => {
   gap: 1rem;
 }
 
-.copyright, .made-with {
+.copyright {
   font-size: 0.85rem;
   color: var(--secondary-color);
   margin: 0;
+  flex: 0 0 auto;
+}
+
+/* 站点统计样式 - 卡片式布局 */
+.site-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 12px;
+  justify-content: center;
+}
+
+.stat-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  background: linear-gradient(135deg, var(--btn-bg), var(--modal-bg));
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  font-size: 0.9rem;
+  color: var(--secondary-color);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.stat-card:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(var(--primary-color-rgb, 96, 165, 250), 0.2);
+}
+
+.stat-icon {
+  color: var(--primary-color);
+  opacity: 0.85;
+}
+
+.stat-label {
+  font-weight: 500;
+  color: var(--secondary-color);
+}
+
+.stat-value {
+  font-weight: 700;
+  color: var(--text-color);
+  font-family: 'Courier New', 'Monaco', monospace;
+  font-size: 0.95rem;
+  min-width: 30px;
+  text-align: right;
+}
+
+.made-with {
+  font-size: 0.85rem;
+  color: var(--secondary-color);
+  margin: 0;
+  flex: 0 0 auto;
+  text-align: right;
 }
 
 .heart {
@@ -388,6 +455,22 @@ const copyEmail = () => {
   .footer-bottom {
     flex-direction: column;
     text-align: center;
+    gap: 0.8rem;
+  }
+
+  .copyright,
+  .made-with {
+    text-align: center;
+  }
+
+  .site-stats {
+    order: -1;
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 8px 14px;
+    font-size: 0.85rem;
   }
 }
 

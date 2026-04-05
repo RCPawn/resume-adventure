@@ -2,7 +2,6 @@
 import { RouterLink, RouterView } from 'vue-router'
 import TestVue from './Test.vue'
 import MouseCursor from "@/components/MouseCursor.vue";
-
 </script>
 
 <template>
