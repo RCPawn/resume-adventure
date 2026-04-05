@@ -1,24 +1,52 @@
 <template>
   <footer id="footer" class="footer-section">
     <div class="footer-container">
-
       <div class="footer-brand">
         <h2 class="brand-name">{{ t('footer.appName') }}</h2>
         <p class="brand-tagline">{{ t('footer.tagline') }}</p>
 
         <div class="social-actions">
           <div class="social-links">
-            <a v-for="(social, index) in tm('footer.socialLinks')" :key="index" :href="social.url" class="social-btn" target="_blank" :title="social.icon">
+            <a
+                v-for="(social, index) in tm('footer.socialLinks')"
+                :key="index"
+                :href="social.url"
+                class="social-btn"
+                target="_blank"
+                :title="social.icon"
+            >
               <i :class="social.icon"></i>
             </a>
           </div>
-          <button class="email-btn" @click="copyEmail" :class="{ 'copied': emailCopied }">
+
+          <button
+              class="email-btn"
+              @click="copyEmail"
+              :class="{ copied: emailCopied }"
+              :aria-label="emailCopied ? '邮箱已复制' : '复制邮箱'"
+          >
             <span class="btn-icon">
-              <svg v-if="!emailCopied" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                  v-if="!emailCopied"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+              >
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                 <polyline points="22,6 12,13 2,6"></polyline>
               </svg>
-              <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                  v-else
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+              >
                 <polyline points="20 6 9 17 4 12"></polyline>
               </svg>
             </span>
@@ -52,29 +80,42 @@
       <p class="copyright">
         {{ t('footer.copyright', { year: new Date().getFullYear() }) }}
       </p>
+
       <div class="site-stats">
         <div class="stat-card">
           <svg class="stat-icon" viewBox="0 0 24 24" width="20" height="20">
-            <path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+            <path
+                fill="currentColor"
+                d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+            />
           </svg>
           <span class="stat-label">总访问量</span>
-          <span id="busuanzi_value_site_pv" class="stat-value">0</span>
+          <span id="busuanzi_site_pv" class="stat-value">0</span>
         </div>
+
         <div class="stat-card">
           <svg class="stat-icon" viewBox="0 0 24 24" width="20" height="20">
-            <path fill="currentColor" d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+            <path
+                fill="currentColor"
+                d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"
+            />
           </svg>
           <span class="stat-label">今日访客</span>
-          <span id="busuanzi_value_today_uv" class="stat-value">0</span>
+          <span id="busuanzi_today_uv" class="stat-value">0</span>
         </div>
+
         <div class="stat-card">
           <svg class="stat-icon" viewBox="0 0 24 24" width="20" height="20">
-            <path fill="currentColor" d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/>
+            <path
+                fill="currentColor"
+                d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"
+            />
           </svg>
           <span class="stat-label">已运行</span>
           <span class="stat-value">{{ runningDays }} 天</span>
         </div>
       </div>
+
       <p class="made-with">
         {{ t('footer.madeWith') }} <span class="heart">❤</span>
       </p>
@@ -83,29 +124,77 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-const { t, tm } = useI18n();
-const emailCopied = ref(false);
-const isExternal = (url) => url.startsWith('http');
+import { ref, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t, tm } = useI18n()
+
+const emailCopied = ref(false)
 const techStack = ['Vue3', 'Vite', 'I18n', 'Reveal.js', 'Markdown-it', '@google/model-viewer']
 
+const isExternal = (url) => url.startsWith('http')
+
 // 计算博客运行天数（从 2025-02-07 22:55 开始）
-const startDate = new Date('2025-02-07T22:55:00');
+const startDate = new Date('2025-02-07T22:55:00')
 const runningDays = computed(() => {
-  const now = new Date();
-  const diff = now - startDate;
-  return Math.floor(diff / (1000 * 60 * 60 * 24));
-});
+  const now = new Date()
+  const diff = now - startDate
+  return Math.floor(diff / (1000 * 60 * 60 * 24))
+})
 
 // 复制邮箱功能
-const copyEmail = () => {
-  const email = 'shangxi0275@163.com';
-  navigator.clipboard.writeText(email).then(() => {
-    emailCopied.value = true;
-    setTimeout(() => { emailCopied.value = false; }, 2000);
-  });
-};
+const copyEmail = async () => {
+  const email = 'shangxi0275@163.com'
+
+  try {
+    await navigator.clipboard.writeText(email)
+    emailCopied.value = true
+    setTimeout(() => {
+      emailCopied.value = false
+    }, 2000)
+  } catch (err) {
+    console.error('复制邮箱失败:', err)
+  }
+}
+
+// 不蒜子统计配置
+const busuanziScriptId = 'busuanzi-script'
+const busuanziScriptUrl = 'https://cdn.busuanzi.cc/busuanzi/3.6.9/busuanzi.min.js'
+let busuanziInitialized = false
+
+// 动态注入不蒜子脚本
+const injectBusuanziScript = () => {
+  // 如果脚本已经存在，直接返回
+  if (document.getElementById(busuanziScriptId)) {
+    return
+  }
+
+  const script = document.createElement('script')
+  script.id = busuanziScriptId
+  script.src = busuanziScriptUrl
+  script.async = true
+
+  script.onload = () => {
+    console.log('不蒜子脚本加载成功')
+    busuanziInitialized = true
+  }
+
+  script.onerror = () => {
+    console.warn('不蒜子脚本加载失败，统计功能将不可用')
+    // 设置默认值
+    const pvEl = document.getElementById('busuanzi_value_site_pv')
+    const uvEl = document.getElementById('busuanzi_value_today_uv')
+    if (pvEl) pvEl.textContent = '--'
+    if (uvEl) uvEl.textContent = '--'
+  }
+
+  document.head.appendChild(script)
+}
+
+onMounted(() => {
+  // 挂载时注入不蒜子脚本
+  injectBusuanziScript()
+})
 </script>
 
 <style scoped>
@@ -222,6 +311,7 @@ const copyEmail = () => {
   background: var(--modal-bg);
   opacity: 0;
   transition: opacity 0.3s ease;
+  z-index: 0;
 }
 
 .email-btn:hover {
@@ -244,15 +334,33 @@ const copyEmail = () => {
   z-index: 1;
 }
 
-.email-btn.copied::before {
-  opacity: 1;
-  background: var(--modal-bg);
-}
-
+/* 关键修复：复制状态增强对比度，避免深色主题下文字“消失” */
 .email-btn.copied {
   border-color: #10b981;
-  color: #10b981;
-  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.15);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.28);
+}
+
+.email-btn.copied::before {
+  opacity: 0;
+  background: transparent;
+}
+
+.email-btn.copied:hover {
+  color: #ffffff;
+  border-color: #10b981;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(16, 185, 129, 0.32);
+}
+
+.email-btn.copied .btn-icon,
+.email-btn.copied span:not(.btn-icon) {
+  color: #ffffff;
+}
+
+.email-btn.copied svg {
+  stroke: currentColor;
 }
 
 /* --- 中间技术栈区 --- */
@@ -423,8 +531,13 @@ const copyEmail = () => {
 }
 
 @keyframes heartbeat {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
 }
 
 /* 响应式 */
@@ -479,44 +592,44 @@ const copyEmail = () => {
   .footer-section {
     padding: 6rem 2rem 2.5rem;
   }
-  
+
   .footer-container {
     max-width: 1400px;
     gap: 5rem;
   }
-  
+
   .brand-name {
     font-size: 2.2rem;
   }
-  
+
   .brand-tagline {
     font-size: 1.1rem;
     max-width: 350px;
   }
-  
+
   .social-btn {
     width: 46px;
     height: 46px;
   }
-  
+
   .email-btn {
     padding: 12px 20px;
     font-size: 0.95rem;
   }
-  
+
   .footer-tech h3 {
     font-size: 0.95rem;
   }
-  
+
   .tech-tag {
     font-size: 0.9rem;
     padding: 7px 16px;
   }
-  
+
   .nav-group h4 {
     font-size: 1rem;
   }
-  
+
   .nav-group a {
     font-size: 0.95rem;
   }
