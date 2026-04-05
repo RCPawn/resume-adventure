@@ -213,12 +213,67 @@ const fetchMarkdown = async () => {
   }
 }
 
-const refreshBusuanziStats = () => {
-  setTimeout(() => {
-    if (window.bszCaller && typeof window.bszCaller.fetch === 'function') {
-      window.bszCaller.fetch('//busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback', () => {})
+const BUSUANZI_SCRIPT_ID = 'busuanzi-script'
+const BUSUANZI_SCRIPT_URL = 'https://cdn.busuanzi.cc/busuanzi/3.6.9/busuanzi.min.js'
+let busuanziReady = false
+
+const loadBusuanziScript = () => {
+  return new Promise((resolve) => {
+    if (window.bszCaller) {
+      busuanziReady = true
+      resolve(true)
+      return
     }
-  }, 200)
+
+    const existing = document.getElementById(BUSUANZI_SCRIPT_ID)
+    if (existing) {
+      // 脚本元素已存在但 bszCaller 还未就绪，等待轮询
+      const check = setInterval(() => {
+        if (window.bszCaller) {
+          clearInterval(check)
+          busuanziReady = true
+          resolve(true)
+        }
+      }, 100)
+      return
+    }
+
+    const script = document.createElement('script')
+    script.id = BUSUANZI_SCRIPT_ID
+    script.src = BUSUANZI_SCRIPT_URL
+    script.async = true
+    script.onload = () => {
+      busuanziReady = true
+      resolve(true)
+    }
+    script.onerror = () => resolve(false)
+
+    document.body.appendChild(script)
+  })
+}
+
+const refreshBusuanziStats = async () => {
+  console.log('[详情页] refreshBusuanziStats 开始执行')
+  
+  await loadBusuanziScript()
+  console.log('[详情页] 脚本加载后 bszCaller 是否存在:', !!window.bszCaller)
+  
+  await nextTick()
+  
+  setTimeout(() => {
+    const pvEl = document.getElementById('busuanzi_page_pv')
+    console.log('[详情页] 查找 busuanzi_page_pv 元素:', pvEl)
+    
+    if (window.bszCaller && typeof window.bszCaller.fetch === 'function') {
+      console.log('[详情页] 调用 bszCaller.fetch')
+      window.bszCaller.fetch('//busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback', () => {
+        console.log('[详情页] bszCaller.fetch 回调执行成功')
+        console.log('[详情页] 当前 busuanzi_page_pv 的值:', pvEl?.textContent)
+      })
+    } else {
+      console.warn('[详情页] bszCaller 不可用，统计功能将无法工作')
+    }
+  }, 500)
 }
 
 onMounted(async () => {
