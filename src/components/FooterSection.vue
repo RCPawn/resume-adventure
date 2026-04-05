@@ -91,7 +91,7 @@
             />
           </svg>
           <span class="stat-label">总访问量</span>
-          <span id="busuanzi_site_pv" class="stat-value" aria-live="polite">{{ sitePvText }} 次</span>
+          <span id="busuanzi_site_pv" class="stat-value" aria-live="polite">{{ sitePvText }}</span>
         </div>
 
         <div class="stat-card">
@@ -102,7 +102,7 @@
             />
           </svg>
           <span class="stat-label">今日访客</span>
-          <span id="busuanzi_today_uv" class="stat-value" aria-live="polite">{{ todayUvText }} 人</span>
+          <span id="busuanzi_today_uv" class="stat-value" aria-live="polite">{{ todayUvText }}</span>
         </div>
 
         <div class="stat-card">
@@ -133,8 +133,8 @@ const { t, tm } = useI18n()
 const route = useRoute()
 
 const emailCopied = ref(false)
-const sitePvText = ref('--')
-const todayUvText = ref('--')
+const sitePvText = ref('-- 次')
+const todayUvText = ref('-- 人')
 const techStack = ['Vue3', 'Vite', 'I18n', 'Reveal.js', 'Markdown-it', '@google/model-viewer']
 
 const isExternal = (url) => /^https?:\/\//i.test(url)
@@ -202,11 +202,11 @@ const applyStatsToDom = (stats) => {
   const sitePvEl = document.getElementById('busuanzi_site_pv')
   const todayUvEl = document.getElementById('busuanzi_today_uv')
 
-  if (sitePvEl && stats.sitePv) sitePvEl.textContent = stats.sitePv
-  if (todayUvEl && stats.todayUv) todayUvEl.textContent = stats.todayUv
+  if (sitePvEl && stats.sitePv) sitePvEl.textContent = stats.sitePv + ' 次'
+  if (todayUvEl && stats.todayUv) todayUvEl.textContent = stats.todayUv + ' 人'
 
-  if (stats.sitePv) sitePvText.value = stats.sitePv
-  if (stats.todayUv) todayUvText.value = stats.todayUv
+  if (stats.sitePv) sitePvText.value = stats.sitePv + ' 次'
+  if (stats.todayUv) todayUvText.value = stats.todayUv + ' 人'
 }
 
 const hydrateFromCache = () => {
