@@ -449,15 +449,6 @@ defineExpose({
   z-index: 1;
 }
 
-.email-btn::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--modal-bg);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
 .email-btn:hover {
   background: var(--modal-bg);
   border-color: var(--primary-color);

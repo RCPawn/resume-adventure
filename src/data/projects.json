@@ -24,12 +24,6 @@
     "link": "/project/exhibition"
   },
   {
-    "nameKey": "projects.items.2.name",
-    "descriptionKey": "projects.items.2.description",
-    "image": "/images/projects/森林.png",
-    "link": "/olive-ppt"
-  },
-  {
     "nameKey": "projects.items.4.name",
     "descriptionKey": "projects.items.4.description",
     "image": "/images/projects/城市.png",

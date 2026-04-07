@@ -282,7 +282,7 @@ export default {
                 links: [
                     {text: '非遗展陈', url: '/project/exhibition'},
                     {text: '我的网关', url: '/project/gateway'},
-                    {text: '校企合作', url: '/olive-ppt'}
+                    //{text: '校企合作', url: '/olive-ppt'}
                 ]
             },
             {

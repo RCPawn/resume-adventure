@@ -4,8 +4,8 @@
     <div class="napkin-logo">{{ t('nav.logo') }}</div>
     <div class="napkin-nav-links">
       <a href="javascript:void(0);" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });" class="napkin-nav-link">{{ t('nav.home') }}</a>
-      <a href="#skills" class="napkin-nav-link">{{ t('nav.skill') }}</a>
       <a href="#projects" class="napkin-nav-link">{{ t('nav.experience') }}</a>
+      <a href="#skills" class="napkin-nav-link">{{ t('nav.skill') }}</a>
       <a href="#gallery" class="napkin-nav-link">{{ t('nav.gallery') }}</a>
       <a href="javascript:void(0);" @click="toggleAboutModal" class="napkin-nav-link">{{ t('nav.resume') }}</a>
       <a href="#footer" class="napkin-nav-link">{{ t('nav.footer') }}</a>
