@@ -293,7 +293,7 @@ export default {
                 links: [
                     {text: 'Heritage', url: '/project/exhibition'},
                     {text: 'Gateway', url: '/project/gateway'},
-                    //{text: 'Cooperation', url: '/olive-ppt'}
+                    {text: 'Cooperation', url: '/olive-ppt'}
                 ]
             },
             {
