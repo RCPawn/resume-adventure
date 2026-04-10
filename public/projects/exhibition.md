@@ -67,7 +67,7 @@
 
 精心设计的门户页面，以极简美学呈现白族文化精髓，引导用户快速进入探索之旅。
 
-![前台首页](exhibition.assets/image-20260405001815342.png)
+![在线展厅](exhibition.assets/image-20260409102800430.png)
 
 ---
 
@@ -87,9 +87,9 @@
 - 渐变标题与圆角标签设计
 - 响应式布局适配多端
 
-![在线展厅](exhibition.assets/image-20260404234526131.png)
+![前台首页](exhibition.assets/image-20260409102726156.png)
 
-![展品详情](exhibition.assets/image-20260405002015189.png)
+![传承图谱-翻书](exhibition.assets/image-20260409103008253.png)
 
 ---
 
@@ -98,14 +98,15 @@
 **核心亮点**："翻开历史的书页，看见传承的脉络"
 
 **创新设计**：采用 **3D 翻书模型** 作为交互载体，用户点击书本即可展开传承关系图谱，以力导向图形式呈现：
+
 - 🧑‍ 传承人与其所属技艺分类
 - 🌳 师徒传承关系链
 - 🏅 国家级/省级/市级传承人分级标识
 - 💬 悬浮信息卡片展示详细档案
 
-![传承图谱-翻书](exhibition.assets/image-20260405002052657.png)
+![展品详情](exhibition.assets/image-20260409102845527.png)
 
-![传承关系网络](exhibition.assets/image-20260405002122659.png)
+![沉浸式看图](exhibition.assets/image-20260405002122659.png)
 
 ---
 
@@ -118,9 +119,9 @@
 - 🔍 点击进入沉浸式看图模式
 - 📅 时间轴排序与元数据展示
 
-![瀑布流展示](exhibition.assets/image-20260405002226145.png)
+![传承关系网络](exhibition.assets/image-20260409103045434.png)
 
-![沉浸式看图](exhibition.assets/image-20260405002259871.png)
+![瀑布流展示](exhibition.assets/image-20260409103123369.png)
 
 ---
 
