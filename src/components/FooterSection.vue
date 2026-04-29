@@ -1,31 +1,41 @@
 <template>
   <footer id="footer" class="footer-section">
-    <div class="footer-container">
-      <div class="footer-brand">
-        <h2 class="brand-name">{{ t('footer.appName') }}</h2>
-        <p class="brand-tagline">{{ t('footer.tagline') }}</p>
+    <div class="footer-paper" aria-hidden="true" />
+    <div class="footer-inner">
+      <div class="footer-ornament" aria-hidden="true">
+        <span class="footer-ornament__line" />
+        <span class="footer-ornament__diamond" />
+        <span class="footer-ornament__line" />
+      </div>
 
-        <div class="social-actions">
-          <div class="social-links">
-            <a
-                v-for="(social, index) in tm('footer.socialLinks')"
-                :key="index"
-                :href="social.url"
-                class="social-btn"
-                target="_blank"
-                :title="social.icon"
-                rel="noreferrer"
+      <div class="footer-container">
+        <div class="footer-brand">
+          <p class="brand-eyebrow">{{ t('footer.stayInTouch') }}</p>
+          <h2 class="brand-name">{{ t('footer.appName') }}</h2>
+          <p class="brand-tagline">{{ t('footer.tagline') }}</p>
+
+          <div class="social-actions">
+            <div class="social-links">
+              <a
+                  v-for="(social, index) in tm('footer.socialLinks')"
+                  :key="index"
+                  :href="social.url"
+                  class="social-btn"
+                  target="_blank"
+                  :title="social.icon"
+                  rel="noreferrer"
+              >
+                <i :class="social.icon"></i>
+              </a>
+            </div>
+
+            <button
+                type="button"
+                class="email-btn"
+                @click="copyEmail"
+                :class="{ copied: emailCopied }"
+                :aria-label="emailCopied ? t('footer.emailCopied') : t('footer.copyEmail')"
             >
-              <i :class="social.icon"></i>
-            </a>
-          </div>
-
-          <button
-              class="email-btn"
-              @click="copyEmail"
-              :class="{ copied: emailCopied }"
-              :aria-label="emailCopied ? '邮箱已复制' : '复制邮箱'"
-          >
             <span class="btn-icon">
               <svg
                   v-if="!emailCopied"
@@ -75,51 +85,54 @@
           </ul>
         </div>
       </div>
-    </div>
-
-    <div class="footer-bottom">
-      <p class="copyright">
-        {{ t('footer.copyright', { year: new Date().getFullYear() }) }}
-      </p>
-
-      <div class="site-stats">
-        <div class="stat-card">
-          <svg class="stat-icon" viewBox="0 0 24 24" width="20" height="20">
-            <path
-                fill="currentColor"
-                d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
-            />
-          </svg>
-          <span class="stat-label">总访问量</span>
-          <span id="busuanzi_site_pv" class="stat-value" aria-live="polite">{{ sitePvText }}</span>
-        </div>
-
-        <div class="stat-card">
-          <svg class="stat-icon" viewBox="0 0 24 24" width="20" height="20">
-            <path
-                fill="currentColor"
-                d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"
-            />
-          </svg>
-          <span class="stat-label">今日访客</span>
-          <span id="busuanzi_today_uv" class="stat-value" aria-live="polite">{{ todayUvText }}</span>
-        </div>
-
-        <div class="stat-card">
-          <svg class="stat-icon" viewBox="0 0 24 24" width="20" height="20">
-            <path
-                fill="currentColor"
-                d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"
-            />
-          </svg>
-          <span class="stat-label">已运行</span>
-          <span class="stat-value">{{ runningDays }} 天</span>
-        </div>
       </div>
 
-      <p class="made-with">
-        {{ t('footer.madeWith') }} <span class="heart">❤</span>
-      </p>
+      <div class="footer-bottom-wrap">
+        <div class="footer-meta-bar">
+          <p class="copyright">
+            {{ t('footer.copyright', { year: new Date().getFullYear() }) }}
+          </p>
+
+          <div class="site-stats" role="group" :aria-label="t('footer.statsGroupAria')">
+            <span class="stat-inline">
+              <svg class="stat-icon" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                <path
+                    fill="currentColor"
+                    d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+                />
+              </svg>
+              <span class="stat-label">{{ t('footer.statsSitePv') }}</span>
+              <span id="busuanzi_site_pv" class="stat-value" aria-live="polite">{{ sitePvText }}</span>
+            </span>
+            <span class="stat-sep" aria-hidden="true">·</span>
+            <span class="stat-inline">
+              <svg class="stat-icon" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                <path
+                    fill="currentColor"
+                    d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"
+                />
+              </svg>
+              <span class="stat-label">{{ t('footer.statsTodayUv') }}</span>
+              <span id="busuanzi_today_uv" class="stat-value" aria-live="polite">{{ todayUvText }}</span>
+            </span>
+            <span class="stat-sep" aria-hidden="true">·</span>
+            <span class="stat-inline">
+              <svg class="stat-icon" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                <path
+                    fill="currentColor"
+                    d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"
+                />
+              </svg>
+              <span class="stat-label">{{ t('footer.statsRunning') }}</span>
+              <span class="stat-value">{{ runningDays }} {{ t('footer.statsRunningUnit') }}</span>
+            </span>
+          </div>
+
+          <p class="made-with">
+            {{ t('footer.madeWith') }} <span class="heart" aria-hidden="true">❤</span>
+          </p>
+        </div>
+      </div>
     </div>
   </footer>
 </template>
@@ -129,12 +142,13 @@ import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
-const { t, tm } = useI18n()
+const { t, tm, locale } = useI18n()
 const route = useRoute()
 
 const emailCopied = ref(false)
-const sitePvText = ref('-- 次')
-const todayUvText = ref('-- 人')
+const STAT_PLACEHOLDER = '—'
+const sitePvText = ref(STAT_PLACEHOLDER)
+const todayUvText = ref(STAT_PLACEHOLDER)
 const techStack = ['Vue3', 'Vite', 'I18n', 'Reveal.js', 'Markdown-it', '@google/model-viewer']
 
 const isExternal = (url) => /^https?:\/\//i.test(url)
@@ -184,8 +198,11 @@ const saveCache = (payload) => {
   }
 }
 
+const normalizeStatNumber = (text) => String(text ?? '').replace(/[^\d]/g, '')
+
 const isValidNumberText = (text) => {
-  return /^\d+$/.test(String(text).trim()) && String(text).trim() !== '0'
+  const n = normalizeStatNumber(text)
+  return n.length > 0 && n !== '0'
 }
 
 const getCurrentStatsFromDom = () => {
@@ -193,29 +210,27 @@ const getCurrentStatsFromDom = () => {
   const todayUvEl = document.getElementById('busuanzi_today_uv')
 
   return {
-    sitePv: sitePvEl?.textContent?.trim() || '',
-    todayUv: todayUvEl?.textContent?.trim() || ''
+    sitePv: normalizeStatNumber(sitePvEl?.textContent),
+    todayUv: normalizeStatNumber(todayUvEl?.textContent)
   }
 }
 
 const applyStatsToDom = (stats) => {
-  const sitePvEl = document.getElementById('busuanzi_site_pv')
-  const todayUvEl = document.getElementById('busuanzi_today_uv')
-
-  if (sitePvEl && stats.sitePv) sitePvEl.textContent = stats.sitePv + ' 次'
-  if (todayUvEl && stats.todayUv) todayUvEl.textContent = stats.todayUv + ' 人'
-
-  if (stats.sitePv) sitePvText.value = stats.sitePv + ' 次'
-  if (stats.todayUv) todayUvText.value = stats.todayUv + ' 人'
+  if (stats.sitePv) {
+    sitePvText.value = t('footer.statsPvFormat', { n: stats.sitePv })
+  }
+  if (stats.todayUv) {
+    todayUvText.value = t('footer.statsUvFormat', { n: stats.todayUv })
+  }
 }
 
 const hydrateFromCache = () => {
   const cache = readCache()
   if (cache) {
-    if (cache.sitePv) sitePvText.value = cache.sitePv
-    if (cache.todayUv) todayUvText.value = cache.todayUv
-    // 先把缓存值同步到 DOM，避免路由切换后短暂出现 0
-    applyStatsToDom(cache)
+    const pv = normalizeStatNumber(cache.sitePv)
+    const uv = normalizeStatNumber(cache.todayUv)
+    if (pv) sitePvText.value = t('footer.statsPvFormat', { n: pv })
+    if (uv) todayUvText.value = t('footer.statsUvFormat', { n: uv })
   }
 }
 
@@ -268,8 +283,8 @@ const refreshBusuanzi = async () => {
 
       if (hasValidSitePv || hasValidTodayUv) {
         const nextCache = {
-          sitePv: hasValidSitePv ? current.sitePv : sitePvText.value,
-          todayUv: hasValidTodayUv ? current.todayUv : todayUvText.value
+          sitePv: hasValidSitePv ? current.sitePv : normalizeStatNumber(sitePvText.value),
+          todayUv: hasValidTodayUv ? current.todayUv : normalizeStatNumber(todayUvText.value)
         }
         saveCache(nextCache)
         applyStatsToDom(nextCache)
@@ -279,7 +294,10 @@ const refreshBusuanzi = async () => {
       // 如果这次没拿到有效值，就恢复上一次成功缓存，避免显示 0
       const cache = readCache()
       if (cache) {
-        applyStatsToDom(cache)
+        applyStatsToDom({
+          sitePv: normalizeStatNumber(cache.sitePv),
+          todayUv: normalizeStatNumber(cache.todayUv)
+        })
       }
     }, 1200)
   }, 180)
@@ -323,6 +341,14 @@ onMounted(async () => {
   window.addEventListener('pageshow', handlePageShow)
 })
 
+watch(locale, () => {
+  const cache = readCache()
+  const pv = normalizeStatNumber(cache?.sitePv ?? sitePvText.value)
+  const uv = normalizeStatNumber(cache?.todayUv ?? todayUvText.value)
+  if (pv) sitePvText.value = t('footer.statsPvFormat', { n: pv })
+  if (uv) todayUvText.value = t('footer.statsUvFormat', { n: uv })
+})
+
 watch(
     () => route.fullPath,
     () => {
@@ -344,67 +370,174 @@ defineExpose({
 
 <style scoped>
 .footer-section {
-  padding: 5rem 2rem 2rem;
-  background-color: var(--nav-bg);
-  border-top: 1px solid var(--border-color);
-  font-family: 'Inter', sans-serif;
+  --footer-serif: Georgia, 'Noto Serif SC', 'Songti SC', 'Times New Roman', serif;
+  --footer-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --footer-pad-x: clamp(1rem, 4vw, 2rem);
+  --footer-pad-top: clamp(1.2rem, 2.8vw, 2.1rem);
+  --footer-pad-bottom: max(1.1rem, env(safe-area-inset-bottom, 0px));
+  --footer-max: min(72rem, 96vw);
+  --footer-section-gap: clamp(1.35rem, 2.8vw, 2.35rem);
+  --footer-ctrl-h: 2.5rem;
+
   position: relative;
+  scroll-margin-top: calc(var(--layout-navbar-height, 72px) + 12px);
+  padding: var(--footer-pad-top) var(--footer-pad-x) var(--footer-pad-bottom);
+  font-family: var(--footer-sans);
+  color: var(--text-color);
+  border-top: 1px solid var(--border-color);
+  /* 实底遮挡 body 的 30px 网格，避免半透明 nav-bg 透出 */
+  background-color: var(--modal-bg);
   overflow: hidden;
 }
 
-.footer-section::before {
+.footer-section::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  /* 顶缘轻微层次，不依赖半透明露出 body */
+  background: linear-gradient(180deg, var(--btn-bg) 0%, transparent 38%);
+  opacity: 0.28;
+}
+
+html.dark .footer-section::after {
+  opacity: 0.22;
+}
+
+.footer-paper {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.22;
+  /* 与 body 网格区分：仅横线、大间距、颜色贴近底而非 --grid-line */
+  background-image: linear-gradient(
+    color-mix(in srgb, var(--border-color) 22%, var(--modal-bg)) 1px,
+    transparent 1px
+  );
+  background-size: 100% 72px;
+  background-position: center top;
+  mask-image: linear-gradient(to bottom, black 0%, black 50%, transparent 100%);
+}
+
+@supports not (color: color-mix(in srgb, white 50%, black)) {
+  .footer-paper {
+    background-image: linear-gradient(var(--border-color) 1px, transparent 1px);
+    opacity: 0.12;
+  }
+}
+
+.footer-inner {
+  position: relative;
+  z-index: 1;
+  max-width: var(--footer-max);
+  margin-inline: auto;
+}
+
+.footer-ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  margin-bottom: clamp(0.5rem, 1.2vw, 0.85rem);
+}
+
+.footer-ornament__line {
+  flex: 1;
+  max-width: 6rem;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
-  opacity: 0.3;
+  background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+}
+
+.footer-ornament__diamond {
+  width: 5px;
+  height: 5px;
+  background: var(--primary-color);
+  opacity: 0.55;
+  transform: rotate(45deg);
+  flex-shrink: 0;
 }
 
 .footer-container {
-  max-width: 1200px;
-  margin: 0 auto;
   display: grid;
-  grid-template-columns: 1.2fr 1fr 1fr;
-  gap: 4rem;
-  margin-bottom: 3rem;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr) minmax(0, 1.02fr);
+  column-gap: var(--footer-section-gap);
+  row-gap: clamp(1rem, 2vw, 1.35rem);
+  align-items: start;
+  margin-bottom: clamp(1rem, 2.5vw, 1.65rem);
 }
 
-/* --- 左侧品牌区 --- */
+.footer-brand {
+  justify-self: start;
+  width: 100%;
+  max-width: min(26rem, 100%);
+}
+
+.footer-tech {
+  justify-self: center;
+  width: 100%;
+  max-width: 23rem;
+}
+
+.footer-nav {
+  justify-self: end;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: clamp(1.25rem, 2.8vw, 2.25rem);
+  width: 100%;
+  margin-inline-start: auto;
+}
+
+/* 品牌区：杂志式眉题 + 衬线标题 */
+.brand-eyebrow {
+  margin: 0 0 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--secondary-color);
+}
+
 .brand-name {
-  font-size: 2rem;
-  font-weight: 800;
-  margin: 0 0 0.6rem;
+  font-family: var(--footer-serif);
+  font-size: clamp(1.65rem, 2.5vw, 2.1rem);
+  font-weight: 600;
+  margin: 0 0 0.65rem;
   color: var(--text-color);
-  letter-spacing: -1px;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
 }
 
 .brand-tagline {
+  margin: 0 0 clamp(1.1rem, 2vw, 1.65rem);
+  font-size: clamp(0.9375rem, 1.2vw, 1.0625rem);
+  line-height: 1.65;
   color: var(--secondary-color);
-  margin-bottom: 2rem;
-  font-size: 1rem;
-  line-height: 1.6;
-  max-width: 300px;
+  max-width: 22rem;
 }
 
-/* 社交与邮箱 */
 .social-actions {
-  display: flex;
-  align-items: center;
-  gap: 1.2rem;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.5rem 0.65rem;
 }
 
 .social-links {
-  display: flex;
-  gap: 0.8rem;
+  display: inline-flex;
+  align-items: stretch;
+  gap: 0.5rem;
 }
 
 .social-btn {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
+  box-sizing: border-box;
+  width: var(--footer-ctrl-h);
+  height: var(--footer-ctrl-h);
+  min-width: var(--footer-ctrl-h);
+  min-height: var(--footer-ctrl-h);
+  border-radius: 10px;
   background: var(--btn-bg);
   border: 1px solid var(--border-color);
   display: flex;
@@ -412,120 +545,149 @@ defineExpose({
   justify-content: center;
   color: var(--text-color);
   text-decoration: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
 }
 
 .social-btn:hover {
   background: var(--modal-bg);
-  border-color: var(--primary-color);
+  border-color: color-mix(in srgb, var(--primary-color) 45%, var(--border-color));
   color: var(--primary-color);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(var(--primary-color-rgb, 96, 165, 250), 0.15);
+  box-shadow: 0 6px 18px rgba(var(--primary-color-rgb, 59, 130, 246), 0.12);
+}
+
+.social-btn:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 3px;
 }
 
 .social-btn i {
-  position: relative;
-  z-index: 1;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   color: inherit;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .social-btn:hover {
+    transform: translateY(-2px);
+  }
+}
+
 .email-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 18px;
-  border-radius: 12px;
+  justify-content: center;
+  gap: 0.45rem;
+  box-sizing: border-box;
+  min-height: var(--footer-ctrl-h);
+  height: var(--footer-ctrl-h);
+  padding: 0 0.95rem;
+  line-height: 1;
+  border-radius: 10px;
   border: 1px solid var(--border-color);
   background: var(--btn-bg);
   color: var(--text-color);
   cursor: pointer;
+  font-family: inherit;
   font-weight: 600;
-  font-size: 0.9rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-  z-index: 1;
+  font-size: 0.8125rem;
+  letter-spacing: 0.02em;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
 }
 
 .email-btn:hover {
   background: var(--modal-bg);
-  border-color: var(--primary-color);
+  border-color: color-mix(in srgb, var(--primary-color) 45%, var(--border-color));
   color: var(--primary-color);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(var(--primary-color-rgb, 96, 165, 250), 0.15);
+  box-shadow: 0 6px 18px rgba(var(--primary-color-rgb, 59, 130, 246), 0.12);
+}
+
+.email-btn:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .email-btn:hover {
+    transform: translateY(-2px);
+  }
 }
 
 .email-btn .btn-icon {
-  position: relative;
-  z-index: 1;
   display: flex;
   align-items: center;
 }
 
-.email-btn span:not(.btn-icon) {
-  position: relative;
-  z-index: 1;
-}
-
-.email-btn.copied::before {
-  opacity: 1;
-  background: var(--modal-bg);
-}
-
 .email-btn.copied {
   border-color: #10b981;
-  color: #10b981;
-  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.15);
+  color: #059669;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.12);
 }
 
-/* --- 中间技术栈区 --- */
+/* 技术栈：与左右列形成「左齐 / 中轴 / 右齐」节奏 */
 .footer-tech h3 {
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: var(--secondary-color);
-  margin-bottom: 1.2rem;
+  margin: 0 0 0.75rem;
+  text-align: center;
+  font-size: 0.6875rem;
   font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--secondary-color);
 }
 
 .tech-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 0.45rem 0.5rem;
+  justify-content: center;
 }
 
 .tech-tag {
-  padding: 6px 14px;
-  background: var(--btn-bg);
-  border-radius: 8px;
-  font-size: 0.85rem;
+  padding: 0.35rem 0.75rem;
+  background: color-mix(in srgb, var(--btn-bg) 92%, transparent);
+  border-radius: 6px;
+  font-size: 0.8125rem;
   color: var(--text-color);
   border: 1px solid var(--border-color);
-  transition: all 0.25s ease;
-  cursor: default;
   font-weight: 500;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .tech-tag:hover {
-  border-color: var(--primary-color);
+  border-color: color-mix(in srgb, var(--primary-color) 40%, var(--border-color));
   color: var(--primary-color);
   background: var(--modal-bg);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(var(--primary-color-rgb, 96, 165, 250), 0.2);
+  box-shadow: 0 3px 10px rgba(var(--primary-color-rgb, 59, 130, 246), 0.08);
 }
 
-/* --- 右侧导航区 --- */
-.footer-nav {
-  display: flex;
-  gap: 3rem;
+@supports not (background-color: color-mix(in srgb, white 50%, black)) {
+  .tech-tag {
+    background: var(--btn-bg);
+  }
+
+  .tech-tag:hover {
+    border-color: var(--primary-color);
+  }
 }
 
 .nav-group h4 {
-  font-size: 0.95rem;
+  margin: 0 0 0.85rem;
+  font-size: 0.6875rem;
   font-weight: 600;
-  margin-bottom: 1.2rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
   color: var(--text-color);
 }
 
@@ -536,133 +698,160 @@ defineExpose({
 }
 
 .nav-group li {
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.55rem;
+}
+
+.nav-group li:last-child {
+  margin-bottom: 0;
 }
 
 .nav-group a {
   text-decoration: none;
   color: var(--secondary-color);
-  font-size: 0.9rem;
-  transition: all 0.2s ease;
-  position: relative;
-  display: inline-block;
-}
-
-.nav-group a::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: var(--primary-color);
-  transition: width 0.3s ease;
+  font-size: 0.875rem;
+  transition: color 0.2s ease;
+  text-underline-offset: 0.2em;
 }
 
 .nav-group a:hover {
   color: var(--primary-color);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
 }
 
-.nav-group a:hover::after {
-  width: 100%;
+.nav-group a:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
-/* --- 底部版权 --- */
-.footer-bottom {
-  border-top: 1px solid var(--border-color);
-  padding-top: 2rem;
-  display: flex;
-  justify-content: space-between;
+/* 底栏：单行三列 — 版权 | 统计 | 署名，节省纵向空间 */
+.footer-bottom-wrap {
+  border-top: 1px solid color-mix(in srgb, var(--border-color) 85%, transparent);
+  padding-top: clamp(0.65rem, 1.2vw, 0.95rem);
+  padding-bottom: 0.05rem;
+}
+
+@supports not (border-color: color-mix(in srgb, white 50%, black)) {
+  .footer-bottom-wrap {
+    border-top-color: var(--border-color);
+  }
+}
+
+.footer-meta-bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
+  column-gap: clamp(0.85rem, 2.2vw, 1.65rem);
+  row-gap: 0.4rem;
 }
 
 .copyright {
-  font-size: 0.85rem;
-  color: var(--secondary-color);
   margin: 0;
-  flex: 0 0 auto;
+  justify-self: start;
+  text-align: left;
+  font-size: 0.6875rem;
+  line-height: 1.45;
+  letter-spacing: 0.03em;
+  color: var(--secondary-color);
+  max-width: 22rem;
 }
 
-/* 站点统计样式 - 卡片式布局 */
 .site-stats {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 12px;
+  align-items: center;
   justify-content: center;
+  justify-self: center;
+  gap: 0;
+  max-width: min(100%, 42rem);
+  font-size: 0.6875rem;
+  color: var(--secondary-color);
 }
 
-.stat-card {
+.stat-inline {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 18px;
-  background: linear-gradient(135deg, var(--btn-bg), var(--modal-bg));
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  font-size: 0.9rem;
-  color: var(--secondary-color);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  gap: 0.28rem;
+  white-space: nowrap;
 }
 
-.stat-card:hover {
-  border-color: var(--primary-color);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(var(--primary-color-rgb, 96, 165, 250), 0.2);
+.stat-sep {
+  color: color-mix(in srgb, var(--secondary-color) 45%, var(--border-color));
+  padding: 0 0.4rem;
+  font-weight: 300;
+  user-select: none;
+  line-height: 1;
+}
+
+@supports not (color: color-mix(in srgb, white 50%, black)) {
+  .stat-sep {
+    color: var(--border-color);
+  }
 }
 
 .stat-icon {
+  flex-shrink: 0;
   color: var(--primary-color);
-  opacity: 0.85;
+  opacity: 0.82;
 }
 
 .stat-label {
   font-weight: 500;
   color: var(--secondary-color);
+  letter-spacing: 0.02em;
 }
 
 .stat-value {
-  font-weight: 700;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
   color: var(--text-color);
-  font-family: 'Courier New', 'Monaco', monospace;
-  font-size: 0.95rem;
-  min-width: 30px;
-  text-align: right;
+  font-family: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Monaco, monospace;
+  font-size: 0.75rem;
 }
 
 .made-with {
-  font-size: 0.85rem;
-  color: var(--secondary-color);
   margin: 0;
-  flex: 0 0 auto;
+  justify-self: end;
   text-align: right;
+  font-size: 0.6875rem;
+  line-height: 1.45;
+  letter-spacing: 0.02em;
+  color: var(--secondary-color);
+  max-width: 20rem;
 }
 
 .heart {
-  color: #e63946;
-  animation: heartbeat 1.5s ease infinite;
+  color: #e11d48;
   display: inline-block;
 }
 
-@keyframes heartbeat {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+@media (prefers-reduced-motion: no-preference) {
+  .heart {
+    animation: heartbeat 1.6s ease-in-out infinite;
+  }
+
+  @keyframes heartbeat {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.08);
+    }
+  }
 }
 
-/* 响应式 */
 @media (max-width: 1024px) {
   .footer-container {
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: clamp(2rem, 5vw, 2.75rem);
     text-align: center;
   }
 
   .brand-tagline {
-    margin-left: auto;
-    margin-right: auto;
+    margin-inline: auto;
   }
 
   .social-actions {
@@ -677,73 +866,94 @@ defineExpose({
     justify-content: center;
   }
 
-  .footer-bottom {
+  .footer-brand,
+  .footer-tech,
+  .footer-nav {
+    justify-self: center;
+    margin-inline-start: unset;
+  }
+
+  .footer-brand {
+    max-width: min(26rem, 100%);
+  }
+
+  .footer-tech {
+    max-width: min(26rem, 100%);
+  }
+}
+
+/* 平板及以下：底栏两行（版权 + 署名 | 统计整行），比三行堆叠更省高 */
+@media (max-width: 1180px) {
+  .footer-meta-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      'copy made'
+      'stats stats';
+    justify-items: stretch;
+    column-gap: 0.75rem;
+    row-gap: 0.45rem;
+  }
+
+  .copyright {
+    grid-area: copy;
+    text-align: left;
+    max-width: none;
+  }
+
+  .made-with {
+    grid-area: made;
+    text-align: right;
+    max-width: none;
+  }
+
+  .site-stats {
+    grid-area: stats;
+    justify-self: center;
+  }
+}
+
+@media (max-width: 520px) {
+  .footer-meta-bar {
+    display: flex;
     flex-direction: column;
+    align-items: center;
     text-align: center;
-    gap: 0.8rem;
   }
 
   .copyright,
   .made-with {
     text-align: center;
+    max-width: none;
+  }
+
+  .stat-inline {
+    white-space: normal;
   }
 
   .site-stats {
-    order: -1;
-    gap: 10px;
+    flex-direction: column;
+    row-gap: 0.35rem;
   }
 
-  .stat-card {
-    padding: 8px 14px;
-    font-size: 0.85rem;
+  .stat-sep {
+    display: none;
   }
 }
 
-/* 大屏优化（27寸及以上） */
-@media (min-width: 1600px) {
+@media (min-width: 1440px) {
   .footer-section {
-    padding: 6rem 2rem 2.5rem;
+    --footer-pad-top: clamp(1.35rem, 2.4vw, 2.15rem);
   }
-  
+
   .footer-container {
-    max-width: 1400px;
-    gap: 5rem;
+    column-gap: clamp(1.65rem, 2.6vw, 2.55rem);
   }
-  
-  .brand-name {
-    font-size: 2.2rem;
-  }
-  
-  .brand-tagline {
-    font-size: 1.1rem;
-    max-width: 350px;
-  }
-  
-  .social-btn {
-    width: 46px;
-    height: 46px;
-  }
-  
-  .email-btn {
-    padding: 12px 20px;
-    font-size: 0.95rem;
-  }
-  
-  .footer-tech h3 {
-    font-size: 0.95rem;
-  }
-  
-  .tech-tag {
-    font-size: 0.9rem;
-    padding: 7px 16px;
-  }
-  
-  .nav-group h4 {
-    font-size: 1rem;
-  }
-  
-  .nav-group a {
-    font-size: 0.95rem;
+}
+
+@media (min-width: 1920px) {
+  .footer-section {
+    --footer-max: min(76rem, 94vw);
   }
 }
 </style>

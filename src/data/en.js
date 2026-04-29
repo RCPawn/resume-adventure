@@ -247,11 +247,11 @@ export default {
         subtitle: 'Snapshots of implemented modules and core system functionalities.',
         viewDetail: 'View Details',
         items: {
-            // Row 1: Heritage Exhibition
-            work0: { title: 'Data Dashboard', desc: 'Real-time monitoring panel built with Vue3 and ECharts to visualize multi-dimensional business metrics.' },
-            work1: { title: 'Heritage Digital Hall', desc: 'Frontend development for a cultural exhibition interface, featuring responsive layouts and interactive content.' },
-            work2: { title: 'Knowledge Graph', desc: 'Visualization of complex data relationships using force-directed graphs with node interaction support.' },
-            work3: { title: 'Exhibit Details', desc: 'High-fidelity UI implementation of artifact detail pages with cross-device optimization.' },
+            // Row 1: Heritage Exhibition (order matches GallerySection screenshots)
+            work0: { title: 'Digital Twin Dashboard', desc: 'Dark-theme twin dashboard: resource mix, category breakdown, interaction bars, word cloud, centered on the top exhibit 3D model.' },
+            work1: { title: 'Immersive Portal Home', desc: 'Light hero with live KPIs for exhibits, views, and engagement; featured Sanheyuan digital twin on the right.' },
+            work2: { title: 'Online Hall · Exhibit Detail', desc: 'Exhibit page for Sanheyuan: Three.js viewer, narrative sections, and threaded discussion panel.' },
+            work3: { title: 'Paper Universe · Photo Column', desc: 'Masonry grid of heritage photo essays: tie-dye, architecture, wood carving, tea culture, and more.' },
             // Gateway Platform
             work4: { title: 'Gateway Console', desc: 'Admin interface for managing microservices gateway, including route forwarding and status monitoring.' },
             work5: { title: 'Traffic Defense Monitor', desc: 'Real-time visualization of QPS, concurrency, and error rates with threshold alerting.' },
@@ -266,10 +266,10 @@ export default {
             work12: { title: 'Route Topology', desc: 'Service routing topology showing the complete request path from client through gateway to downstream services.' },
             work13: { title: 'Async Logging System', desc: 'Asynchronous log collection and storage module designed to minimize main thread latency.' },
             // Exhibition Extras
-            work14: { title: 'Waterfall Gallery', desc: 'CSS Columns-based waterfall layout for heritage photography with immersive lightbox viewing mode.' },
-            work15: { title: 'Audio Archive', desc: 'Integration of audio player with 3D models for an immersive audio-visual heritage experience.' },
+            work14: { title: 'Inheritance Graph', desc: 'Force-directed lineage graph for crafts: projects, sub-categories, and inheritor nodes with pan/zoom.' },
+            work15: { title: 'Graph Cover Page', desc: 'Entry screen for the inheritance map: 3D book motif and CTA, subtitle Interwoven · Universe on Paper.' },
             work16: { title: 'Live Traffic Waveform', desc: 'ECharts dynamic rendering of gateway QPS, error rates, and response time curves for real-time health monitoring.' },
-            work17: { title: 'Portal Homepage', desc: 'Minimalist portal design showcasing Bai ethnic cultural essence, guiding users into an immersive exploration journey.' },
+            work17: { title: 'Heritage Article View', desc: 'Long-form heritage story with image carousel, thumbnails, and caption overlay for tie-dye and similar topics.' },
         }
     },
 
@@ -281,7 +281,15 @@ export default {
         copyEmail: 'Copy Email',
         emailCopied: 'Copied!',
         copyright: '© {year} Dev Space. All rights reserved.',
-        madeWith: 'Designed & Built by RCPAWN',
+        madeWith: 'Designed & Built by rcpawn',
+        stayInTouch: 'Stay in touch',
+        statsSitePv: 'Total views',
+        statsTodayUv: 'Visitors today',
+        statsRunning: 'Online for',
+        statsRunningUnit: 'days',
+        statsPvFormat: '{n} views',
+        statsUvFormat: '{n} visitors',
+        statsGroupAria: 'Site statistics',
         socialLinks: [
             {url: 'https://github.com/RCPawn', icon: 'fab fa-github'},
             //{url: 'https://www.douyin.com/user/self?from_tab_name=main', icon: 'fab fa-tiktok'},

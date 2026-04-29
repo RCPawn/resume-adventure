@@ -4,7 +4,7 @@
     <Chatbot/>
     <HeroSection/>
     <ProjectsSection/>
-    <SkillsSection/>
+    <!-- <SkillsSection/> -->
     <ExperienceSection/>
     <FooterSection/>
   </div>

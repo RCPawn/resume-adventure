@@ -88,13 +88,13 @@ import {useI18n} from 'vue-i18n';
 
 const {t} = useI18n();
 
-// --- 数据准备：从展览、网关、技术亮点中精选 18 张截图 ---
+// --- 数据准备：从展览、网关、技术亮点中精选截图（非遗展陈使用 public/projects/exhibition.assets） ---
 const rowOneItems = [
-  // 非遗展览项目
-  {id: 'work0', imageUrl: "/images/works/数据大屏.png"},
-  {id: 'work1', imageUrl: "/images/works/非遗展厅.png"},
-  {id: 'work2', imageUrl: "/images/works/传承图谱.png"},
-  {id: 'work3', imageUrl: "/images/works/展品详情.png"},
+  // 非遗展览：按视觉优先级 — 数据大屏 → 门户首页 → 在线展厅 → 纸上乾坤
+  {id: 'work0', imageUrl: "/projects/exhibition.assets/image-20260404234438634.png"},
+  {id: 'work1', imageUrl: "/projects/exhibition.assets/image-20260409102800430.png"},
+  {id: 'work2', imageUrl: "/projects/exhibition.assets/image-20260409103008253.png"},
+  {id: 'work3', imageUrl: "/projects/exhibition.assets/image-20260409103045434.png"},
   // 网关平台
   {id: 'work4', imageUrl: "/images/works/网关控制台.png"},
   {id: 'work5', imageUrl: "/images/works/流量防卫.png"},
@@ -110,11 +110,11 @@ const rowTwoItems = [
   {id: 'work11', imageUrl: "/images/works/流量防卫配置.png"},
   {id: 'work12', imageUrl: "/images/works/路由矩阵.png"},
   {id: 'work13', imageUrl: "/images/works/异步日志.png"},
-  // 展览项目补充
-  {id: 'work14', imageUrl: "/projects/exhibition.assets/image-20260405002226145.png"},
-  {id: 'work15', imageUrl: "/projects/exhibition.assets/image-20260405002328381.png"},
+  // 展览项目补充：传承图谱（交互）→ 扉页 → 图文专题
+  {id: 'work14', imageUrl: "/projects/exhibition.assets/image-20260405002122659.png"},
+  {id: 'work15', imageUrl: "/projects/exhibition.assets/image-20260409102845527.png"},
   {id: 'work16', imageUrl: "/projects/gateway.assets/image-20260217132934258.png"},
-  {id: 'work17', imageUrl: "/projects/exhibition.assets/image-20260405001815342.png"},
+  {id: 'work17', imageUrl: "/projects/exhibition.assets/image-20260409103123369.png"},
 ];
 
 const rowTwoReversed = [...rowTwoItems].reverse();

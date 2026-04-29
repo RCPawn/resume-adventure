@@ -106,11 +106,11 @@ export default {
         subtitle: '核心功能模块截图，记录系统关键逻辑的实现与运行状态。',
         viewDetail: '查看详情',
         items: {
-            // 第一行：非遗展览
-            work0: { title: '数据驾驶舱', desc: '非遗平台可视化看板，采用双重检查锁优化复杂聚合查询，消除缓存击穿隐患。' },
-            work1: { title: '数字化展厅', desc: '基于 Vue3 实现的非遗资产展示界面，支持 3D 沉浸式交互与响应式布局。' },
-            work2: { title: '传承关系图谱', desc: '利用 HashMap 索引重构递归逻辑，将多级分类树的查询复杂度从 O(n²) 降维至 O(n)。' },
-            work3: { title: '展品详情页', desc: '实施动静分离策略，结合长效缓存与状态实时聚合，大幅降低系统 IO 开销。' },
+            // 第一行：非遗展览（与 GallerySection 截图顺序一致）
+            work0: { title: '数字孪生数据大屏', desc: '深色主题数字孪生仪表盘：资源构成、类目分布、交互行为与热词云，中央聚焦全站热度最高的白族三合院 3D。' },
+            work1: { title: '沉浸式门户首页', desc: '浅色门户首屏：实时监测展品、浏览与互动等核心指标，右侧呈现「镇馆之宝」三合院数字孪生模型。' },
+            work2: { title: '在线展厅 · 展品详情', desc: '在线展厅中的白族三合院：左侧 Three.js 场景漫游，中部图文与历史渊源，右侧用户讨论区。' },
+            work3: { title: '纸上乾坤 · 影像专栏', desc: '图文专栏瀑布流布局，呈现扎染、建筑、木雕、三道茶等非遗影像与生活叙事。' },
             // 网关平台
             work4: { title: '网关管理控制台', desc: '统一接入网关的可视化管理端，集成全链路鉴权与服务运行状态监控。' },
             work5: { title: '流量防卫监控', desc: '深度集成 Sentinel 实现 QPS 流控与熔断降级，通过 Nacos 实现规则持久化。' },
@@ -125,10 +125,10 @@ export default {
             work12: { title: '路由矩阵总览', desc: '服务路由拓扑图，清晰展示请求从客户端经网关分发至下游微服务的完整链路。' },
             work13: { title: '异步日志削峰', desc: '基于 RabbitMQ 实现日志解耦，高延迟环境下使系统吞吐量由 89 提升至 1100+ QPS。' },
             // 展览补充
-            work14: { title: '瀑布流影像馆', desc: '采用 CSS Columns 瀑布流布局展示非遗摄影作品，支持沉浸式看图模式。' },
-            work15: { title: '声音档案库', desc: '整合音频播放器与 3D 模型展示，实现视听融合的非遗沉浸式体验。' },
+            work14: { title: '传承关系图谱', desc: '传统技艺谱系力导向图：技艺项目、子分类与传承人节点可拖拽缩放，支持右侧传承说明。' },
+            work15: { title: '传承图谱扉页', desc: '传承图谱入口扉页：立体典籍视觉与「点击查阅」引导，副标题「经纬交织 · 纸上乾坤」。' },
             work16: { title: '实时流量波形', desc: 'ECharts 动态绘制网关 QPS、错误率及响应耗时曲线，直观呈现系统健康状态。' },
-            work17: { title: '门户首页设计', desc: '门户页面以极简美学呈现白族文化精髓，引导用户快速进入沉浸式探索之旅。' },
+            work17: { title: '非遗图文档案', desc: '单篇非遗图文专题：主图轮播与缩略图轨，叠底解说文案，完整呈现扎染等叙事内容。' },
         }
     },
 
@@ -271,7 +271,15 @@ export default {
         copyEmail: '复制邮箱',
         emailCopied: '已复制!',
         copyright: '© {year} 开发者空间. 保留所有权利.',
-        madeWith: 'RCPAWN 用热爱和代码精心制作',
+        madeWith: 'rcpawn 用热爱和代码精心制作',
+        stayInTouch: '保持联系',
+        statsSitePv: '总访问量',
+        statsTodayUv: '今日访客',
+        statsRunning: '已运行',
+        statsRunningUnit: '天',
+        statsPvFormat: '{n} 次',
+        statsUvFormat: '{n} 人',
+        statsGroupAria: '站点统计',
         socialLinks: [
             {url: 'https://github.com/RCPawn', icon: 'fab fa-github'},
             //{url: 'https://leetcode.cn/u/guo-he-zu-ew/', icon: 'icon-leetcode'}
