@@ -8,20 +8,44 @@
       <div class="hero-content">
         <h1 class="project-title">{{ currentProject?.title }}</h1>
         <p class="project-desc">{{ currentProject?.description }}</p>
-        <div class="meta-tags">
-          <span class="meta-tag date">📅 {{ currentProject?.date || '2025' }}</span>
-          <span v-for="tag in currentProject?.tags" :key="tag" class="meta-tag tech">⚡{{ tag }}</span>
-          <span class="meta-tag views">
-            <svg class="stat-icon" viewBox="0 0 24 24" width="20" height="20">
-              <path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-            </svg>
-            <span class="views-text">
-              <span id="busuanzi_page_pv">--</span> 次
+        <div class="meta-tags-wrap">
+          <div class="meta-tags" aria-label="项目元信息">
+            <span class="meta-tag meta-tag--date">
+              <svg class="meta-tag__ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                <path fill="currentColor" d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/>
+              </svg>
+              <span>{{ currentProject?.date || '2025' }}</span>
             </span>
-          </span>
-          <a v-if="currentProject?.repoLink" :href="currentProject.repoLink" target="_blank" class="meta-tag link" rel="noreferrer">
-            🔗 源码仓库
-          </a>
+            <span
+              v-for="tag in currentProject?.tags"
+              :key="tag"
+              class="meta-tag meta-tag--tech"
+              :title="tag"
+            >
+              <span class="meta-tag__tech-text">{{ tag }}</span>
+            </span>
+            <span class="meta-tag meta-tag--views" title="本页阅读量（不蒜子）">
+              <svg class="meta-tag__ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                <path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+              </svg>
+              <span class="meta-tag__views-inner">
+                <span id="busuanzi_page_pv" v-once class="page-pv-num">--</span><span class="page-pv-suffix"> 次</span>
+              </span>
+            </span>
+            <a
+              v-if="currentProject?.repoLink"
+              :href="currentProject.repoLink"
+              target="_blank"
+              class="meta-tag meta-tag--link"
+              rel="noreferrer"
+              title="在浏览器中打开源码仓库"
+            >
+              <svg class="meta-tag__ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                <path fill="currentColor" d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
+              </svg>
+              <span>源码</span>
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -32,7 +56,7 @@
         加载精彩内容中...
       </div>
       <div v-else-if="error" class="error-state">😕 {{ error }}</div>
-      <div v-else class="content-flex">
+      <div v-else class="content-flex" :class="{ 'doc-layout--with-toc': toc.length > 0 }">
         <aside v-if="toc.length" class="toc" :class="{ 'toc-hidden': isTocHidden }">
           <div class="toc-header" @click="toggleToc" role="button" tabindex="0" @keydown.enter="toggleToc">
             <div class="toc-title">
@@ -166,9 +190,7 @@ const fetchMarkdown = async () => {
   }
 }
 
-// ✅ 不蒜子统计 —— 与 FooterSection 完全一致的实现
-// =============================================
-
+// 不蒜子：项目详情页无 Footer，须自行保证脚本与 #busuanzi_page_pv 生命周期对齐（SPA 须在 DOM 就绪后多次触发 fetch）
 const BUSUANZI_SCRIPT_ID = 'busuanzi-script'
 const BUSUANZI_SCRIPT_URL = 'https://cdn.busuanzi.cc/busuanzi/3.6.9/busuanzi.min.js'
 const BUSUANZI_FETCH_URL = '//busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback'
@@ -198,30 +220,38 @@ const loadBusuanziScript = () => {
   })
 }
 
-const refreshBusuanzi = async () => {
-  await nextTick()
-
-  window.setTimeout(() => {
-    try {
-      if (window.bszCaller && typeof window.bszCaller.fetch === 'function') {
-        window.bszCaller.fetch(BUSUANZI_FETCH_URL, () => {})
-      }
-    } catch (err) {
-      // 忽略错误
+const invokeBusuanziFetch = () => {
+  try {
+    if (window.bszCaller && typeof window.bszCaller.fetch === 'function') {
+      window.bszCaller.fetch(BUSUANZI_FETCH_URL, () => {})
     }
-  }, 180)
+  } catch {
+    // 忽略
+  }
+}
+
+/** 与 Footer 类似：等 DOM 稳定后拉取；并在一段时间后补拉，避免首屏 markdown 异步导致漏更 */
+const refreshBusuanziPagePv = async () => {
+  await nextTick()
+  const run = () => invokeBusuanziFetch()
+  window.setTimeout(run, 180)
+  window.setTimeout(run, 900)
+  window.setTimeout(run, 1800)
 }
 
 onMounted(async () => {
-  if (window.innerWidth <= 768) isTocHidden.value = true
+  if (typeof window !== 'undefined' && window.innerWidth <= 768) isTocHidden.value = true
 
-  await fetchMarkdown()
+  const scriptPromise = loadBusuanziScript().catch(() => false)
+  const mdPromise = fetchMarkdown()
+
+  await scriptPromise
   await nextTick()
+  refreshBusuanziPagePv()
 
-  const scriptLoaded = await loadBusuanziScript().catch(() => false)
-  if (!scriptLoaded) return
-
-  refreshBusuanzi()
+  await mdPromise
+  await nextTick()
+  refreshBusuanziPagePv()
 })
 
 watch(
@@ -229,9 +259,14 @@ watch(
     async () => {
       await fetchMarkdown()
       await nextTick()
-      refreshBusuanzi()
+      refreshBusuanziPagePv()
     }
 )
+
+watch(loading, (done) => {
+  if (!done) return
+  nextTick(() => refreshBusuanziPagePv())
+})
 </script>
 
 <style scoped>
@@ -239,14 +274,28 @@ watch(
    基础布局
    ================================= */
 .page-container {
+  /* 略宽于 1200：长表格/图文并排更舒适；仍用 max-width 防止超宽一行过长 */
+  --content-max: min(1360px, min(96vw, 100vw - 24px));
+  --page-pad-x: clamp(16px, 2.5vw, 32px);
+  --section-gap: clamp(12px, 2vw, 24px);
+  /* 主视觉：兼顾笔记本矮屏与 27" 一屏纵览，避免单靠 vh 撑出视口 */
+  --project-hero-h: min(52vh, calc(100vh - clamp(120px, 18vh, 220px)));
   min-height: 100vh;
+  min-height: 100dvh;
   background-color: var(--bg-color);
 }
 
-/* Hero 区域保持原样 */
+@supports (height: 1dvh) {
+  .page-container {
+    --project-hero-h: min(52dvh, calc(100dvh - clamp(120px, 18vh, 220px)));
+  }
+}
+
 .hero-section {
   position: relative;
-  height: 60vh;
+  height: var(--project-hero-h);
+  min-height: 200px;
+  max-height: min(560px, 85vh);
   background-size: cover;
   background-position: center;
   display: flex;
@@ -281,88 +330,164 @@ watch(
   position: relative;
   z-index: 2;
   width: 100%;
-  max-width: 900px;
+  max-width: var(--content-max);
   margin: 0 auto;
-  padding: 0 20px 60px 20px;
+  padding: 0 var(--page-pad-x) clamp(28px, 5vh, 48px);
   color: white;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
 }
 
 .project-title {
-  font-size: 3.5rem;
+  font-size: clamp(1.75rem, 2.5vw + 1rem, 3.5rem);
   font-weight: 800;
   margin: 0 0 10px 0;
   letter-spacing: -1px;
-  line-height: 1.1;
+  line-height: 1.15;
 }
 
 .project-desc {
-  font-size: 1.2rem;
+  font-size: clamp(1rem, 0.8vw + 0.85rem, 1.2rem);
   opacity: 0.9;
-  margin-bottom: 24px;
-  max-width: 600px;
+  margin-bottom: var(--section-gap);
+  max-width: min(600px, 92vw);
+  line-height: 1.55;
 }
 
+.meta-tags-wrap {
+  margin-top: 14px;
+  margin-left: calc(-1 * var(--page-pad-x));
+  margin-right: calc(-1 * var(--page-pad-x));
+}
+
+/* 单行横向滚动：标签再多也不换行挤乱版面（资讯/App 里常见） */
 .meta-tags {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 16px;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: var(--page-pad-x);
+  -webkit-overflow-scrolling: touch;
+  padding: 2px var(--page-pad-x) 6px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.28) transparent;
 }
 
+.meta-tags::-webkit-scrollbar {
+  height: 5px;
+}
+
+.meta-tags::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+}
+
+.meta-tags::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .meta-tags {
+    scroll-behavior: auto;
+  }
+
+  .meta-tag--link:hover,
+  .meta-tag--link:active {
+    transform: none;
+  }
+}
+
+/* 与下方文档卡片一致的「圆角条」语言，避免大胶囊抢戏 */
 .meta-tag {
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.meta-tag.date {
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.meta-tag.tech {
-  background: rgba(96, 165, 250, 0.2);
-  border: 1px solid rgba(96, 165, 250, 0.3);
-  color: #60a5fa;
-}
-
-.meta-tag.views {
-  background: rgba(16, 185, 129, 0.2);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  color: #10b981;
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
   padding: 6px 12px;
-}
-
-.views-icon {
-  flex-shrink: 0;
-  opacity: 0.9;
-}
-
-.views-text {
-  font-size: 0.85rem;
+  border-radius: 10px;
+  font-size: 0.8125rem;
   font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(15, 23, 42, 0.42);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset, 0 2px 12px rgba(0, 0, 0, 0.15);
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
   white-space: nowrap;
 }
 
-.meta-tag.link {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  text-decoration: none;
-  color: white;
+.meta-tag__ico {
+  flex-shrink: 0;
+  opacity: 0.88;
 }
 
-.meta-tag.link:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
+.meta-tag--date {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.meta-tag--tech {
+  min-width: 0;
+  max-width: min(16rem, 72vw);
+  border-left: 3px solid color-mix(in srgb, var(--primary-color) 75%, white);
+  padding-left: 10px;
+}
+
+@supports not (color: color-mix(in srgb, red, blue)) {
+  .meta-tag--tech {
+    border-left-color: var(--primary-color);
+  }
+}
+
+.meta-tag__tech-text {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.meta-tag--views {
+  border-color: rgba(52, 211, 153, 0.35);
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.meta-tag__views-inner {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.page-pv-num {
+  font-variant-numeric: tabular-nums;
+  min-width: 2ch;
+  display: inline-block;
+}
+
+.page-pv-suffix {
+  font-weight: 500;
+}
+
+.meta-tag--link {
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.95);
+  cursor: pointer;
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.meta-tag--link:hover {
+  border-color: rgba(255, 255, 255, 0.38);
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+.meta-tag--link:active {
+  transform: translateY(0);
 }
 
 /* =================================
@@ -371,16 +496,31 @@ watch(
 .content-container {
   position: relative;
   z-index: 3;
-  max-width: 1250px; /* 放宽以便显示侧边目录 */
-  margin: -50px auto 40px auto;
-  padding: 0 20px;
+  width: 100%;
+  max-width: var(--content-max);
+  margin: clamp(-32px, -4vh, -24px) auto clamp(28px, 4vh, 40px);
+  padding: 0 var(--page-pad-x);
+  box-sizing: border-box;
 }
 
-/* 当有内容时，使用 flex 布局：左主内容，右 TOC */
+/* 正文区：无目录时仅 flex；有目录时由 .doc-layout--with-toc 统一成「单卡片」 */
 .content-flex {
   display: flex;
   gap: 24px;
   align-items: flex-start;
+}
+
+/* 有目录：整页一块面板，目录与正文同高对齐（文档站常见做法，避免目录「飘着」） */
+.content-flex.doc-layout--with-toc {
+  gap: 0;
+  align-items: stretch;
+  background: var(--modal-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 22px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 20px 50px -18px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
 }
 
 /* Markdown 主列 */
@@ -389,47 +529,87 @@ watch(
   min-width: 0; /* 允许子元素溢出横向滚动 */
 }
 
-/* TOC 侧边栏 */
+.content-flex.doc-layout--with-toc .markdown-column {
+  min-width: 0;
+  flex: 1 1 min(0, 100%);
+}
+
+/* TOC 侧边栏：与正文同属一块面板 */
 .toc {
-  width: 240px;
-  flex: 0 0 240px;
+  width: 248px;
+  flex: 0 0 248px;
   position: sticky;
-  top: 100px;
-  height: calc(100vh - 120px);
-  overflow: auto;
+  align-self: flex-start;
+  top: 88px;
+  max-height: min(calc(100vh - 100px), calc(100dvh - 100px));
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
   background: transparent;
   border-radius: 12px;
   padding: 12px;
   box-sizing: border-box;
-  transition: transform .25s ease, opacity .25s ease;
+  transition: opacity .2s ease;
+}
+
+.content-flex.doc-layout--with-toc .toc {
+  position: sticky;
+  top: 72px;
+  max-height: min(calc(100vh - 88px), calc(100dvh - 88px));
+  height: auto;
+  width: min(268px, 26vw);
+  flex: 0 0 min(268px, 26vw);
+  padding: 20px 14px 28px 20px;
+  border-radius: 0;
+  background: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--btn-bg) 92%, var(--primary-color) 8%) 0%,
+    var(--btn-bg) 48%,
+    var(--modal-bg) 100%
+  );
+  border-right: 1px solid var(--border-color);
+  box-shadow: 4px 0 24px -20px rgba(0, 0, 0, 0.15);
+}
+
+/* 无 color-mix 的内核：纯色底 */
+@supports not (background: color-mix(in srgb, red, blue)) {
+  .content-flex.doc-layout--with-toc .toc {
+    background: var(--btn-bg);
+  }
 }
 
 /* 隐藏效果（移动端折叠） */
 .toc.toc-hidden {
-  opacity: 0.9;
-  transform: translateY(0);
+  opacity: 0.92;
 }
 
-/* TOC header - 使用版本二的样式 */
+/* TOC header */
 .toc-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 8px;
+  padding: 10px 8px 14px;
+  margin: -4px -4px 4px;
   cursor: pointer;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .toc-title {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.95rem;
-  color: var(--text-color);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--secondary-color);
 }
 
 .toc-icon {
-  opacity: 0.9;
+  opacity: 0.85;
+  color: var(--primary-color);
 }
 
 /* 折叠按钮及箭头 */
@@ -486,20 +666,41 @@ watch(
   color: var(--secondary-color);
 }
 
-/* TOC 链接样式 */
+/* TOC 链接：弱引导线 + 悬停主色，避免像纯文本列表 */
 .toc-list a {
+  display: block;
+  padding: 6px 8px 6px 10px;
+  margin: 0 -8px;
+  border-radius: 8px;
   color: var(--text-color);
   text-decoration: none;
-  transition: color .15s;
+  transition: background .15s ease, color .15s ease;
+  border-left: 3px solid transparent;
 }
 
 .toc-list a:hover {
   color: var(--primary-color);
-  text-decoration: underline;
+  background: color-mix(in srgb, var(--primary-color) 8%, transparent);
+}
+
+@supports not (color: color-mix(in srgb, red, blue)) {
+  .toc-list a:hover {
+    background: rgba(96, 165, 250, 0.08);
+  }
+}
+
+.content-flex.doc-layout--with-toc .toc-list a:hover {
+  border-left-color: color-mix(in srgb, var(--primary-color) 55%, transparent);
+}
+
+@supports not (color: color-mix(in srgb, red, blue)) {
+  .content-flex.doc-layout--with-toc .toc-list a:hover {
+    border-left-color: rgba(96, 165, 250, 0.5);
+  }
 }
 
 /* =================================
-   Markdown 卡片（玻璃拟态） - 保持原样但微调
+   Markdown 卡片
    ================================= */
 .markdown-wrapper {
   background: var(--modal-bg);
@@ -509,6 +710,15 @@ watch(
   box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
   min-height: 400px;
   overflow: hidden;
+}
+
+/* 与目录合体时：去掉第二张「卡片」，避免双层边框 */
+.content-flex.doc-layout--with-toc .markdown-wrapper {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: clamp(32px, 4vw, 52px) clamp(28px, 3.5vw, 56px) clamp(40px, 5vw, 64px);
+  min-height: min(400px, 60vh);
 }
 
 /* =================================
@@ -605,11 +815,39 @@ watch(
   background-color: var(--btn-bg) !important;
 }
 
-/* 小屏设备：TOC 折叠并可切换 */
+/* 小屏设备：TOC 在上、正文在下，仍保持「同一面板」视觉 */
 @media (max-width: 768px) {
+  .hero-section {
+    background-attachment: scroll;
+    max-height: none;
+  }
+
   .content-flex {
     flex-direction: column;
     gap: 12px;
+  }
+
+  .content-flex.doc-layout--with-toc {
+    flex-direction: column;
+    gap: 0;
+    border-radius: 18px;
+  }
+
+  .content-flex.doc-layout--with-toc .toc {
+    width: 100%;
+    flex: 0 0 auto;
+    max-height: none;
+    position: relative;
+    top: auto;
+    align-self: stretch;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 10px 28px -16px rgba(0, 0, 0, 0.12);
+    padding: 16px 18px 14px;
+  }
+
+  .content-flex.doc-layout--with-toc .markdown-wrapper {
+    padding: 24px 20px 32px;
   }
 
   .toc {
@@ -633,51 +871,63 @@ watch(
   }
 
   .meta-tags {
-    gap: 10px;
-  }
-
-  .meta-tag {
-    flex-shrink: 1;
+    gap: 6px;
+    padding-bottom: 8px;
   }
 }
 
-/* 大屏优化（27寸及以上） */
+/* 大屏：略放宽内容区 + 目录列，阅读与表格更舒展 */
 @media (min-width: 1600px) {
-  .content-container {
-    max-width: 1400px;
+  .page-container {
+    --project-hero-h: min(48vh, calc(100vh - clamp(100px, 14vh, 180px)));
+    --content-max: min(1480px, min(94vw, 100vw - 40px));
+  }
+
+  @supports (height: 1dvh) {
+    .page-container {
+      --project-hero-h: min(48dvh, calc(100dvh - clamp(100px, 14vh, 180px)));
+    }
   }
 
   .hero-section {
-    height: 65vh;
+    max-height: min(520px, 70vh);
   }
 
   .hero-content {
-    max-width: 1100px;
-    padding: 0 30px 80px 30px;
+    max-width: var(--content-max);
+    padding-bottom: clamp(36px, 5vh, 56px);
   }
 
   .project-title {
-    font-size: 4rem;
+    font-size: clamp(2.25rem, 2vw + 1.5rem, 4rem);
   }
 
   .project-desc {
-    font-size: 1.4rem;
-    max-width: 700px;
+    font-size: clamp(1.1rem, 0.5vw + 1rem, 1.4rem);
+    max-width: min(700px, 88vw);
+  }
+
+  .content-flex.doc-layout--with-toc .toc {
+    width: min(292px, 22vw);
+    flex: 0 0 min(292px, 22vw);
+    padding: 22px 16px 32px 22px;
   }
 
   .content-flex {
     gap: 30px;
   }
 
-  .toc {
-    width: 280px;
-    flex: 0 0 280px;
-    padding: 16px;
+  .content-flex.doc-layout--with-toc {
+    gap: 0;
   }
 
   .markdown-wrapper {
     padding: 60px;
     border-radius: 28px;
+  }
+
+  .content-flex.doc-layout--with-toc .markdown-wrapper {
+    padding: clamp(40px, 3.5vw, 64px) clamp(36px, 3vw, 72px) clamp(48px, 4vw, 80px);
   }
 
   .markdown-body {
