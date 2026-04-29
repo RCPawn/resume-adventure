@@ -52,7 +52,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, nextTick } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AboutSection from '@/components/ResumeSection.vue'
 import { onClickOutside, useDark, useToggle } from '@vueuse/core'
@@ -72,17 +72,16 @@ const isDarkMode = useDark({
 
 const toggleThemeLogic = useToggle(isDarkMode)
 
-watch(isDarkMode, (newValue) => {
-  window.dispatchEvent(new CustomEvent('theme-changed', {
-    detail: { isDark: newValue }
-  }))
-})
+/** 防止快速连点叠加多次 View Transition */
+let themeTransitionActive = false
 
 const toggleTheme = (event) => {
+  if (themeTransitionActive) return
+
   const x = event ? event.clientX : innerWidth / 2
   const y = event ? event.clientY : innerHeight / 2
 
-  const isAppearanceTransition = document.startViewTransition
+  const isAppearanceTransition = typeof document.startViewTransition === 'function'
       && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
   if (!isAppearanceTransition) {
@@ -95,26 +94,40 @@ const toggleTheme = (event) => {
       Math.max(y, innerHeight - y)
   )
 
-  const transition = document.startViewTransition(async () => {
+  themeTransitionActive = true
+  let transition
+  try {
+    transition = document.startViewTransition(async () => {
+      toggleThemeLogic()
+      await nextTick()
+    })
+  } catch {
+    themeTransitionActive = false
     toggleThemeLogic()
-    await nextTick()
+    return
+  }
+
+  transition.finished.finally(() => {
+    themeTransitionActive = false
   })
 
-  transition.ready.then(() => {
-    document.documentElement.animate(
-        {
-          clipPath: [
-            `circle(0px at ${x}px ${y}px)`,
-            `circle(${endRadius}px at ${x}px ${y}px)`
-          ]
-        },
-        {
-          duration: 400,
-          easing: 'ease-in',
-          pseudoElement: '::view-transition-new(root)'
-        }
-    )
-  })
+  transition.ready
+      .then(() => {
+        document.documentElement.animate(
+            {
+              clipPath: [
+                `circle(0px at ${x}px ${y}px)`,
+                `circle(${endRadius}px at ${x}px ${y}px)`
+              ]
+            },
+            {
+              duration: 400,
+              easing: 'ease-in',
+              pseudoElement: '::view-transition-new(root)'
+            }
+        )
+      })
+      .catch(() => {})
 }
 
 const toggleAboutModal = () => {

@@ -4,6 +4,7 @@
    1. CSS 变量定义 (配色系统)
    ========================================= */
 :root {
+    color-scheme: light;
     /* --- ☀️ 亮色模式 --- */
     --bg-color: #ffffff;
     --nav-bg: rgba(255, 255, 255, 0.75);
@@ -21,6 +22,7 @@
 
 /* --- 🌙 暗黑模式 --- */
 html.dark {
+    color-scheme: dark;
     --bg-color: #121212;
     --nav-bg: rgba(18, 18, 18, 0.75);
     --modal-bg: #1e1e1e;
@@ -66,4 +68,13 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
     background-color: var(--secondary-color);
+}
+
+/* View Transition：关闭默认 root 淡入淡出，避免与导航栏圆形扩散动画叠在一起 */
+@supports (view-transition-name: none) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation: none;
+        mix-blend-mode: normal;
+    }
 }

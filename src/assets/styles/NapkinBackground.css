@@ -28,13 +28,13 @@
     z-index: 1;
 }
 
-/* 深色模式背景 */
-.dark-mode .napkin-background {
+/* 深色模式背景（与 html.dark / VueUse useDark 一致） */
+html.dark .napkin-background {
     background-color: #1a1a1a;
     color: #e1e8ed;
 }
 
-.dark-mode .napkin-paper-lines {
+html.dark .napkin-paper-lines {
     background-image: linear-gradient(rgba(225, 232, 237, 0.1) 1px, transparent 1px);
     background-size: 100% 72px; /* 同样调整深色模式下的行间距 */
 }

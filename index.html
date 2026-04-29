@@ -4,6 +4,21 @@
     <meta charset="UTF-8">
     <link rel="icon" href="/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 与 VueUse useColorMode(storageKey: theme) 一致，避免首屏主题闪烁 -->
+    <meta name="color-scheme" content="light dark">
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var useDark = false;
+          if (t === 'dark') useDark = true;
+          else if (t === 'light') useDark = false;
+          else useDark = prefersDark;
+          if (useDark) document.documentElement.classList.add('dark');
+        } catch (e) {}
+      })();
+    </script>
     <title>rcpawn's dev journey</title>
 </head>
 <body>
