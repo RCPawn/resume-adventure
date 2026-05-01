@@ -95,6 +95,7 @@
 import { ref, onMounted, computed, watch, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import MarkdownIt from 'markdown-it'
+import mermaid from 'mermaid'
 import projectsData from '@/data/projects.json'
 import GoBackButton from '@/components/GoBackButton.vue'
 import 'github-markdown-css/github-markdown.css'
@@ -157,6 +158,120 @@ const scrollToId = (id) => {
   }
 }
 const toggleToc = () => { isTocHidden.value = !isTocHidden.value }
+
+/**
+ * GitHub 将 Mermaid 放在独立 iframe/Viewscreen 中渲染，避免仓库页全局 CSS 影响 foreignObject。
+ * 我们用 Shadow DOM 达到同等「样式隔离」，图表内仅保留系统字体栈与少量重置，接近 github.com 上的观感。
+ */
+const MERMAID_FONT_STACK =
+  'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif'
+
+const mountMermaidInShadowRoot = (svgMarkup, isDark) => {
+  const host = document.createElement('div')
+  host.className = 'mermaid-block mermaid-github-host'
+  host.setAttribute('role', 'img')
+  const shadow = host.attachShadow({ mode: 'open' })
+  const bg = isDark ? '#0d1117' : '#ffffff'
+  const fg = isDark ? '#e6edf3' : '#24292f'
+  const style = document.createElement('style')
+  style.textContent = `
+    :host {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      color: ${fg};
+    }
+    .mermaid-inner {
+      box-sizing: border-box;
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: visible;
+      -webkit-overflow-scrolling: touch;
+      padding: 16px;
+      background: ${bg};
+      border-radius: 6px;
+    }
+    .mermaid-inner svg {
+      display: block;
+      margin: 0 auto;
+      max-width: 100%;
+      height: auto;
+    }
+    .mermaid-inner foreignObject { overflow: visible; }
+    .mermaid-inner foreignObject div {
+      font-family: ${MERMAID_FONT_STACK} !important;
+      font-size: 14px !important;
+      line-height: 1.5 !important;
+      color: inherit !important;
+      word-break: keep-all !important;
+      overflow-wrap: break-word !important;
+      white-space: normal !important;
+    }
+  `
+  const inner = document.createElement('div')
+  inner.className = 'mermaid-inner'
+  inner.innerHTML = svgMarkup
+  shadow.append(style, inner)
+  return host
+}
+
+/** 将 markdown-it 输出的 ```mermaid 代码块替换为 SVG（需在 htmlContent 注入 DOM 后调用） */
+const renderMermaidDiagrams = async () => {
+  await nextTick()
+  const root = document.querySelector('.markdown-body')
+  if (!root) return
+  const codes = root.querySelectorAll('pre code.language-mermaid')
+  if (!codes.length) return
+
+  const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark')
+  /** 贴近 Mermaid 默认与 GitHub 所用管线：少覆盖 themeVariables，减少与 htmlLabels 的布局打架 */
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: isDark ? 'dark' : 'default',
+    securityLevel: 'loose',
+    fontFamily: MERMAID_FONT_STACK,
+    flowchart: {
+      htmlLabels: true,
+      curve: 'basis',
+      useMaxWidth: true,
+      padding: 12,
+      nodeSpacing: 50,
+      rankSpacing: 50,
+      diagramPadding: 16,
+    },
+    sequence: {
+      useMaxWidth: true,
+      diagramMarginX: 24,
+      diagramMarginY: 12,
+      actorMargin: 60,
+      boxMargin: 10,
+      boxTextMargin: 5,
+      noteMargin: 10,
+      messageMargin: 35,
+      mirrorActors: true,
+    },
+  })
+
+  let i = 0
+  for (const code of codes) {
+    const pre = code.parentElement
+    if (!pre || !pre.parentElement) continue
+    const graph = (code.textContent || '').trim()
+    if (!graph) continue
+    const id = `mmd-${i++}-${Math.random().toString(36).slice(2, 9)}`
+    try {
+      const { svg } = await mermaid.render(id, graph)
+      const host = mountMermaidInShadowRoot(svg, isDark)
+      pre.replaceWith(host)
+    } catch (err) {
+      console.warn('[mermaid]', err)
+      const fail = document.createElement('pre')
+      fail.className = 'mermaid-error'
+      fail.textContent = `图表渲染失败：${err?.message || String(err)}`
+      pre.replaceWith(fail)
+    }
+  }
+}
 
 const fetchMarkdown = async () => {
   loading.value = true
@@ -266,6 +381,10 @@ watch(
 watch(loading, (done) => {
   if (!done) return
   nextTick(() => refreshBusuanziPagePv())
+})
+
+watch(htmlContent, async () => {
+  await renderMermaidDiagrams()
 })
 </script>
 
@@ -520,7 +639,9 @@ watch(loading, (done) => {
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.06) inset,
     0 20px 50px -18px rgba(0, 0, 0, 0.12);
-  overflow: hidden;
+  /* 勿用 overflow:hidden，会纵向裁切 Mermaid SVG；横向交给内列 min-width:0 处理 */
+  overflow-x: clip;
+  overflow-y: visible;
 }
 
 /* Markdown 主列 */
@@ -709,7 +830,8 @@ watch(loading, (done) => {
   padding: 50px;
   box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
   min-height: 400px;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: visible;
 }
 
 /* 与目录合体时：去掉第二张「卡片」，避免双层边框 */
@@ -748,6 +870,35 @@ watch(loading, (done) => {
   overflow: auto;
 }
 
+/* Mermaid：外层卡片（图在 Shadow DOM 内，避免主页样式渗入 foreignObject —— 对齐 GitHub iframe 隔离思路） */
+:deep(.markdown-body .mermaid-github-host) {
+  margin: 1.5rem 0;
+  padding: 0;
+  overflow-x: auto;
+  overflow-y: visible;
+  border: 1px solid color-mix(in srgb, var(--border-color) 88%, transparent);
+  border-radius: 8px;
+  background: transparent;
+}
+
+html.dark :deep(.markdown-body .mermaid-github-host) {
+  border-color: #30363d;
+}
+
+html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
+  border-color: #d0d7de;
+}
+
+:deep(.markdown-body .mermaid-error) {
+  margin: 1.25rem 0;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: rgba(220, 53, 69, 0.12);
+  color: var(--text-color);
+  font-size: 0.9rem;
+  overflow: auto;
+}
+
 /* 行内代码 */
 :deep(.markdown-body code) {
   background-color: var(--btn-bg);
@@ -778,11 +929,13 @@ watch(loading, (done) => {
   border-radius: 2px;
 }
 
-/* 段落与文字 */
+/* 段落与文字（Typora 类节奏：略收紧段距，仍保持 1.8 行高可读） */
 :deep(.markdown-body p) {
   color: var(--secondary-color);
   line-height: 1.8;
   font-size: 1.05rem;
+  margin-top: 0.65em;
+  margin-bottom: 0.65em;
 }
 
 /* 修复表格样式（核心）- 完全对齐 GitHub 风格 */
