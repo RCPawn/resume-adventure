@@ -256,6 +256,11 @@ export default {
     gallery: {
         title: 'Creative Gallery',
         subtitle: 'Snapshots of implemented modules and core system functionalities.',
+        streamPrefix: '// VISUAL_ARCHIVE',
+        statusAutoScroll: 'AUTO_SCROLL · LIVE',
+        statusTrackOnePaused: 'TRACK_01 · PAUSED',
+        statusTrackTwoPaused: 'TRACK_02 · PAUSED',
+        statusBothPaused: 'ALL_TRACKS · PAUSED',
         viewDetail: 'View Details',
         items: {
             // Row 1: Heritage Exhibition (order matches GallerySection screenshots)

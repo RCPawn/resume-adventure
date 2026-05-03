@@ -140,9 +140,9 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
  * 主内容区：与 HeroSection 共用 main.css 的 --page-*（与顶栏独立）
  */
 .cyber-container {
-  max-width: var(--page-max-width);
+  max-width: var(--page-content-max-width);
   margin: 0 auto;
-  padding: 0 var(--page-pad-x);
+  padding: 0 var(--page-content-pad-x);
 }
 
 .main-layout {
@@ -152,7 +152,7 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
 
 /* 左侧固定区（无外层卡套，与早期版一致） */
 .index-bus {
-  width: 260px;
+  width: var(--page-index-rail-width);
   flex-shrink: 0;
 }
 .sticky-content {
@@ -162,18 +162,19 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
 .prefix {
   font-family: var(--font-mono);
   color: var(--primary-color);
-  font-size: 0.8rem;
+  font-size: var(--section-heading-prefix-size);
   font-weight: bold;
+  letter-spacing: normal;
 }
 .main-title {
-  font-size: 2.2rem;
+  font-size: var(--section-heading-title-size);
   font-weight: 800;
   margin: 10px 0;
   color: var(--text-color);
 }
 .subtitle {
   color: var(--secondary-color);
-  font-size: 0.95rem;
+  font-size: var(--section-heading-subtitle-size);
   line-height: 1.6;
   margin-bottom: 40px;
 }
@@ -201,7 +202,7 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
 
 /* 右侧全景数据流 */
 .data-stream {
-  width: calc(100% - 260px - 20px);
+  width: calc(100% - var(--page-index-rail-width) - var(--page-main-layout-gap));
   min-width: 0;
   display: flex;
   flex-direction: column;
@@ -502,7 +503,7 @@ html:not(.dark) .neon-border {
 
 /* 响应式：完全保留 */
 @media (max-width: 900px) {
-  .cyber-container { margin: 0 auto; padding: 0 1rem; }
+  .cyber-container { margin: 0 auto; }
   .main-layout { flex-direction: column; }
   .index-bus, .data-stream { width: 100%; }
   .sticky-content { position: relative; top: 0; margin-bottom: 40px; }
@@ -512,10 +513,7 @@ html:not(.dark) .neon-border {
 
 /* 大屏优化（27寸及以上） */
 @media (min-width: 1600px) {
-  .cyber-container { max-width: var(--page-max-width-lg); margin: 0 auto; }
   .project-node { min-height: 540px; }
-  .main-title { font-size: 2.5rem; }
-  .subtitle { font-size: 1.05rem; }
   .node-title { font-size: 1.8rem; }
   .node-desc { font-size: 1.05rem; max-width: 95%; }
   .node-content-glass { padding: 34px 44px 34px; }
@@ -523,23 +521,8 @@ html:not(.dark) .neon-border {
 
 /* 2K / 27" 常见视口：再放宽主栏并略放大卡片与正文，避免相对屏幕「缩在中间一小块」 */
 @media (min-width: 1920px) {
-  .cyber-container {
-    max-width: var(--page-max-width-xl);
-  }
-  .index-bus {
-    width: 288px;
-  }
-  .data-stream {
-    width: calc(100% - 288px - 20px);
-  }
   .project-node {
     min-height: 600px;
-  }
-  .main-title {
-    font-size: clamp(2.5rem, 2.2vw + 1.5rem, 2.85rem);
-  }
-  .subtitle {
-    font-size: 1.1rem;
   }
   .node-title {
     font-size: clamp(1.75rem, 0.9vw + 1.2rem, 2rem);
@@ -551,9 +534,6 @@ html:not(.dark) .neon-border {
   }
   .node-content-glass {
     padding: 38px 48px 38px;
-  }
-  .prefix {
-    font-size: 0.85rem;
   }
 }
 </style>

@@ -2,11 +2,20 @@
   <div id="gallery" class="main-container">
     <div class="gallery-viewport">
 
-      <div class="gallery-header">
-        <h2 class="gallery-title">
-          <span class="icon">🎨</span>{{ t('gallery.title') }}
-        </h2>
-        <p class="gallery-subtitle">{{ t('gallery.subtitle') }}</p>
+      <div class="gallery-header-wrap">
+        <header class="gallery-cyber-header">
+          <div class="header-left">
+            <span class="gallery-prefix">{{ t('gallery.streamPrefix') }}</span>
+            <h2 class="gallery-main-title">{{ t('gallery.title') }}</h2>
+            <p class="gallery-subtitle">{{ t('gallery.subtitle') }}</p>
+          </div>
+          <div class="header-right">
+            <div class="gallery-status-box" :class="{ paused: galleryScrollPaused }">
+              <span class="gallery-status-dot" :class="{ paused: galleryScrollPaused }" aria-hidden="true"></span>
+              <span class="gallery-status-text">{{ galleryStatusLabel }}</span>
+            </div>
+          </div>
+        </header>
       </div>
 
       <section class="gallery-section">
@@ -27,7 +36,7 @@
                 <img :src="item.imageUrl" loading="lazy" :alt="t(`gallery.items.${item.id}.title`)"
                      class="gallery-image"/>
                 <div class="hover-overlay">
-                  <span class="view-icon">🔍</span>
+                  <i class="bi bi-zoom-in view-icon" aria-hidden="true"></i>
                 </div>
               </div>
               <div class="card-footer">
@@ -54,7 +63,7 @@
                 <img :src="item.imageUrl" loading="lazy" :alt="t(`gallery.items.${item.id}.title`)"
                      class="gallery-image"/>
                 <div class="hover-overlay">
-                  <span class="view-icon">🔍</span>
+                  <i class="bi bi-zoom-in view-icon" aria-hidden="true"></i>
                 </div>
               </div>
             </div>
@@ -85,8 +94,21 @@
 <script setup>
 import {ref, computed, onMounted, onUnmounted} from 'vue';
 import {useI18n} from 'vue-i18n';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 const {t} = useI18n();
+
+const rowOnePaused = ref(false);
+const rowTwoPaused = ref(false);
+
+const galleryScrollPaused = computed(() => rowOnePaused.value || rowTwoPaused.value);
+
+const galleryStatusLabel = computed(() => {
+  if (rowOnePaused.value && rowTwoPaused.value) return t('gallery.statusBothPaused');
+  if (rowOnePaused.value) return t('gallery.statusTrackOnePaused');
+  if (rowTwoPaused.value) return t('gallery.statusTrackTwoPaused');
+  return t('gallery.statusAutoScroll');
+});
 
 // --- 数据准备：从展览、网关、技术亮点中精选截图（非遗展陈使用 public/projects/exhibition.assets，中文文件名便于运营对齐） ---
 const rowOneItems = [
@@ -149,13 +171,25 @@ const animate = () => {
 };
 
 const pauseAnimation = (row) => {
-  if (row === 1) rowOneSpeed.value = 0;
-  if (row === 2) rowTwoSpeed.value = 0;
+  if (row === 1) {
+    rowOneSpeed.value = 0;
+    rowOnePaused.value = true;
+  }
+  if (row === 2) {
+    rowTwoSpeed.value = 0;
+    rowTwoPaused.value = true;
+  }
 };
 
 const resumeAnimation = (row) => {
-  if (row === 1) rowOneSpeed.value = rowOneBaseSpeed;
-  if (row === 2) rowTwoSpeed.value = rowTwoBaseSpeed;
+  if (row === 1) {
+    rowOneSpeed.value = rowOneBaseSpeed;
+    rowOnePaused.value = false;
+  }
+  if (row === 2) {
+    rowTwoSpeed.value = rowTwoBaseSpeed;
+    rowTwoPaused.value = false;
+  }
 };
 
 // --- Lightbox 逻辑 ---
@@ -211,43 +245,110 @@ onUnmounted(() => {
 }
 
 /* =================================
-   标题区域
+   标题区域（与 Projects / Skills HUD 对齐）
    ================================= */
-.gallery-header {
-  text-align: center;
-  margin-bottom: 4rem;
-  padding: 0 1rem;
+.gallery-header-wrap {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--page-content-max-width);
+  margin: 0 auto 3.5rem;
+  padding: 0 var(--page-content-pad-x);
 }
 
-.icon {
-  display: inline-block;
-  font-size: 2rem;
-  margin-right: 12px;
-  animation: floatIcon 3s ease-in-out infinite;
+.gallery-cyber-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--page-main-layout-gap);
+  width: 100%;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
 }
 
-@keyframes floatIcon {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
+.header-left {
+  min-width: 0;
+  /* 左缘与 Projects 的 title-group 对齐（同属 content 内边距起点）；横向占满除状态条外的空间，避免副标题被窄栏强制换行 */
+  flex: 1 1 auto;
+  max-width: calc(100% - 14rem);
 }
 
-.gallery-title {
-  font-size: 2.2rem;
+.gallery-prefix {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--section-heading-prefix-size);
+  font-weight: bold;
+  color: var(--primary-color);
+  /* 与 Projects .prefix 一致：无额外字距，避免视觉右移 */
+  letter-spacing: normal;
+}
+
+.gallery-main-title {
+  font-family: var(--font-sans);
+  font-size: var(--section-heading-title-size);
   font-weight: 800;
-  margin: 0 0 0.5rem 0;
+  margin: 10px 0;
   color: var(--text-color);
-  letter-spacing: -1px;
+  line-height: 1.15;
 }
 
 .gallery-subtitle {
-  font-size: 1rem;
+  font-family: var(--font-sans);
+  font-size: var(--section-heading-subtitle-size);
   color: var(--secondary-color);
-  max-width: 500px;
-  margin: 0 auto;
+  line-height: 1.6;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.header-right {
+  flex-shrink: 0;
+}
+
+.gallery-status-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.72rem;
+  padding: 6px 14px;
+  background: var(--btn-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  transition: border-color 0.25s ease, background-color 0.25s ease;
+}
+
+.gallery-status-box.paused {
+  border-color: color-mix(in srgb, var(--border-color) 70%, #f59e0b 30%);
+}
+
+.gallery-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.55);
+  animation: gallery-pulse 2s ease-in-out infinite;
+}
+
+.gallery-status-dot.paused {
+  background: #f59e0b;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.55);
+  animation: none;
+}
+
+.gallery-status-text {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--secondary-color);
+  white-space: nowrap;
+}
+
+.gallery-status-box.paused .gallery-status-text {
+  color: var(--text-color);
+}
+
+@keyframes gallery-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
 }
 
 /* =================================
@@ -359,13 +460,17 @@ onUnmounted(() => {
 }
 
 .view-icon {
-  font-size: 1.5rem;
-  color: white;
+  font-size: 1.35rem;
+  color: #fff;
   transition: transform 0.3s ease;
 }
 
 .gallery-card:hover .gallery-image {
   transform: scale(1.1);
+}
+
+.gallery-card:hover .view-icon {
+  transform: scale(1.08);
 }
 
 /* =================================
@@ -460,6 +565,40 @@ onUnmounted(() => {
   }
 }
 
+@media (max-width: 900px) {
+  .gallery-header-wrap {
+    margin-bottom: 2.5rem;
+  }
+
+  .gallery-cyber-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-left {
+    max-width: 100%;
+  }
+
+  .gallery-subtitle {
+    white-space: normal;
+  }
+
+  .header-right {
+    align-self: stretch;
+  }
+
+  .gallery-status-box {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .gallery-status-text {
+    white-space: normal;
+    text-align: center;
+    line-height: 1.35;
+  }
+}
+
 @media (max-width: 768px) {
   .row-one .polaroid-style {
     width: 220px;
@@ -470,10 +609,6 @@ onUnmounted(() => {
   .row-two .film-style {
     width: 180px;
     height: 120px;
-  }
-
-  .gallery-title {
-    font-size: 1.8rem;
   }
 
   /* 移动端按钮放在图片内部右上角 */
@@ -491,17 +626,8 @@ onUnmounted(() => {
   }
 }
 
-/* 大屏优化（27寸及以上） */
+/* 大屏：主栏宽度与字号由 main.css 变量驱动，与 Projects 一致 */
 @media (min-width: 1600px) {
-  .gallery-title {
-    font-size: 2.5rem;
-  }
-  
-  .gallery-subtitle {
-    font-size: 1.1rem;
-    max-width: 580px;
-  }
-  
   .row-one .polaroid-style {
     width: 340px;
     height: 270px;

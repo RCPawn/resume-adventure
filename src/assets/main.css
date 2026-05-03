@@ -27,6 +27,15 @@
     /* 与历史 cyber-container 的 43px 一致；Projects 等区块对称内边距。大屏首屏另在 HeroSection 内微调水平 padding */
     --page-pad-x: 43px;
 
+    /* 主栏：学习经历 / 作品展示 同宽、同内边距与同屏标题字号（与 ProjectsSection 断点一致） */
+    --page-content-max-width: var(--page-max-width);
+    --page-content-pad-x: var(--page-pad-x);
+    --page-index-rail-width: 260px;
+    --page-main-layout-gap: 20px;
+    --section-heading-prefix-size: 0.8rem;
+    --section-heading-title-size: 2.2rem;
+    --section-heading-subtitle-size: 0.95rem;
+
     /* 怪诞 Grotesque：Bricolage Grotesque + Noto Sans SC；手写 Kalam；衬线 Noto Serif SC */
     --font-sans: 'Bricolage Grotesque', 'Noto Sans SC', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
         'Segoe UI', sans-serif;
@@ -55,6 +64,41 @@ html.dark {
     --page-max-width-lg: 1300px;
     --page-max-width-xl: 1560px;
     --page-pad-x: 43px;
+
+    --page-content-max-width: var(--page-max-width);
+    --page-content-pad-x: var(--page-pad-x);
+    --page-index-rail-width: 260px;
+    --page-main-layout-gap: 20px;
+    --section-heading-prefix-size: 0.8rem;
+    --section-heading-title-size: 2.2rem;
+    --section-heading-subtitle-size: 0.95rem;
+}
+
+@media (max-width: 900px) {
+    :root,
+    html.dark {
+        --page-content-pad-x: 1rem;
+    }
+}
+
+@media (min-width: 1600px) {
+    :root,
+    html.dark {
+        --page-content-max-width: var(--page-max-width-lg);
+        --section-heading-title-size: 2.5rem;
+        --section-heading-subtitle-size: 1.05rem;
+    }
+}
+
+@media (min-width: 1920px) {
+    :root,
+    html.dark {
+        --page-content-max-width: var(--page-max-width-xl);
+        --page-index-rail-width: 288px;
+        --section-heading-prefix-size: 0.85rem;
+        --section-heading-title-size: clamp(2.5rem, 2.2vw + 1.5rem, 2.85rem);
+        --section-heading-subtitle-size: 1.1rem;
+    }
 }
 
 /* =========================================

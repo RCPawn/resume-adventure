@@ -115,6 +115,11 @@ export default {
     gallery: {
         title: '作品展示',
         subtitle: '核心功能模块截图，记录系统关键逻辑的实现与运行状态。',
+        streamPrefix: '// VISUAL_ARCHIVE',
+        statusAutoScroll: 'AUTO_SCROLL · 运行中',
+        statusTrackOnePaused: 'TRACK_01 · 已暂停',
+        statusTrackTwoPaused: 'TRACK_02 · 已暂停',
+        statusBothPaused: 'ALL_TRACKS · 已暂停',
         viewDetail: '查看详情',
         items: {
             // 第一行：非遗展览（与 GallerySection 截图顺序一致）
