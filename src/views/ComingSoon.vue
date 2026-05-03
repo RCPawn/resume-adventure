@@ -34,7 +34,7 @@ const goBack = () => {
   justify-content: center;
   align-items: center;
   padding: 20px;
-  font-family: 'Sketchy', 'Comic Sans MS', cursive;
+  font-family: var(--font-sans);
   text-align: center;
   background-color: var(--bg-color);
   position: relative;
@@ -94,7 +94,7 @@ const goBack = () => {
   border: 2px solid var(--text-color);
   border-radius: 8px;
   cursor: pointer;
-  font-family: 'Sketchy', 'Comic Sans MS', cursive;
+  font-family: var(--font-sans);
   font-size: 1.2rem;
   font-weight: bold;
   position: relative;

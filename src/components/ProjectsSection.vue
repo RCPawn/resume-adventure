@@ -160,7 +160,7 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
   top: 120px;
 }
 .prefix {
-  font-family: monospace;
+  font-family: var(--font-mono);
   color: var(--primary-color);
   font-size: 0.8rem;
   font-weight: bold;
@@ -187,7 +187,7 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
 }
 .indicator-dot {
   font-size: 0.7rem;
-  font-family: monospace;
+  font-family: var(--font-mono);
   color: var(--secondary-color);
   opacity: 0.3;
   transition: 0.3s;
@@ -390,7 +390,7 @@ html:not(.dark) .neon-border {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  font-family: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, monospace;
+  font-family: var(--font-mono);
   color: color-mix(in srgb, var(--primary-color) 92%, white);
   font-size: 0.65rem;
   font-weight: 600;
@@ -447,7 +447,7 @@ html:not(.dark) .neon-border {
   background: rgba(var(--primary-color-rgb), 0.12);
   padding: 4px 10px;
   border-radius: 6px;
-  font-family: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, monospace;
+  font-family: var(--font-mono);
   font-weight: 500;
   letter-spacing: 0.02em;
   border: 1px solid rgba(var(--primary-color-rgb), 0.22);
@@ -464,7 +464,7 @@ html:not(.dark) .neon-border {
   align-items: center;
   gap: 8px;
   color: var(--primary-color);
-  font-family: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, monospace;
+  font-family: var(--font-mono);
   font-weight: 600;
   font-size: 0.72rem;
   letter-spacing: 0.04em;
@@ -519,5 +519,41 @@ html:not(.dark) .neon-border {
   .node-title { font-size: 1.8rem; }
   .node-desc { font-size: 1.05rem; max-width: 95%; }
   .node-content-glass { padding: 34px 44px 34px; }
+}
+
+/* 2K / 27" 常见视口：再放宽主栏并略放大卡片与正文，避免相对屏幕「缩在中间一小块」 */
+@media (min-width: 1920px) {
+  .cyber-container {
+    max-width: var(--page-max-width-xl);
+  }
+  .index-bus {
+    width: 288px;
+  }
+  .data-stream {
+    width: calc(100% - 288px - 20px);
+  }
+  .project-node {
+    min-height: 600px;
+  }
+  .main-title {
+    font-size: clamp(2.5rem, 2.2vw + 1.5rem, 2.85rem);
+  }
+  .subtitle {
+    font-size: 1.1rem;
+  }
+  .node-title {
+    font-size: clamp(1.75rem, 0.9vw + 1.2rem, 2rem);
+  }
+  .node-desc {
+    font-size: 1.08rem;
+    line-height: 1.75;
+    max-width: min(52rem, 95%);
+  }
+  .node-content-glass {
+    padding: 38px 48px 38px;
+  }
+  .prefix {
+    font-size: 0.85rem;
+  }
 }
 </style>

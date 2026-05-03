@@ -22,8 +22,17 @@
     /* 主内容区宽度与水平内边距（Hero / Projects 等共用，与顶栏独立） */
     --page-max-width: 1100px;
     --page-max-width-lg: 1300px;
-    /* 与历史 cyber-container 的 43px 一致，保证首屏与学习经历左缘对齐 */
+    /* 27" / 2K 等宽屏：避免中间栏目过窄 */
+    --page-max-width-xl: 1560px;
+    /* 与历史 cyber-container 的 43px 一致；Projects 等区块对称内边距。大屏首屏另在 HeroSection 内微调水平 padding */
     --page-pad-x: 43px;
+
+    /* 怪诞 Grotesque：Bricolage Grotesque + Noto Sans SC；手写 Kalam；衬线 Noto Serif SC */
+    --font-sans: 'Bricolage Grotesque', 'Noto Sans SC', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        'Segoe UI', sans-serif;
+    --font-serif: 'Noto Serif SC', Georgia, 'Songti SC', 'Times New Roman', serif;
+    --font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Monaco, 'Noto Sans Mono CJK SC', monospace;
+    --font-handwriting: 'Kalam', cursive;
 }
 
 /* --- 🌙 暗黑模式 --- */
@@ -44,6 +53,7 @@ html.dark {
 
     --page-max-width: 1100px;
     --page-max-width-lg: 1300px;
+    --page-max-width-xl: 1560px;
     --page-pad-x: 43px;
 }
 
@@ -55,7 +65,8 @@ body {
     color: var(--text-color);
     margin: 0;
     transition: background-color 0.3s ease, color 0.3s ease;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: var(--font-sans);
+    font-optical-sizing: auto;
 
     /* 网格背景 */
     background-image:

@@ -195,7 +195,7 @@ const sections = [
   border-radius: 24px;
   box-shadow: var(--hover-shadow);
   overflow: hidden;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-sans);
   border: 1px solid var(--border-color);
 }
 

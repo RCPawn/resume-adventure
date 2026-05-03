@@ -164,7 +164,7 @@ const toggleToc = () => { isTocHidden.value = !isTocHidden.value }
  * 我们用 Shadow DOM 达到同等「样式隔离」，图表内仅保留系统字体栈与少量重置，接近 github.com 上的观感。
  */
 const MERMAID_FONT_STACK =
-  'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif'
+  '"Bricolage Grotesque", "Noto Sans SC", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif'
 
 const mountMermaidInShadowRoot = (svgMarkup, isDark) => {
   const host = document.createElement('div')
@@ -848,7 +848,7 @@ watch(htmlContent, async () => {
    ================================= */
 .markdown-body {
   background: transparent !important;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-sans);
   color: var(--text-color) !important;
   scroll-behavior: smooth;
 }

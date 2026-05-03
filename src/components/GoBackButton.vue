@@ -45,7 +45,7 @@ const goBack = () => {
 
   /* 箭头样式 - 贴合博客手绘风格 */
   font-size: 40px;
-  font-family: 'Comic Neue', 'Comic Sans MS', cursive;
+  font-family: var(--font-sans);
   font-weight: 700;
   color: var(--text-color);
 

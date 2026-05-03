@@ -122,9 +122,6 @@ const { t, tm } = useI18n();
 </script>
 
 <style scoped>
-/* ... (保留你原有的字体导入和布局样式) ... */
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Inter:wght@400;800&display=swap');
-
 /* --- 基础布局：首屏至少一屏高，留白由 hero-shell 在「主区 / 箭头」之间分配 --- */
 .hero-section {
   position: relative;
@@ -135,7 +132,7 @@ const { t, tm } = useI18n();
   background-color: transparent;
   color: var(--text-color);
   overflow: hidden;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-sans);
   display: flex;
   flex-direction: column;
   padding-top: clamp(4vh, 7vh, 9vh);
@@ -246,7 +243,7 @@ const { t, tm } = useI18n();
   animation: drawArc 1.3s cubic-bezier(0.65, 0, 0.35, 1) 0.8s forwards;
   filter: drop-shadow(0 1px 2px rgba(77, 171, 247, 0.18));
 }
-.sticky-note { position: absolute; top: -25px; right: -105px; width: 95px; height: 95px; background-color: #fcc419; box-shadow: var(--hover-shadow); transform: rotate(8deg); display: flex; justify-content: center; align-items: center; text-align: center; font-family: 'Caveat', cursive; font-size: 1.2rem; line-height: 1; color: #1f2937; z-index: 5; }
+.sticky-note { position: absolute; top: -25px; right: -105px; width: 95px; height: 95px; background-color: #fcc419; box-shadow: var(--hover-shadow); transform: rotate(8deg); display: flex; justify-content: center; align-items: center; text-align: center; font-family: var(--font-handwriting); font-size: 1.2rem; line-height: 1; color: #1f2937; z-index: 5; }
 .note-pin { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); font-size: 1.4rem; color: #e63946; }
 
 /* ============ 顶部介绍 ============ */
@@ -381,12 +378,19 @@ const { t, tm } = useI18n();
   .scroll-cue { width: 40px; height: 44px; }
 }
 
-/* 大屏优化（27寸及以上）：与 Projects 的 1600+ 容器规则保持一致 */
+/* 大屏：首屏主区整体略向右移（加左内边距、略收右内边距），文案与模型间距不变 */
 @media (min-width: 1600px) {
   .container-fluid {
     max-width: var(--page-max-width-lg);
+    padding: 40px max(1rem, calc(var(--page-pad-x) - clamp(0.5rem, 1.2vw, 1.25rem))) 40px
+      calc(var(--page-pad-x) + clamp(1.75rem, 3.2vw, 3.25rem));
   }
-  .layout-grid { gap: clamp(4.75rem, 5.5vw, 6.5rem); }
+  .layout-grid {
+    gap: clamp(4.75rem, 5.5vw, 6.5rem);
+  }
+  .model-area {
+    height: clamp(52vh, 62vh, min(72vh, 760px));
+  }
   .highlight-name::after {
     height: 32px;
     bottom: -36px;
@@ -395,6 +399,15 @@ const { t, tm } = useI18n();
   .scroll-cue {
     width: 48px;
     height: 54px;
+  }
+}
+
+/* 更宽视口：在上一档基础上再多移一点，与容器变宽成比例 */
+@media (min-width: 1920px) {
+  .container-fluid {
+    max-width: var(--page-max-width-xl);
+    padding: 40px max(1rem, calc(var(--page-pad-x) - clamp(0.75rem, 1.4vw, 1.5rem))) 40px
+      calc(var(--page-pad-x) + clamp(2.25rem, 3.8vw, 4rem));
   }
 }
 

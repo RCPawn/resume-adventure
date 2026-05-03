@@ -273,7 +273,7 @@ onUnmounted(() => clearInterval(typeTimer));
 .mod-no {
   font-size: 0.7rem;
   color: var(--primary-color);
-  font-family: serif;
+  font-family: var(--font-sans);
   font-style: italic;
 }
 
@@ -331,7 +331,7 @@ onUnmounted(() => clearInterval(typeTimer));
   font-size: 0.7rem;
   color: var(--secondary-color);
   margin-bottom: 25px;
-  font-family: monospace;
+  font-family: var(--font-mono);
 }
 
 .description-view {

@@ -291,7 +291,7 @@ onMounted(() => {
 .markdown-wrapper {
   background: var(--modal-bg); border:1px solid var(--border-color); border-radius:20px; padding:48px; box-shadow:0 20px 40px -12px rgba(0,0,0,0.08); min-height:400px; overflow:hidden;
 }
-.markdown-body { background:transparent !important; font-family:'Inter',sans-serif; color:var(--text-color) !important; }
+.markdown-body { background:transparent !important; font-family: var(--font-sans); color:var(--text-color) !important; }
 
 /* 图片 */
 :deep(.markdown-body img) { border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,0.06); margin:20px 0; max-width:100%; border:1px solid var(--border-color); }

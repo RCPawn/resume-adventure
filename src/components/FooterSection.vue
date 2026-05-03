@@ -370,8 +370,8 @@ defineExpose({
 
 <style scoped>
 .footer-section {
-  --footer-serif: Georgia, 'Noto Serif SC', 'Songti SC', 'Times New Roman', serif;
-  --footer-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --footer-serif: var(--font-serif);
+  --footer-sans: var(--font-sans);
   --footer-pad-x: clamp(1rem, 4vw, 2rem);
   --footer-pad-top: clamp(1.2rem, 2.8vw, 2.1rem);
   --footer-pad-bottom: max(1.1rem, env(safe-area-inset-bottom, 0px));
@@ -807,7 +807,7 @@ html.dark .footer-section::after {
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   color: var(--text-color);
-  font-family: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Monaco, monospace;
+  font-family: var(--font-mono);
   font-size: 0.75rem;
 }
 
