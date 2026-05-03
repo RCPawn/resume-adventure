@@ -58,28 +58,32 @@
       <div v-else-if="error" class="error-state">😕 {{ error }}</div>
       <div v-else class="content-flex" :class="{ 'doc-layout--with-toc': toc.length > 0 }">
         <aside v-if="toc.length" class="toc" :class="{ 'toc-hidden': isTocHidden }">
-          <div class="toc-header" @click="toggleToc" role="button" tabindex="0" @keydown.enter="toggleToc">
-            <div class="toc-title">
-              <svg class="toc-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-                <path fill="currentColor" d="M3 6h18v2H3zM3 11h18v2H3zM3 16h18v2H3z"></path>
-              </svg>
-              <strong>目录</strong>
-            </div>
-            <button class="toc-toggle" aria-label="切换目录">
-              <span class="chev" :class="{ open: !isTocHidden }">
-                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
-                  <path fill="currentColor" d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/>
+          <!-- 仅用于与正文上内边距对齐；滚走后可避免整块 aside 吸顶时顶部大块留白 -->
+          <div class="toc-top-spacer" aria-hidden="true" />
+          <div class="toc-sticky">
+            <div class="toc-header" @click="toggleToc" role="button" tabindex="0" @keydown.enter="toggleToc">
+              <div class="toc-title">
+                <svg class="toc-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                  <path fill="currentColor" d="M3 6h18v2H3zM3 11h18v2H3zM3 16h18v2H3z"></path>
                 </svg>
-              </span>
-            </button>
+                <strong>目录</strong>
+              </div>
+              <button type="button" class="toc-toggle" aria-label="切换目录">
+                <span class="chev" :class="{ open: !isTocHidden }">
+                  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                    <path fill="currentColor" d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/>
+                  </svg>
+                </span>
+              </button>
+            </div>
+            <nav class="toc-list" v-if="!isTocHidden">
+              <ul>
+                <li v-for="item in toc" :key="item.slug" :class="`level-${item.level}`">
+                  <a :href="`#${item.slug}`" @click.prevent="scrollToId(item.slug)">{{ item.title }}</a>
+                </li>
+              </ul>
+            </nav>
           </div>
-          <nav class="toc-list" v-if="!isTocHidden">
-            <ul>
-              <li v-for="item in toc" :key="item.slug" :class="`level-${item.level}`">
-                <a :href="`#${item.slug}`" @click.prevent="scrollToId(item.slug)">{{ item.title }}</a>
-              </li>
-            </ul>
-          </nav>
         </aside>
         <main class="markdown-column">
           <div class="markdown-wrapper">
@@ -637,8 +641,16 @@ watch(htmlContent, async () => {
   border: 1px solid var(--border-color);
   border-radius: 22px;
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.06) inset,
-    0 20px 50px -18px rgba(0, 0, 0, 0.12);
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 14px 44px -22px rgba(0, 0, 0, 0.1);
+  /* 目录与正文共用纵向节奏，避免「侧栏一块、正文一块」的错位堆叠感 */
+  --doc-top-pad: clamp(32px, 4vw, 52px);
+  --doc-bottom-pad: clamp(40px, 5vw, 64px);
+  --doc-main-pad-x: clamp(28px, 3.5vw, 56px);
+  --doc-toc-pad-start: clamp(18px, 2.2vw, 26px);
+  --doc-toc-pad-end: clamp(12px, 1.6vw, 18px);
+  /* 吸顶时与顶栏距离（勿把正文同款 doc-top-pad 写在 sticky 上，否则下滑后目录顶会空一大块） */
+  --doc-sticky-top: 72px;
   /* 勿用 overflow:hidden，会纵向裁切 Mermaid SVG；横向交给内列 min-width:0 处理 */
   overflow-x: clip;
   overflow-y: visible;
@@ -653,6 +665,9 @@ watch(htmlContent, async () => {
 .content-flex.doc-layout--with-toc .markdown-column {
   min-width: 0;
   flex: 1 1 min(0, 100%);
+  /* 内边距提到主列，避免 wrapper 再套一层「卡片」感 */
+  padding: var(--doc-top-pad) var(--doc-main-pad-x) var(--doc-bottom-pad);
+  box-sizing: border-box;
 }
 
 /* TOC 侧边栏：与正文同属一块面板 */
@@ -675,73 +690,132 @@ watch(htmlContent, async () => {
 }
 
 .content-flex.doc-layout--with-toc .toc {
-  position: sticky;
-  top: 72px;
-  max-height: min(calc(100vh - 88px), calc(100dvh - 88px));
+  /* 轨道拉高撑满行高，保证右侧分隔线到底；滚动条交给页面，目录本身不单独 overflow */
+  position: static;
+  top: auto;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  max-height: none;
   height: auto;
+  overflow: visible;
+  overflow-x: visible;
+  overscroll-behavior: auto;
+  scrollbar-gutter: auto;
   width: min(268px, 26vw);
   flex: 0 0 min(268px, 26vw);
-  padding: 20px 14px 28px 20px;
+  padding: 0;
   border-radius: 0;
-  background: linear-gradient(
-    165deg,
-    color-mix(in srgb, var(--btn-bg) 92%, var(--primary-color) 8%) 0%,
-    var(--btn-bg) 48%,
-    var(--modal-bg) 100%
-  );
-  border-right: 1px solid var(--border-color);
-  box-shadow: 4px 0 24px -20px rgba(0, 0, 0, 0.15);
+  background: transparent;
+  border-right: 1px solid color-mix(in srgb, var(--border-color) 58%, transparent);
+  box-shadow: none;
 }
 
-/* 无 color-mix 的内核：纯色底 */
-@supports not (background: color-mix(in srgb, red, blue)) {
+.content-flex.doc-layout--with-toc .toc-top-spacer {
+  flex-shrink: 0;
+  height: var(--doc-top-pad);
+  pointer-events: none;
+}
+
+.content-flex.doc-layout--with-toc .toc-sticky {
+  position: sticky;
+  top: var(--doc-sticky-top);
+  flex-shrink: 0;
+  /* 底留白略小于正文区，避免目录较短时在链接下方出现大块「空垫」 */
+  padding: 10px var(--doc-toc-pad-end) clamp(20px, 3vh, 36px) var(--doc-toc-pad-start);
+  box-sizing: border-box;
+}
+
+@supports not (color: color-mix(in srgb, red, blue)) {
   .content-flex.doc-layout--with-toc .toc {
-    background: var(--btn-bg);
+    border-right-color: var(--border-color);
   }
 }
 
 /* 隐藏效果（移动端折叠） */
 .toc.toc-hidden {
-  opacity: 0.92;
+  opacity: 1;
 }
 
-/* TOC header */
-.toc-header {
+/* 目录顶栏：扁平文案 + 细分隔线，不再套一层「卡片」 */
+.content-flex.doc-layout--with-toc .toc-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  padding: 10px 8px 14px;
-  margin: -4px -4px 4px;
+  gap: 8px;
+  padding: 0 0 12px;
+  margin: 0 0 4px;
   cursor: pointer;
-  border-bottom: 1px solid var(--border-color);
+  border-radius: 0;
+  background: none;
+  border: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--border-color) 42%, transparent);
+  transition: border-color 0.15s ease;
 }
 
-.toc-title {
+.content-flex.doc-layout--with-toc .toc-header:hover {
+  background: none;
+  border-bottom-color: color-mix(in srgb, var(--border-color) 72%, transparent);
+}
+
+@supports not (color: color-mix(in srgb, red, blue)) {
+  .content-flex.doc-layout--with-toc .toc-header {
+    border-bottom-color: var(--border-color);
+  }
+}
+
+.content-flex.doc-layout--with-toc .toc-title {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.82rem;
+  font-size: 0.8125rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-transform: none;
   color: var(--secondary-color);
 }
 
-.toc-icon {
-  opacity: 0.85;
-  color: var(--primary-color);
+.content-flex.doc-layout--with-toc .toc-title strong {
+  font-weight: 600;
+  color: inherit;
 }
 
-/* 折叠按钮及箭头 */
-.toc-toggle {
+.content-flex.doc-layout--with-toc .toc-icon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  opacity: 0.72;
+  color: inherit;
+}
+
+/* 折叠：图标级幽灵按钮，弱化「又一个方块组件」 */
+.content-flex.doc-layout--with-toc .toc-toggle {
   background: transparent;
   border: none;
-  padding: 6px;
+  border-radius: 6px;
+  padding: 4px;
   display: inline-flex;
   align-items: center;
   cursor: pointer;
   color: var(--secondary-color);
+  opacity: 0.85;
+  transition: background 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+
+.content-flex.doc-layout--with-toc .toc-toggle:hover {
+  opacity: 1;
+  color: var(--text-color);
+  background: color-mix(in srgb, var(--text-color) 6%, transparent);
+}
+
+@supports not (background: color-mix(in srgb, red, blue)) {
+  .content-flex.doc-layout--with-toc .toc-toggle:hover {
+    background: rgba(0, 0, 0, 0.06);
+  }
+
+  html.dark .content-flex.doc-layout--with-toc .toc-toggle:hover {
+    background: rgba(255, 255, 255, 0.07);
+  }
 }
 
 .chev {
@@ -754,69 +828,71 @@ watch(htmlContent, async () => {
   transform: rotate(0deg);
 }
 
-/* TOC 列表 */
-.toc-list {
-  font-size: 0.95rem;
+/* TOC 列表：与正文同一阅读平面，交互保持轻量 */
+.content-flex.doc-layout--with-toc .toc-list {
+  font-size: 0.875rem;
+  padding-top: 10px;
 }
 
-.toc-list ul {
+.content-flex.doc-layout--with-toc .toc-list ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.toc-list li {
-  margin: 6px 0;
-  line-height: 1.5;
+.content-flex.doc-layout--with-toc .toc-list li {
+  margin: 1px 0;
+  line-height: 1.45;
 }
 
-/* 根据标题层级稍作缩进 */
-.toc-list li.level-2 {
-  padding-left: 0px;
+.content-flex.doc-layout--with-toc .toc-list li.level-2 {
+  padding-left: 0;
 }
 
-.toc-list li.level-3 {
-  padding-left: 10px;
-  font-size: 0.92rem;
-  color: var(--secondary-color);
+.content-flex.doc-layout--with-toc .toc-list li.level-3 {
+  padding-left: 14px;
+  font-size: 0.875rem;
 }
 
-.toc-list li.level-4 {
-  padding-left: 18px;
-  font-size: 0.9rem;
-  color: var(--secondary-color);
+.content-flex.doc-layout--with-toc .toc-list li.level-4 {
+  padding-left: 24px;
+  font-size: 0.8125rem;
 }
 
-/* TOC 链接：弱引导线 + 悬停主色，避免像纯文本列表 */
-.toc-list a {
-  display: block;
-  padding: 6px 8px 6px 10px;
-  margin: 0 -8px;
-  border-radius: 8px;
-  color: var(--text-color);
-  text-decoration: none;
-  transition: background .15s ease, color .15s ease;
-  border-left: 3px solid transparent;
-}
-
-.toc-list a:hover {
-  color: var(--primary-color);
-  background: color-mix(in srgb, var(--primary-color) 8%, transparent);
+.content-flex.doc-layout--with-toc .toc-list li.level-3 a,
+.content-flex.doc-layout--with-toc .toc-list li.level-4 a {
+  color: color-mix(in srgb, var(--text-color) 72%, var(--secondary-color));
 }
 
 @supports not (color: color-mix(in srgb, red, blue)) {
-  .toc-list a:hover {
-    background: rgba(96, 165, 250, 0.08);
+  .content-flex.doc-layout--with-toc .toc-list li.level-3 a,
+  .content-flex.doc-layout--with-toc .toc-list li.level-4 a {
+    color: var(--secondary-color);
   }
 }
 
-.content-flex.doc-layout--with-toc .toc-list a:hover {
-  border-left-color: color-mix(in srgb, var(--primary-color) 55%, transparent);
+.content-flex.doc-layout--with-toc .toc-list a {
+  display: block;
+  padding: 5px 8px;
+  margin: 0 -6px;
+  border-radius: 6px;
+  color: var(--text-color);
+  text-decoration: none;
+  transition: background 0.14s ease, color 0.14s ease;
 }
 
-@supports not (color: color-mix(in srgb, red, blue)) {
+.content-flex.doc-layout--with-toc .toc-list a:hover {
+  color: var(--primary-color);
+  background: color-mix(in srgb, var(--text-color) 5.5%, transparent);
+}
+
+@supports not (background: color-mix(in srgb, red, blue)) {
   .content-flex.doc-layout--with-toc .toc-list a:hover {
-    border-left-color: rgba(96, 165, 250, 0.5);
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  html.dark .content-flex.doc-layout--with-toc .toc-list a:hover {
+    background: rgba(255, 255, 255, 0.065);
   }
 }
 
@@ -834,12 +910,13 @@ watch(htmlContent, async () => {
   overflow-y: visible;
 }
 
-/* 与目录合体时：去掉第二张「卡片」，避免双层边框 */
+/* 与目录合体时：扁平一层，内边距已在 .markdown-column */
 .content-flex.doc-layout--with-toc .markdown-wrapper {
   border: none;
   border-radius: 0;
   box-shadow: none;
-  padding: clamp(32px, 4vw, 52px) clamp(28px, 3.5vw, 56px) clamp(40px, 5vw, 64px);
+  padding: 0;
+  background: transparent;
   min-height: min(400px, 60vh);
 }
 
@@ -860,6 +937,15 @@ watch(htmlContent, async () => {
   margin: 20px 0;
   max-width: 100%;
   border: 1px solid var(--border-color);
+}
+
+/* 带侧栏长文：压一层阴影，减少「嵌套卡片」感（须在本块之后以覆盖上一段） */
+.content-flex.doc-layout--with-toc :deep(.markdown-body img) {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.055);
+}
+
+html.dark .content-flex.doc-layout--with-toc :deep(.markdown-body img) {
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
 }
 
 /* 代码块 */
@@ -984,6 +1070,11 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
     flex-direction: column;
     gap: 0;
     border-radius: 18px;
+    --doc-top-pad: 18px;
+    --doc-bottom-pad: 28px;
+    --doc-main-pad-x: 20px;
+    --doc-toc-pad-start: 18px;
+    --doc-toc-pad-end: 18px;
   }
 
   .content-flex.doc-layout--with-toc .toc {
@@ -993,14 +1084,23 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
     position: relative;
     top: auto;
     align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
     border-right: none;
     border-bottom: 1px solid var(--border-color);
-    box-shadow: 0 10px 28px -16px rgba(0, 0, 0, 0.12);
-    padding: 16px 18px 14px;
+    box-shadow: none;
+    padding: 0;
   }
 
-  .content-flex.doc-layout--with-toc .markdown-wrapper {
-    padding: 24px 20px 32px;
+  .content-flex.doc-layout--with-toc .toc-sticky {
+    position: relative;
+    top: auto;
+    padding: 0 var(--doc-toc-pad-end) 14px var(--doc-toc-pad-start);
+  }
+
+  .content-flex.doc-layout--with-toc .markdown-column {
+    padding: var(--doc-top-pad) var(--doc-main-pad-x) var(--doc-bottom-pad);
   }
 
   .toc {
@@ -1060,10 +1160,17 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
     max-width: min(700px, 88vw);
   }
 
+  .content-flex.doc-layout--with-toc {
+    --doc-top-pad: clamp(40px, 3.5vw, 64px);
+    --doc-bottom-pad: clamp(48px, 4vw, 80px);
+    --doc-main-pad-x: clamp(36px, 3vw, 72px);
+    --doc-toc-pad-start: clamp(22px, 2.4vw, 30px);
+    --doc-toc-pad-end: clamp(14px, 1.8vw, 22px);
+  }
+
   .content-flex.doc-layout--with-toc .toc {
     width: min(292px, 22vw);
     flex: 0 0 min(292px, 22vw);
-    padding: 22px 16px 32px 22px;
   }
 
   .content-flex {
@@ -1077,10 +1184,6 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
   .markdown-wrapper {
     padding: 60px;
     border-radius: 28px;
-  }
-
-  .content-flex.doc-layout--with-toc .markdown-wrapper {
-    padding: clamp(40px, 3.5vw, 64px) clamp(36px, 3vw, 72px) clamp(48px, 4vw, 80px);
   }
 
   .markdown-body {
