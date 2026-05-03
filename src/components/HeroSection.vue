@@ -42,7 +42,7 @@
 
         <!-- 右侧：3D 模型展示 (核心修改) -->
         <div class="model-area">
-          <div class="model-wrapper floating-anim">
+          <div class="model-wrapper">
             <!--
                核心优化属性说明：
                1. poster: 加载前显示的静态图，消除等待感。
@@ -65,8 +65,8 @@
                 auto-rotate
                 auto-rotate-delay="1000"
                 rotation-per-second="7deg"
-                shadow-intensity="1.5"
-                shadow-softness="0.8"
+                shadow-intensity="1"
+                shadow-softness="0.35"
                 camera-orbit="41.43deg 75.41deg 90%"
                 min-camera-orbit="auto auto 90%"
                 max-camera-orbit="auto auto 90%"
@@ -359,9 +359,6 @@ const { t, tm } = useI18n();
   0%, 100% { opacity: 0.35; }
   50%      { opacity: 1; }
 }
-.floating-anim { animation: levitate 6s ease-in-out infinite; }
-@keyframes levitate { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-
 /* 响应式适配 */
 @media (max-width: 1024px) {
   .hero-section {
@@ -416,6 +413,5 @@ const { t, tm } = useI18n();
   .scroll-cue { animation: none; opacity: 1; transform: none; }
   .scroll-cue-arrow { animation: none; }
   .scroll-cue-arrow path { animation: none; opacity: 0.65; }
-  .floating-anim { animation: none; }
 }
 </style>
