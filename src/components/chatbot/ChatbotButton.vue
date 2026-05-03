@@ -1,32 +1,42 @@
 <template>
   <div
       class="ai-assistant-button"
+      role="button"
+      :aria-expanded="isOpen"
+      :aria-label="t('chatbot.ariaFab')"
+      tabindex="0"
       :style="{ top: adjustedPosition.y + 'px', left: adjustedPosition.x + 'px' }"
-      @mousedown="handleStartDrag"
+      @pointerdown="handlePointerDown"
       @click="handleClick"
+      @keydown.enter.prevent="emit('toggleChatWindow', { source: 'keyboard' })"
+      @keydown.space.prevent="emit('toggleChatWindow', { source: 'keyboard' })"
   >
     <div class="button-inner">
-      <div class="icon">{{ isOpen ? '✕' : '🤖' }}</div>
+      <div class="icon" aria-hidden="true">{{ isOpen ? '✕' : '🤖' }}</div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { CHAT_FAB_SIZE } from './constants.js';
+
+const { t } = useI18n();
+
+const fabSizePx = `${CHAT_FAB_SIZE}px`;
 
 const props = defineProps({
-  position: { type: Object, required: true }, // Button position (x, y)
-  isOpen: { type: Boolean, required: true }   // Chat window open state
+  position: { type: Object, required: true },
+  isOpen: { type: Boolean, required: true }
 });
 const emit = defineEmits(['startDrag', 'toggleChatWindow', 'updatePosition']);
 
-let hasDragged = false;
 const windowSize = ref({ width: window.innerWidth, height: window.innerHeight });
 
-// Keep button within viewport boundaries
 const adjustedPosition = computed(() => {
-  const maxX = windowSize.value.width - 60; // 60 is button width
-  const maxY = windowSize.value.height - 60; // 60 is button height
+  const maxX = Math.max(0, windowSize.value.width - CHAT_FAB_SIZE);
+  const maxY = Math.max(0, windowSize.value.height - CHAT_FAB_SIZE);
 
   return {
     x: Math.min(Math.max(0, props.position.x), maxX),
@@ -34,30 +44,31 @@ const adjustedPosition = computed(() => {
   };
 });
 
-// Update window size on resize
 const handleResize = () => {
   windowSize.value = {
     width: window.innerWidth,
     height: window.innerHeight
   };
 
-  // If position is outside viewport after resize, update parent component
-  if (props.position.x > windowSize.value.width - 60 ||
-      props.position.y > windowSize.value.height - 60) {
+  if (
+    props.position.x > windowSize.value.width - CHAT_FAB_SIZE ||
+    props.position.y > windowSize.value.height - CHAT_FAB_SIZE
+  ) {
     emit('updatePosition', adjustedPosition.value);
   }
 };
 
-const handleStartDrag = (e) => {
-  hasDragged = false;
-  emit('startDrag', e); // Emit drag start event to parent
-  e.preventDefault();   // Prevent default behavior
+const handlePointerDown = (e) => {
+  if (e.pointerType === 'mouse' && e.button !== 0) {
+    return;
+  }
+  emit('startDrag', e);
+  e.preventDefault();
 };
 
+/** 指针点击：由父级用 hasDragged 区分「点」与「拖」 */
 const handleClick = () => {
-  if (!hasDragged) {
-    emit('toggleChatWindow'); // Emit toggle event only if not dragged
-  }
+  emit('toggleChatWindow', { source: 'pointer' });
 };
 
 onMounted(() => {
@@ -72,40 +83,58 @@ onUnmounted(() => {
 <style scoped>
 .ai-assistant-button {
   position: fixed;
-  width: 60px;
-  height: 60px;
+  width: v-bind(fabSizePx);
+  height: v-bind(fabSizePx);
   cursor: grab;
-  z-index: 9999;
+  z-index: 10002;
   user-select: none;
+  touch-action: none;
 }
 
 .button-inner {
   width: 100%;
   height: 100%;
-  /* 替换：纯白背景 #fff → --bg-color */
-  background-color: var(--bg-color);
+  background: var(--modal-bg);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
-  /* 替换：深色边框 #333 → --text-color */
-  border: 2px solid var(--text-color);
-  /* 替换：阴影颜色 #0005 → --hover-shadow（保留阴影的透明度逻辑） */
-  box-shadow: 3px 3px 0 var(--hover-shadow);
-  transform: rotate(-2deg);
-  transition: transform 0.2s;
+  font-size: 22px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--hover-shadow);
+  transform: rotate(-3deg);
+  transition:
+    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.2s ease,
+    box-shadow 0.22s ease;
 }
 
 .button-inner:hover {
-  transform: rotate(2deg) scale(1.05);
+  transform: rotate(0deg) scale(1.05);
+  border-color: rgba(var(--primary-color-rgb), 0.45);
+  box-shadow: var(--hover-shadow);
 }
 
 .button-inner:active {
-  transform: scale(0.95);
+  transform: scale(0.96);
 }
 
 .icon {
-  transform: rotate(2deg);
+  transform: rotate(3deg);
+  filter: grayscale(0.15);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button-inner {
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .button-inner:hover {
+    transform: rotate(-3deg) scale(1.02);
+  }
+
+  .button-inner:active {
+    transform: scale(0.98);
+  }
 }
 </style>

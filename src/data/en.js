@@ -12,6 +12,14 @@ export default {
         resume: 'Resume',
         footer: 'About'
     },
+    chatbot: {
+        title: 'AI Assistant',
+        placeholder: 'Type a message…',
+        ariaFab: 'AI Assistant',
+        ariaDialog: 'AI chat',
+        emptyHint: 'Drop a line — I’ll pick it up.',
+        send: 'Send'
+    },
     title: 'HEY, I AM RCPAWN',
     subtitle: 'A SOFTWARE ENGINEERING STUDENT',
     professions: [

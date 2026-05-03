@@ -12,6 +12,14 @@ export default {
         resume: '简历',
         footer: '关于'
     },
+    chatbot: {
+        title: 'AI 助手',
+        placeholder: '输入消息…',
+        ariaFab: 'AI 助手',
+        ariaDialog: 'AI 对话',
+        emptyHint: '随便丢一句话进来，我会接住。',
+        send: '发送'
+    },
     title: '嘿，我是过河卒',
     subtitle: '一名软件工程专业的学生',
     professions: [
