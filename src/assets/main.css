@@ -18,6 +18,12 @@
     --hover-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --icon-color: #374151;
     --grid-line: rgba(0, 0, 0, 0.04);
+
+    /* 主内容区宽度与水平内边距（Hero / Projects 等共用，与顶栏独立） */
+    --page-max-width: 1100px;
+    --page-max-width-lg: 1300px;
+    /* 与历史 cyber-container 的 43px 一致，保证首屏与学习经历左缘对齐 */
+    --page-pad-x: 43px;
 }
 
 /* --- 🌙 暗黑模式 --- */
@@ -35,6 +41,10 @@ html.dark {
     --hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
     --icon-color: #d1d5db;
     --grid-line: rgba(255, 255, 255, 0.05);
+
+    --page-max-width: 1100px;
+    --page-max-width-lg: 1300px;
+    --page-pad-x: 43px;
 }
 
 /* =========================================

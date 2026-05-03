@@ -27,6 +27,9 @@ export default {
         '☁️ Microservice Architecture Explorer',
         '🎨 Enthusiast of 3D & Interactive Design'
     ],
+    hero: {
+        scrollHint: 'Scroll down'
+    },
 
     skills: {
         title: "TECHNICAL_STACK // MATRIX",

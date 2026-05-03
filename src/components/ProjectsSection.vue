@@ -131,14 +131,17 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
 
 <style scoped>
 .projects-wrapper {
-  padding: 120px 0 100px 0;
+  /* 顶距 120 → 80，与 Hero 垂直居中后的底部留白衔接更自然，不再产生大空洞 */
+  padding: 80px 0 100px 0;
 }
 
+/*
+ * 主内容区：与 HeroSection 共用 main.css 的 --page-*（与顶栏独立）
+ */
 .cyber-container {
-  max-width: 1100px;
-  margin-left: calc(50% - 530px);
-  margin-right: auto;
-  padding: 0 43px;
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  padding: 0 var(--page-pad-x);
 }
 
 .main-layout {
@@ -351,7 +354,7 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
 
 /* 响应式：完全保留 */
 @media (max-width: 900px) {
-  .cyber-container { margin: 0 auto; padding: 0 20px; }
+  .cyber-container { margin: 0 auto; padding: 0 1rem; }
   .main-layout { flex-direction: column; }
   .index-bus, .data-stream { width: 100%; }
   .sticky-content { position: relative; top: 0; margin-bottom: 40px; }
@@ -361,7 +364,7 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
 
 /* 大屏优化（27寸及以上） */
 @media (min-width: 1600px) {
-  .cyber-container { max-width: 1300px; margin-left: calc(50% - 630px); }
+  .cyber-container { max-width: var(--page-max-width-lg); margin: 0 auto; }
   .project-node { min-height: 540px; }
   .main-title { font-size: 2.5rem; }
   .subtitle { font-size: 1.05rem; }

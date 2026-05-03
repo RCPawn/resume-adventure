@@ -27,6 +27,9 @@ export default {
         '☁️ 微服务架构探索者',
         '🎨 热衷于3D和互动设计'
     ],
+    hero: {
+        scrollHint: '向下滚动'
+    },
 
     skills: {
         title: "TECHNICAL_STACK // 技术矩阵",

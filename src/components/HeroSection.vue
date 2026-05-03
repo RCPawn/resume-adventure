@@ -5,28 +5,33 @@
       <div class="grid-lines"></div>
     </div>
 
-    <div class="container-fluid">
-      <div class="layout-grid">
-        <!-- 左侧：文字信息 (保持不变) -->
+    <!-- 首屏占满视口高度，主内容与箭头之间用 flex 分配留白（箭头贴近一屏下沿、不压在内容下也不悬空） -->
+    <div class="hero-shell">
+      <div class="hero-top">
+        <div class="container-fluid">
+          <div class="layout-grid">
+        <!-- 左侧：文字信息 -->
         <div class="text-area">
           <div class="content-wrapper">
-            <div class="title-group">
-              <h1 class="main-name">
-                <span class="greeting">HEY, I AM</span>
-                <br>
-                <div class="name-container">
-                  <span class="highlight-name">RCPAWN</span>
-                  <svg class="energy-underline" viewBox="0 0 200 20" preserveAspectRatio="none">
-                    <path d="M5,15 Q50,5 100,15 T195,15" fill="none" stroke="#4dabf7" stroke-width="8" />
-                  </svg>
-                  <div class="sticky-note">
-                    <span class="note-pin">📌</span>
-                    <div class="note-content"><p>Less is<br>more</p></div>
+            <!-- 顶部：标题组 -->
+            <div class="intro-block">
+              <div class="title-group">
+                <h1 class="main-name">
+                  <span class="greeting">HEY, I AM</span>
+                  <br>
+                  <div class="name-container">
+                    <span class="highlight-name">RCPAWN</span>
+                    <div class="sticky-note">
+                      <span class="note-pin">📌</span>
+                      <div class="note-content"><p>Less is<br>more</p></div>
+                    </div>
                   </div>
-                </div>
-              </h1>
+                </h1>
+              </div>
+              <h2 class="sub-heading">{{ t('subtitle') || 'A SOFTWARE ENGINEERING STUDENT' }}</h2>
             </div>
-            <h2 class="sub-heading">{{ t('subtitle') || 'A SOFTWARE ENGINEERING STUDENT' }}</h2>
+
+            <!-- 底部：技能标签 -->
             <div class="skill-list">
               <div v-for="(prof, index) in tm('professions')" :key="index" class="skill-item" :style="{ animationDelay: `${0.2 + index * 0.1}s` }">
                 <span class="text">{{ prof }}</span>
@@ -59,7 +64,7 @@
                 interaction-prompt="none"
                 auto-rotate
                 auto-rotate-delay="1000"
-                rotation-per-second="15deg"
+                rotation-per-second="7deg"
                 shadow-intensity="1.5"
                 shadow-softness="0.8"
                 camera-orbit="41.43deg 75.41deg 90%"
@@ -73,6 +78,20 @@
             </model-viewer>
           </div>
         </div>
+      </div>
+        </div>
+      </div>
+
+      <div class="hero-bottom">
+        <a href="#projects" class="scroll-cue" :aria-label="t('hero.scrollHint')">
+          <svg class="scroll-cue-arrow" viewBox="0 0 28 32" aria-hidden="true">
+            <path d="M4 8 L14 18 L24 8" fill="none" stroke="currentColor"
+                  stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M4 18 L14 28 L24 18" fill="none" stroke="currentColor"
+                  stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"
+                  class="scroll-cue-arrow--second" />
+          </svg>
+        </a>
       </div>
     </div>
 
@@ -106,54 +125,202 @@ const { t, tm } = useI18n();
 /* ... (保留你原有的字体导入和布局样式) ... */
 @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Inter:wght@400;800&display=swap');
 
-/* --- 基础布局 --- */
+/* --- 基础布局：首屏至少一屏高，留白由 hero-shell 在「主区 / 箭头」之间分配 --- */
 .hero-section {
   position: relative;
-  height: calc(100vh - 80px);
+  min-height: calc(100vh - 80px);
+  min-height: calc(100dvh - 80px);
+  box-sizing: border-box;
   width: 100%;
   background-color: transparent;
   color: var(--text-color);
   overflow: hidden;
   font-family: 'Inter', sans-serif;
   display: flex;
-  align-items: flex-start;
-  padding-top: 10vh;
+  flex-direction: column;
+  padding-top: clamp(4vh, 7vh, 9vh);
+  padding-bottom: clamp(0.75rem, 1.8vh, 1.25rem);
 }
 
+.paper-texture,
+.floating-decorations {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-shell {
+  position: relative;
+  z-index: 10;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+}
+
+.hero-top {
+  flex: 0 0 auto;
+  width: 100%;
+}
+
+.hero-bottom {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+/*
+ * 主内容区：与 ProjectsSection 共用 main.css 的 --page-*（与顶栏独立）
+ */
 .container-fluid {
   width: 100%;
-  max-width: 1440px;
+  max-width: var(--page-max-width);
   margin: 0 auto;
-  padding: 0 4%;
-  z-index: 10;
+  padding: 40px var(--page-pad-x);
 }
 
 .layout-grid {
   display: grid;
-  grid-template-columns: minmax(400px, 1fr) minmax(500px, 1.1fr);
-  align-items: center;
+  /* 模型一侧给足比例（1.2fr），文本侧自然收紧；最小 360/440 守住可读性 */
+  grid-template-columns: minmax(360px, 1fr) minmax(440px, 1.2fr);
+  align-items: stretch;
   justify-content: center;
-  gap: 6rem;
+  /* 中等屏紧凑、27" 大屏自然舒展；27" 还会在 1600+ media query 里再放大 */
+  gap: clamp(2.5rem, 3vw, 4rem);
 }
 
-/* ... (保留名字、便利贴、文字区域的样式，不需要改动) ... */
+/* ============ 文字区 ============ */
+.text-area {
+  /* 与 Projects 左侧索引列同一左缘：首字与「// ARCHIVE」对齐 */
+  justify-self: start;
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  align-items: center;
+}
+.content-wrapper {
+  width: 100%;
+  /* 两段（intro / skills）居中分布，靠流体字号自然撑高 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(2rem, 5vh, 3.6rem);
+}
+
 .name-container { position: relative; display: inline-block; }
-.highlight-name { font-size: 5.8rem; letter-spacing: -2px; font-weight: 900; line-height: 1; color: var(--text-color); }
-.energy-underline { position: absolute; bottom: -4px; left: 0; width: 105%; height: 20px; z-index: -1; pointer-events: none; }
-.energy-underline path { stroke: var(--primary-color); stroke-dasharray: 400; stroke-dashoffset: 400; stroke-linecap: round; animation: drawLine 3s ease-in-out forwards 0.8s; }
+.highlight-name {
+  /* 流体字号上限收紧：避免在 1440px 中等屏（文本列只有 ~430px）下溢出 */
+  font-size: clamp(4.2rem, 5.6vw, 7.4rem);
+  letter-spacing: -2px;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--text-color);
+  position: relative;
+  display: inline-block;
+  z-index: 1;
+}
+
+/* 纯 CSS 弧形下划线：
+   - 利用 border-radius:50% 把伪元素的盒子塑造成椭圆轮廓
+   - 只渲染 border-top，于是只看到椭圆的"上半弧"——形如笑脸
+   - 把这个伪元素整体放到文字基线下方，弧线就成了一条微微上扬的下划线
+   - clip-path 从右往左收缩，形成"由左向右画出来"的手写感动画 */
+.highlight-name::after {
+  content: '';
+  position: absolute;
+  left: -2%;
+  right: -2%;
+  bottom: -32px;
+  height: 28px;
+  border-top: 7px solid var(--primary-color);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+  clip-path: inset(0 100% 0 0);
+  animation: drawArc 1.3s cubic-bezier(0.65, 0, 0.35, 1) 0.8s forwards;
+  filter: drop-shadow(0 1px 2px rgba(77, 171, 247, 0.18));
+}
 .sticky-note { position: absolute; top: -25px; right: -105px; width: 95px; height: 95px; background-color: #fcc419; box-shadow: var(--hover-shadow); transform: rotate(8deg); display: flex; justify-content: center; align-items: center; text-align: center; font-family: 'Caveat', cursive; font-size: 1.2rem; line-height: 1; color: #1f2937; z-index: 5; }
 .note-pin { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); font-size: 1.4rem; color: #e63946; }
-.text-area { justify-self: end; }
-.greeting { font-size: 2rem; color: var(--text-color); font-weight: 800; }
-.sub-heading { font-size: 1.1rem; font-weight: 700; color: var(--secondary-color); margin: 1.5rem 0 2rem 0; }
-.skill-list { display: flex; flex-direction: column; gap: 0.8rem; }
-.skill-item { font-size: 1.2rem; font-weight: 700; color: var(--text-color); opacity: 0; animation: fadeInRight 0.5s ease-out forwards; }
+
+/* ============ 顶部介绍 ============ */
+.greeting {
+  font-size: clamp(1.6rem, 1.8vw + 0.3rem, 2.6rem);
+  color: var(--text-color);
+  font-weight: 800;
+  display: inline-block;
+  margin-bottom: 0.4em;
+  letter-spacing: 0.02em;
+}
+.sub-heading {
+  font-size: clamp(1.05rem, 0.7vw + 0.55rem, 1.5rem);
+  font-weight: 700;
+  color: var(--secondary-color);
+  margin: clamp(2.2rem, 4vh, 3rem) 0 0 0;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+}
+
+/* ============ 中段技能 ============ */
+.skill-list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.85rem, 0.7vh + 0.4rem, 1.4rem);
+}
+.skill-item {
+  font-size: clamp(1.15rem, 0.7vw + 0.6rem, 1.6rem);
+  font-weight: 700;
+  color: var(--text-color);
+  opacity: 0;
+  animation: fadeInRight 0.5s ease-out forwards;
+  letter-spacing: 0.01em;
+}
+
+/* ============ 滚动提示：固定在首屏下沿区域（由 hero-shell 的 space-between 推出位置） ============ */
+.scroll-cue {
+  position: relative;
+  width: 44px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--secondary-color);
+  text-decoration: none;
+  z-index: 50;
+  cursor: pointer;
+  opacity: 0;
+  animation: scrollCueIn 0.55s ease-out 0.9s forwards;
+  transition: color 0.25s ease;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.2));
+}
+.scroll-cue:hover {
+  color: var(--primary-color);
+}
+.scroll-cue-arrow {
+  width: 100%;
+  height: 100%;
+  animation: scrollArrowBob 2.2s cubic-bezier(0.65, 0, 0.35, 1) 1.6s infinite;
+}
+.scroll-cue-arrow path {
+  opacity: 0.5;
+  animation: scrollChevron 2.2s ease-in-out infinite;
+}
+.scroll-cue-arrow .scroll-cue-arrow--second {
+  animation-delay: 0.4s;
+}
 
 /* --- 3D 模型区域优化 --- */
 .model-area {
   justify-self: start;
   position: relative;
-  height: 65vh;
+  /* 模型高度略降（800 → 720），与文本三段式骨架更平衡；同时保持下限 */
+  height: clamp(50vh, 64vh, min(70vh, 720px));
   width: 100%;
   display: flex;
   align-items: center;
@@ -178,29 +345,64 @@ const { t, tm } = useI18n();
   opacity: 0;
 }
 
-/* 动画关键帧保持不变 */
-@keyframes drawLine { to { stroke-dashoffset: 0; } }
+/* 动画关键帧 */
+@keyframes drawArc { to { clip-path: inset(0 0 0 0); } }
 @keyframes fadeInRight { from { opacity: 0; transform: translateX(-15px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes scrollCueIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* 仅 SVG 上下浮动，避免与外层 translateX(-50%) 冲突 */
+@keyframes scrollArrowBob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(5px); }
+}
+/* 双 chevron 错位闪烁，营造"持续向下"的指引 */
+@keyframes scrollChevron {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 1; }
+}
 .floating-anim { animation: levitate 6s ease-in-out infinite; }
 @keyframes levitate { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
 /* 响应式适配 */
 @media (max-width: 1024px) {
-  .hero-section { padding-top: 5vh; }
-  .layout-grid { grid-template-columns: 1fr; text-align: center; gap: 2rem; }
-  .text-area { justify-self: center; padding-right: 0; }
+  .hero-section {
+    padding-top: 5vh;
+    padding-bottom: clamp(0.75rem, 1.5vh, 1.25rem);
+  }
+  /* 移动端：容器回退到完全居中（不再用 calc 偏移），与 Projects 在小屏的处理一致 */
+  .container-fluid { max-width: 100%; margin-left: auto; padding: 0 1rem; }
+  .layout-grid { grid-template-columns: 1fr; text-align: center; gap: 2rem; align-items: center; }
+  .text-area { justify-self: center; padding-right: 0; max-width: 100%; }
+  .content-wrapper { gap: 1.6rem; }
   .model-area { justify-self: center; height: 45vh; }
   .sticky-note { right: 0; top: -40px; }
+  .scroll-cue { width: 40px; height: 44px; }
 }
 
-/* 大屏优化（27寸及以上） */
+/* 大屏优化（27寸及以上）：与 Projects 的 1600+ 容器规则保持一致 */
 @media (min-width: 1600px) {
-  .container-fluid { max-width: 1600px; }
-  .layout-grid { gap: 8rem; }
-  .highlight-name { font-size: 6.8rem; }
-  .greeting { font-size: 2.3rem; }
-  .sub-heading { font-size: 1.3rem; }
-  .skill-item { font-size: 1.4rem; }
-  .model-area { height: 70vh; }
+  .container-fluid {
+    max-width: var(--page-max-width-lg);
+  }
+  .layout-grid { gap: clamp(4.75rem, 5.5vw, 6.5rem); }
+  .highlight-name::after {
+    height: 32px;
+    bottom: -36px;
+    border-top-width: 8px;
+  }
+  .scroll-cue {
+    width: 48px;
+    height: 54px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .highlight-name::after { animation: none; clip-path: none; }
+  .scroll-cue { animation: none; opacity: 1; transform: none; }
+  .scroll-cue-arrow { animation: none; }
+  .scroll-cue-arrow path { animation: none; opacity: 0.65; }
+  .floating-anim { animation: none; }
 }
 </style>
