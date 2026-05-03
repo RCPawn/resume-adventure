@@ -1,328 +1,335 @@
 <template>
-  <div class="page-container">
-    <!-- 顶部 Hero 区域 -->
-    <div class="hero-section">
-      <div class="hero-overlay"></div>
-      
-      <!-- 返回按钮 -->
-      <div class="hero-nav">
-        <GoBackButton class="hero-back-btn" />
-      </div>
+  <div class="game-page">
+    <GoBackButton />
 
-      <div class="hero-content">
-        <h1 class="project-title">🎮 简历冒险</h1>
-        <p class="project-desc">在像素世界中探索我的技术旅程</p>
-      </div>
-    </div>
-
-    <!-- 游戏内容区域 -->
-    <div class="content-container">
-      <div class="game-wrapper">
-        <div class="game-frame">
-          <div v-if="loading" class="loading-state">
-            <div class="spinner"></div>
-            <p>游戏加载中...</p>
-          </div>
-          <iframe 
-            v-show="!loading"
-            ref="gameIframe" 
-            :src="gameUrl" 
-            class="game-iframe"
-            @load="onGameLoaded"
-          ></iframe>
+    <main class="game-page__main">
+      <div ref="gameFrameRef" class="game-frame">
+        <div v-if="loading" class="loading-state">
+          <div class="spinner" aria-hidden="true"></div>
         </div>
-        
-        <!-- 游戏提示 -->
-        <div class="game-tips">
-          <div class="tip-item">🎯 使用方向键或 WASD 移动</div>
-          <div class="tip-item">⌨️ 按空格键互动</div>
-          <div class="tip-item">🚀 探索整个地图发现更多内容</div>
-        </div>
+        <iframe
+          v-show="!loading"
+          ref="iframeRef"
+          :src="gameUrl"
+          class="game-iframe"
+          title="游戏"
+          allow="fullscreen; gamepad"
+          @load="onGameLoaded"
+        />
       </div>
-    </div>
+    </main>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
-import GoBackButton from "@/components/GoBackButton.vue";
+import GoBackButton from '@/components/GoBackButton.vue';
+
+const HINT_ID = 'resume-game-fs-hint';
 
 const gameUrl = ref('/WebGL Builds/index.html');
-const gameIframe = ref(null);
 const loading = ref(true);
+const gameFrameRef = ref(null);
+const iframeRef = ref(null);
+
+let hintTimers = [];
+let detachParentFs = null;
+let detachIframeFs = null;
+let bodyOverflowPrev = '';
+
+function getFullscreenElement(doc) {
+  return (
+    doc.fullscreenElement ||
+    doc.webkitFullscreenElement ||
+    doc.mozFullScreenElement ||
+    null
+  );
+}
+
+function clearHintTimers() {
+  hintTimers.forEach((id) => clearTimeout(id));
+  hintTimers = [];
+}
+
+function removeHintInDoc(doc) {
+  if (!doc) return;
+  try {
+    doc.getElementById(HINT_ID)?.remove();
+  } catch {
+    /* ignore */
+  }
+}
+
+/**
+ * 全屏时只有 fullscreenElement 及其子节点会参与绘制，
+ * 提示必须挂在该节点下，挂 body 会被盖住。
+ */
+function showFullscreenHintInDoc(doc) {
+  if (!doc) return;
+
+  let root = getFullscreenElement(doc);
+  if (!root || root.nodeType !== Node.ELEMENT_NODE) return;
+  if (root === doc.documentElement) root = doc.body;
+
+  removeHintInDoc(doc);
+  clearHintTimers();
+
+  const bar = doc.createElement('div');
+  bar.id = HINT_ID;
+  bar.setAttribute('role', 'status');
+  bar.setAttribute('aria-live', 'polite');
+  bar.textContent = '按 Esc 退出全屏';
+
+  Object.assign(bar.style, {
+    position: 'fixed',
+    left: '50%',
+    bottom: 'max(14px, env(safe-area-inset-bottom, 0px))',
+    transform: 'translateX(-50%)',
+    zIndex: '2147483647',
+    maxWidth: 'calc(100vw - 24px)',
+    padding: '8px 14px',
+    borderRadius: '6px',
+    fontSize: '13px',
+    fontFamily: 'system-ui, -apple-system, "Segoe UI", sans-serif',
+    fontWeight: '600',
+    color: '#fff',
+    background: 'rgba(0,0,0,0.82)',
+    boxShadow: '0 4px 16px rgba(0,0,0,0.35)',
+    pointerEvents: 'none',
+    textAlign: 'center',
+    opacity: '0',
+    transition: 'opacity 0.25s ease',
+  });
+
+  root.appendChild(bar);
+  requestAnimationFrame(() => {
+    bar.style.opacity = '1';
+  });
+
+  hintTimers.push(
+    window.setTimeout(() => {
+      bar.style.opacity = '0';
+      hintTimers.push(
+        window.setTimeout(() => {
+          bar.remove();
+        }, 280),
+      );
+    }, 5200),
+  );
+}
+
+function onIframeDocFullscreenChange() {
+  const iframe = iframeRef.value;
+  let doc = null;
+  try {
+    doc = iframe?.contentDocument ?? null;
+  } catch {
+    return;
+  }
+  if (!doc) return;
+
+  if (getFullscreenElement(doc)) {
+    requestAnimationFrame(() => showFullscreenHintInDoc(doc));
+  } else {
+    removeHintInDoc(doc);
+    clearHintTimers();
+  }
+}
+
+function onParentDocFullscreenChange() {
+  const el = getFullscreenElement(document);
+  const frame = gameFrameRef.value;
+  const iframe = iframeRef.value;
+
+  if (!el) {
+    removeHintInDoc(document);
+    clearHintTimers();
+    return;
+  }
+
+  if (iframe && el === iframe) {
+    try {
+      const idoc = iframe.contentDocument;
+      if (idoc) {
+        const tryShow = (attempt) => {
+          if (getFullscreenElement(idoc)) {
+            showFullscreenHintInDoc(idoc);
+            return;
+          }
+          if (attempt < 10) {
+            hintTimers.push(window.setTimeout(() => tryShow(attempt + 1), 50));
+          }
+        };
+        requestAnimationFrame(() => tryShow(0));
+      }
+    } catch {
+      /* 跨域无法读 iframe 文档 */
+    }
+    return;
+  }
+
+  if (frame && (el === frame || frame.contains(el))) {
+    requestAnimationFrame(() => showFullscreenHintInDoc(document));
+  }
+}
+
+function attachIframeFullscreenListeners() {
+  const iframe = iframeRef.value;
+  if (!iframe) return;
+  let doc = null;
+  try {
+    doc = iframe.contentDocument;
+  } catch {
+    return;
+  }
+  if (!doc) return;
+
+  doc.addEventListener('fullscreenchange', onIframeDocFullscreenChange);
+  doc.addEventListener('webkitfullscreenchange', onIframeDocFullscreenChange);
+  doc.addEventListener('mozfullscreenchange', onIframeDocFullscreenChange);
+  detachIframeFs = () => {
+    doc.removeEventListener('fullscreenchange', onIframeDocFullscreenChange);
+    doc.removeEventListener('webkitfullscreenchange', onIframeDocFullscreenChange);
+    doc.removeEventListener('mozfullscreenchange', onIframeDocFullscreenChange);
+    removeHintInDoc(doc);
+    detachIframeFs = null;
+  };
+}
+
+function attachParentFullscreenListeners() {
+  document.addEventListener('fullscreenchange', onParentDocFullscreenChange);
+  document.addEventListener('webkitfullscreenchange', onParentDocFullscreenChange);
+  document.addEventListener('mozfullscreenchange', onParentDocFullscreenChange);
+  detachParentFs = () => {
+    document.removeEventListener('fullscreenchange', onParentDocFullscreenChange);
+    document.removeEventListener('webkitfullscreenchange', onParentDocFullscreenChange);
+    document.removeEventListener('mozfullscreenchange', onParentDocFullscreenChange);
+    removeHintInDoc(document);
+    detachParentFs = null;
+  };
+}
 
 const onGameLoaded = () => {
   loading.value = false;
-  adjustGameSize();
+  detachIframeFs?.();
+  attachIframeFullscreenListeners();
 };
 
-// 调整游戏尺寸，确保最佳显示效果
-function adjustGameSize() {
-  const iframe = gameIframe.value;
-  if (!iframe) return;
-
-  const wrapper = document.querySelector('.game-frame');
-  if (!wrapper) return;
-  
-  const aspectRatio = 16 / 9;
-  const maxWidth = wrapper.clientWidth;
-  const maxHeight = wrapper.clientHeight;
-
-  let width = maxWidth;
-  let height = width / aspectRatio;
-
-  if (height > maxHeight) {
-    height = maxHeight;
-    width = height * aspectRatio;
-  }
-
-  iframe.style.width = `${width}px`;
-  iframe.style.height = `${height}px`;
-}
-
 onMounted(() => {
-  window.addEventListener('resize', adjustGameSize);
-  setTimeout(adjustGameSize, 200);
+  bodyOverflowPrev = document.body.style.overflow;
+  document.body.style.overflow = 'hidden';
+  attachParentFullscreenListeners();
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener('resize', adjustGameSize);
+  document.body.style.overflow = bodyOverflowPrev;
+  clearHintTimers();
+  detachParentFs?.();
+  detachIframeFs?.();
+  removeHintInDoc(document);
+  try {
+    removeHintInDoc(iframeRef.value?.contentDocument);
+  } catch {
+    /* ignore */
+  }
 });
 </script>
 
 <style scoped>
-/* =================================
-   基础布局
-   ================================= */
-.page-container {
-  min-height: 100vh;
-  background-color: var(--bg-color);
-}
-
-/* Hero 区域 */
-.hero-section {
-  position: relative;
-  height: 45vh;
-  min-height: 350px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+.game-page {
+  --game-gutter: 12px;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  background-attachment: fixed;
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-sans);
+  overflow: auto;
 }
 
-.hero-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.2) 0%,
-    rgba(0, 0, 0, 0.5) 60%,
-    var(--bg-color) 100%
-  );
-  z-index: 1;
+@media (min-width: 600px) {
+  .game-page {
+    --game-gutter: 16px;
+  }
 }
 
-.hero-nav {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  z-index: 10;
-}
-
-.hero-content {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 0 20px 50px 20px;
-  color: white;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-}
-
-.project-title {
-  font-size: 3rem;
-  font-weight: 800;
-  margin: 0 0 10px 0;
-  letter-spacing: -1px;
-  line-height: 1.1;
-}
-
-.project-desc {
-  font-size: 1.1rem;
-  opacity: 0.9;
-  margin: 0;
-}
-
-/* =================================
-   内容容器
-   ================================= */
-.content-container {
-  position: relative;
-  z-index: 3;
-  max-width: 1200px;
-  margin: -40px auto 60px auto;
-  padding: 0 20px;
-}
-
-.game-wrapper {
+.game-page__main {
+  box-sizing: border-box;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 24px;
-}
-
-/* =================================
-   游戏卡片（玻璃拟态）
-   ================================= */
-.game-frame {
-  background: var(--modal-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 24px;
-  padding: 30px;
-  box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1);
-  min-height: 600px;
-  display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: flex-start;
+  padding: 4.75rem var(--game-gutter) 12px;
+  min-height: 0;
+}
+
+.game-frame {
   position: relative;
+  width: min(
+    calc(100vw - 2 * var(--game-gutter)),
+    calc((100vh - 5.25rem) * 16 / 9)
+  );
+  aspect-ratio: 16 / 9;
+  max-height: calc(100vh - 5.25rem);
+  margin-inline: auto;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  background: #000;
   overflow: hidden;
 }
 
-.game-iframe {
-  border: none;
-  border-radius: 12px;
-  background-color: #000;
-  transition: all 0.3s ease;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+/* 整框全屏时允许子节点（提示条）不被裁切 */
+.game-frame:fullscreen {
+  overflow: visible;
 }
 
-/* Loading 状态 */
+.game-iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #000;
+}
+
 .loading-state {
+  position: absolute;
+  inset: 0;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 20px;
-  color: var(--secondary-color);
+  justify-content: center;
+  background: #0d0d0d;
 }
 
 .spinner {
-  width: 50px;
-  height: 50px;
-  border: 4px solid var(--border-color);
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.12);
   border-top-color: var(--primary-color);
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-/* =================================
-   游戏提示
-   ================================= */
-.game-tips {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 16px;
-  padding: 0 10px;
-}
+@media (max-width: 480px) {
+  .game-page__main {
+    padding-top: 4.25rem;
+  }
 
-.tip-item {
-  background: var(--modal-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 16px 20px;
-  color: var(--text-color);
-  font-size: 0.95rem;
-  transition: all 0.3s ease;
-}
-
-.tip-item:hover {
-  border-color: var(--primary-color);
-  transform: translateY(-2px);
-  box-shadow: var(--hover-shadow);
-}
-
-/* =================================
-   响应式适配
-   ================================= */
-@media (max-width: 768px) {
-  .hero-section {
-    height: 35vh;
-    min-height: 280px;
-  }
-  
-  .project-title {
-    font-size: 2rem;
-  }
-  
-  .project-desc {
-    font-size: 1rem;
-  }
-  
-  .content-container {
-    margin: -30px auto 40px auto;
-    padding: 0 15px;
-  }
-  
   .game-frame {
-    padding: 20px;
-    min-height: 500px;
-    border-radius: 16px;
-  }
-  
-  .game-tips {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* 大屏优化（27寸及以上） */
-@media (min-width: 1600px) {
-  .hero-section {
-    height: 50vh;
-  }
-  
-  .hero-content {
-    max-width: 1100px;
-    padding: 0 30px 60px 30px;
-  }
-  
-  .project-title {
-    font-size: 3.5rem;
-  }
-  
-  .project-desc {
-    font-size: 1.3rem;
-  }
-  
-  .content-container {
-    max-width: 1400px;
-    margin: -50px auto 80px auto;
-    padding: 0 30px;
-  }
-  
-  .game-frame {
-    padding: 40px;
-    min-height: 700px;
-    border-radius: 28px;
-  }
-  
-  .game-iframe {
-    border-radius: 16px;
-  }
-  
-  .game-tips {
-    gap: 20px;
-  }
-  
-  .tip-item {
-    padding: 20px 24px;
-    font-size: 1.05rem;
+    width: min(
+      calc(100vw - 2 * var(--game-gutter)),
+      calc((100vh - 4.85rem) * 16 / 9)
+    );
+    max-height: calc(100vh - 4.85rem);
   }
 }
 </style>
