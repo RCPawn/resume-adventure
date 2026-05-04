@@ -120,7 +120,9 @@ export default {
         ],
         title: 'Learning Experience',
         subtitle: 'From hello world to hello bug',
-        viewDetails: 'View Details'
+        viewDetails: 'View Details',
+        dateUnknown: 'Date TBD',
+        dateCaption: 'Created'
     },
 
     stuffs: {

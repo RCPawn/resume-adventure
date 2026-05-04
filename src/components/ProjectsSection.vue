@@ -53,6 +53,12 @@
 
                 <div class="node-copy">
                   <p class="node-desc">{{ project.description }}</p>
+                  <div class="node-copy-dateline">
+                    <time
+                      class="node-copy-date"
+                      :datetime="project.dateIso || undefined"
+                    >{{ project.footerDateLine }}</time>
+                  </div>
                 </div>
 
                 <div class="node-footer">
@@ -90,11 +96,47 @@ const showWeatherModal = ref(false);
 const currentActive = ref(0);
 const isMobile = ref(false);
 
-const projects = computed(() => projectsData.map(p => ({
-  ...p,
-  name: t(p.nameKey),
-  description: t(p.descriptionKey),
-})));
+const toSortTime = (iso) => {
+  if (!iso || !String(iso).trim()) return 0;
+  const n = String(iso).trim();
+  const ms = Date.parse(/^\d{4}-\d{2}-\d{2}$/.test(n) ? `${n}T12:00:00` : n);
+  return Number.isNaN(ms) ? 0 : ms;
+};
+
+const formatCardDateCompact = (iso) => {
+  if (!iso || !String(iso).trim()) return '—';
+  const n = String(iso).trim();
+  const d = new Date(/^\d{4}-\d{2}-\d{2}$/.test(n) ? `${n}T12:00:00` : n);
+  if (Number.isNaN(d.getTime())) return '—';
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}.${m}.${day}`;
+};
+
+const projects = computed(() => {
+  const sorted = [...projectsData].sort((a, b) => {
+    const diff = toSortTime(b.date) - toSortTime(a.date);
+    if (diff !== 0) return diff;
+    return String(a.nameKey).localeCompare(String(b.nameKey), 'en');
+  });
+  return sorted.map((p) => {
+    const raw = p.date && String(p.date).trim();
+    const dateIso = raw && /^\d{4}-\d{2}-\d{2}$/.test(raw) ? raw : '';
+    const compact = formatCardDateCompact(p.date);
+    const footerDateLine =
+      compact === '—'
+        ? `${t('projects.dateCaption')} · ${t('projects.dateUnknown')}`
+        : `${t('projects.dateCaption')} · ${compact}`;
+    return {
+      ...p,
+      name: t(p.nameKey),
+      description: t(p.descriptionKey),
+      footerDateLine,
+      dateIso,
+    };
+  });
+});
 
 // --- 🔉 音效逻辑 ---
 let audioCtx = null;
@@ -411,7 +453,10 @@ html:not(.dark) .neon-border {
 
 .node-copy {
   position: relative;
-  margin: 0 0 1.15rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin: 0 0 0.6rem;
   padding: 0 0 0 0.95rem;
   border-left: 2px solid rgba(var(--primary-color-rgb), 0.45);
   max-width: 42rem;
@@ -426,14 +471,35 @@ html:not(.dark) .neon-border {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 }
 
+/* 仅占文案宽度，避免整行拉满后右侧时间左侧大片留白 */
+.node-copy-dateline {
+  align-self: flex-start;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 0.5rem;
+}
+
 .node-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 1rem 1.25rem;
   padding-top: 0.65rem;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.node-copy-date {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  color: rgba(248, 250, 252, 0.68);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  line-height: 1.35;
+  white-space: nowrap;
 }
 
 .tag-cloud {
@@ -509,6 +575,16 @@ html:not(.dark) .neon-border {
   .sticky-content { position: relative; top: 0; margin-bottom: 40px; }
   .project-node { transform: none; }
   .project-node:hover { transform: translateY(-4px); }
+}
+
+@media (max-width: 520px) {
+  .node-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .node-copy-date {
+    font-size: 0.62rem;
+  }
 }
 
 /* 大屏优化（27寸及以上） */

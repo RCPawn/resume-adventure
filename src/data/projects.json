@@ -14,7 +14,7 @@
   {
     "id": "exhibition",
     "title": "非遗虚拟展陈与数据监测平台",
-    "date": "2025-12-23",
+    "date": "2025-11-15",
     "nameKey": "projects.items.1.name",
     "descriptionKey": "projects.items.1.description",
     "image": "/images/projects/城堡.png",
@@ -26,18 +26,21 @@
   {
     "nameKey": "projects.items.2.name",
     "descriptionKey": "projects.items.2.description",
+    "date": "2025-08-20",
     "image": "/images/projects/森林.png",
     "link": "/olive-ppt"
   },
   {
     "nameKey": "projects.items.4.name",
     "descriptionKey": "projects.items.4.description",
+    "date": "2026-01-18",
     "image": "/images/projects/城市.png",
     "link": "/game"
   },
   {
     "nameKey": "projects.items.3.name",
     "descriptionKey": "projects.items.3.description",
+    "date": "2024-10-08",
     "image": "/images/projects/云朵.png",
     "link": "/weather"
   }

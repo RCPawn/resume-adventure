@@ -226,17 +226,29 @@ onMounted(() => {
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 2rem;
+  align-items: center;
+  gap: 1.125rem;
+  /* 保证中层导航在左右两栏之上，避免偶发层叠导致「只有字能点」 */
+  z-index: 1;
 }
 
 .napkin-nav-link {
+  /* inline 时 padding 的命中区域不稳定；inline-flex 整块可点（常见导航做法） */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 2.25rem;
+  padding: 0.15rem 0.35rem;
+  margin: 0;
+  cursor: pointer;
+
   color: var(--secondary-color); /* 默认次要颜色，不抢 Logo 风头 */
   text-decoration: none;
   font-weight: 500;
   font-size: 0.9rem;
   position: relative;
   transition: color 0.2s ease;
-  padding: 0.35rem 0;
 }
 
 .napkin-nav-link:hover {
@@ -410,12 +422,13 @@ onMounted(() => {
   }
 
   .napkin-nav-links {
-    gap: 2.75rem;
+    gap: 1.375rem;
   }
 
   .napkin-nav-link {
     font-size: 0.95rem;
-    padding: 0.4rem 0;
+    min-height: 2.375rem;
+    padding: 0.2rem 0.4rem;
   }
 
   .napkin-controls {
@@ -445,7 +458,7 @@ onMounted(() => {
   }
 
   .napkin-nav-links {
-    gap: 3.25rem;
+    gap: 1.5rem;
   }
 
   .napkin-controls {
@@ -467,12 +480,13 @@ onMounted(() => {
 <style>
 /* 与顶栏实际高度同档，供 #footer 等 scroll-margin（阶梯与上文断点一致） */
 html {
+  /* 与链接 min-height + 竖向 padding 对齐，供锚点 scroll-margin */
   --layout-navbar-height: 56px;
 }
 
 @media (min-width: 1600px) {
   html {
-    --layout-navbar-height: 60px;
+    --layout-navbar-height: 58px;
   }
 }
 

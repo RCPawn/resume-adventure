@@ -104,12 +104,14 @@ export default {
             },
             {
                 name: "🚗简历冒险",
-                description: "基于Unity3D开发的互动游戏，通过驾驶小车探索我的学习历程（敬请期待😊）"
+                description: "基于Unity3D开发的互动游戏，通过驾驶小车探索我的学习历程（正在开发中，敬请期待😊）"
             }
         ],
         title: '学习经历',
         subtitle: '从 Hello World 到 Hello Bug',
-        viewDetails: '查看详情'
+        viewDetails: '查看详情',
+        dateUnknown: '日期待定',
+        dateCaption: '创建时间'
     },
 
     gallery: {
