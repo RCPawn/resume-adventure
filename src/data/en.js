@@ -84,6 +84,11 @@ export default {
     },
 
     projects: {
+        internship: {
+            name: '📋 On-site internship (enterprise IT & planning)',
+            description:
+                'Manufacturing-side delivery and iteration around planning-related capabilities: aligned requirements with planners, commercial, and IT; contributed to backend work such as tightening master-data references and cross-system identity checks. Customer environments, vendor products, and internal details are omitted under NDA.',
+        },
         items: [
             {
                 name: "Olive Guardian",
@@ -122,7 +127,10 @@ export default {
         subtitle: 'From hello world to hello bug',
         viewDetails: 'View Details',
         dateUnknown: 'Date TBD',
-        dateCaption: 'Created'
+        dateCaption: 'Created',
+        indexHint: 'Click an index label to jump to that card',
+        indexRailAria: 'Learning experience card index',
+        indexJumpAria: 'Card {n} of {total}: {name}'
     },
 
     stuffs: {

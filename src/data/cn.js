@@ -85,6 +85,11 @@ export default {
     },
 
     projects: {
+        internship: {
+            name: '📋 制造业信息化驻场实习',
+            description:
+                '在某制造企业侧参与计划与排程相关能力的交付与迭代：与计划、商务及 IT 协同澄清业务口径，推进主数据引用收口、跨系统身份映射与校验等后端工作。涉及客户现网环境、第三方商业产品及内部实现细节依保密协议不予展示。',
+        },
         items: [
             {
                 name: "🛡️微服务流量治理与统一接入网关平台",
@@ -111,7 +116,10 @@ export default {
         subtitle: '从 Hello World 到 Hello Bug',
         viewDetails: '查看详情',
         dateUnknown: '日期待定',
-        dateCaption: '创建时间'
+        dateCaption: '创建时间',
+        indexHint: '点击序号可快速定位到对应卡片',
+        indexRailAria: '学习经历卡片索引',
+        indexJumpAria: '第 {n} 项，共 {total} 项：{name}'
     },
 
     gallery: {

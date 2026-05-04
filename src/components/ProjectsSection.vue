@@ -11,16 +11,24 @@
               <p class="subtitle">{{ t('projects.subtitle') }}</p>
             </div>
 
-            <div class="scroll-indicator">
+            <p class="index-hint" aria-hidden="true">{{ t('projects.indexHint') }}</p>
+            <nav class="scroll-indicator" :aria-label="t('projects.indexRailAria')">
               <div
                   v-for="(p, i) in projects"
                   :key="i"
                   class="indicator-dot"
                   :class="{ active: currentActive === i }"
+                  role="button"
+                  tabindex="0"
+                  :aria-label="t('projects.indexJumpAria', { n: i + 1, total: projects.length, name: p.name })"
+                  :aria-current="currentActive === i ? 'true' : undefined"
+                  @click.stop="scrollToProject(i)"
+                  @keydown.enter.prevent="scrollToProject(i)"
+                  @keydown.space.prevent="scrollToProject(i)"
               >
                 <span class="dot-label">P_{{ (i + 1).toString().padStart(2, '0') }}</span>
               </div>
-            </div>
+            </nav>
           </div>
         </aside>
 
@@ -84,7 +92,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import projectsData from '@/data/projects.json';
@@ -95,6 +103,14 @@ const router = useRouter();
 const showWeatherModal = ref(false);
 const currentActive = ref(0);
 const isMobile = ref(false);
+const scrollContainer = ref(null);
+
+const scrollToProject = (index) => {
+  const root = scrollContainer.value;
+  if (!root) return;
+  const el = root.querySelector(`.project-node[data-index="${index}"]`);
+  el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
 
 const toSortTime = (iso) => {
   if (!iso || !String(iso).trim()) return 0;
@@ -154,16 +170,33 @@ const playTickSound = () => {
   osc.start(); osc.stop(audioCtx.currentTime + 0.03);
 };
 
-// --- 滚动监听 ---
+// --- 滚动监听（限定在本节卡片容器，避免误观察到其他页面节点） ---
 let observer = null;
+const bindScrollObserver = () => {
+  if (observer) observer.disconnect();
+  observer = new IntersectionObserver(
+    (entries) => {
+      const visible = entries
+        .filter((e) => e.isIntersecting)
+        .sort((a, b) => (b.intersectionRatio || 0) - (a.intersectionRatio || 0));
+      const best = visible[0];
+      if (!best) return;
+      const idx = parseInt(best.target.dataset.index, 10);
+      if (!Number.isNaN(idx)) currentActive.value = idx;
+    },
+    { threshold: [0, 0.25, 0.5, 0.75, 1] }
+  );
+  scrollContainer.value?.querySelectorAll('.project-node').forEach((node) => observer.observe(node));
+};
+
 onMounted(() => {
   document.addEventListener('mousedown', initAudio, { once: true });
-  observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => { if (entry.isIntersecting) currentActive.value = parseInt(entry.target.dataset.index); });
-  }, { threshold: 0.6 });
-  document.querySelectorAll('.project-node').forEach(node => observer.observe(node));
+  nextTick(bindScrollObserver);
 });
-onUnmounted(() => { if (observer) observer.disconnect(); });
+watch(() => projects.value.length, () => nextTick(bindScrollObserver));
+onUnmounted(() => {
+  if (observer) observer.disconnect();
+});
 
 const handleProjectClick = (p) => {
   if (p.link === '/weather') showWeatherModal.value = true;
@@ -218,7 +251,17 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
   color: var(--secondary-color);
   font-size: var(--section-heading-subtitle-size);
   line-height: 1.6;
-  margin-bottom: 40px;
+  margin-bottom: 0.75rem;
+}
+
+.index-hint {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--secondary-color);
+  opacity: 0.85;
+  line-height: 1.45;
+  margin: 0 0 1.25rem;
+  max-width: 100%;
 }
 
 .scroll-indicator {
@@ -227,14 +270,41 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
   gap: 15px;
   border-left: 1px solid var(--border-color);
   padding-left: 20px;
+  max-height: calc(100vh - 15rem);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--border-color) 80%, transparent) transparent;
 }
+
+.scroll-indicator::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scroll-indicator::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
 .indicator-dot {
   font-size: 0.7rem;
   font-family: var(--font-mono);
   color: var(--secondary-color);
   opacity: 0.3;
-  transition: 0.3s;
+  transition: opacity 0.25s ease, transform 0.25s ease, color 0.25s ease;
+  cursor: pointer;
+  user-select: none;
 }
+
+.indicator-dot:not(.active):hover {
+  opacity: 0.55;
+}
+
+.indicator-dot:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--primary-color) 70%, transparent);
+  outline-offset: 3px;
+}
+
 .indicator-dot.active {
   color: var(--primary-color);
   opacity: 1;
@@ -265,6 +335,7 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
   transform: none;
   box-shadow: var(--hover-shadow);
   border-radius: 12px;
+  scroll-margin-top: 5.5rem;
 }
 
 .project-node:hover {
@@ -575,6 +646,31 @@ html:not(.dark) .neon-border {
   .sticky-content { position: relative; top: 0; margin-bottom: 40px; }
   .project-node { transform: none; }
   .project-node:hover { transform: translateY(-4px); }
+
+  .scroll-indicator {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 12px;
+    max-height: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-left: none;
+    border-bottom: 1px solid var(--border-color);
+    padding-left: 0;
+    padding-bottom: 14px;
+    margin-bottom: 0.25rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+  }
+
+  .indicator-dot {
+    flex-shrink: 0;
+  }
+
+  .indicator-dot.active {
+    transform: translateY(-2px);
+  }
 }
 
 @media (max-width: 520px) {

@@ -1,5 +1,15 @@
 [
   {
+    "id": "enterprise-internship",
+    "date": "2026-05-04",
+    "nameKey": "projects.internship.name",
+    "descriptionKey": "projects.internship.description",
+    "image": "/images/projects/industrial.jpg",
+    "tags": ["Java", "On-site Delivery", "Enterprise IT", "Data Alignment"],
+    "mdFile": "internship.md",
+    "link": "/project/enterprise-internship"
+  },
+  {
     "id": "gateway",
     "title": "微服务流量治理与统一接入网关平台",
     "date": "2025-12-23",
@@ -17,8 +27,8 @@
     "date": "2025-11-15",
     "nameKey": "projects.items.1.name",
     "descriptionKey": "projects.items.1.description",
-    "image": "/images/projects/城堡.png",
-    "cover": "/images/projects/城堡.png",
+    "image": "/images/projects/城堡.jpg",
+    "cover": "/images/projects/城堡.jpg",
     "tags": ["Spring Boot", "MyBatis", "WebGL", "Vue3", "MySQL", "Redis"],
     "mdFile": "exhibition.md",
     "link": "/project/exhibition"
