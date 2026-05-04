@@ -211,7 +211,7 @@ onMounted(() => {
    ========================================= */
 .napkin-logo {
   font-weight: 700;
-  font-size: 1.35rem;
+  font-size: 1.5rem;
   color: var(--text-color);
   letter-spacing: -0.02em; /* 稍微紧凑一点 */
   cursor: default;
@@ -226,7 +226,7 @@ onMounted(() => {
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 1.5rem;
+  gap: 2rem;
 }
 
 .napkin-nav-link {
@@ -265,7 +265,7 @@ onMounted(() => {
 .napkin-controls {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
 .napkin-control-btn {
@@ -406,11 +406,11 @@ onMounted(() => {
   }
 
   .napkin-logo {
-    font-size: 1.5rem;
+    font-size: 1.65rem;
   }
 
   .napkin-nav-links {
-    gap: 2rem;
+    gap: 2.75rem;
   }
 
   .napkin-nav-link {
@@ -419,7 +419,7 @@ onMounted(() => {
   }
 
   .napkin-controls {
-    gap: 0.65rem;
+    gap: 1rem;
   }
 
   .napkin-control-btn {
@@ -441,11 +441,15 @@ onMounted(() => {
   }
 
   .napkin-logo {
-    font-size: 1.55rem;
+    font-size: 1.8rem;
   }
 
   .napkin-nav-links {
-    gap: 2.25rem;
+    gap: 3.25rem;
+  }
+
+  .napkin-controls {
+    gap: 1.125rem;
   }
 
   .napkin-control-btn {

@@ -1,5 +1,5 @@
 <template>
-  <div class="presentation-container">
+  <div class="presentation-container" ref="containerRef">
     <!-- 使用封装好的返回按钮组件 -->
     <GoBackButton />
 
@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, watchEffect } from "vue";
+import { ref, onMounted, onUnmounted, nextTick } from "vue";
 import Reveal from "reveal.js";
 import RevealZoom from "reveal.js/plugin/zoom/zoom";
 import "reveal.js/dist/reveal.css";
@@ -32,9 +32,19 @@ import "reveal.js/dist/reveal.css";
 // import "reveal.js/dist/theme/black.css";
 import GoBackButton from "@/components/GoBackButton.vue";
 
+const containerRef = ref(null);
 const revealRef = ref(null);
 let deck = null;
 let themeObserver = null;
+let resizeObserver = null;
+
+/** Reveal 依赖容器真实尺寸；首帧或路由切换后需延后/在尺寸变化时再次 layout，否则会出现幻灯片贴底、上半屏空白。 */
+const scheduleLayout = () => {
+  if (!deck) return;
+  requestAnimationFrame(() => {
+    deck.layout();
+  });
+};
 
 // 定义亮色/暗色两套背景色数组
 const themeColors = {
@@ -100,10 +110,20 @@ const initReveal = () => {
     plugins: [RevealZoom],
   });
 
-  deck.initialize().then(() => {
-    deck.layout();
+  deck.initialize().then(async () => {
+    scheduleLayout();
+    await nextTick();
+    scheduleLayout();
+    requestAnimationFrame(() => {
+      requestAnimationFrame(scheduleLayout);
+    });
     // 初始化时先更新一次主题
     updateRevealTheme();
+
+    if (typeof ResizeObserver !== "undefined" && containerRef.value) {
+      resizeObserver = new ResizeObserver(() => scheduleLayout());
+      resizeObserver.observe(containerRef.value);
+    }
   });
 
   // 监听html标签的class变化（主题切换）
@@ -126,7 +146,7 @@ const handleResize = () => {
       width: window.innerWidth > 768 ? 1200 : window.innerWidth,
       height: window.innerWidth > 768 ? 700 : window.innerHeight,
     });
-    deck.layout();
+    scheduleLayout();
   }
 };
 
@@ -144,6 +164,10 @@ onUnmounted(() => {
   if (themeObserver) {
     themeObserver.disconnect();
   }
+  if (resizeObserver) {
+    resizeObserver.disconnect();
+    resizeObserver = null;
+  }
 });
 </script>
 
@@ -151,7 +175,9 @@ onUnmounted(() => {
 /* 定义主题切换的过渡动画 */
 .presentation-container {
   width: 100%;
+  min-height: 100vh;
   height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   position: relative;
   background-color: var(--bg-color);
@@ -161,8 +187,10 @@ onUnmounted(() => {
 }
 
 .reveal {
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
   background-color: var(--bg-color);
   transition: background-color 0.3s ease;
 }
@@ -212,13 +240,18 @@ html.dark :deep(.reveal .slide-number) {
 /* 移动端优化 */
 @media (max-width: 768px) {
   .presentation-container {
+    min-height: 100vh;
+    min-height: 100dvh;
     height: 100vh;
+    height: 100dvh;
     border: none;
   }
 
   .reveal {
-    width: 100%;
-    height: 100%;
+    position: absolute;
+    inset: 0;
+    width: auto;
+    height: auto;
   }
 
   .slide-image {
