@@ -182,7 +182,13 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.8rem 2rem; /* 稍微减小垂直内边距，更精致 */
+  /*
+   * 与 Hero / Projects / main.css 一致：默认紧凑，仅在 min-width 1600 / 1920 小幅加码，
+   * 避免用大系数 vw 在宽屏笔记本上把整条栏撑得过高。
+   */
+  --nav-pad-y: 0.5625rem;
+  --nav-pad-x: max(1rem, var(--page-pad-x));
+  padding: var(--nav-pad-y) var(--nav-pad-x);
 
   /* 引用半透明背景 */
   background-color: var(--nav-bg);
@@ -205,7 +211,7 @@ onMounted(() => {
    ========================================= */
 .napkin-logo {
   font-weight: 700;
-  font-size: 1.5rem; /* 调整字体大小，避免过大 */
+  font-size: 1.35rem;
   color: var(--text-color);
   letter-spacing: -0.02em; /* 稍微紧凑一点 */
   cursor: default;
@@ -220,17 +226,17 @@ onMounted(() => {
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 .napkin-nav-link {
   color: var(--secondary-color); /* 默认次要颜色，不抢 Logo 风头 */
   text-decoration: none;
   font-weight: 500;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   position: relative;
   transition: color 0.2s ease;
-  padding: 0.5rem 0;
+  padding: 0.35rem 0;
 }
 
 .napkin-nav-link:hover {
@@ -259,26 +265,25 @@ onMounted(() => {
 .napkin-controls {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
 }
 
 .napkin-control-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.45rem;
 
-  /* 固定高度，保证整齐 */
-  height: 36px;
-  padding: 0 12px;
+  height: 34px;
+  padding: 0 11px;
 
   /* 样式优化 */
   background-color: transparent; /* 默认透明，更清爽 */
   border: 1px solid transparent; /* 预留边框位置 */
-  border-radius: 8px; /* 圆角适中 */
+  border-radius: 7px;
 
   color: var(--secondary-color);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -307,8 +312,8 @@ onMounted(() => {
 
 /* 图标 */
 .napkin-icon {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   color: inherit; /* 跟随文字颜色 */
   transition: transform 0.3s ease;
 }
@@ -378,44 +383,98 @@ onMounted(() => {
 
 /* 响应式 */
 @media (max-width: 768px) {
-  .napkin-nav { padding: 0.75rem 1rem; }
+  .napkin-nav {
+    --nav-pad-y: 0.5625rem;
+    --nav-pad-x: 1rem;
+    padding: var(--nav-pad-y) var(--nav-pad-x);
+  }
   .napkin-nav-links { display: none; }
   .napkin-control-btn span { display: none; }
-  .napkin-control-btn { padding: 0 8px; width: 36px; } /* 移动端只留图标，方形按钮 */
+  .napkin-control-btn {
+    padding: 0;
+    width: 36px;
+    min-width: 36px;
+    height: 36px;
+    box-sizing: border-box;
+  }
 }
 
-/* 大屏优化（27寸及以上） */
+/* 与 main.css、HeroSection、ProjectsSection 同档断点 */
 @media (min-width: 1600px) {
   .napkin-nav {
-    padding: 1rem 3rem;
+    --nav-pad-y: 0.6875rem;
   }
-  
+
   .napkin-logo {
-    font-size: 1.7rem;
+    font-size: 1.5rem;
   }
-  
+
   .napkin-nav-links {
-    gap: 3rem;
+    gap: 2rem;
   }
-  
+
   .napkin-nav-link {
-    font-size: 1rem;
-    font-weight: 500;
-  }
-  
-  .napkin-controls {
-    gap: 1rem;
-  }
-  
-  .napkin-control-btn {
-    height: 40px;
-    padding: 0 16px;
     font-size: 0.95rem;
+    padding: 0.4rem 0;
   }
-  
+
+  .napkin-controls {
+    gap: 0.65rem;
+  }
+
+  .napkin-control-btn {
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+  }
+
   .napkin-icon {
-    width: 20px;
-    height: 20px;
+    width: 17px;
+    height: 17px;
+  }
+}
+
+@media (min-width: 1920px) {
+  .napkin-nav {
+    --nav-pad-y: 0.75rem;
+  }
+
+  .napkin-logo {
+    font-size: 1.55rem;
+  }
+
+  .napkin-nav-links {
+    gap: 2.25rem;
+  }
+
+  .napkin-control-btn {
+    height: 38px;
+    padding: 0 14px;
+  }
+
+  .napkin-icon {
+    width: 18px;
+    height: 18px;
+  }
+}
+</style>
+
+<style>
+/* 与顶栏实际高度同档，供 #footer 等 scroll-margin（阶梯与上文断点一致） */
+html {
+  --layout-navbar-height: 56px;
+}
+
+@media (min-width: 1600px) {
+  html {
+    --layout-navbar-height: 60px;
+  }
+}
+
+@media (min-width: 1920px) {
+  html {
+    --layout-navbar-height: 64px;
   }
 }
 </style>

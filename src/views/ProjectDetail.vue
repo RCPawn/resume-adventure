@@ -31,7 +31,9 @@
             <svg class="action-kpi__ico" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
               <path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
             </svg>
-            <span id="busuanzi_page_pv" v-once class="page-pv-num">--</span><span class="page-pv-suffix">次</span>
+            <!-- 不蒜子会写入纯文本；勿放初始「--」在节点内，否则部分环境下脚本不覆盖；占位由 :empty::before 提供 -->
+            <span id="busuanzi_page_pv" v-once class="page-pv-num page-pv-busuanzi" aria-live="polite" />
+            <span class="page-pv-suffix">次</span>
           </span>
           <a
             v-if="currentProject.repoLink"
@@ -334,6 +336,30 @@ const loadBusuanziScript = () => {
   })
 }
 
+/** 首页 Footer 已插入 script 标签时，loadBusuanziScript 会立刻 resolve，但 bszCaller 可能尚未挂载 */
+const waitForBszCaller = (timeoutMs = 12000) => {
+  return new Promise((resolve) => {
+    if (typeof window === 'undefined') {
+      resolve(false)
+      return
+    }
+    if (window.bszCaller && typeof window.bszCaller.fetch === 'function') {
+      resolve(true)
+      return
+    }
+    const t0 = Date.now()
+    const id = window.setInterval(() => {
+      if (window.bszCaller && typeof window.bszCaller.fetch === 'function') {
+        window.clearInterval(id)
+        resolve(true)
+      } else if (Date.now() - t0 >= timeoutMs) {
+        window.clearInterval(id)
+        resolve(false)
+      }
+    }, 40)
+  })
+}
+
 const invokeBusuanziFetch = () => {
   try {
     if (window.bszCaller && typeof window.bszCaller.fetch === 'function') {
@@ -346,6 +372,7 @@ const invokeBusuanziFetch = () => {
 
 /** 与 Footer 类似：等 DOM 稳定后拉取；并在一段时间后补拉，避免首屏 markdown 异步导致漏更 */
 const refreshBusuanziPagePv = async () => {
+  if (typeof window === 'undefined') return
   await nextTick()
   const run = () => invokeBusuanziFetch()
   window.setTimeout(run, 180)
@@ -360,6 +387,7 @@ onMounted(async () => {
   const mdPromise = fetchMarkdown()
 
   await scriptPromise
+  await waitForBszCaller()
   await nextTick()
   refreshBusuanziPagePv()
 
@@ -579,6 +607,12 @@ watch(htmlContent, async () => {
   min-width: 2ch;
   display: inline-block;
   color: var(--text-color);
+}
+
+/* 不蒜子写入前无文本节点，用伪元素占位，避免真实「--」阻碍脚本更新 */
+.page-pv-busuanzi:empty::before {
+  content: '--';
+  opacity: 0.55;
 }
 
 .page-pv-suffix {
