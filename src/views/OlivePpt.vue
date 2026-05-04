@@ -1,7 +1,7 @@
 <template>
   <div class="presentation-container">
     <!-- 使用封装好的返回按钮组件 -->
-    <GoBackButton class="back-button"/>
+    <GoBackButton />
 
     <div class="reveal" ref="revealRef">
       <div class="slides">
@@ -207,14 +207,6 @@ html.dark :deep(.reveal .slide-number) {
 .slide-image:hover {
   transform: scale(1.02);
   box-shadow: var(--hover-shadow);
-}
-
-/* 返回按钮样式 */
-.back-button {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  z-index: 1000;
 }
 
 /* 移动端优化 */

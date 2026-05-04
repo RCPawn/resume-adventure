@@ -4,7 +4,7 @@
     <div class="hero-section" :style="{ backgroundImage: `url(${currentProject?.cover || defaultCover})` }">
       <div class="hero-overlay"></div>
       <div class="hero-nav">
-        <GoBackButton class="hero-back-btn" />
+        <GoBackButton variant="hero" />
       </div>
       <div class="hero-content">
         <h1 class="project-title">{{ currentProject?.title }}</h1>

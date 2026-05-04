@@ -1,56 +1,56 @@
 <template>
   <div class="page-container">
-    <div class="hero-section" :style="{ backgroundImage: `url(${currentProject?.cover || defaultCover})` }">
-      <div class="hero-overlay"></div>
-      <div class="hero-nav">
-        <GoBackButton class="hero-back-btn" />
-      </div>
-      <div class="hero-content">
-        <h1 class="project-title">{{ currentProject?.title }}</h1>
-        <p class="project-desc">{{ currentProject?.description }}</p>
-        <div class="meta-tags-wrap">
-          <div class="meta-tags" aria-label="项目元信息">
-            <span class="meta-tag meta-tag--date">
-              <svg class="meta-tag__ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-                <path fill="currentColor" d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/>
-              </svg>
-              <span>{{ currentProject?.date || '2025' }}</span>
-            </span>
-            <span
-              v-for="tag in currentProject?.tags"
-              :key="tag"
-              class="meta-tag meta-tag--tech"
-              :title="tag"
-            >
-              <span class="meta-tag__tech-text">{{ tag }}</span>
-            </span>
-            <span class="meta-tag meta-tag--views" title="本页阅读量（不蒜子）">
-              <svg class="meta-tag__ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-                <path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-              </svg>
-              <span class="meta-tag__views-inner">
-                <span id="busuanzi_page_pv" v-once class="page-pv-num">--</span><span class="page-pv-suffix"> 次</span>
-              </span>
-            </span>
-            <a
-              v-if="currentProject?.repoLink"
-              :href="currentProject.repoLink"
-              target="_blank"
-              class="meta-tag meta-tag--link"
-              rel="noreferrer"
-              title="在浏览器中打开源码仓库"
-            >
-              <svg class="meta-tag__ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-                <path fill="currentColor" d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
-              </svg>
-              <span>源码</span>
-            </a>
+    <!-- 全宽功能条：返回、技术栈、统计与外链同一视觉轨道，避免「多个小组件」堆叠感 -->
+    <header class="action-bar">
+      <div class="action-bar__inner">
+        <div class="action-bar__cluster action-bar__cluster--grow">
+          <div class="action-bar__nav">
+            <GoBackButton variant="ghost" inline />
           </div>
+          <template v-if="currentProject">
+            <span class="action-bar__rule" aria-hidden="true" />
+            <div class="action-bar__tags" aria-label="技术栈">
+              <span
+                v-for="tag in (currentProject.tags || [])"
+                :key="tag"
+                class="action-tag"
+                :title="tag"
+              >{{ tag }}</span>
+            </div>
+          </template>
+        </div>
+        <div v-if="currentProject" class="action-bar__cluster action-bar__cluster--end">
+          <span class="action-kpi" title="文档日期">
+            <svg class="action-kpi__ico" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+              <path fill="currentColor" d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/>
+            </svg>
+            {{ currentProject.date || '—' }}
+          </span>
+          <span class="action-bar__rule action-bar__rule--soft" aria-hidden="true" />
+          <span class="action-kpi" title="本页阅读量（不蒜子）">
+            <svg class="action-kpi__ico" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+              <path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+            </svg>
+            <span id="busuanzi_page_pv" v-once class="page-pv-num">--</span><span class="page-pv-suffix">次</span>
+          </span>
+          <a
+            v-if="currentProject.repoLink"
+            :href="currentProject.repoLink"
+            target="_blank"
+            class="action-kpi action-kpi--link"
+            rel="noreferrer"
+            title="在浏览器中打开源码仓库"
+          >
+            <svg class="action-kpi__ico" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+              <path fill="currentColor" d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
+            </svg>
+            源码
+          </a>
         </div>
       </div>
-    </div>
+    </header>
 
-    <div class="content-container">
+    <div class="doc-stage">
       <div v-if="loading" class="loading-state">
         <div class="spinner"></div>
         加载精彩内容中...
@@ -85,11 +85,7 @@
             </nav>
           </div>
         </aside>
-        <main class="markdown-column">
-          <div class="markdown-wrapper">
-            <div class="markdown-body" v-html="htmlContent"></div>
-          </div>
-        </main>
+        <main class="markdown-column markdown-body" v-html="htmlContent" />
       </div>
     </div>
   </div>
@@ -105,7 +101,6 @@ import GoBackButton from '@/components/GoBackButton.vue'
 import 'github-markdown-css/github-markdown.css'
 
 const route = useRoute()
-const defaultCover = 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop'
 
 const md = new MarkdownIt({ html: true, linkify: true, typographer: true })
 const defaultHeadingOpen = md.renderer.rules.heading_open || function (tokens, idx, options, env, self) {
@@ -397,277 +392,280 @@ watch(htmlContent, async () => {
    基础布局
    ================================= */
 .page-container {
-  /* 略宽于 1200：长表格/图文并排更舒适；仍用 max-width 防止超宽一行过长 */
-  --content-max: min(1360px, min(96vw, 100vw - 24px));
+  --content-max: min(1420px, min(96vw, 100vw - 24px));
   --page-pad-x: clamp(16px, 2.5vw, 32px);
   --section-gap: clamp(12px, 2vw, 24px);
-  /* 主视觉：兼顾笔记本矮屏与 27" 一屏纵览，避免单靠 vh 撑出视口 */
-  --project-hero-h: min(52vh, calc(100vh - clamp(120px, 18vh, 220px)));
+  --action-bar-h: 52px;
   min-height: 100vh;
   min-height: 100dvh;
   background-color: var(--bg-color);
 }
 
-@supports (height: 1dvh) {
-  .page-container {
-    --project-hero-h: min(52dvh, calc(100dvh - clamp(120px, 18vh, 220px)));
+/* ---------- 全宽功能条：单轨、弱分隔、无「小药丸边框」堆叠 ---------- */
+.action-bar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  width: 100%;
+  box-sizing: border-box;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--bg-color) 70%, var(--modal-bg)) 0%,
+    var(--bg-color) 100%
+  );
+  border-bottom: 1px solid color-mix(in srgb, var(--border-color) 45%, transparent);
+  backdrop-filter: saturate(140%) blur(10px);
+  -webkit-backdrop-filter: saturate(140%) blur(10px);
+}
+
+@supports not (background: color-mix(in srgb, red, blue)) {
+  .action-bar {
+    background: var(--bg-color);
+    border-bottom-color: var(--border-color);
   }
 }
 
-.hero-section {
-  position: relative;
-  height: var(--project-hero-h);
-  min-height: 200px;
-  max-height: min(560px, 85vh);
-  background-size: cover;
-  background-position: center;
+.action-bar__inner {
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  background-attachment: fixed;
-}
-
-.hero-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 20px;
+  flex-wrap: wrap;
+  max-width: none;
   width: 100%;
-  height: 100%;
-  background: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.3) 0%,
-      rgba(0, 0, 0, 0.6) 60%,
-      var(--bg-color) 100%
-  );
-  z-index: 1;
-}
-
-.hero-nav {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  z-index: 10;
-}
-
-.hero-content {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  max-width: var(--content-max);
-  margin: 0 auto;
-  padding: 0 var(--page-pad-x) clamp(28px, 5vh, 48px);
-  color: white;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  margin: 0;
+  padding: 8px clamp(12px, 2vw, 28px);
+  min-height: var(--action-bar-h);
   box-sizing: border-box;
 }
 
-.project-title {
-  font-size: clamp(1.75rem, 2.5vw + 1rem, 3.5rem);
-  font-weight: 800;
-  margin: 0 0 10px 0;
-  letter-spacing: -1px;
-  line-height: 1.15;
+@media (min-width: 900px) {
+  .action-bar__inner {
+    padding-left: max(24px, calc((100vw - var(--content-max)) / 2 + var(--page-pad-x)));
+    padding-right: max(24px, calc((100vw - var(--content-max)) / 2 + var(--page-pad-x)));
+  }
 }
 
-.project-desc {
-  font-size: clamp(1rem, 0.8vw + 0.85rem, 1.2rem);
-  opacity: 0.9;
-  margin-bottom: var(--section-gap);
-  max-width: min(600px, 92vw);
-  line-height: 1.55;
-}
-
-.meta-tags-wrap {
-  margin-top: 14px;
-  margin-left: calc(-1 * var(--page-pad-x));
-  margin-right: calc(-1 * var(--page-pad-x));
-}
-
-/* 单行横向滚动：标签再多也不换行挤乱版面（资讯/App 里常见） */
-.meta-tags {
+.action-bar__cluster {
   display: flex;
-  flex-wrap: nowrap;
   align-items: center;
-  gap: 8px;
+  gap: 0 12px;
+  min-height: 36px;
+}
+
+.action-bar__cluster--grow {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.action-bar__cluster--end {
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.action-bar__nav {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.action-bar__nav :deep(.back-btn.back-btn--ghost) {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border-color: transparent;
+  background: color-mix(in srgb, var(--text-color) 4%, transparent);
+}
+
+.action-bar__nav :deep(.back-btn.back-btn--ghost:hover) {
+  background: color-mix(in srgb, var(--text-color) 8%, transparent);
+  border-color: color-mix(in srgb, var(--border-color) 50%, transparent);
+  color: var(--primary-color);
+}
+
+@supports not (background: color-mix(in srgb, red, blue)) {
+  .action-bar__nav :deep(.back-btn.back-btn--ghost) {
+    background: rgba(0, 0, 0, 0.04);
+  }
+
+  .action-bar__nav :deep(.back-btn.back-btn--ghost:hover) {
+    background: rgba(0, 0, 0, 0.07);
+  }
+
+  html.dark .action-bar__nav :deep(.back-btn.back-btn--ghost) {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  html.dark .action-bar__nav :deep(.back-btn.back-btn--ghost:hover) {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.action-bar__rule {
+  width: 1px;
+  height: 22px;
+  flex-shrink: 0;
+  background: color-mix(in srgb, var(--border-color) 65%, transparent);
+  border-radius: 1px;
+}
+
+.action-bar__rule--soft {
+  height: 18px;
+  opacity: 0.85;
+}
+
+.action-bar__tags {
+  display: flex;
+  align-items: center;
+  gap: 4px 2px;
+  flex: 1 1 0;
+  min-width: 0;
   overflow-x: auto;
   overflow-y: hidden;
   overscroll-behavior-inline: contain;
-  scroll-snap-type: x proximity;
-  scroll-padding-inline: var(--page-pad-x);
-  -webkit-overflow-scrolling: touch;
-  padding: 2px var(--page-pad-x) 6px;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.28) transparent;
+  padding: 2px 0;
+  mask-image: linear-gradient(90deg, #000 96%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, #000 96%, transparent 100%);
+  scrollbar-width: none;
 }
 
-.meta-tags::-webkit-scrollbar {
-  height: 5px;
+.action-bar__tags::-webkit-scrollbar {
+  display: none;
 }
 
-.meta-tags::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.22);
+.action-tag {
+  flex: 0 0 auto;
+  padding: 5px 10px;
   border-radius: 999px;
-}
-
-.meta-tags::-webkit-scrollbar-track {
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--text-color) 88%, var(--secondary-color));
   background: transparent;
+  max-width: min(12rem, 42vw);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .meta-tags {
-    scroll-behavior: auto;
-  }
-
-  .meta-tag--link:hover,
-  .meta-tag--link:active {
-    transform: none;
-  }
+.action-tag:hover {
+  background: color-mix(in srgb, var(--text-color) 6%, transparent);
+  color: var(--text-color);
 }
 
-/* 与下方文档卡片一致的「圆角条」语言，避免大胶囊抢戏 */
-.meta-tag {
+.action-kpi {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  flex: 0 0 auto;
-  scroll-snap-align: start;
-  padding: 6px 12px;
+  padding: 6px 10px;
   border-radius: 10px;
   font-size: 0.8125rem;
   font-weight: 500;
-  line-height: 1.2;
-  letter-spacing: 0.01em;
-  color: rgba(255, 255, 255, 0.94);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(15, 23, 42, 0.42);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset, 0 2px 12px rgba(0, 0, 0, 0.15);
-  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+  color: var(--secondary-color);
   white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
-.meta-tag__ico {
+.action-kpi__ico {
   flex-shrink: 0;
   opacity: 0.88;
-}
-
-.meta-tag--date {
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-.meta-tag--tech {
-  min-width: 0;
-  max-width: min(16rem, 72vw);
-  border-left: 3px solid color-mix(in srgb, var(--primary-color) 75%, white);
-  padding-left: 10px;
-}
-
-@supports not (color: color-mix(in srgb, red, blue)) {
-  .meta-tag--tech {
-    border-left-color: var(--primary-color);
-  }
-}
-
-.meta-tag__tech-text {
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 0;
-}
-
-.meta-tag--views {
-  border-color: rgba(52, 211, 153, 0.35);
-  background: rgba(15, 23, 42, 0.5);
-}
-
-.meta-tag__views-inner {
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+  color: var(--secondary-color);
 }
 
 .page-pv-num {
   font-variant-numeric: tabular-nums;
   min-width: 2ch;
   display: inline-block;
+  color: var(--text-color);
 }
 
 .page-pv-suffix {
   font-weight: 500;
+  margin-left: 1px;
+  color: var(--text-color);
 }
 
-.meta-tag--link {
+.action-kpi--link {
   text-decoration: none;
-  color: rgba(255, 255, 255, 0.95);
+  color: var(--text-color);
   cursor: pointer;
-  border-color: rgba(255, 255, 255, 0.22);
+  border: none;
+  background: color-mix(in srgb, var(--primary-color) 8%, transparent);
 }
 
-.meta-tag--link:hover {
-  border-color: rgba(255, 255, 255, 0.38);
-  background: rgba(255, 255, 255, 0.1);
-  transform: translateY(-1px);
+.action-kpi--link:hover {
+  background: color-mix(in srgb, var(--primary-color) 14%, transparent);
+  color: var(--primary-color);
 }
 
-.meta-tag--link:active {
-  transform: translateY(0);
+@supports not (background: color-mix(in srgb, red, blue)) {
+  .action-kpi--link {
+    background: rgba(96, 165, 250, 0.1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .action-bar__tags {
+    scroll-behavior: auto;
+  }
 }
 
 /* =================================
    内容容器：拓展宽度以容纳侧边 TOC
    ================================= */
-.content-container {
+.doc-stage {
   position: relative;
-  z-index: 3;
+  z-index: 1;
   width: 100%;
   max-width: var(--content-max);
-  margin: clamp(-32px, -4vh, -24px) auto clamp(28px, 4vh, 40px);
-  padding: 0 var(--page-pad-x);
+  margin: 0 auto;
+  padding: clamp(12px, 2vw, 24px) var(--page-pad-x) clamp(32px, 5vh, 56px);
   box-sizing: border-box;
 }
 
-/* 正文区：无目录时仅 flex；有目录时由 .doc-layout--with-toc 统一成「单卡片」 */
+/* 正文区：无卡片描边，与页面背景一体 */
 .content-flex {
   display: flex;
-  gap: 24px;
+  gap: clamp(20px, 2.5vw, 36px);
   align-items: flex-start;
 }
 
-/* 有目录：整页一块面板，目录与正文同高对齐（文档站常见做法，避免目录「飘着」） */
 .content-flex.doc-layout--with-toc {
-  gap: 0;
+  gap: clamp(16px, 2.2vw, 32px);
   align-items: stretch;
-  background: var(--modal-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 22px;
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.05) inset,
-    0 14px 44px -22px rgba(0, 0, 0, 0.1);
-  /* 目录与正文共用纵向节奏，避免「侧栏一块、正文一块」的错位堆叠感 */
-  --doc-top-pad: clamp(32px, 4vw, 52px);
-  --doc-bottom-pad: clamp(40px, 5vw, 64px);
-  --doc-main-pad-x: clamp(28px, 3.5vw, 56px);
-  --doc-toc-pad-start: clamp(18px, 2.2vw, 26px);
-  --doc-toc-pad-end: clamp(12px, 1.6vw, 18px);
-  /* 吸顶时与顶栏距离（勿把正文同款 doc-top-pad 写在 sticky 上，否则下滑后目录顶会空一大块） */
-  --doc-sticky-top: 72px;
-  /* 勿用 overflow:hidden，会纵向裁切 Mermaid SVG；横向交给内列 min-width:0 处理 */
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  --doc-top-pad: clamp(28px, 3.5vw, 48px);
+  --doc-bottom-pad: clamp(36px, 4.5vw, 56px);
+  --doc-main-pad-x: clamp(20px, 3vw, 48px);
+  --doc-toc-pad-start: clamp(16px, 2vw, 24px);
+  --doc-toc-pad-end: clamp(12px, 1.5vw, 18px);
+  --doc-sticky-top: calc(var(--action-bar-h, 52px) + 10px);
   overflow-x: clip;
   overflow-y: visible;
 }
 
-/* Markdown 主列 */
-.markdown-column {
+/* Markdown 主列：v-html 直接挂在本节点，无额外 wrapper */
+.markdown-column.markdown-body {
   flex: 1 1 0;
-  min-width: 0; /* 允许子元素溢出横向滚动 */
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: visible;
+  box-sizing: border-box;
 }
 
-.content-flex.doc-layout--with-toc .markdown-column {
-  min-width: 0;
+.content-flex.doc-layout--with-toc .markdown-column.markdown-body {
   flex: 1 1 min(0, 100%);
-  /* 内边距提到主列，避免 wrapper 再套一层「卡片」感 */
   padding: var(--doc-top-pad) var(--doc-main-pad-x) var(--doc-bottom-pad);
-  box-sizing: border-box;
+}
+
+.content-flex:not(.doc-layout--with-toc) .markdown-column.markdown-body {
+  width: 100%;
+  padding: 0 0 clamp(20px, 3vh, 40px);
 }
 
 /* TOC 侧边栏：与正文同属一块面板 */
@@ -690,7 +688,6 @@ watch(htmlContent, async () => {
 }
 
 .content-flex.doc-layout--with-toc .toc {
-  /* 轨道拉高撑满行高，保证右侧分隔线到底；滚动条交给页面，目录本身不单独 overflow */
   position: static;
   top: auto;
   align-self: stretch;
@@ -702,12 +699,12 @@ watch(htmlContent, async () => {
   overflow-x: visible;
   overscroll-behavior: auto;
   scrollbar-gutter: auto;
-  width: min(268px, 26vw);
-  flex: 0 0 min(268px, 26vw);
+  width: min(248px, 24vw);
+  flex: 0 0 min(248px, 24vw);
   padding: 0;
   border-radius: 0;
   background: transparent;
-  border-right: 1px solid color-mix(in srgb, var(--border-color) 58%, transparent);
+  border-right: none;
   box-shadow: none;
 }
 
@@ -726,13 +723,6 @@ watch(htmlContent, async () => {
   box-sizing: border-box;
 }
 
-@supports not (color: color-mix(in srgb, red, blue)) {
-  .content-flex.doc-layout--with-toc .toc {
-    border-right-color: var(--border-color);
-  }
-}
-
-/* 隐藏效果（移动端折叠） */
 .toc.toc-hidden {
   opacity: 1;
 }
@@ -749,7 +739,7 @@ watch(htmlContent, async () => {
   border-radius: 0;
   background: none;
   border: none;
-  border-bottom: 1px solid color-mix(in srgb, var(--border-color) 42%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--border-color) 28%, transparent);
   transition: border-color 0.15s ease;
 }
 
@@ -897,30 +887,6 @@ watch(htmlContent, async () => {
 }
 
 /* =================================
-   Markdown 卡片
-   ================================= */
-.markdown-wrapper {
-  background: var(--modal-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 24px;
-  padding: 50px;
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
-  min-height: 400px;
-  overflow-x: auto;
-  overflow-y: visible;
-}
-
-/* 与目录合体时：扁平一层，内边距已在 .markdown-column */
-.content-flex.doc-layout--with-toc .markdown-wrapper {
-  border: none;
-  border-radius: 0;
-  box-shadow: none;
-  padding: 0;
-  background: transparent;
-  min-height: min(400px, 60vh);
-}
-
-/* =================================
    Markdown 深度定制
    ================================= */
 .markdown-body {
@@ -930,13 +896,18 @@ watch(htmlContent, async () => {
   scroll-behavior: smooth;
 }
 
+/* 正文自带主标题时，收紧首段顶距，让首屏尽量落在文档内容 */
+:deep(.markdown-body > h1:first-child) {
+  margin-top: 0.25em;
+}
+
 /* 图片 */
 :deep(.markdown-body img) {
   border-radius: 12px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
   margin: 20px 0;
   max-width: 100%;
-  border: 1px solid var(--border-color);
+  border: none;
 }
 
 /* 带侧栏长文：压一层阴影，减少「嵌套卡片」感（须在本块之后以覆盖上一段） */
@@ -1056,9 +1027,19 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
 
 /* 小屏设备：TOC 在上、正文在下，仍保持「同一面板」视觉 */
 @media (max-width: 768px) {
-  .hero-section {
-    background-attachment: scroll;
-    max-height: none;
+  .page-container {
+    --action-bar-h: 48px;
+  }
+
+  .action-bar__inner {
+    padding: 6px var(--page-pad-x);
+    gap: 10px 12px;
+  }
+
+  .action-bar__cluster--end {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
   }
 
   .content-flex {
@@ -1067,9 +1048,8 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
   }
 
   .content-flex.doc-layout--with-toc {
-    flex-direction: column;
-    gap: 0;
-    border-radius: 18px;
+    gap: clamp(12px, 2vw, 20px);
+    border-radius: 0;
     --doc-top-pad: 18px;
     --doc-bottom-pad: 28px;
     --doc-main-pad-x: 20px;
@@ -1088,7 +1068,7 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
     flex-direction: column;
     overflow: visible;
     border-right: none;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid color-mix(in srgb, var(--border-color) 35%, transparent);
     box-shadow: none;
     padding: 0;
   }
@@ -1099,7 +1079,7 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
     padding: 0 var(--doc-toc-pad-end) 14px var(--doc-toc-pad-start);
   }
 
-  .content-flex.doc-layout--with-toc .markdown-column {
+  .content-flex.doc-layout--with-toc .markdown-column.markdown-body {
     padding: var(--doc-top-pad) var(--doc-main-pad-x) var(--doc-bottom-pad);
   }
 
@@ -1114,50 +1094,15 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
     display: none;
   }
 
-  .markdown-wrapper {
-    padding: 24px;
-    border-radius: 16px;
-  }
-
-  .project-title {
-    font-size: 2rem;
-  }
-
-  .meta-tags {
-    gap: 6px;
-    padding-bottom: 8px;
+  .content-flex:not(.doc-layout--with-toc) .markdown-column.markdown-body {
+    padding-bottom: 28px;
   }
 }
 
 /* 大屏：略放宽内容区 + 目录列，阅读与表格更舒展 */
 @media (min-width: 1600px) {
   .page-container {
-    --project-hero-h: min(48vh, calc(100vh - clamp(100px, 14vh, 180px)));
-    --content-max: min(1480px, min(94vw, 100vw - 40px));
-  }
-
-  @supports (height: 1dvh) {
-    .page-container {
-      --project-hero-h: min(48dvh, calc(100dvh - clamp(100px, 14vh, 180px)));
-    }
-  }
-
-  .hero-section {
-    max-height: min(520px, 70vh);
-  }
-
-  .hero-content {
-    max-width: var(--content-max);
-    padding-bottom: clamp(36px, 5vh, 56px);
-  }
-
-  .project-title {
-    font-size: clamp(2.25rem, 2vw + 1.5rem, 4rem);
-  }
-
-  .project-desc {
-    font-size: clamp(1.1rem, 0.5vw + 1rem, 1.4rem);
-    max-width: min(700px, 88vw);
+    --content-max: min(1520px, min(94vw, 100vw - 40px));
   }
 
   .content-flex.doc-layout--with-toc {
@@ -1166,6 +1111,7 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
     --doc-main-pad-x: clamp(36px, 3vw, 72px);
     --doc-toc-pad-start: clamp(22px, 2.4vw, 30px);
     --doc-toc-pad-end: clamp(14px, 1.8vw, 22px);
+    gap: clamp(0px, 2.5vw, 36px);
   }
 
   .content-flex.doc-layout--with-toc .toc {
@@ -1177,16 +1123,12 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
     gap: 30px;
   }
 
-  .content-flex.doc-layout--with-toc {
-    gap: 0;
+  .content-flex:not(.doc-layout--with-toc) .markdown-column.markdown-body {
+    padding-top: clamp(4px, 1vw, 12px);
+    padding-bottom: clamp(28px, 3.5vw, 52px);
   }
 
-  .markdown-wrapper {
-    padding: 60px;
-    border-radius: 28px;
-  }
-
-  .markdown-body {
+  .markdown-column.markdown-body {
     font-size: 1.1rem;
   }
 
@@ -1205,14 +1147,15 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
   }
 }
 
-/* Loading & Error 保持原样 */
-.loading-state, .error-state {
+/* Loading & Error：与页面融合，弱化「卡片」 */
+.loading-state,
+.error-state {
   text-align: center;
-  padding: 100px;
-  background: var(--modal-bg);
-  border-radius: 24px;
+  padding: clamp(48px, 12vh, 100px) var(--page-pad-x);
+  background: transparent;
+  border: none;
+  border-radius: 0;
   color: var(--secondary-color);
-  border: 1px solid var(--border-color);
 }
 
 .spinner {

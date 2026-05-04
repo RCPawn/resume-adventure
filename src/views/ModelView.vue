@@ -3,7 +3,7 @@
 
     <!-- 1. 顶部返回区域 -->
     <div class="header-bar">
-      <GoBackButton class="glass-btn" />
+      <GoBackButton />
     </div>
 
     <!-- 2. Google Model Viewer 核心组件 -->
@@ -139,16 +139,6 @@ const onError = (error) => {
 }
 
 /* ------ 样式优化核心：毛玻璃卡片 ------ */
-.glass-btn {
-  /* 假设 GoBackButton 内部有 button，这里给外层加样式或你需要穿透样式 */
-  background: var(--btn-bg) !important;
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--border-color);
-  box-shadow: var(--hover-shadow);
-  border-radius: 12px;
-  color: var(--text-color);
-}
-
 .glass-card {
   background: var(--modal-bg);
   backdrop-filter: blur(16px);

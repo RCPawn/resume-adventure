@@ -1,101 +1,168 @@
 <template>
-  <!-- 纯箭头返回按钮，无按钮框体 -->
   <button
-      @click="goBack"
-      class="back-arrow"
-      title="返回上一级"
-      aria-label="返回上一页"
+    type="button"
+    @click="goBack"
+    :class="['back-btn', `back-btn--${variant}`, { 'back-btn--inline': inline }]"
+    title="返回上一级"
+    aria-label="返回上一页"
   >
-    ←
+    <svg class="back-btn__icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M15.41 16.59 10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"
+      />
+    </svg>
   </button>
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router';
-import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router'
 
-const { t } = useI18n();
-const router = useRouter();
+defineProps({
+  /** surface：与顶栏控制按钮一致的浅色底+描边；hero：叠在大图/暗底上时的高对比毛玻璃 */
+  variant: {
+    type: String,
+    default: 'surface',
+    validator: (v) => ['surface', 'hero', 'ghost'].includes(v),
+  },
+  /** true：参与文档流布局，不占固定层，避免与正文重叠 */
+  inline: {
+    type: Boolean,
+    default: false,
+  },
+})
 
-// 增强返回逻辑：兼容历史记录为空的情况
+const router = useRouter()
+
 const goBack = () => {
   if (window.history.length <= 1) {
-    router.push('/'); // 无历史记录则返回首页
+    router.push('/')
   } else {
-    router.go(-1); // 有历史记录则返回上一页
+    router.go(-1)
   }
-};
+}
 </script>
 
 <style scoped>
-/* 核心：纯箭头返回按钮，无框体设计 */
-.back-arrow {
-  /* 固定定位，确保滚动不消失 */
+.back-btn {
   position: fixed;
   top: 20px;
   left: 20px;
-  z-index: 9999; /* 最高层级，不被遮挡 */
-
-  /* 纯箭头样式 - 无背景、无边框 */
-  background: transparent;
-  border: none;
-  padding: 12px;
+  z-index: 9999;
+  box-sizing: border-box;
   margin: 0;
-  cursor: pointer;
-
-  /* 箭头样式 - 贴合博客手绘风格 */
-  font-size: 40px;
-  font-family: var(--font-sans);
-  font-weight: 700;
-  color: var(--text-color);
-
-  /* 点击区域优化（比箭头大，提升点击体验） */
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  display: flex;
+  padding: 0;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-
-  /* 柔和过渡动画 */
-  transition: all 0.2s ease-in-out;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
 
-/* 悬浮效果：轻微缩放+浅背景+主题色，无深按感 */
-.back-arrow:hover {
+.back-btn.back-btn--inline {
+  position: relative;
+  top: auto;
+  left: auto;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.back-btn__icon {
+  display: block;
+  flex-shrink: 0;
+}
+
+/* 与 NavBar 的 napkin-control-btn（GitHub）同款：实底 + 描边，贴合站点控件语言 */
+.back-btn--surface {
+  background-color: var(--btn-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  box-shadow: var(--hover-shadow);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.back-btn--surface:hover {
+  border-color: color-mix(in srgb, var(--primary-color) 55%, var(--border-color));
   color: var(--primary-color);
-  transform: scale(1.1);
+  transform: translateY(-1px);
+}
+
+.back-btn--surface:active {
+  transform: translateY(0);
+}
+
+@supports not (color: color-mix(in srgb, red, blue)) {
+  .back-btn--surface:hover {
+    border-color: var(--primary-color);
+  }
+}
+
+/* 与 ProjectDetail 元信息标签同系：深半透明底 + 浅色图标，亮色主题下叠暗色封面仍可读 */
+.back-btn--hero {
+  background: rgba(15, 23, 42, 0.52);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 2px 14px rgba(0, 0, 0, 0.25);
+}
+
+.back-btn--hero:hover {
+  background: rgba(15, 23, 42, 0.66);
+  border-color: rgba(255, 255, 255, 0.28);
+  color: #fff;
+}
+
+.back-btn--hero:active {
+  background: rgba(15, 23, 42, 0.72);
+}
+
+html.dark .back-btn--hero {
+  background: rgba(15, 23, 42, 0.62);
+}
+
+html.dark .back-btn--hero:hover {
+  background: rgba(15, 23, 42, 0.78);
+}
+
+/* 极简：仅图标，用于特殊底图；默认不推荐 */
+.back-btn--ghost {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-color);
+}
+
+.back-btn--ghost:hover {
   background-color: rgba(var(--primary-color-rgb), 0.1);
+  color: var(--primary-color);
 }
 
-/* 点击效果：极轻微缩放，避免深按感 */
-.back-arrow:active {
-  transform: scale(1.05);
-  background-color: rgba(var(--primary-color-rgb), 0.15);
-}
-
-/* 适配暗黑模式 */
-html.dark .back-arrow:hover {
+html.dark .back-btn--ghost:hover {
   background-color: rgba(var(--primary-color-rgb), 0.2);
 }
 
-html.dark .back-arrow:active {
-  background-color: rgba(var(--primary-color-rgb), 0.25);
-}
-
-/* 移动端适配：缩小尺寸，优化位置 */
 @media (max-width: 768px) {
-  .back-arrow {
+  .back-btn:not(.back-btn--inline) {
     top: 16px;
     left: 16px;
-    font-size: 20px;
     width: 40px;
     height: 40px;
-    padding: 8px;
   }
 
-  .back-arrow:hover {
-    transform: scale(1.08);
+  .back-btn__icon {
+    width: 18px;
+    height: 18px;
   }
 }
 </style>
