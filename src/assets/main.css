@@ -27,7 +27,7 @@
     /* 与历史 cyber-container 的 43px 一致；Projects 等区块对称内边距。大屏首屏另在 HeroSection 内微调水平 padding */
     --page-pad-x: 43px;
 
-    /* 主栏：学习经历 / 作品展示 同宽、同内边距与同屏标题字号（与 ProjectsSection 断点一致） */
+    /* 主栏：学习足迹 / 作品影像 同宽、同内边距与同屏标题字号（与 ProjectsSection 断点一致） */
     --page-content-max-width: var(--page-max-width);
     --page-content-pad-x: var(--page-pad-x);
     --page-index-rail-width: 260px;

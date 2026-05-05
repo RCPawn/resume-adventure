@@ -22,9 +22,9 @@ export default {
     title: '嘿，我是过河卒',
     subtitle: '一名软件工程专业的学生',
     professions: [
-        '☕ Java后端开发者',
-        '☁️ 微服务架构探索者',
-        '🎨 热衷于3D和互动设计'
+        { icon: 'code', label: 'Java后端开发者' },
+        { icon: 'cloud', label: '微服务架构探索者' },
+        { icon: 'cube', label: '热衷于3D和互动设计' }
     ],
     hero: {
         scrollHint: '向下滚动'
@@ -111,18 +111,18 @@ export default {
                 description: "基于Unity3D开发的互动游戏，通过驾驶小车探索我的学习历程（正在开发中，敬请期待😊）"
             }
         ],
-        title: '学习经历',
+        title: '学习足迹',
         subtitle: '从 Hello World 到 Hello Bug',
         viewDetails: '查看详情',
         dateUnknown: '日期待定',
         dateCaption: '创建时间',
         indexHint: '点击序号可快速定位到对应卡片',
-        indexRailAria: '学习经历卡片索引',
+        indexRailAria: '学习足迹卡片索引',
         indexJumpAria: '第 {n} 项，共 {total} 项：{name}'
     },
 
     gallery: {
-        title: '作品展示',
+        title: '作品影像',
         subtitle: '核心功能模块截图，记录系统关键逻辑的实现与运行状态。',
         streamPrefix: '// VISUAL_ARCHIVE',
         statusAutoScroll: 'AUTO_SCROLL · 运行中',
@@ -248,7 +248,7 @@ export default {
                         "调用腾讯云大模型知识引擎 API，基于个人知识库实现智能问答功能。",
                         "整合 Three.js 技术，实现项目展示区 3D 交互效果。",
                         "基于 Reveal.js 开发在线演示模块，将个人项目经历转化为交互式 PPT 展示。",
-                        "设计开发简洁美观的个人信息展示页面，清晰呈现学习经历、技能与项目成果。"
+                        "设计开发简洁美观的个人信息展示页面，清晰呈现学习足迹、技能与项目成果。"
                     ],
                     "highlight": "项目特点：独立全栈开发项目，实践AI辅助编程工作流，探索前沿技术在实际项目中的应用。"
                 }
@@ -276,7 +276,7 @@ export default {
         "selfLearning": {
             "title": "自我评价",
             "items": [
-                "愿意持续学习，记录学习经历及收获（GitHub 仓库）",
+                "愿意持续学习，记录学习足迹及收获（GitHub 仓库）",
                 "对新兴技术有浓厚兴趣，善于将想法落地实现（个人博客）"
             ]
         },

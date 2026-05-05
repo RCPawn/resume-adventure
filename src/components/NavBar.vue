@@ -155,30 +155,18 @@ onMounted(() => {
   font-weight: 500;
   font-size: 0.9rem;
   position: relative;
-  transition: color 0.2s ease;
+  transition:
+    color 0.2s ease,
+    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.napkin-nav-link:hover {
+/* 中间锚点：变色 + 单次方向位移（仅纵向），悬浮态保持在上沿——确定性反馈，无左右晃 */
+.napkin-nav-link:not(.napkin-nav-game):hover {
   color: var(--primary-color);
+  transform: translateY(-2px);
 }
 
-/* 下划线动画 */
-.napkin-nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background-color: var(--primary-color);
-  transition: width 0.3s ease;
-  border-radius: 2px;
-}
-.napkin-nav-link:hover::after {
-  width: 100%;
-}
-
-/* 「我的游戏」：与同排文字链同高、同交互；图标 + 略小字号作 subtle 区分 */
+/* 「我的游戏」：与同排锚点同一套纵向落定；无图标拧摆，避免轻浮感（与右侧工具钮仍靠形态区分） */
 .napkin-nav-game {
   gap: 0.28rem;
   margin-inline-start: 0.2rem;
@@ -205,6 +193,7 @@ onMounted(() => {
 
 .napkin-nav-game:hover {
   color: var(--primary-color);
+  transform: translateY(-2px);
 }
 
 .napkin-nav-game:hover .napkin-nav-game-icon {
@@ -215,12 +204,19 @@ onMounted(() => {
   color: var(--primary-color);
 }
 
-.napkin-nav-game.router-link-active::after {
-  width: 100%;
-}
-
 .napkin-nav-game.router-link-active .napkin-nav-game-icon {
   opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .napkin-nav-link {
+    transition: color 0.2s ease;
+  }
+
+  .napkin-nav-link:not(.napkin-nav-game):hover,
+  .napkin-nav-game:hover {
+    transform: none;
+  }
 }
 
 /* =========================================

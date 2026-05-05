@@ -33,8 +33,16 @@
 
             <!-- 底部：技能标签 -->
             <div class="skill-list">
-              <div v-for="(prof, index) in tm('professions')" :key="index" class="skill-item" :style="{ animationDelay: `${0.2 + index * 0.1}s` }">
-                <span class="text">{{ prof }}</span>
+              <div
+                v-for="(prof, index) in professions"
+                :key="prof.icon + '-' + index"
+                class="skill-item"
+                :style="{ animationDelay: `${0.2 + index * 0.1}s` }"
+              >
+                <span v-if="professionIconMap[prof.icon]" class="skill-item__icon" aria-hidden="true">
+                  <component :is="professionIconMap[prof.icon]" class="skill-item__svg" />
+                </span>
+                <span class="skill-item__label">{{ prof.label }}</span>
               </div>
             </div>
           </div>
@@ -44,17 +52,12 @@
         <div class="model-area">
           <div class="model-wrapper">
             <!--
-               核心优化属性说明：
-               1. poster: 加载前显示的静态图，消除等待感。
-               2. reveal="auto": 加载完自动淡入。
-               3. loading="eager": 它是首屏内容，需要立即加载。
-               4. disable-zoom: 禁止鼠标滚轮缩放。
-               5. disable-pan: 禁止右键/双指拖动平移。
-               6. interaction-prompt="none": 不显示那个烦人的“小手”提示。
+               无 poster：直接拉 GLB，避免静态图与渲染透视不一致；配合 index.html preload + main.js 提前注册组件。
+               reveal="auto": 首帧就绪后淡入；loading="eager": 首屏立即开始解码。
+               disable-zoom / disable-pan / interaction-prompt="none": 交互与提示见下行属性。
             -->
             <model-viewer
                 src="/models/mystery_shack.glb"
-                poster="/images/mystery_shack_poster.webp"
                 alt="Mystery Shack 3D Model"
                 loading="eager"
                 reveal="auto"
@@ -72,8 +75,6 @@
                 max-camera-orbit="auto auto 90%"
                 class="huge-model"
             >
-              <!-- 自定义加载时的样式：这里我们把默认的进度条隐藏掉，
-                   或者做一个极简的 Loading 提示（可选，但我建议什么都不加，最沉浸） -->
               <div slot="progress-bar"></div>
             </model-viewer>
           </div>
@@ -104,10 +105,25 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import '@google/model-viewer';
+import { CodeBracketSquareIcon, CloudIcon, CubeTransparentIcon } from '@heroicons/vue/24/outline';
 
 const { t, tm } = useI18n();
+
+const professionIconMap = {
+  code: CodeBracketSquareIcon,
+  cloud: CloudIcon,
+  cube: CubeTransparentIcon
+};
+
+const professions = computed(() => {
+  const raw = tm('professions');
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((entry) => (typeof entry === 'string' ? null : entry))
+    .filter(Boolean);
+});
 
 // 📸 临时函数：点击模型就能下载完美海报
 /*const downloadPoster = () => {
@@ -271,12 +287,32 @@ const { t, tm } = useI18n();
   gap: clamp(0.85rem, 0.7vh + 0.4rem, 1.4rem);
 }
 .skill-item {
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
   font-size: clamp(1.15rem, 0.7vw + 0.6rem, 1.6rem);
   font-weight: 700;
   color: var(--text-color);
   opacity: 0;
   animation: fadeInRight 0.5s ease-out forwards;
   letter-spacing: 0.01em;
+}
+.skill-item__icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.15em;
+  height: 1.15em;
+  color: var(--primary-color);
+  opacity: 0.88;
+}
+.skill-item__svg {
+  width: 100%;
+  height: 100%;
+}
+.skill-item__label {
+  line-height: 1.35;
 }
 
 /* ============ 滚动提示：固定在首屏下沿区域（由 hero-shell 的 space-between 推出位置） ============ */
@@ -332,11 +368,9 @@ const { t, tm } = useI18n();
   width: 100%;
   height: 100%;
   outline: none;
-  /* 隐藏 model-viewer 自带的灰色背景，让它完全透明 */
-  --poster-color: transparent;
 }
 
-/* 🔥 关键样式：隐藏 ModelViewer 默认的蓝色加载条 */
+/* 隐藏 model-viewer 底部加载条（slot 已替换默认实现，此处兜底） */
 .huge-model::part(default-progress-bar) {
   display: none;
   opacity: 0;
@@ -370,6 +404,8 @@ const { t, tm } = useI18n();
   .layout-grid { grid-template-columns: 1fr; text-align: center; gap: 2rem; align-items: center; }
   .text-area { justify-self: center; padding-right: 0; max-width: 100%; }
   .content-wrapper { gap: 1.6rem; }
+  .skill-list { align-items: center; }
+  .skill-item { justify-content: center; }
   .model-area { justify-self: center; height: 45vh; }
   .sticky-note { right: 0; top: -40px; }
   .scroll-cue { width: 40px; height: 44px; }

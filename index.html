@@ -7,6 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Kalam:wght@400;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
+    <!-- 首屏 3D 模型：与页面并行发起请求，缩短首屏可交互前的等待（同源 GLB 使用 fetch + CORS anonymous） -->
+    <link rel="preload" href="/models/mystery_shack.glb" as="fetch" crossorigin="anonymous">
     <!-- 与 VueUse useColorMode(storageKey: theme) 一致，避免首屏主题闪烁 -->
     <meta name="color-scheme" content="light dark">
     <script>

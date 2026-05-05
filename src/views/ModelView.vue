@@ -79,8 +79,7 @@
 
 <script setup>
 import { ref } from 'vue'
-// 引入 model-viewer 包，这会自动注册 <model-viewer> 标签
-import '@google/model-viewer'
+// <model-viewer> 已在 main.js 注册
 import GoBackButton from '@/components/GoBackButton.vue'
 
 const loading = ref(true)

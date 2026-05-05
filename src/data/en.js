@@ -22,9 +22,9 @@ export default {
     title: 'HEY, I AM RCPAWN',
     subtitle: 'A SOFTWARE ENGINEERING STUDENT',
     professions: [
-        '☕ Java Backend Developer',
-        '☁️ Microservice Architecture Explorer',
-        '🎨 Enthusiast of 3D & Interactive Design'
+        { icon: 'code', label: 'Java Backend Developer' },
+        { icon: 'cloud', label: 'Microservice Architecture Explorer' },
+        { icon: 'cube', label: 'Enthusiast of 3D & Interactive Design' }
     ],
     hero: {
         scrollHint: 'Scroll down'
@@ -115,13 +115,13 @@ export default {
                     'Unity3D mini-game: drive a car through a world that maps to my learning journey (work in progress—stay tuned 😊)',
             },
         ],
-        title: 'Learning Experience',
+        title: 'Learning Trail',
         subtitle: 'From hello world to hello bug',
         viewDetails: 'View Details',
         dateUnknown: 'Date TBD',
         dateCaption: 'Created',
         indexHint: 'Click an index label to jump to that card',
-        indexRailAria: 'Learning experience card index',
+        indexRailAria: 'Learning trail card index',
         indexJumpAria: 'Card {n} of {total}: {name}'
     },
 
@@ -215,7 +215,7 @@ export default {
                         "Implemented smart Q&A features using Tencent Cloud LLM API based on a personal knowledge base.",
                         "Integrated Three.js for 3D interactive effects in the project showcase area.",
                         "Developed online presentation modules with Reveal.js to transform project experiences into interactive PPTs.",
-                        "Designed a clean UI to present education, skills, and project achievements clearly."
+                        "Designed a clean UI to present my learning trail, skills, and project achievements clearly."
                     ]
                 }
             ]
@@ -256,7 +256,7 @@ export default {
     },
 
     gallery: {
-        title: 'Creative Gallery',
+        title: 'Works & Visuals',
         subtitle: 'Snapshots of implemented modules and core system functionalities.',
         streamPrefix: '// VISUAL_ARCHIVE',
         statusAutoScroll: 'AUTO_SCROLL · LIVE',
