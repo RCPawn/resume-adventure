@@ -34,6 +34,7 @@
     "link": "/project/exhibition"
   },
   {
+    "id": "olive-ppt",
     "nameKey": "projects.items.2.name",
     "descriptionKey": "projects.items.2.description",
     "date": "2025-08-20",
@@ -41,6 +42,7 @@
     "link": "/olive-ppt"
   },
   {
+    "id": "resume-game",
     "nameKey": "projects.items.4.name",
     "descriptionKey": "projects.items.4.description",
     "date": "2026-01-18",
@@ -48,10 +50,20 @@
     "link": "/game"
   },
   {
+    "id": "weather-app",
     "nameKey": "projects.items.3.name",
     "descriptionKey": "projects.items.3.description",
     "date": "2024-10-08",
     "image": "/images/projects/云朵.png",
     "link": "/weather"
+  },
+  {
+    "id": "model-viewer-page",
+    "nameKey": "projects.items.5.name",
+    "descriptionKey": "projects.items.5.description",
+    "date": "2025-08-01",
+    "image": "/images/projects/model_cover.jpg",
+    "tags": ["model-viewer", "WebGL", "GLB", "Vue"],
+    "link": "/model"
   }
 ]

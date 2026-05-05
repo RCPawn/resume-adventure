@@ -15,18 +15,21 @@
             <nav class="scroll-indicator" :aria-label="t('projects.indexRailAria')">
               <div
                   v-for="(p, i) in projects"
-                  :key="i"
+                  :key="p.id || `rail-${i}`"
                   class="indicator-dot"
                   :class="{ active: currentActive === i }"
                   role="button"
                   tabindex="0"
-                  :aria-label="t('projects.indexJumpAria', { n: i + 1, total: projects.length, name: p.name })"
+                  :aria-label="t('projects.indexJumpAria', { n: i + 1, total: projects.length, short: p.indexShort })"
                   :aria-current="currentActive === i ? 'true' : undefined"
                   @click.stop="scrollToProject(i)"
                   @keydown.enter.prevent="scrollToProject(i)"
                   @keydown.space.prevent="scrollToProject(i)"
               >
-                <span class="dot-label">P_{{ (i + 1).toString().padStart(2, '0') }}</span>
+                <span class="indicator-dot-inner">
+                  <span class="index-rail-num">{{ String(i + 1).padStart(2, '0') }}</span>
+                  <span class="index-rail-short">{{ p.indexShort }}</span>
+                </span>
               </div>
             </nav>
           </div>
@@ -35,7 +38,7 @@
         <div class="data-stream" ref="scrollContainer">
           <div
               v-for="(project, index) in projects"
-              :key="project.name"
+              :key="project.id || project.nameKey || index"
               class="project-node"
               :data-index="index"
               @mouseenter="playTickSound"
@@ -98,14 +101,19 @@ import { useRouter } from 'vue-router';
 import projectsData from '@/data/projects.json';
 import WeatherModal from '@/components/WeatherModel.vue';
 
-const { t } = useI18n();
+const { t, te } = useI18n();
 const router = useRouter();
 const showWeatherModal = ref(false);
 const currentActive = ref(0);
 const isMobile = ref(false);
 const scrollContainer = ref(null);
+/** 左侧目录点击触发平滑滚动时，短暂忽略 IntersectionObserver，避免 ratio 误判相邻卡片覆盖高亮 */
+const observerSuppressedUntil = ref(0);
+const RAIL_CLICK_OBSERVER_SUPPRESS_MS = 800;
 
 const scrollToProject = (index) => {
+  currentActive.value = index;
+  observerSuppressedUntil.value = Date.now() + RAIL_CLICK_OBSERVER_SUPPRESS_MS;
   const root = scrollContainer.value;
   if (!root) return;
   const el = root.querySelector(`.project-node[data-index="${index}"]`);
@@ -144,12 +152,15 @@ const projects = computed(() => {
       compact === '—'
         ? `${t('projects.dateCaption')} · ${t('projects.dateUnknown')}`
         : `${t('projects.dateCaption')} · ${compact}`;
+    const idxLabelKey = p.id ? `projects.indexLabels.${p.id}` : '';
+    const indexShort = idxLabelKey && te(idxLabelKey) ? t(idxLabelKey) : '';
     return {
       ...p,
       name: t(p.nameKey),
       description: t(p.descriptionKey),
       footerDateLine,
       dateIso,
+      indexShort,
     };
   });
 });
@@ -176,9 +187,10 @@ const bindScrollObserver = () => {
   if (observer) observer.disconnect();
   observer = new IntersectionObserver(
     (entries) => {
+      if (Date.now() < observerSuppressedUntil.value) return;
       const visible = entries
-        .filter((e) => e.isIntersecting)
-        .sort((a, b) => (b.intersectionRatio || 0) - (a.intersectionRatio || 0));
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => (b.intersectionRatio || 0) - (a.intersectionRatio || 0));
       const best = visible[0];
       if (!best) return;
       const idx = parseInt(best.target.dataset.index, 10);
@@ -294,6 +306,36 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
   transition: opacity 0.25s ease, transform 0.25s ease, color 0.25s ease;
   cursor: pointer;
   user-select: none;
+}
+
+.indicator-dot-inner {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.35rem;
+  max-width: 11rem;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.index-rail-num {
+  flex-shrink: 0;
+  font-size: 0.62rem;
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+  opacity: 0.85;
+}
+
+.index-rail-short {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.74rem;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .indicator-dot:not(.active):hover {
@@ -666,6 +708,14 @@ html:not(.dark) .neon-border {
 
   .indicator-dot {
     flex-shrink: 0;
+  }
+
+  .indicator-dot-inner {
+    max-width: 8rem;
+  }
+
+  .index-rail-short {
+    font-size: 0.68rem;
   }
 
   .indicator-dot.active {

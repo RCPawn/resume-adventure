@@ -4,7 +4,6 @@
     <Chatbot/>
     <HeroSection/>
     <ProjectsSection/>
-    <!-- <SkillsSection/> -->
     <ExperienceSection/>
     <FooterSection/>
   </div>
@@ -14,7 +13,6 @@
 import NavBar from '@/components/NavBar.vue';
 import Chatbot from "@/components/chatbot/Chatbot.vue";
 import HeroSection from '@/components/HeroSection.vue';
-import SkillsSection from "@/components/SkillsSection.vue";
 import ProjectsSection from '@/components/ProjectsSection.vue';
 import ExperienceSection from "@/components/GallerySection.vue";
 import FooterSection from '@/components/FooterSection.vue';

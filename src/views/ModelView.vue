@@ -22,18 +22,11 @@
         shadow-intensity="1.5"
         shadow-softness="1"
         exposure="1"
-        ar
-        ar-modes="webxr scene-viewer quick-look"
-        ar-scale="auto"
         class="model-canvas"
         @progress="onProgress"
         @load="onLoad"
         @error="onError"
     >
-      <!-- AR 按钮 (仅在支持AR的设备显示) -->
-      <button slot="ar-button" class="ar-btn">
-        📷 AR 实景查看
-      </button>
     </model-viewer>
 
     <!-- 3. 自定义加载遮罩 (比 model-viewer 自带的 poster 更灵活) -->
@@ -260,33 +253,6 @@ const onError = (error) => {
   transition: width 0.2s ease;
 }
 
-/* ------ AR 按钮 ------ */
-.ar-btn {
-  position: absolute;
-  bottom: 200px; /* 位于信息卡片上方 */
-  right: 20px;
-  background: var(--btn-bg);
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
-  padding: 10px 20px;
-  border-radius: 30px;
-  font-weight: 500;
-  box-shadow: var(--hover-shadow);
-  cursor: pointer;
-  z-index: 8;
-  transition: transform 0.2s;
-}
-
-.ar-btn:hover {
-  background: var(--btn-bg);
-  color: var(--primary-color);
-  border-color: var(--primary-color);
-}
-
-.ar-btn:active {
-  transform: scale(0.95);
-}
-
 /* 动画 */
 @keyframes spin {
   to { transform: rotate(360deg); }
@@ -307,14 +273,6 @@ const onError = (error) => {
   .info-panel {
     bottom: 20px;
     padding: 16px;
-  }
-
-  .ar-btn {
-    bottom: auto;
-    top: 20px;
-    right: 20px;
-    padding: 8px 16px;
-    font-size: 13px;
   }
 }
 </style>
