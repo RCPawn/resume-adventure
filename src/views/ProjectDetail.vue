@@ -314,45 +314,24 @@ const fetchMarkdown = async () => {
     htmlContent.value = ''
   } finally {
     loading.value = false
+    // 正文与 action 栏就绪后再拉不蒜子；具体合并与去重见 @/utils/busuanziApi
+    await nextTick()
+    requestBusuanziApply()
   }
-}
-
-/** 不蒜子：CDN 3.6 脚本整页只执行一次，SPA 须直接调 api.php（见 @/utils/busuanziApi） */
-const refreshBusuanziPagePv = async () => {
-  if (typeof window === 'undefined') return
-  await nextTick()
-  const run = () => requestBusuanziApply()
-  window.setTimeout(run, 180)
-  window.setTimeout(run, 900)
-  window.setTimeout(run, 1800)
 }
 
 onMounted(async () => {
   if (typeof window !== 'undefined' && window.innerWidth <= 768) isTocHidden.value = true
 
-  const mdPromise = fetchMarkdown()
-
-  await nextTick()
-  refreshBusuanziPagePv()
-
-  await mdPromise
-  await nextTick()
-  refreshBusuanziPagePv()
+  await fetchMarkdown()
 })
 
 watch(
     () => route.params.id,
-    async () => {
-      await fetchMarkdown()
-      await nextTick()
-      refreshBusuanziPagePv()
+    () => {
+      fetchMarkdown()
     }
 )
-
-watch(loading, (done) => {
-  if (!done) return
-  nextTick(() => refreshBusuanziPagePv())
-})
 
 watch(htmlContent, async () => {
   await renderMermaidDiagrams()
