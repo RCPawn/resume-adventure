@@ -3,12 +3,19 @@
     <!-- RCPAWN Logo -->
     <div class="napkin-logo">{{ t('nav.logo') }}</div>
     <div class="napkin-nav-links">
-      <a href="javascript:void(0);" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });" class="napkin-nav-link">{{ t('nav.home') }}</a>
-      <a href="#projects" class="napkin-nav-link">{{ t('nav.experience') }}</a>
-<!--      <a href="#skills" class="napkin-nav-link">{{ t('nav.skill') }}</a>-->
-      <a href="#gallery" class="napkin-nav-link">{{ t('nav.gallery') }}</a>
-      <a href="javascript:void(0);" @click="toggleAboutModal" class="napkin-nav-link">{{ t('nav.resume') }}</a>
-      <a href="#footer" class="napkin-nav-link">{{ t('nav.footer') }}</a>
+      <a href="javascript:void(0);" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });" class="napkin-nav-link">{{ t('nav.intro') }}</a>
+      <a href="#projects" class="napkin-nav-link">{{ t('nav.journey') }}</a>
+      <a href="#gallery" class="napkin-nav-link">{{ t('nav.works') }}</a>
+      <a href="#footer" class="napkin-nav-link">{{ t('nav.contact') }}</a>
+      <router-link to="/game" class="napkin-nav-link napkin-nav-game">
+        <svg class="napkin-nav-game-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+          <path
+            fill="currentColor"
+            d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H9v2H7v-2H5v-2h2V9h2v2h2v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5S20.33 12 19.5 12z"
+          />
+        </svg>
+        <span class="napkin-nav-game-label">{{ t('nav.game') }}</span>
+      </router-link>
     </div>
     <div class="napkin-controls">
       <!-- GitHub 按钮 -->
@@ -28,38 +35,14 @@
       <ThemeAppearanceToggle class="napkin-control-btn theme" />
     </div>
   </nav>
-
-  <teleport to="body">
-    <transition name="modal-fade">
-      <div v-if="showAboutModal" class="modal-mask">
-        <div class="modal-wrapper">
-          <div ref="modalRef" class="modal-container">
-            <button class="modal-close" @click="toggleAboutModal">&times;</button>
-            <AboutSection :isVisible="showAboutModal" @close="showAboutModal = false" />
-          </div>
-        </div>
-      </div>
-    </transition>
-  </teleport>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import AboutSection from '@/components/ResumeSection.vue'
 import ThemeAppearanceToggle from '@/components/ThemeAppearanceToggle.vue'
-import { onClickOutside } from '@vueuse/core'
 
-const showAboutModal = ref(false)
-const modalRef = ref(null)
 const { locale, t } = useI18n()
-
-const toggleAboutModal = () => {
-  showAboutModal.value = !showAboutModal.value
-}
-onClickOutside(modalRef, () => {
-  showAboutModal.value = false
-})
 
 const toggleLanguage = () => {
   document.body.classList.add('language-transition')
@@ -91,7 +74,7 @@ onMounted(() => {
   if (savedLanguage) {
     locale.value = savedLanguage
   }
-  document.querySelectorAll('.napkin-nav-link:not([onclick])').forEach(link => {
+  document.querySelectorAll('.napkin-nav-link[href^="#"]').forEach((link) => {
     link.addEventListener('click', handleNavLinkClick)
   })
 })
@@ -195,6 +178,51 @@ onMounted(() => {
   width: 100%;
 }
 
+/* 「我的游戏」：与同排文字链同高、同交互；图标 + 略小字号作 subtle 区分 */
+.napkin-nav-game {
+  gap: 0.28rem;
+  margin-inline-start: 0.2rem;
+  padding: 0.15rem 0.32rem 0.15rem 0.22rem;
+  color: var(--secondary-color);
+  font-weight: 500;
+}
+
+.napkin-nav-game-icon {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  color: inherit;
+  opacity: 0.88;
+  transition: opacity 0.2s ease;
+}
+
+.napkin-nav-game-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.25;
+}
+
+.napkin-nav-game:hover {
+  color: var(--primary-color);
+}
+
+.napkin-nav-game:hover .napkin-nav-game-icon {
+  opacity: 1;
+}
+
+.napkin-nav-game.router-link-active {
+  color: var(--primary-color);
+}
+
+.napkin-nav-game.router-link-active::after {
+  width: 100%;
+}
+
+.napkin-nav-game.router-link-active .napkin-nav-game-icon {
+  opacity: 1;
+}
+
 /* =========================================
    右侧按钮组 (修复"难看"的问题)
    ========================================= */
@@ -258,79 +286,6 @@ onMounted(() => {
   transform: rotate(10deg); /* 俏皮一点的交互 */
 }
 
-/* =========================================
-   模态框 (简历)
-   ========================================= */
-.modal-mask {
-  position: fixed;
-  z-index: 9998;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(5px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: opacity 0.3s ease;
-}
-
-.modal-wrapper {
-  width: 90%;
-  max-width: 1000px;
-}
-
-.modal-container {
-  position: relative;
-  background-color: var(--modal-bg);
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
-  border-radius: 16px;
-  box-shadow: var(--hover-shadow);
-  padding: 0; /* 如果里面组件有 padding，这里设为 0 */
-  overflow: hidden; /* 防止圆角被内容遮挡 */
-}
-
-@media (max-width: 768px) {
-  .modal-wrapper {
-    width: 100%;
-    max-width: 100%;
-    padding-left: max(10px, env(safe-area-inset-left, 0px));
-    padding-right: max(10px, env(safe-area-inset-right, 0px));
-    box-sizing: border-box;
-  }
-
-  .modal-container {
-    max-height: min(94dvh, 1000px);
-  }
-}
-
-.modal-close {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--btn-bg);
-  border: 1px solid var(--border-color);
-  color: var(--secondary-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 1.2rem;
-  transition: all 0.2s;
-  z-index: 10;
-}
-
-.modal-close:hover {
-  background-color: var(--primary-color);
-  color: #fff;
-  border-color: var(--primary-color);
-}
-
 /* 响应式 */
 @media (max-width: 768px) {
   .napkin-nav {
@@ -338,8 +293,19 @@ onMounted(() => {
     --nav-pad-x: 1rem;
     padding: var(--nav-pad-y) var(--nav-pad-x);
   }
-  .napkin-nav-links { display: none; }
-  .napkin-control-btn span { display: none; }
+
+  /* 小屏仅保留居中的「我的游戏」，其余锚点收入滚动或后续扩展 */
+  .napkin-nav-link:not(.napkin-nav-game) {
+    display: none;
+  }
+
+  .napkin-nav-game {
+    margin-inline-start: 0;
+  }
+
+  .napkin-control-btn span {
+    display: none;
+  }
   .napkin-control-btn {
     padding: 0;
     width: 36px;
@@ -367,6 +333,20 @@ onMounted(() => {
     font-size: 0.95rem;
     min-height: 2.375rem;
     padding: 0.2rem 0.4rem;
+  }
+
+  .napkin-nav-game {
+    padding: 0.2rem 0.42rem 0.2rem 0.3rem;
+    gap: 0.3rem;
+  }
+
+  .napkin-nav-game-label {
+    font-size: 0.85rem;
+  }
+
+  .napkin-nav-game-icon {
+    width: 15px;
+    height: 15px;
   }
 
   .napkin-controls {
@@ -397,6 +377,20 @@ onMounted(() => {
 
   .napkin-nav-links {
     gap: 1.5rem;
+  }
+
+  .napkin-nav-game {
+    padding: 0.2rem 0.45rem 0.2rem 0.32rem;
+    gap: 0.32rem;
+  }
+
+  .napkin-nav-game-label {
+    font-size: 0.875rem;
+  }
+
+  .napkin-nav-game-icon {
+    width: 16px;
+    height: 16px;
   }
 
   .napkin-controls {

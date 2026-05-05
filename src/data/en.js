@@ -5,12 +5,11 @@ import '@/assets/styles/leetcodeIcon.css';
 export default {
     nav: {
         logo: 'RCPAWN',
-        home: 'Home',
-        skill: 'Skills',
-        experience: 'Experience',
-        gallery: 'Gallery',
-        resume: 'Resume',
-        footer: 'About'
+        intro: 'Intro',
+        journey: 'Learning Trail',
+        works: 'Works & Visuals',
+        contact: 'Contact',
+        game: 'My Game'
     },
     chatbot: {
         title: 'AI Assistant',
@@ -297,8 +296,8 @@ export default {
         appName: 'Dev Space',
         tagline: 'Where code meets creativity',
         techTitle: 'Powering this site',
-        copyEmail: 'Copy Email',
-        emailCopied: 'Copied!',
+        downloadResume: 'Download résumé',
+        downloadResumeAria: 'Download résumé file',
         copyright: '© {year} Dev Space. All rights reserved.',
         madeWith: 'Designed & Built by rcpawn',
         stayInTouch: 'Stay in touch',
@@ -324,19 +323,10 @@ export default {
                 ]
             },
             {
-                title: "Resources",
+                title: 'On this site',
                 links: [
-                    {text: "Doc", url: "/coming-soon"},
-                    {text: "Tutorials", url: "/coming-soon"},
-                    {text: "Code", url: "/coming-soon"}
-                ]
-            },
-            {
-                title: 'About',
-                links: [
-                    {text: 'Bio', url: 'https://github.com/RCPawn'},
-                    {text: 'Contact', url: '/coming-soon'},
-                    {text: 'Blog', url: 'https://github.com/RCPawn'}
+                    {text: 'GitHub', url: 'https://github.com/RCPawn'},
+                    {text: 'My Game', url: '/game'}
                 ]
             }
         ]

@@ -4,13 +4,12 @@ import '@/assets/styles/leetcodeIcon.css';
 
 export default {
     nav: {
-        logo: '过河卒',
-        home: '主页',
-        skill: '技能',
-        experience: '经历',
-        gallery: '画廊',
-        resume: '简历',
-        footer: '关于'
+        logo: 'RCPAWN',
+        intro: '开篇',
+        journey: '学习足迹',
+        works: '作品影像',
+        contact: '联系方式',
+        game: '我的游戏'
     },
     chatbot: {
         title: 'AI 助手',
@@ -294,8 +293,8 @@ export default {
         appName: '开发者空间',
         tagline: '让编码创造更多可能',
         techTitle: '本网站由以下技术驱动',
-        copyEmail: '复制邮箱',
-        emailCopied: '已复制!',
+        downloadResume: '下载简历',
+        downloadResumeAria: '下载简历文件',
         copyright: '© {year} 开发者空间. 保留所有权利.',
         madeWith: 'rcpawn 用热爱和代码精心制作',
         stayInTouch: '保持联系',
@@ -320,19 +319,10 @@ export default {
                 ]
             },
             {
-                title: "资源",
+                title: '站内',
                 links: [
-                    {text: "文档", url: "/coming-soon"},
-                    {text: "教程", url: "/coming-soon"},
-                    {text: "源码", url: "/coming-soon"}
-                ]
-            },
-            {
-                title: '关于',
-                links: [
-                    {text: '简介', url: 'https://github.com/RCPawn'},
-                    {text: '联系', url: '/coming-soon'},
-                    {text: '博客', url: 'https://github.com/RCPawn'}
+                    {text: 'GitHub', url: 'https://github.com/RCPawn'},
+                    {text: '我的游戏', url: '/game'}
                 ]
             }
         ]

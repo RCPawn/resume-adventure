@@ -29,40 +29,22 @@
               </a>
             </div>
 
-            <button
-                type="button"
-                class="email-btn"
-                @click="copyEmail"
-                :class="{ copied: emailCopied }"
-                :aria-label="emailCopied ? t('footer.emailCopied') : t('footer.copyEmail')"
+            <a
+              :href="resumePdfHref"
+              class="resume-pdf-btn"
+              download
+              rel="noreferrer"
+              :aria-label="t('footer.downloadResumeAria')"
             >
-            <span class="btn-icon">
-              <svg
-                  v-if="!emailCopied"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-              >
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                <polyline points="22,6 12,13 2,6"></polyline>
-              </svg>
-              <svg
-                  v-else
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-              >
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-            </span>
-            {{ emailCopied ? t('footer.emailCopied') : t('footer.copyEmail') }}
-          </button>
+              <span class="btn-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+              </span>
+              {{ t('footer.downloadResume') }}
+            </a>
         </div>
       </div>
 
@@ -146,7 +128,11 @@ import { requestBusuanziApply } from '@/utils/busuanziApi'
 const { t, tm, locale } = useI18n()
 const route = useRoute()
 
-const emailCopied = ref(false)
+const resumePdfHref = computed(() => {
+  const base = import.meta.env.BASE_URL || '/'
+  return base.endsWith('/') ? `${base}resume.pdf` : `${base}/resume.pdf`
+})
+
 const STAT_PLACEHOLDER = '—'
 const sitePvText = ref(STAT_PLACEHOLDER)
 const todayUvText = ref(STAT_PLACEHOLDER)
@@ -160,19 +146,6 @@ const runningDays = computed(() => {
   const diff = now - startDate
   return Math.floor(diff / (1000 * 60 * 60 * 24))
 })
-
-const copyEmail = async () => {
-  const email = 'shangxi0275@163.com'
-  try {
-    await navigator.clipboard.writeText(email)
-    emailCopied.value = true
-    setTimeout(() => {
-      emailCopied.value = false
-    }, 2000)
-  } catch (err) {
-    console.error('复制邮箱失败:', err)
-  }
-}
 
 const CACHE_KEY = 'footer_busuanzi_cache_v1'
 const REFRESH_INTERVAL = 60000
@@ -445,12 +418,19 @@ html.dark .footer-section::after {
 
 .footer-nav {
   justify-self: end;
-  display: flex;
+  align-self: start;
+  display: inline-flex;
   flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: clamp(1.25rem, 2.8vw, 2.25rem);
-  width: 100%;
-  margin-inline-start: auto;
+  align-items: flex-start;
+  gap: clamp(1.75rem, 2.6vw, 2.5rem);
+  width: max-content;
+  max-width: 100%;
+}
+
+.nav-group {
+  flex: 0 0 auto;
+  min-width: 0;
+  text-align: left;
 }
 
 /* 品牌区：杂志式眉题 + 衬线标题 */
@@ -539,7 +519,7 @@ html.dark .footer-section::after {
   }
 }
 
-.email-btn {
+.resume-pdf-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -550,14 +530,15 @@ html.dark .footer-section::after {
   padding: 0 0.95rem;
   line-height: 1;
   border-radius: 10px;
-  border: 1px solid var(--border-color);
-  background: var(--btn-bg);
-  color: var(--text-color);
+  border: 1px solid color-mix(in srgb, var(--primary-color) 38%, var(--border-color));
+  background: color-mix(in srgb, var(--primary-color) 10%, var(--btn-bg));
+  color: var(--primary-color);
   cursor: pointer;
   font-family: inherit;
-  font-weight: 600;
+  font-weight: 650;
   font-size: 0.8125rem;
   letter-spacing: 0.02em;
+  text-decoration: none;
   transition:
     border-color 0.2s ease,
     color 0.2s ease,
@@ -566,33 +547,34 @@ html.dark .footer-section::after {
     transform 0.25s ease;
 }
 
-.email-btn:hover {
-  background: var(--modal-bg);
-  border-color: color-mix(in srgb, var(--primary-color) 45%, var(--border-color));
+.resume-pdf-btn:hover {
+  background: color-mix(in srgb, var(--primary-color) 18%, var(--modal-bg));
+  border-color: color-mix(in srgb, var(--primary-color) 55%, var(--border-color));
   color: var(--primary-color);
-  box-shadow: 0 6px 18px rgba(var(--primary-color-rgb, 59, 130, 246), 0.12);
+  box-shadow: 0 6px 18px rgba(var(--primary-color-rgb, 59, 130, 246), 0.18);
 }
 
-.email-btn:focus-visible {
+.resume-pdf-btn:focus-visible {
   outline: 2px solid var(--primary-color);
   outline-offset: 3px;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .email-btn:hover {
+  .resume-pdf-btn:hover {
     transform: translateY(-2px);
   }
 }
 
-.email-btn .btn-icon {
+.resume-pdf-btn .btn-icon {
   display: flex;
   align-items: center;
 }
 
-.email-btn.copied {
-  border-color: #10b981;
-  color: #059669;
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.12);
+@supports not (border-color: color-mix(in srgb, white 50%, black)) {
+  .resume-pdf-btn {
+    border-color: var(--primary-color);
+    background: var(--btn-bg);
+  }
 }
 
 /* 技术栈：与左右列形成「左齐 / 中轴 / 右齐」节奏 */
@@ -826,12 +808,15 @@ html.dark .footer-section::after {
   }
 
   .footer-nav {
+    justify-self: center;
     justify-content: center;
+    width: 100%;
+    max-width: min(26rem, 100%);
+    margin-inline: auto;
   }
 
   .footer-brand,
-  .footer-tech,
-  .footer-nav {
+  .footer-tech {
     justify-self: center;
     margin-inline-start: unset;
   }
