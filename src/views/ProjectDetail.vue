@@ -100,6 +100,7 @@ import MarkdownIt from 'markdown-it'
 import mermaid from 'mermaid'
 import projectsData from '@/data/projects.json'
 import GoBackButton from '@/components/GoBackButton.vue'
+import { requestBusuanziApply } from '@/utils/busuanziApi'
 import 'github-markdown-css/github-markdown.css'
 
 const route = useRoute()
@@ -306,75 +307,11 @@ const fetchMarkdown = async () => {
   }
 }
 
-// 不蒜子：项目详情页无 Footer，须自行保证脚本与 #busuanzi_page_pv 生命周期对齐（SPA 须在 DOM 就绪后多次触发 fetch）
-const BUSUANZI_SCRIPT_ID = 'busuanzi-script'
-const BUSUANZI_SCRIPT_URL = 'https://cdn.busuanzi.cc/busuanzi/3.6.9/busuanzi.min.js'
-const BUSUANZI_FETCH_URL = '//busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback'
-
-const loadBusuanziScript = () => {
-  return new Promise((resolve) => {
-    if (typeof window === 'undefined' || typeof document === 'undefined') {
-      resolve(false)
-      return
-    }
-
-    const existing = document.getElementById(BUSUANZI_SCRIPT_ID)
-    if (existing) {
-      resolve(true)
-      return
-    }
-
-    const script = document.createElement('script')
-    script.id = BUSUANZI_SCRIPT_ID
-    script.src = BUSUANZI_SCRIPT_URL
-    script.async = true
-
-    script.onload = () => resolve(true)
-    script.onerror = () => resolve(false)
-
-    document.body.appendChild(script)
-  })
-}
-
-/** 首页 Footer 已插入 script 标签时，loadBusuanziScript 会立刻 resolve，但 bszCaller 可能尚未挂载 */
-const waitForBszCaller = (timeoutMs = 12000) => {
-  return new Promise((resolve) => {
-    if (typeof window === 'undefined') {
-      resolve(false)
-      return
-    }
-    if (window.bszCaller && typeof window.bszCaller.fetch === 'function') {
-      resolve(true)
-      return
-    }
-    const t0 = Date.now()
-    const id = window.setInterval(() => {
-      if (window.bszCaller && typeof window.bszCaller.fetch === 'function') {
-        window.clearInterval(id)
-        resolve(true)
-      } else if (Date.now() - t0 >= timeoutMs) {
-        window.clearInterval(id)
-        resolve(false)
-      }
-    }, 40)
-  })
-}
-
-const invokeBusuanziFetch = () => {
-  try {
-    if (window.bszCaller && typeof window.bszCaller.fetch === 'function') {
-      window.bszCaller.fetch(BUSUANZI_FETCH_URL, () => {})
-    }
-  } catch {
-    // 忽略
-  }
-}
-
-/** 与 Footer 类似：等 DOM 稳定后拉取；并在一段时间后补拉，避免首屏 markdown 异步导致漏更 */
+/** 不蒜子：CDN 3.6 脚本整页只执行一次，SPA 须直接调 api.php（见 @/utils/busuanziApi） */
 const refreshBusuanziPagePv = async () => {
   if (typeof window === 'undefined') return
   await nextTick()
-  const run = () => invokeBusuanziFetch()
+  const run = () => requestBusuanziApply()
   window.setTimeout(run, 180)
   window.setTimeout(run, 900)
   window.setTimeout(run, 1800)
@@ -383,11 +320,8 @@ const refreshBusuanziPagePv = async () => {
 onMounted(async () => {
   if (typeof window !== 'undefined' && window.innerWidth <= 768) isTocHidden.value = true
 
-  const scriptPromise = loadBusuanziScript().catch(() => false)
   const mdPromise = fetchMarkdown()
 
-  await scriptPromise
-  await waitForBszCaller()
   await nextTick()
   refreshBusuanziPagePv()
 

@@ -141,6 +141,7 @@
 import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { requestBusuanziApply } from '@/utils/busuanziApi'
 
 const { t, tm, locale } = useI18n()
 const route = useRoute()
@@ -173,9 +174,6 @@ const copyEmail = async () => {
   }
 }
 
-const BUSUANZI_SCRIPT_ID = 'busuanzi-script'
-const BUSUANZI_SCRIPT_URL = 'https://cdn.busuanzi.cc/busuanzi/3.6.9/busuanzi.min.js'
-const BUSUANZI_FETCH_URL = '//busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback'
 const CACHE_KEY = 'footer_busuanzi_cache_v1'
 const REFRESH_INTERVAL = 60000
 
@@ -234,45 +232,14 @@ const hydrateFromCache = () => {
   }
 }
 
-const loadBusuanziScript = () => {
-  return new Promise((resolve, reject) => {
-    if (typeof window === 'undefined' || typeof document === 'undefined') {
-      resolve(false)
-      return
-    }
-
-    const existing = document.getElementById(BUSUANZI_SCRIPT_ID)
-    if (existing) {
-      resolve(true)
-      return
-    }
-
-    const script = document.createElement('script')
-    script.id = BUSUANZI_SCRIPT_ID
-    script.src = BUSUANZI_SCRIPT_URL
-    script.async = true
-
-    script.onload = () => resolve(true)
-    script.onerror = (err) => reject(err)
-
-    document.body.appendChild(script)
-  })
-}
-
 const refreshBusuanzi = async () => {
   if (typeof window === 'undefined') return
 
   await nextTick()
 
-  // 等 Footer DOM 稳定后再触发刷新，避免路由切换瞬间拿到空节点
+  // 等 Footer DOM 稳定后再触发刷新，避免路由切换瞬间拿到空节点（与 CDN 3.6 一次性 script 解耦，直接调 api）
   window.setTimeout(() => {
-    try {
-      if (window.bszCaller && typeof window.bszCaller.fetch === 'function') {
-        window.bszCaller.fetch(BUSUANZI_FETCH_URL, () => {})
-      }
-    } catch (err) {
-      console.warn('不蒜子刷新调用失败:', err)
-    }
+    requestBusuanziApply()
 
     // 再延迟读一次 DOM，把成功结果缓存下来；失败时保留缓存值，不显示 0
     window.setTimeout(() => {
@@ -329,10 +296,6 @@ const handlePageShow = () => {
 
 onMounted(async () => {
   hydrateFromCache()
-
-  await loadBusuanziScript().catch((err) => {
-    console.warn('不蒜子脚本加载失败:', err)
-  })
 
   refreshBusuanzi()
   startAutoRefresh()
