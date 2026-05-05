@@ -25,15 +25,7 @@
         </svg>
         <span>{{ locale === 'cn' ? 'EN' : 'CN' }}</span>
       </button>
-      <!-- 主题切换按钮 -->
-      <button @click="toggleTheme" class="napkin-control-btn theme">
-        <svg v-if="!isDarkMode" viewBox="0 0 24 24" class="napkin-icon">
-          <path fill="currentColor" d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2a7 7 0 1 1 0-14 7 7 0 0 1 0 14zM12 5V3M12 21v-2M4.22 6.22 5.64 7.64M18.36 16.36l1.42 1.42M3 12h2M19 12h2M4.22 17.78l1.42-1.42M18.36 7.64l1.42-1.42"></path>
-        </svg>
-        <svg v-else viewBox="0 0 24 24" class="napkin-icon">
-          <path fill="currentColor" d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"></path>
-        </svg>
-      </button>
+      <ThemeAppearanceToggle class="napkin-control-btn theme" />
     </div>
   </nav>
 
@@ -52,83 +44,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AboutSection from '@/components/ResumeSection.vue'
-import { onClickOutside, useDark, useToggle } from '@vueuse/core'
+import ThemeAppearanceToggle from '@/components/ThemeAppearanceToggle.vue'
+import { onClickOutside } from '@vueuse/core'
 
 const showAboutModal = ref(false)
 const modalRef = ref(null)
 const { locale, t } = useI18n()
-
-// useDark 自动管理 html class="dark"
-const isDarkMode = useDark({
-  selector: 'html',
-  attribute: 'class',
-  valueDark: 'dark',
-  valueLight: '',
-  storageKey: 'theme',
-})
-
-const toggleThemeLogic = useToggle(isDarkMode)
-
-/** 防止快速连点叠加多次 View Transition */
-let themeTransitionActive = false
-
-const toggleTheme = (event) => {
-  if (themeTransitionActive) return
-
-  const x = event ? event.clientX : innerWidth / 2
-  const y = event ? event.clientY : innerHeight / 2
-
-  const isAppearanceTransition = typeof document.startViewTransition === 'function'
-      && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-  if (!isAppearanceTransition) {
-    toggleThemeLogic()
-    return
-  }
-
-  const endRadius = Math.hypot(
-      Math.max(x, innerWidth - x),
-      Math.max(y, innerHeight - y)
-  )
-
-  themeTransitionActive = true
-  let transition
-  try {
-    transition = document.startViewTransition(async () => {
-      toggleThemeLogic()
-      await nextTick()
-    })
-  } catch {
-    themeTransitionActive = false
-    toggleThemeLogic()
-    return
-  }
-
-  transition.finished.finally(() => {
-    themeTransitionActive = false
-  })
-
-  transition.ready
-      .then(() => {
-        document.documentElement.animate(
-            {
-              clipPath: [
-                `circle(0px at ${x}px ${y}px)`,
-                `circle(${endRadius}px at ${x}px ${y}px)`
-              ]
-            },
-            {
-              duration: 400,
-              easing: 'ease-in',
-              pseudoElement: '::view-transition-new(root)'
-            }
-        )
-      })
-      .catch(() => {})
-}
 
 const toggleAboutModal = () => {
   showAboutModal.value = !showAboutModal.value
@@ -366,6 +290,20 @@ onMounted(() => {
   box-shadow: var(--hover-shadow);
   padding: 0; /* 如果里面组件有 padding，这里设为 0 */
   overflow: hidden; /* 防止圆角被内容遮挡 */
+}
+
+@media (max-width: 768px) {
+  .modal-wrapper {
+    width: 100%;
+    max-width: 100%;
+    padding-left: max(10px, env(safe-area-inset-left, 0px));
+    padding-right: max(10px, env(safe-area-inset-right, 0px));
+    box-sizing: border-box;
+  }
+
+  .modal-container {
+    max-height: min(94dvh, 1000px);
+  }
 }
 
 .modal-close {

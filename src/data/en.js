@@ -89,39 +89,32 @@ export default {
             description:
                 'Manufacturing-side delivery and iteration around planning-related capabilities: aligned requirements with planners, commercial, and IT; contributed to backend work such as tightening master-data references and cross-system identity checks. Customer environments, vendor products, and internal details are omitted under NDA.',
         },
+        // Order MUST match cn.js projects.items indices (used by projects.json nameKey/descriptionKey: items.0 … items.4)
         items: [
             {
-                name: "Olive Guardian",
-                description: "Integrated olive grove management platform combining data visualization, WebGIS and blockchain technologies for comprehensive asset management"
+                name: '🛡️ Microservices Traffic Governance & Unified Access Gateway',
+                description:
+                    'A self-developed microservices gateway integrating full-link authentication, dynamic routing, traffic shaping, security, async logging, and visual configuration/monitoring—building a secure, observable traffic edge.',
             },
             {
-                name: "Algorithm",
-                description: "Stay tuned😊"
+                name: '🎪 ICH Virtual Exhibition & Data Monitoring Platform',
+                description:
+                    'Digital platform for intangible cultural heritage: 3D exhibits, UGC community, and lineage graphs; a digital cockpit tracks engagement across assets for an end-to-end loop from cloud capture to cross-modal interaction.',
             },
             {
-                name: "GitHub Project",
-                description: "Stay tuned😊"
+                name: '🌿 Olive Guardian',
+                description:
+                    'Integrated olive-grove platform combining data visualization, WebGIS, and blockchain for whole-region asset management.',
             },
             {
-                name: "Personal Gateway",
-                description: "Stay tuned😊"
+                name: '☁️ Weather App',
+                description: 'Backend not deployed yet—stay tuned 😊',
             },
             {
-                name: "Weather App",
-                description: "Stay tuned😊"
+                name: '🚗 Resume Adventure',
+                description:
+                    'Unity3D mini-game: drive a car through a world that maps to my learning journey (work in progress—stay tuned 😊)',
             },
-            {
-                name: "Resume Adventure",
-                description: "Interactive game developed with Unity3D where players drive through a virtual world exploring my learning journey"
-            },
-            {
-                name: "Donut 3D",
-                description: "Created a 3D animated short film using Blender, demonstrating modeling, texturing, lighting and animation techniques"
-            },
-            {
-                name: "Skill Target",
-                description: "Constructed personal full-stack development plan encompassing frontend, backend, algorithms, deep learning and product design, continuously updated through iterative learning"
-            }
         ],
         title: 'Learning Experience',
         subtitle: 'From hello world to hello bug',

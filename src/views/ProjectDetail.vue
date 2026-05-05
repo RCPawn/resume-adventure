@@ -6,6 +6,7 @@
         <div class="action-bar__cluster action-bar__cluster--grow">
           <div class="action-bar__nav">
             <GoBackButton variant="ghost" inline />
+            <ThemeAppearanceToggle variant="doc" />
           </div>
           <template v-if="currentProject">
             <span class="action-bar__rule" aria-hidden="true" />
@@ -100,10 +101,13 @@ import MarkdownIt from 'markdown-it'
 import mermaid from 'mermaid'
 import projectsData from '@/data/projects.json'
 import GoBackButton from '@/components/GoBackButton.vue'
+import ThemeAppearanceToggle from '@/components/ThemeAppearanceToggle.vue'
+import { useAppearanceTheme } from '@/composables/useAppearanceTheme'
 import { requestBusuanziApply } from '@/utils/busuanziApi'
 import 'github-markdown-css/github-markdown.css'
 
 const route = useRoute()
+const { isDarkMode } = useAppearanceTheme()
 
 const md = new MarkdownIt({ html: true, linkify: true, typographer: true })
 const defaultHeadingOpen = md.renderer.rules.heading_open || function (tokens, idx, options, env, self) {
@@ -147,6 +151,8 @@ md.renderer.rules.image = function (tokens, idx, options, env, self) {
 
 const loading = ref(true)
 const error = ref('')
+/** 成功拉取后的原始 Markdown，用于亮暗切换时重渲染正文与 Mermaid */
+const mdSourceText = ref('')
 const htmlContent = ref('')
 const toc = ref([])
 const isTocHidden = ref(false)
@@ -279,6 +285,7 @@ const fetchMarkdown = async () => {
   loading.value = true
   error.value = ''
   toc.value = []
+  mdSourceText.value = ''
   try {
     if (!currentProject.value) throw new Error('未找到项目')
     const fileName = currentProject.value.mdFile
@@ -286,6 +293,7 @@ const fetchMarkdown = async () => {
     const response = await fetch(`/projects/${fileName}`)
     if (!response.ok) throw new Error('加载失败')
     const text = await response.text()
+    mdSourceText.value = text
     const tokens = md.parse(text, {})
     const list = []
     for (let i = 0; i < tokens.length; i++) {
@@ -302,6 +310,8 @@ const fetchMarkdown = async () => {
     htmlContent.value = md.render(text)
   } catch (err) {
     error.value = err.message || String(err)
+    mdSourceText.value = ''
+    htmlContent.value = ''
   } finally {
     loading.value = false
   }
@@ -346,6 +356,11 @@ watch(loading, (done) => {
 
 watch(htmlContent, async () => {
   await renderMermaidDiagrams()
+})
+
+watch(isDarkMode, () => {
+  if (!mdSourceText.value || loading.value) return
+  htmlContent.value = md.render(mdSourceText.value)
 })
 </script>
 
@@ -429,6 +444,7 @@ watch(htmlContent, async () => {
 .action-bar__nav {
   display: flex;
   align-items: center;
+  gap: 8px;
   flex-shrink: 0;
 }
 
@@ -864,17 +880,29 @@ watch(htmlContent, async () => {
   scroll-behavior: smooth;
 }
 
+/* 目录/锚点跳转：避免标题被 sticky 顶栏遮挡 */
+:deep(.markdown-body h1),
+:deep(.markdown-body h2),
+:deep(.markdown-body h3),
+:deep(.markdown-body h4),
+:deep(.markdown-body h5),
+:deep(.markdown-body h6) {
+  scroll-margin-top: calc(var(--action-bar-h, 52px) + 12px);
+}
+
 /* 正文自带主标题时，收紧首段顶距，让首屏尽量落在文档内容 */
 :deep(.markdown-body > h1:first-child) {
   margin-top: 0.25em;
 }
 
-/* 图片 */
+/* 图片（方角，与截图/文档类素材更一致） */
 :deep(.markdown-body img) {
-  border-radius: 12px;
+  border-radius: 0;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
   margin: 20px 0;
   max-width: 100%;
+  height: auto;
+  display: block;
   border: none;
 }
 
@@ -893,6 +921,15 @@ html.dark .content-flex.doc-layout--with-toc :deep(.markdown-body img) {
   border-radius: 12px;
   padding: 16px;
   overflow: auto;
+}
+
+/* 代码块内的 code：避免与行内 code 样式叠成「双层底」 */
+:deep(.markdown-body pre code) {
+  background: transparent !important;
+  border-radius: 0;
+  padding: 0;
+  color: inherit;
+  font-size: 0.92em;
 }
 
 /* Mermaid：外层卡片（图在 Shadow DOM 内，避免主页样式渗入 foreignObject —— 对齐 GitHub iframe 隔离思路） */
@@ -924,12 +961,82 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
   overflow: auto;
 }
 
-/* 行内代码 */
-:deep(.markdown-body code) {
+/* 行内代码（不含 pre 内） */
+:deep(.markdown-body :not(pre) > code) {
   background-color: var(--btn-bg);
   border-radius: 6px;
   color: var(--primary-color);
-  padding: 0 6px;
+  padding: 0.15em 0.4em;
+}
+
+/* 正文链接：更易扫读、键盘焦点可见 */
+:deep(.markdown-body a) {
+  color: var(--primary-color);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-skip-ink: auto;
+}
+
+:deep(.markdown-body a:hover) {
+  text-decoration-thickness: 2px;
+}
+
+:deep(.markdown-body a:focus-visible) {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* 图片外链：避免在图片下出现多余下划线 */
+:deep(.markdown-body a:has(> img)) {
+  text-decoration: none;
+}
+
+:deep(.markdown-body a:has(> img):focus-visible) {
+  outline-offset: 4px;
+}
+
+/* 引用块（实习文等大量使用 > 时，层次更清晰） */
+:deep(.markdown-body blockquote) {
+  margin: 1.2em 0;
+  padding: 0.35em 0 0.35em 1em;
+  border-left: 3px solid color-mix(in srgb, var(--primary-color) 70%, var(--border-color));
+  color: var(--secondary-color);
+}
+
+:deep(.markdown-body blockquote > :first-child) {
+  margin-top: 0;
+}
+
+:deep(.markdown-body blockquote > :last-child) {
+  margin-bottom: 0;
+}
+
+/* 分隔线：弱化视觉噪音，保留结构 */
+:deep(.markdown-body hr) {
+  height: 0;
+  margin: 1.75em 0;
+  border: 0;
+  border-top: 1px solid color-mix(in srgb, var(--border-color) 75%, transparent);
+  background: none;
+}
+
+/* 列表：段内多级列表更易读 */
+:deep(.markdown-body ul),
+:deep(.markdown-body ol) {
+  margin: 0.65em 0;
+  padding-left: 1.35em;
+}
+
+:deep(.markdown-body li) {
+  margin: 0.35em 0;
+  line-height: 1.75;
+}
+
+:deep(.markdown-body li > p) {
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
 }
 
 /* 标题样式 */
@@ -997,6 +1104,11 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
 @media (max-width: 768px) {
   .page-container {
     --action-bar-h: 48px;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .doc-stage {
+    padding-bottom: max(clamp(32px, 5vh, 56px), env(safe-area-inset-bottom, 0px));
   }
 
   .action-bar__inner {
@@ -1067,6 +1179,37 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
   }
 }
 
+/* 窄屏手机：略减水平留白与标题字号，正文可视面积更大（不影响 ≥769px） */
+@media (max-width: 480px) {
+  .doc-stage {
+    padding-left: max(12px, env(safe-area-inset-left, 0px));
+    padding-right: max(12px, env(safe-area-inset-right, 0px));
+  }
+
+  .content-flex.doc-layout--with-toc {
+    --doc-top-pad: 14px;
+    --doc-bottom-pad: 24px;
+    --doc-main-pad-x: 14px;
+    --doc-toc-pad-start: 14px;
+    --doc-toc-pad-end: 14px;
+  }
+
+  .page-container :deep(.markdown-body h2) {
+    font-size: 1.45rem;
+    margin-top: 1.35em;
+    padding-left: 12px;
+  }
+
+  .page-container :deep(.markdown-body h2::before) {
+    top: 4px;
+    bottom: 4px;
+  }
+
+  .page-container :deep(.markdown-body p) {
+    font-size: 1rem;
+  }
+}
+
 /* 大屏：略放宽内容区 + 目录列，阅读与表格更舒展 */
 @media (min-width: 1600px) {
   .page-container {
@@ -1110,7 +1253,7 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
   }
 
   :deep(.markdown-body img) {
-    border-radius: 14px;
+    border-radius: 0;
     margin: 25px 0;
   }
 }

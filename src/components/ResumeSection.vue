@@ -243,6 +243,7 @@ const sections = [
 
 .resume-content {
   flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   padding: 28px 32px;
@@ -252,13 +253,17 @@ const sections = [
 .section {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-height: 0;
   height: 100%;
   animation: fadeIn 0.4s ease;
 }
 
 .content-scrollable {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   padding-right: 16px;
 }
 
@@ -405,12 +410,16 @@ ul li::before {
 @media (max-width: 768px) {
   .resume-container {
     flex-direction: column;
-    height: 85vh;
+    /* dvh：避免移动浏览器地址栏占用导致可视区域过小；flex+min-height:0 保证正文区可滚动占满剩余高度 */
+    height: min(90dvh, 1000px);
+    max-height: min(92dvh, 1000px);
+    min-height: 0;
   }
 
   .resume-sidebar {
     width: 100%;
-    padding: 12px 0;
+    flex-shrink: 0;
+    padding: 10px 0;
     border-right: none;
     border-bottom: 1px solid var(--border-color);
   }
@@ -419,10 +428,11 @@ ul li::before {
     flex-direction: row;
     overflow-x: auto;
     padding: 0 12px;
+    min-height: 0;
   }
 
   .nav-item {
-    padding: 12px;
+    padding: 10px 12px;
     margin: 0 4px;
   }
 
@@ -436,7 +446,14 @@ ul li::before {
   }
 
   .resume-content {
-    padding: 20px;
+    padding: 14px 16px 16px;
+    padding-bottom: max(16px, env(safe-area-inset-bottom, 0px));
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
   }
 }
 
