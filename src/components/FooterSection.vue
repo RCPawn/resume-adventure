@@ -83,7 +83,9 @@
                 />
               </svg>
               <span class="stat-label">{{ t('footer.statsSitePv') }}</span>
-              <span id="busuanzi_site_pv" class="stat-value" aria-live="polite">{{ sitePvText }}</span>
+              <!-- 与 ProjectDetail 一致：v-once 空节点专供不蒜子写 innerText，避免与下方 Vue 展示抢同一文本节点导致读数错误 -->
+              <span id="busuanzi_site_pv" v-once class="footer-busuanzi-sink" aria-hidden="true" />
+              <span class="stat-value" aria-live="polite">{{ sitePvText }}</span>
             </span>
             <span class="stat-sep" aria-hidden="true">·</span>
             <span class="stat-inline">
@@ -94,7 +96,8 @@
                 />
               </svg>
               <span class="stat-label">{{ t('footer.statsTodayUv') }}</span>
-              <span id="busuanzi_today_uv" class="stat-value" aria-live="polite">{{ todayUvText }}</span>
+              <span id="busuanzi_today_uv" v-once class="footer-busuanzi-sink" aria-hidden="true" />
+              <span class="stat-value" aria-live="polite">{{ todayUvText }}</span>
             </span>
             <span class="stat-sep" aria-hidden="true">·</span>
             <span class="stat-inline">
@@ -176,67 +179,75 @@ const isValidNumberText = (text) => {
 const getCurrentStatsFromDom = () => {
   const sitePvEl = document.getElementById('busuanzi_site_pv')
   const todayUvEl = document.getElementById('busuanzi_today_uv')
+  const sitePvRaw = sitePvEl?.innerText ?? sitePvEl?.textContent ?? ''
+  const todayUvRaw = todayUvEl?.innerText ?? todayUvEl?.textContent ?? ''
 
   return {
-    sitePv: normalizeStatNumber(sitePvEl?.textContent),
-    todayUv: normalizeStatNumber(todayUvEl?.textContent)
+    sitePv: normalizeStatNumber(sitePvRaw),
+    todayUv: normalizeStatNumber(todayUvRaw),
+    sitePvRaw,
+    todayUvRaw
   }
 }
 
-const applyStatsToDom = (stats) => {
-  if (stats.sitePv) {
-    sitePvText.value = t('footer.statsPvFormat', { n: stats.sitePv })
+/** 与 ProjectDetail 本页阅读量一致：不蒜子写入纯文本；数字走 i18n 格式化，否则展示服务端原文（如本地 IP 未纳入统计等说明）。 */
+const resolveStatDisplay = (rawText, cachedField, formatKey) => {
+  const raw = String(rawText ?? '').trim()
+  if (isValidNumberText(raw)) {
+    return t(formatKey, { n: normalizeStatNumber(raw) })
   }
-  if (stats.todayUv) {
-    todayUvText.value = t('footer.statsUvFormat', { n: stats.todayUv })
+  if (raw.length > 0) {
+    return raw.length > 56 ? `${raw.slice(0, 54)}…` : raw
   }
+  const c = normalizeStatNumber(cachedField)
+  if (c.length > 0 && c !== '0') {
+    return t(formatKey, { n: c })
+  }
+  return STAT_PLACEHOLDER
 }
 
 const hydrateFromCache = () => {
   const cache = readCache()
-  if (cache) {
-    const pv = normalizeStatNumber(cache.sitePv)
-    const uv = normalizeStatNumber(cache.todayUv)
-    if (pv) sitePvText.value = t('footer.statsPvFormat', { n: pv })
-    if (uv) todayUvText.value = t('footer.statsUvFormat', { n: uv })
-  }
+  if (!cache) return
+  sitePvText.value = resolveStatDisplay('', cache.sitePv, 'footer.statsPvFormat')
+  todayUvText.value = resolveStatDisplay('', cache.todayUv, 'footer.statsUvFormat')
 }
+
+let refreshSeq = 0
 
 const refreshBusuanzi = async () => {
   if (typeof window === 'undefined') return
 
   await nextTick()
 
+  const seq = ++refreshSeq
+
   // 等 Footer DOM 稳定后再触发刷新，避免路由切换瞬间拿到空节点（与 CDN 3.6 一次性 script 解耦，直接调 api）
-  window.setTimeout(() => {
-    requestBusuanziApply()
+  window.setTimeout(async () => {
+    if (seq !== refreshSeq) return
 
-    // 再延迟读一次 DOM，把成功结果缓存下来；失败时保留缓存值，不显示 0
-    window.setTimeout(() => {
-      const current = getCurrentStatsFromDom()
+    await requestBusuanziApply()
+    if (seq !== refreshSeq) return
 
-      const hasValidSitePv = isValidNumberText(current.sitePv)
-      const hasValidTodayUv = isValidNumberText(current.todayUv)
+    await nextTick()
+    await new Promise((resolve) => requestAnimationFrame(() => resolve()))
 
-      if (hasValidSitePv || hasValidTodayUv) {
-        const nextCache = {
-          sitePv: hasValidSitePv ? current.sitePv : normalizeStatNumber(sitePvText.value),
-          todayUv: hasValidTodayUv ? current.todayUv : normalizeStatNumber(todayUvText.value)
-        }
-        saveCache(nextCache)
-        applyStatsToDom(nextCache)
-        return
-      }
+    const current = getCurrentStatsFromDom()
+    const prev = readCache() || {}
 
-      // 如果这次没拿到有效值，就恢复上一次成功缓存，避免显示 0
-      const cache = readCache()
-      if (cache) {
-        applyStatsToDom({
-          sitePv: normalizeStatNumber(cache.sitePv),
-          todayUv: normalizeStatNumber(cache.todayUv)
-        })
-      }
-    }, 1200)
+    const hasValidSitePv = isValidNumberText(current.sitePv)
+    const hasValidTodayUv = isValidNumberText(current.todayUv)
+
+    // 只写入本次接口确实返回的字段，其余键保留原缓存，避免首屏只带回 PV 却把 todayUv 存成空串
+    if (hasValidSitePv || hasValidTodayUv) {
+      const next = { ...prev }
+      if (hasValidSitePv) next.sitePv = current.sitePv
+      if (hasValidTodayUv) next.todayUv = current.todayUv
+      saveCache(next)
+    }
+
+    sitePvText.value = resolveStatDisplay(current.sitePvRaw, prev.sitePv, 'footer.statsPvFormat')
+    todayUvText.value = resolveStatDisplay(current.todayUvRaw, prev.todayUv, 'footer.statsUvFormat')
   }, 180)
 }
 
@@ -260,11 +271,19 @@ onMounted(async () => {
 })
 
 watch(locale, () => {
-  const cache = readCache()
-  const pv = normalizeStatNumber(cache?.sitePv ?? sitePvText.value)
-  const uv = normalizeStatNumber(cache?.todayUv ?? todayUvText.value)
-  if (pv) sitePvText.value = t('footer.statsPvFormat', { n: pv })
-  if (uv) todayUvText.value = t('footer.statsUvFormat', { n: uv })
+  const sitePvEl = document.getElementById('busuanzi_site_pv')
+  const todayUvEl = document.getElementById('busuanzi_today_uv')
+  const cache = readCache() || {}
+  sitePvText.value = resolveStatDisplay(
+    sitePvEl?.innerText ?? sitePvEl?.textContent ?? '',
+    cache.sitePv,
+    'footer.statsPvFormat'
+  )
+  todayUvText.value = resolveStatDisplay(
+    todayUvEl?.innerText ?? todayUvEl?.textContent ?? '',
+    cache.todayUv,
+    'footer.statsUvFormat'
+  )
 })
 
 watch(
@@ -654,10 +673,24 @@ defineExpose({
 }
 
 .stat-inline {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 0.28rem;
   white-space: nowrap;
+}
+
+/* 不蒜子写入目标：不占版面，可见数字由相邻 .stat-value 展示 */
+.footer-busuanzi-sink {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .stat-sep {
@@ -687,6 +720,7 @@ defineExpose({
 }
 
 .stat-value {
+  min-width: 0;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   color: var(--text-color);

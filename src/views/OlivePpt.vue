@@ -1,21 +1,21 @@
 <template>
   <div class="presentation-container" ref="containerRef">
-    <!-- 使用封装好的返回按钮组件 -->
     <GoBackButton />
 
     <div class="reveal" ref="revealRef">
       <div class="slides">
-        <!-- 生成 0-19 的图片 -->
         <section
-            v-for="index in 20"
-            :key="index - 1"
-            :data-background-color="getBackgroundColor(index - 1)"
-            :data-transition="getTransition(index - 1)"
+          v-for="index in 20"
+          :key="index - 1"
+          :data-background-color="getBackgroundColor(index - 1)"
+          :data-transition="getTransition(index - 1)"
         >
           <img
-              :src="`/images/olive/${index - 1}.jpg`"
-              :alt="`橄榄图片 ${index - 1}`"
-              class="slide-image"
+            :src="`/images/olive/${index - 1}.jpg`"
+            :alt="`橄榄图片 ${index - 1}`"
+            class="slide-image"
+            decoding="async"
+            @load="onSlideMediaLoad"
           />
         </section>
       </div>
@@ -24,21 +24,21 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, nextTick } from "vue";
-import Reveal from "reveal.js";
-import RevealZoom from "reveal.js/plugin/zoom/zoom";
-import "reveal.js/dist/reveal.css";
-// 移除硬编码的black.css，改用自定义主题
-// import "reveal.js/dist/theme/black.css";
-import GoBackButton from "@/components/GoBackButton.vue";
+import { ref, onMounted, onUnmounted, nextTick } from 'vue';
+import Reveal from 'reveal.js';
+import RevealZoom from 'reveal.js/plugin/zoom/zoom';
+import 'reveal.js/dist/reveal.css';
+import GoBackButton from '@/components/GoBackButton.vue';
 
 const containerRef = ref(null);
 const revealRef = ref(null);
 let deck = null;
 let themeObserver = null;
 let resizeObserver = null;
+let mediaLayoutTimer = null;
+let resizeLayoutTimer = null;
 
-/** Reveal 依赖容器真实尺寸；首帧或路由切换后需延后/在尺寸变化时再次 layout，否则会出现幻灯片贴底、上半屏空白。 */
+/** Reveal 依赖容器真实尺寸；首帧或路由切换后需延后/在尺寸变化时再次 layout，否则会出现幻灯片贴底、上半屏空白或封面只显示一半。 */
 const scheduleLayout = () => {
   if (!deck) return;
   requestAnimationFrame(() => {
@@ -46,26 +46,48 @@ const scheduleLayout = () => {
   });
 };
 
-// 定义亮色/暗色两套背景色数组
-const themeColors = {
-  light: [
-    "#f5f5f5", "#eaeaea", "#f0f7ea", "#e8ede5", "#f8f5ed",
-    "#e5ebf0", "#f0e5eb", "#e8f0e5", "#f0eae5", "#e5f0eb",
-    "#ebf0e5", "#f0e5ea", "#e5f0ea", "#eaf0e5", "#f0e6e5",
-    "#e5eaf0", "#f0e5e8", "#e5f0e8", "#e8e5f0", "#f0e5ef"
-  ],
-  dark: [
-    "#1a1a1a", "#222222", "#2a2a2a", "#333333", "#3a3a3a",
-    "#444444", "#4a4a4a", "#555555", "#5a5a5a", "#666666",
-    "#6a6a6a", "#777777", "#7a7a7a", "#888888", "#8a8a8a",
-    "#999999", "#9a9a9a", "#aa8888", "#88aa88", "#8888aa"
-  ]
+const onSlideMediaLoad = () => {
+  if (mediaLayoutTimer) clearTimeout(mediaLayoutTimer);
+  mediaLayoutTimer = setTimeout(() => {
+    mediaLayoutTimer = null;
+    scheduleLayout();
+  }, 80);
 };
 
-// 过渡效果数组
-const transitions = ["slide", "fade", "convex", "concave", "zoom"].flatMap((t) => Array(4).fill(t));
+/** 以演示容器为准计算 Reveal 设计宽高，避免固定 1200×700 与外层 dvh 不一致导致缩放错位 */
+const getDeckSize = () => {
+  const el = containerRef.value;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  if (el && el.clientWidth >= 280 && el.clientHeight >= 280) {
+    return {
+      width: Math.floor(el.clientWidth),
+      height: Math.floor(el.clientHeight),
+    };
+  }
+  if (vw <= 768) {
+    return { width: Math.floor(vw), height: Math.floor(vh) };
+  }
+  return { width: Math.floor(vw), height: Math.floor(vh) };
+};
 
-// 获取当前主题对应的背景色
+const themeColors = {
+  light: [
+    '#f5f5f5', '#eaeaea', '#f0f7ea', '#e8ede5', '#f8f5ed',
+    '#e5ebf0', '#f0e5eb', '#e8f0e5', '#f0eae5', '#e5f0eb',
+    '#ebf0e5', '#f0e5ea', '#e5f0ea', '#eaf0e5', '#f0e6e5',
+    '#e5eaf0', '#f0e5e8', '#e5f0e8', '#e8e5f0', '#f0e5ef',
+  ],
+  dark: [
+    '#1a1a1a', '#222222', '#2a2a2a', '#333333', '#3a3a3a',
+    '#444444', '#4a4a4a', '#555555', '#5a5a5a', '#666666',
+    '#6a6a6a', '#777777', '#7a7a7a', '#888888', '#8a8a8a',
+    '#999999', '#9a9a9a', '#aa8888', '#88aa88', '#8888aa',
+  ],
+};
+
+const transitions = ['slide', 'fade', 'convex', 'concave', 'zoom'].flatMap((t) => Array(4).fill(t));
+
 const getBackgroundColor = (index) => {
   const isDark = document.documentElement.classList.contains('dark');
   const colors = isDark ? themeColors.dark : themeColors.light;
@@ -74,23 +96,30 @@ const getBackgroundColor = (index) => {
 
 const getTransition = (index) => transitions[index % transitions.length];
 
-// 更新Reveal主题样式
 const updateRevealTheme = () => {
   if (deck) {
-    // 重新设置所有幻灯片的背景色
     deck.getSlides().forEach((slide, index) => {
       slide.setAttribute('data-background-color', getBackgroundColor(index));
     });
-    deck.layout(); // 重新布局确保样式生效
+    deck.layout();
   }
+};
+
+const flushLayoutPasses = () => {
+  scheduleLayout();
+  setTimeout(scheduleLayout, 50);
+  setTimeout(scheduleLayout, 200);
+  setTimeout(scheduleLayout, 500);
 };
 
 const initReveal = () => {
   if (!revealRef.value) return;
 
+  const { width, height } = getDeckSize();
+
   deck = new Reveal(revealRef.value, {
-    width: window.innerWidth > 768 ? 1200 : window.innerWidth,
-    height: window.innerWidth > 768 ? 700 : window.innerHeight,
+    width,
+    height,
     margin: 0.05,
     minScale: 0.2,
     maxScale: 2.0,
@@ -98,11 +127,11 @@ const initReveal = () => {
     progress: true,
     center: true,
     hash: false,
-    transition: "slide",
-    transitionSpeed: "default",
-    backgroundTransition: "fade",
+    transition: 'slide',
+    transitionSpeed: 'default',
+    backgroundTransition: 'fade',
     autoAnimateDuration: 1.0,
-    autoAnimateEasing: "ease",
+    autoAnimateEasing: 'ease',
     autoSlide: 0,
     loop: true,
     touch: true,
@@ -117,52 +146,61 @@ const initReveal = () => {
     requestAnimationFrame(() => {
       requestAnimationFrame(scheduleLayout);
     });
-    // 初始化时先更新一次主题
+    flushLayoutPasses();
     updateRevealTheme();
 
-    if (typeof ResizeObserver !== "undefined" && containerRef.value) {
-      resizeObserver = new ResizeObserver(() => scheduleLayout());
+    if (typeof ResizeObserver !== 'undefined' && containerRef.value) {
+      resizeObserver = new ResizeObserver(() => {
+        if (resizeLayoutTimer) clearTimeout(resizeLayoutTimer);
+        resizeLayoutTimer = setTimeout(() => {
+          resizeLayoutTimer = null;
+          if (!deck || !containerRef.value) return;
+          const next = getDeckSize();
+          deck.configure({ width: next.width, height: next.height });
+          scheduleLayout();
+        }, 100);
+      });
       resizeObserver.observe(containerRef.value);
     }
   });
 
-  // 监听html标签的class变化（主题切换）
   const htmlElement = document.documentElement;
-  themeObserver = new MutationObserver((mutations) => {
-    mutations.forEach(() => {
-      updateRevealTheme();
-    });
+  themeObserver = new MutationObserver(() => {
+    updateRevealTheme();
   });
 
   themeObserver.observe(htmlElement, {
     attributes: true,
-    attributeFilter: ['class']
+    attributeFilter: ['class'],
   });
 };
 
 const handleResize = () => {
-  if (deck) {
-    deck.configure({
-      width: window.innerWidth > 768 ? 1200 : window.innerWidth,
-      height: window.innerWidth > 768 ? 700 : window.innerHeight,
-    });
-    scheduleLayout();
-  }
+  if (!deck) return;
+  const { width, height } = getDeckSize();
+  deck.configure({ width, height });
+  scheduleLayout();
 };
 
-onMounted(() => {
-  initReveal();
-  window.addEventListener("resize", handleResize);
+onMounted(async () => {
+  await nextTick();
+  requestAnimationFrame(() => {
+    initReveal();
+  });
+  window.addEventListener('resize', handleResize);
 });
 
 onUnmounted(() => {
+  if (mediaLayoutTimer) clearTimeout(mediaLayoutTimer);
+  if (resizeLayoutTimer) clearTimeout(resizeLayoutTimer);
   if (deck) {
     deck.destroy();
+    deck = null;
   }
-  window.removeEventListener("resize", handleResize);
-  // 销毁观察者
+  window.removeEventListener('resize', handleResize);
   if (themeObserver) {
     themeObserver.disconnect();
+    themeObserver = null;
   }
   if (resizeObserver) {
     resizeObserver.disconnect();
@@ -172,17 +210,16 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-/* 定义主题切换的过渡动画 */
 .presentation-container {
   width: 100%;
   min-height: 100vh;
+  min-height: 100dvh;
   height: 100vh;
   height: 100dvh;
   overflow: hidden;
   position: relative;
   background-color: var(--bg-color);
   border: 1px solid var(--border-color);
-  /* 主题切换过渡 */
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
@@ -195,7 +232,14 @@ onUnmounted(() => {
   transition: background-color 0.3s ease;
 }
 
-/* 覆盖Reveal默认控件样式，适配全局主题 */
+/* 每页内容在 section 内居中，避免仅用 vh 与 Reveal 缩放坐标系不一致导致裁切/只露半张 */
+:deep(.reveal .slides > section) {
+  box-sizing: border-box;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
 :deep(.reveal .controls) {
   color: var(--text-color);
   opacity: 0.8;
@@ -213,50 +257,40 @@ onUnmounted(() => {
 
 :deep(.reveal .slide-number) {
   color: var(--text-color);
-  background: rgba(0,0,0,0.1);
+  background: rgba(0, 0, 0, 0.1);
   transition: color 0.3s ease, background 0.3s ease;
 }
 html.dark :deep(.reveal .slide-number) {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
 }
 
-/* 幻灯片图片样式优化 */
 .slide-image {
-  max-width: 90%;
-  max-height: 80vh;
-  border-radius: 8px;
-  box-shadow: var(--hover-shadow);
-  transition: all 0.3s ease;
   display: block;
   margin: auto;
-  border: 1px solid var(--border-color);
-}
-
-.slide-image:hover {
-  transform: scale(1.02);
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
   box-shadow: var(--hover-shadow);
+  border: 1px solid var(--border-color);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
-/* 移动端优化 */
+@media (prefers-reduced-motion: no-preference) {
+  .slide-image:hover {
+    transform: scale(1.02);
+    box-shadow: var(--hover-shadow);
+  }
+}
+
 @media (max-width: 768px) {
   .presentation-container {
-    min-height: 100vh;
-    min-height: 100dvh;
-    height: 100vh;
-    height: 100dvh;
     border: none;
   }
 
-  .reveal {
-    position: absolute;
-    inset: 0;
-    width: auto;
-    height: auto;
-  }
-
   .slide-image {
-    max-width: 95%;
-    max-height: 70vh;
     border-radius: 6px;
   }
 }
