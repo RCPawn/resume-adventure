@@ -165,4 +165,16 @@ html.dark .back-btn--ghost:hover {
     height: 18px;
   }
 }
+
+@media (min-width: 1920px) {
+  .back-btn--surface {
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+  }
+
+  .back-btn--hero {
+    backdrop-filter: blur(11px);
+    -webkit-backdrop-filter: blur(11px);
+  }
+}
 </style>

@@ -99,6 +99,18 @@ html.dark {
         --section-heading-title-size: clamp(2.5rem, 2.2vw + 1.5rem, 2.85rem);
         --section-heading-subtitle-size: 1.1rem;
     }
+
+    /*
+     * 宽视口顶栏毛玻璃采样面积变大：略提高实底不透明度以对冲稍轻的 blur（NavBar 内联样式），
+     * 肉眼接近原样，合成成本更低。
+     */
+    :root {
+        --nav-bg: rgba(255, 255, 255, 0.8);
+    }
+
+    html.dark {
+        --nav-bg: rgba(18, 18, 18, 0.8);
+    }
 }
 
 /* =========================================

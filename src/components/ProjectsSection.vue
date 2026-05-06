@@ -46,12 +46,6 @@
             <div class="node-background">
               <img :src="project.image" :alt="project.name" class="bg-image" />
               <div class="image-tint"></div>
-              <div class="glitch-overlay"></div>
-            </div>
-
-            <div class="node-overlay">
-              <div class="scan-bar"></div>
-              <div class="neon-border"></div>
             </div>
 
             <div class="node-content-glass">
@@ -106,13 +100,13 @@ const showWeatherModal = ref(false);
 const currentActive = ref(0);
 const isMobile = ref(false);
 const scrollContainer = ref(null);
-/** 左侧目录点击触发平滑滚动时，短暂忽略 IntersectionObserver，避免 ratio 误判相邻卡片覆盖高亮 */
-const observerSuppressedUntil = ref(0);
-const RAIL_CLICK_OBSERVER_SUPPRESS_MS = 800;
+/** 左侧目录点击触发平滑滚动时，短暂忽略滚动同步，避免与 smooth 滚动过程打架 */
+const scrollSyncSuppressedUntil = ref(0);
+const RAIL_CLICK_SCROLL_SYNC_SUPPRESS_MS = 800;
 
 const scrollToProject = (index) => {
   currentActive.value = index;
-  observerSuppressedUntil.value = Date.now() + RAIL_CLICK_OBSERVER_SUPPRESS_MS;
+  scrollSyncSuppressedUntil.value = Date.now() + RAIL_CLICK_SCROLL_SYNC_SUPPRESS_MS;
   const root = scrollContainer.value;
   if (!root) return;
   const el = root.querySelector(`.project-node[data-index="${index}"]`);
@@ -164,32 +158,69 @@ const projects = computed(() => {
   });
 });
 
-// --- 滚动监听（限定在本节卡片容器，避免误观察到其他页面节点） ---
-let observer = null;
-const bindScrollObserver = () => {
-  if (observer) observer.disconnect();
-  observer = new IntersectionObserver(
-    (entries) => {
-      if (Date.now() < observerSuppressedUntil.value) return;
-      const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => (b.intersectionRatio || 0) - (a.intersectionRatio || 0));
-      const best = visible[0];
-      if (!best) return;
-      const idx = parseInt(best.target.dataset.index, 10);
-      if (!Number.isNaN(idx)) currentActive.value = idx;
-    },
-    { threshold: [0, 0.25, 0.5, 0.75, 1] }
-  );
-  scrollContainer.value?.querySelectorAll('.project-node').forEach((node) => observer.observe(node));
+// --- 滚动同步高亮：遍历本节全部卡片（IO 回调里的 entries 仅为「本次变化」的子集，用 ratio 比大小会乱跳） ---
+/** 合并到单帧更新左侧高亮 */
+let activeIndexRaf = 0;
+let pendingActiveIndex = null;
+
+const scheduleActiveIndex = (idx) => {
+  if (Number.isNaN(idx)) return;
+  pendingActiveIndex = idx;
+  if (activeIndexRaf) return;
+  activeIndexRaf = requestAnimationFrame(() => {
+    activeIndexRaf = 0;
+    const next = pendingActiveIndex;
+    pendingActiveIndex = null;
+    if (next !== null && next !== currentActive.value) {
+      currentActive.value = next;
+    }
+  });
+};
+
+/** 视口顶部参考线：顶栏高度 + 余量，与卡片 scroll-margin-top 同量级 */
+const getActiveMarkerY = () => {
+  const nav = document.querySelector('.napkin-nav');
+  return (nav?.offsetHeight ?? 60) + 24;
+};
+
+const updateActiveFromScroll = () => {
+  if (Date.now() < scrollSyncSuppressedUntil.value) return;
+  const root = scrollContainer.value;
+  if (!root) return;
+  const nodes = root.querySelectorAll('.project-node');
+  if (!nodes.length) return;
+  const marker = getActiveMarkerY();
+
+  let idx = 0;
+  nodes.forEach((node, i) => {
+    const top = node.getBoundingClientRect().top;
+    if (top <= marker) idx = i;
+  });
+  scheduleActiveIndex(idx);
+};
+
+let scrollSyncRaf = 0;
+const onScrollOrResize = () => {
+  if (scrollSyncRaf) return;
+  scrollSyncRaf = requestAnimationFrame(() => {
+    scrollSyncRaf = 0;
+    updateActiveFromScroll();
+  });
 };
 
 onMounted(() => {
-  nextTick(bindScrollObserver);
+  nextTick(() => {
+    updateActiveFromScroll();
+  });
+  window.addEventListener('scroll', onScrollOrResize, { passive: true });
+  window.addEventListener('resize', onScrollOrResize, { passive: true });
 });
-watch(() => projects.value.length, () => nextTick(bindScrollObserver));
+watch(() => projects.value.length, () => nextTick(() => updateActiveFromScroll()));
 onUnmounted(() => {
-  if (observer) observer.disconnect();
+  window.removeEventListener('scroll', onScrollOrResize);
+  window.removeEventListener('resize', onScrollOrResize);
+  if (activeIndexRaf) cancelAnimationFrame(activeIndexRaf);
+  if (scrollSyncRaf) cancelAnimationFrame(scrollSyncRaf);
 });
 
 const handleProjectClick = (p) => {
@@ -412,83 +443,6 @@ html.dark .project-node:hover {
   );
 }
 
-/* 深浅色共用同一套底部暗条：浅色不再单独盖白/毛玻璃，封面与深色一致可见 */
-.glitch-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(var(--primary-color-rgb), 0.025) 50%,
-    transparent 100%
-  );
-  animation: glitchMove 10s linear infinite;
-  opacity: 0.5;
-}
-
-html:not(.dark) .glitch-overlay {
-  display: none;
-}
-
-.node-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-  pointer-events: none;
-}
-
-/* 扫描线：深色极淡；亮色关闭（避免横跨卡片的白/蓝线） */
-.scan-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background: var(--primary-color);
-  opacity: 0.12;
-  animation: scanLoop 5s linear infinite;
-}
-
-html:not(.dark) .scan-bar {
-  display: none;
-}
-
-/*
- * 渐变描边：padding-box 须透明；亮色关闭动画描边（易出现中间亮带）
- */
-.neon-border {
-  position: absolute;
-  top: 1px;
-  left: 1px;
-  right: 1px;
-  bottom: 1px;
-  border: 1px solid transparent;
-  border-radius: 11px;
-  background: linear-gradient(transparent, transparent) padding-box,
-    linear-gradient(
-      90deg,
-      transparent,
-      rgba(var(--primary-color-rgb), 0.22),
-      transparent
-    ) border-box;
-  background-size: 200% 100%;
-  animation: borderFlow 5s linear infinite;
-  pointer-events: none;
-  opacity: 0.55;
-}
-
-html:not(.dark) .neon-border {
-  display: none;
-}
-
 /* 底部文案区：与主题无关，统一暗底渐变（浅色亦同深色，保证图可见） */
 .node-content-glass {
   position: relative;
@@ -657,11 +611,6 @@ html:not(.dark) .neon-border {
   width: 20px;
 }
 
-/* 动画保持不变 */
-@keyframes scanLoop { 0% { top: 0; } 100% { top: 100%; } }
-@keyframes glitchMove { 0% { background-position: 0 0; } 100% { background-position: 200% 0; } }
-@keyframes borderFlow { 0% { background-position: 0 0; } 100% { background-position: 200% 0; } }
-
 /* 响应式：完全保留 */
 @media (max-width: 900px) {
   .cyber-container { margin: 0 auto; }
@@ -727,6 +676,8 @@ html:not(.dark) .neon-border {
 @media (min-width: 1920px) {
   .project-node {
     min-height: 600px;
+    /* 隔离各卡片布局子树，减轻超宽屏下多轨动画时的合成牵连 */
+    contain: layout;
   }
   .node-title {
     font-size: clamp(1.75rem, 0.9vw + 1.2rem, 2rem);

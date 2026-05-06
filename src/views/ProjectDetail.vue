@@ -388,6 +388,16 @@ watch(isDarkMode, () => {
   border-bottom: 1px solid color-mix(in srgb, var(--border-color) 45%, transparent);
   backdrop-filter: saturate(140%) blur(10px);
   -webkit-backdrop-filter: saturate(140%) blur(10px);
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+@media (min-width: 1920px) {
+  .action-bar {
+    backdrop-filter: saturate(135%) blur(8px);
+    -webkit-backdrop-filter: saturate(135%) blur(8px);
+  }
 }
 
 @supports not (background: color-mix(in srgb, red, blue)) {

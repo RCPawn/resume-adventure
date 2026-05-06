@@ -1,5 +1,5 @@
 <template>
-  <section class="hero-section">
+  <section ref="heroRootRef" class="hero-section">
     <!-- 背景纹理保持不变 -->
     <div class="paper-texture">
       <div class="grid-lines"></div>
@@ -65,7 +65,7 @@
                 disable-zoom
                 disable-pan
                 interaction-prompt="none"
-                auto-rotate
+                :auto-rotate="heroAutoRotate"
                 auto-rotate-delay="1000"
                 rotation-per-second="7deg"
                 shadow-intensity="1"
@@ -105,11 +105,38 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref, onMounted, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { CodeBracketSquareIcon, CloudIcon, CubeTransparentIcon } from '@heroicons/vue/24/outline';
 
 const { t, tm } = useI18n();
+
+/** 首屏滚走后暂停自转，显著减轻大屏 WebGL 压力；回到视口自动恢复（观感不变） */
+const heroRootRef = ref(null);
+const prefersReducedMotion =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const heroAutoRotate = ref(!prefersReducedMotion);
+let heroIo = null;
+
+onMounted(() => {
+  if (prefersReducedMotion || typeof IntersectionObserver === 'undefined') return;
+  const el = heroRootRef.value;
+  if (!el) return;
+  heroIo = new IntersectionObserver(
+      (entries) => {
+        const hit = entries[0];
+        heroAutoRotate.value = hit.isIntersecting && hit.intersectionRatio >= 0.06;
+      },
+      { threshold: [0, 0.06, 0.12, 0.25] }
+  );
+  heroIo.observe(el);
+});
+
+onUnmounted(() => {
+  heroIo?.disconnect();
+  heroIo = null;
+});
 
 const professionIconMap = {
   code: CodeBracketSquareIcon,

@@ -1,5 +1,5 @@
 <template>
-  <div id="gallery" class="main-container">
+  <div id="gallery" ref="galleryRootRef" class="main-container">
     <div class="gallery-viewport">
 
       <div class="gallery-header-wrap">
@@ -145,8 +145,12 @@ const rowOneDuplicated = computed(() => [...rowOneItems, ...rowOneItems, ...rowO
 const rowTwoDuplicated = computed(() => [...rowTwoReversed, ...rowTwoReversed, ...rowTwoReversed]);
 
 // --- 滚动逻辑：位移用普通变量 + 直接写 DOM transform，避免每帧触发 Vue 响应式更新 ---
+const galleryRootRef = ref(null);
 const rowOneTrackRef = ref(null);
 const rowTwoTrackRef = ref(null);
+/** 滚离图库区块时停止 rAF，避免与整页滚动抢帧；回到视口自动恢复 */
+const isGalleryInView = ref(true);
+let galleryVisibilityIo = null;
 let rowOneScrollPosition = 0;
 let rowTwoScrollPosition = 0;
 const rowOneSpeed = ref(0.8);
@@ -169,11 +173,22 @@ const syncTrackTransforms = () => {
 };
 
 const startAnimationLoop = () => {
-  if (animationFrameId != null) return;
+  if (!isGalleryInView.value || animationFrameId != null) return;
   animationFrameId = requestAnimationFrame(animate);
 };
 
+const stopGalleryRaf = () => {
+  if (animationFrameId != null) {
+    cancelAnimationFrame(animationFrameId);
+    animationFrameId = null;
+  }
+};
+
 const animate = () => {
+  if (!isGalleryInView.value) {
+    animationFrameId = null;
+    return;
+  }
   if (!rowOnePaused.value) {
     rowOneScrollPosition -= rowOneSpeed.value;
     if (Math.abs(rowOneScrollPosition) >= rowOneSingleSetWidth.value) {
@@ -215,7 +230,7 @@ const resumeAnimation = (row) => {
     rowTwoSpeed.value = rowTwoBaseSpeed;
     rowTwoPaused.value = false;
   }
-  startAnimationLoop();
+  if (isGalleryInView.value) startAnimationLoop();
 };
 
 // --- Lightbox 逻辑 ---
@@ -243,16 +258,30 @@ onMounted(() => {
   rowTwoScrollPosition = -rowTwoSingleSetWidth.value;
   nextTick(() => {
     syncTrackTransforms();
-    startAnimationLoop();
+    const root = galleryRootRef.value;
+    if (root && typeof IntersectionObserver !== 'undefined') {
+      galleryVisibilityIo = new IntersectionObserver(
+          (entries) => {
+            const hit = entries[0];
+            const vis = !!(hit?.isIntersecting && hit.intersectionRatio >= 0.04);
+            isGalleryInView.value = vis;
+            if (vis) startAnimationLoop();
+            else stopGalleryRaf();
+          },
+          { threshold: [0, 0.04, 0.08, 0.15], rootMargin: '80px 0px 80px 0px' }
+      );
+      galleryVisibilityIo.observe(root);
+    } else {
+      startAnimationLoop();
+    }
   });
   document.addEventListener('keydown', handleEscapeKey);
 });
 
 onUnmounted(() => {
-  if (animationFrameId != null) {
-    cancelAnimationFrame(animationFrameId);
-    animationFrameId = null;
-  }
+  galleryVisibilityIo?.disconnect();
+  galleryVisibilityIo = null;
+  stopGalleryRaf();
   document.removeEventListener('keydown', handleEscapeKey);
 });
 </script>
@@ -519,6 +548,13 @@ onUnmounted(() => {
   justify-content: center;
   align-items: center;
   padding: 2rem;
+}
+
+@media (min-width: 1920px) {
+  .lightbox-overlay {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
 }
 
 .lightbox-content {

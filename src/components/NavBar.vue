@@ -1,5 +1,5 @@
 <template>
-  <nav class="napkin-nav">
+  <nav class="napkin-nav" :class="{ 'napkin-nav--rolled': navScrollCompact }">
     <!-- RCPAWN Logo -->
     <div class="napkin-logo">{{ t('nav.logo') }}</div>
     <div class="napkin-nav-links">
@@ -38,11 +38,30 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted, inject, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import ThemeAppearanceToggle from '@/components/ThemeAppearanceToggle.vue'
 
 const { locale, t } = useI18n()
+
+/** 首页惰性挂载区块后，再滚动到 #projects 等锚点（由 HomeView provide） */
+const ensureHomeBelowFold = inject('ensureHomeBelowFold', null)
+
+/** 页面下移后关闭毛玻璃、改用略实的顶栏底，滚动更轻且仍整洁 */
+const navScrollCompact = ref(false)
+const SCROLL_COMPACT_PX = 28
+let scrollRaf = 0
+const syncNavScrollMode = () => {
+  const y = window.scrollY || document.documentElement.scrollTop || 0
+  navScrollCompact.value = y > SCROLL_COMPACT_PX
+}
+const onWindowScroll = () => {
+  if (scrollRaf) return
+  scrollRaf = requestAnimationFrame(() => {
+    scrollRaf = 0
+    syncNavScrollMode()
+  })
+}
 
 const toggleLanguage = () => {
   document.body.classList.add('language-transition')
@@ -53,10 +72,18 @@ const toggleLanguage = () => {
   }, 300)
 }
 
-const handleNavLinkClick = (e) => {
+const handleNavLinkClick = async (e) => {
   e.preventDefault()
-  const targetId = e.currentTarget.getAttribute('href')
-  if (!targetId || targetId === 'javascript:void(0);') return
+  const rawHref = e.currentTarget.getAttribute('href')
+  if (!rawHref || rawHref === 'javascript:void(0);') return
+
+  const targetId = rawHref.split('?')[0]
+  const needsBelowFold = /^#(projects|gallery|footer)$/.test(targetId)
+  if (needsBelowFold && typeof ensureHomeBelowFold === 'function') {
+    await ensureHomeBelowFold()
+    await nextTick()
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))
+  }
 
   const targetElement = document.querySelector(targetId)
   if (targetElement) {
@@ -65,7 +92,7 @@ const handleNavLinkClick = (e) => {
     const elementPosition = targetElement.getBoundingClientRect().top
     const offsetPosition = elementPosition + window.scrollY - navHeight
     window.scrollTo({ top: offsetPosition, behavior: 'smooth' })
-    history.pushState(null, null, targetId)
+    history.pushState(null, null, rawHref)
   }
 }
 
@@ -77,6 +104,13 @@ onMounted(() => {
   document.querySelectorAll('.napkin-nav-link[href^="#"]').forEach((link) => {
     link.addEventListener('click', handleNavLinkClick)
   })
+  syncNavScrollMode()
+  window.addEventListener('scroll', onWindowScroll, { passive: true })
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', onWindowScroll)
+  if (scrollRaf) cancelAnimationFrame(scrollRaf)
 })
 </script>
 
@@ -110,7 +144,27 @@ onMounted(() => {
   position: sticky;
   top: 0;
   z-index: 100;
-  transition: all 0.3s ease;
+  transition:
+    background-color 0.38s ease,
+    backdrop-filter 0.38s ease,
+    -webkit-backdrop-filter 0.38s ease,
+    border-bottom-color 0.38s ease,
+    box-shadow 0.38s ease;
+  /* 独立合成层，减轻 document 滚动时与 backdrop-filter 叠加的开销（不改变样式数值） */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/*
+ * 滚动后：去掉 backdrop-filter（大屏滚动成本主要来源），用略不透明白/暗底 + 轻阴影保持质感
+ */
+.napkin-nav.napkin-nav--rolled {
+  background-color: rgba(255, 255, 255, 0.93);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom-color: color-mix(in srgb, var(--border-color) 78%, transparent);
+  box-shadow: 0 6px 24px -18px rgba(15, 23, 42, 0.18);
 }
 
 /* =========================================
@@ -406,7 +460,14 @@ html.dark .napkin-control-btn.theme:hover {
 }
 
 @media (min-width: 1920px) {
-  .napkin-nav {
+  .napkin-nav:not(.napkin-nav--rolled) {
+    --nav-pad-y: 0.75rem;
+    /* 略减 blur 半径；与 main.css 同步提高 --nav-bg 不透明度，观感几乎不变 */
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+  }
+
+  .napkin-nav.napkin-nav--rolled {
     --nav-pad-y: 0.75rem;
   }
 
@@ -470,5 +531,17 @@ html {
   html {
     --layout-navbar-height: 64px;
   }
+}
+
+/* 深色：底边改浅灰半透明，避免与 body 背景形成「黑细缝」 */
+html.dark .napkin-nav {
+  border-bottom-color: rgba(148, 163, 184, 0.16);
+}
+
+/* 深色：滚动压实顶栏底（scoped 外，需挂 html.dark） */
+html.dark .napkin-nav.napkin-nav--rolled {
+  background-color: rgba(28, 28, 30, 0.94);
+  border-bottom-color: rgba(148, 163, 184, 0.2);
+  box-shadow: 0 10px 36px -14px rgba(0, 0, 0, 0.62);
 }
 </style>
