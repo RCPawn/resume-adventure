@@ -197,7 +197,7 @@ const mountMermaidInShadowRoot = (svgMarkup, isDark) => {
       -webkit-overflow-scrolling: touch;
       padding: 16px;
       background: ${bg};
-      border-radius: 6px;
+      border-radius: 0;
     }
     .mermaid-inner svg {
       display: block;
@@ -336,6 +336,9 @@ const fetchMarkdown = async () => {
 }
 
 onMounted(async () => {
+  if (typeof window !== 'undefined') {
+    void import('@/components/ProjectsSection.vue')
+  }
   if (typeof window !== 'undefined' && window.innerWidth <= 768) isTocHidden.value = true
 
   await fetchMarkdown()
@@ -930,7 +933,7 @@ html.dark .content-flex.doc-layout--with-toc :deep(.markdown-body img) {
   overflow-x: auto;
   overflow-y: visible;
   border: 1px solid color-mix(in srgb, var(--border-color) 88%, transparent);
-  border-radius: 8px;
+  border-radius: 0;
   background: transparent;
 }
 
@@ -945,7 +948,7 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
 :deep(.markdown-body .mermaid-error) {
   margin: 1.25rem 0;
   padding: 14px 16px;
-  border-radius: 12px;
+  border-radius: 0;
   background: rgba(220, 53, 69, 0.12);
   color: var(--text-color);
   font-size: 0.9rem;

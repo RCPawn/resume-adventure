@@ -11,26 +11,6 @@
               <p class="gallery-subtitle">{{ t('gallery.subtitle') }}</p>
             </div>
             <div class="header-right" aria-live="polite">
-              <div class="header-nav-cluster">
-                <button
-                  type="button"
-                  class="header-icon-btn"
-                  :disabled="!canGoPrev"
-                  :aria-label="t('gallery.snapPrevAria')"
-                  @click="goPrevSlide"
-                >
-                  <i class="bi bi-chevron-left" aria-hidden="true"></i>
-                </button>
-                <button
-                  type="button"
-                  class="header-icon-btn"
-                  :disabled="!canGoNext"
-                  :aria-label="t('gallery.snapNextAria')"
-                  @click="goNextSlide"
-                >
-                  <i class="bi bi-chevron-right" aria-hidden="true"></i>
-                </button>
-              </div>
               <div
                 class="header-counter-box"
                 :role="filteredTotal > 1 ? 'progressbar' : undefined"
@@ -47,6 +27,24 @@
                 />
                 <span class="header-counter">{{ counterDisplay }}</span>
               </div>
+              <button
+                type="button"
+                class="header-icon-btn"
+                :disabled="!canGoPrev"
+                :aria-label="t('gallery.snapPrevAria')"
+                @click="goPrevSlide"
+              >
+                <i class="bi bi-chevron-left" aria-hidden="true"></i>
+              </button>
+              <button
+                type="button"
+                class="header-icon-btn"
+                :disabled="!canGoNext"
+                :aria-label="t('gallery.snapNextAria')"
+                @click="goNextSlide"
+              >
+                <i class="bi bi-chevron-right" aria-hidden="true"></i>
+              </button>
             </div>
           </header>
 
@@ -146,6 +144,10 @@
                 @click="openLightbox(item)"
               >
                 <div class="snap-card">
+                  <footer class="snap-caption">
+                    <span class="snap-caption-index">{{ formatSlideOrdinal(idx) }}</span>
+                    <span class="snap-caption-title">{{ t(`gallery.items.${item.id}.title`) }}</span>
+                  </footer>
                   <div class="snap-media">
                     <img
                       :src="item.imageUrl"
@@ -155,14 +157,7 @@
                       class="snap-image"
                       :alt="t(`gallery.items.${item.id}.title`)"
                     />
-                    <div class="snap-media-overlay" aria-hidden="true">
-                      <i class="bi bi-zoom-in snap-zoom-icon"></i>
-                    </div>
                   </div>
-                  <footer class="snap-caption">
-                    <span class="snap-caption-index">{{ formatSlideOrdinal(idx) }}</span>
-                    <span class="snap-caption-title">{{ t(`gallery.items.${item.id}.title`) }}</span>
-                  </footer>
                 </div>
               </article>
             </div>
@@ -550,7 +545,7 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 120px 0 100px;
+  padding: 132px 0 96px;
   overflow: hidden;
 }
 
@@ -584,7 +579,7 @@ onUnmounted(() => {
 .header-left {
   min-width: 0;
   flex: 1 1 auto;
-  max-width: calc(100% - 13rem);
+  max-width: calc(100% - 17rem);
 }
 
 .gallery-prefix {
@@ -614,22 +609,40 @@ onUnmounted(() => {
   white-space: nowrap;
 }
 
+/* 指示器 | 左箭头 | 右箭头：三者紧邻；指示器固定原宽度，高度与箭头一致 */
 .header-right {
+  --gallery-strip-h: 32px;
   flex-shrink: 0;
-  display: flex;
+  display: inline-flex;
+  flex-wrap: nowrap;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
 }
 
-.header-nav-cluster {
-  display: inline-flex;
+.header-counter-box {
+  position: relative;
+  overflow: hidden;
+  display: flex;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  box-sizing: border-box;
+  flex: 0 0 12rem;
+  width: 12rem;
+  min-width: 12rem;
+  max-width: 12rem;
+  height: var(--gallery-strip-h);
+  min-height: var(--gallery-strip-h);
+  padding: 0 10px;
+  background: var(--btn-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
 }
 
 .header-icon-btn {
-  width: 32px;
-  height: 32px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  width: var(--gallery-strip-h);
+  height: var(--gallery-strip-h);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -655,20 +668,6 @@ onUnmounted(() => {
   cursor: not-allowed;
 }
 
-.header-counter-box {
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 34px;
-  min-width: 12rem;
-  padding: 0 12px;
-  background: var(--btn-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  box-sizing: border-box;
-}
 
 .header-counter-liquid {
   position: absolute;
@@ -921,11 +920,12 @@ onUnmounted(() => {
   width: 100%;
   max-width: 100%;
   isolation: isolate;
+  /* 收窄两侧羽化，减轻横滑橱窗「蒙一层雾」的观感 */
   mask-image: linear-gradient(
     to right,
     transparent 0%,
-    black min(8%, 48px),
-    black max(92%, calc(100% - 48px)),
+    black min(5%, 36px),
+    black max(95%, calc(100% - 36px)),
     transparent 100%
   );
 }
@@ -957,7 +957,7 @@ onUnmounted(() => {
 
 .snap-scroller:focus-visible {
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-color) 55%, transparent);
-  border-radius: 12px;
+  border-radius: 0;
 }
 
 .snap-slide {
@@ -966,13 +966,13 @@ onUnmounted(() => {
   scroll-snap-stop: normal;
   min-width: 0;
   cursor: pointer;
-  border-radius: 14px;
+  border-radius: 0;
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
 }
 
 .snap-slide:not(.is-active) {
-  opacity: 0.72;
-  transform: scale(0.94);
+  opacity: 0.84;
+  transform: scale(0.96);
 }
 
 .snap-slide.is-active {
@@ -988,7 +988,13 @@ onUnmounted(() => {
     transition: none;
   }
   .snap-slide:not(.is-active) {
-    opacity: 0.88;
+    opacity: 0.92;
+    transform: none;
+  }
+  .snap-media,
+  .snap-slide:hover .snap-media,
+  .snap-slide:focus-within .snap-media {
+    transition: none;
     transform: none;
   }
 }
@@ -999,10 +1005,11 @@ onUnmounted(() => {
   height: 100%;
   background: var(--modal-bg);
   border: 1px solid var(--border-color);
-  border-radius: 14px;
+  border-radius: 0;
+  /* 略收扩散阴影，避免亮背景下大块灰雾 */
   box-shadow:
-    0 4px 6px -1px color-mix(in srgb, var(--text-color) 8%, transparent),
-    0 18px 40px -18px color-mix(in srgb, var(--text-color) 22%, transparent);
+    0 2px 4px -1px color-mix(in srgb, var(--text-color) 7%, transparent),
+    0 14px 28px -16px color-mix(in srgb, var(--text-color) 14%, transparent);
   overflow: hidden;
   user-select: none;
   transition: box-shadow 0.3s ease, border-color 0.3s ease;
@@ -1012,77 +1019,74 @@ onUnmounted(() => {
 .snap-slide:focus-within .snap-card {
   border-color: color-mix(in srgb, var(--primary-color) 35%, var(--border-color));
   box-shadow:
-    0 8px 16px -4px color-mix(in srgb, var(--text-color) 12%, transparent),
-    0 28px 56px -24px color-mix(in srgb, var(--primary-color) 18%, transparent);
+    0 6px 12px -3px color-mix(in srgb, var(--text-color) 11%, transparent),
+    0 22px 44px -20px color-mix(in srgb, var(--primary-color) 16%, transparent);
 }
 
+/* 与 ProjectsSection .node-background 一致：裁切区内微缩放 */
 .snap-media {
   position: relative;
-  aspect-ratio: 16 / 10;
+  width: 100%;
+  /* 16:9 与常见截图一致；object-fit:contain 保证整图入画 */
+  aspect-ratio: 16 / 9;
   background: var(--btn-bg);
   overflow: hidden;
+  border-radius: 0;
+  transform-origin: center center;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.snap-slide:hover .snap-media,
+.snap-slide:focus-within .snap-media {
+  transform: scale(1.008);
 }
 
 .snap-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  object-fit: contain;
+  object-position: center center;
+  /* 略提对比与饱和度，抵消叠层与阴影带来的「发灰」 */
+  filter: saturate(1.04) contrast(1.02);
 }
 
-.snap-slide:hover .snap-image,
-.snap-slide:focus-within .snap-image {
-  transform: scale(1.04);
-}
-
-.snap-media-overlay {
-  position: absolute;
-  inset: 0;
+/* 标题条：置于图上方，不透明纯色，与图区域分离 */
+.snap-caption {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: linear-gradient(to top, color-mix(in srgb, var(--text-color) 55%, transparent) 0%, transparent 45%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.snap-slide:hover .snap-media-overlay,
-.snap-slide:focus-within .snap-media-overlay {
-  opacity: 1;
-}
-
-.snap-zoom-icon {
-  font-size: 1.5rem;
-  color: #fff;
-  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45));
-}
-
-.snap-caption {
-  display: flex;
-  align-items: baseline;
-  gap: 0.65rem;
-  padding: 0.65rem 1rem 0.85rem;
-  border-top: 1px solid var(--border-color);
-  background: color-mix(in srgb, var(--btn-bg) 65%, var(--modal-bg));
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0.32rem 0.5rem 0.34rem;
+  margin: 0;
+  border: none;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--btn-bg);
+  pointer-events: none;
 }
 
 .snap-caption-index {
+  flex-shrink: 0;
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.55rem;
   font-weight: 700;
+  letter-spacing: 0.05em;
   color: var(--primary-color);
-  opacity: 0.9;
   font-variant-numeric: tabular-nums;
+  line-height: 1.15;
 }
 
 .snap-caption-title {
-  font-family: var(--font-sans);
-  font-size: 0.92rem;
-  font-weight: 600;
-  color: var(--text-color);
-  line-height: 1.35;
   flex: 1;
   min-width: 0;
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--text-color);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Lightbox */
@@ -1118,7 +1122,7 @@ onUnmounted(() => {
 .lightbox-image {
   max-width: 100%;
   max-height: 75vh;
-  border-radius: 8px;
+  border-radius: 0;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -1196,7 +1200,9 @@ onUnmounted(() => {
 
   .header-right {
     align-self: stretch;
-    justify-content: space-between;
+    justify-content: center;
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
   }
 
   .gallery-subtitle {
@@ -1246,8 +1252,8 @@ onUnmounted(() => {
     mask-image: linear-gradient(
       to right,
       transparent 0%,
-      black 5%,
-      black 95%,
+      black 4%,
+      black 96%,
       transparent 100%
     );
   }
@@ -1257,5 +1263,12 @@ onUnmounted(() => {
   .snap-stage {
     --snap-w: min(580px, 84vw);
   }
+}
+</style>
+
+<style>
+/* 亮色：计数器数字叠在液体动画上时，减弱光晕以免发糊（暗色保持组件内原 shadow） */
+html:not(.dark) #gallery .header-counter {
+  text-shadow: 0 1px 0 rgb(255 255 255 / 0.72);
 }
 </style>

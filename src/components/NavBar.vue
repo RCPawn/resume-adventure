@@ -1,9 +1,13 @@
 <template>
-  <nav class="napkin-nav" :class="{ 'napkin-nav--rolled': navScrollCompact }">
+  <nav class="napkin-nav">
     <!-- RCPAWN Logo -->
     <div class="napkin-logo">{{ t('nav.logo') }}</div>
     <div class="napkin-nav-links">
-      <a href="javascript:void(0);" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });" class="napkin-nav-link">{{ t('nav.intro') }}</a>
+      <a
+        href="javascript:void(0);"
+        onclick="window.scrollTo({ top: 0, behavior: 'smooth' });"
+        class="napkin-nav-link"
+      >{{ t('nav.intro') }}</a>
       <a href="#projects" class="napkin-nav-link">{{ t('nav.journey') }}</a>
       <a href="#gallery" class="napkin-nav-link">{{ t('nav.works') }}</a>
       <a href="#footer" class="napkin-nav-link">{{ t('nav.contact') }}</a>
@@ -38,7 +42,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, inject, nextTick } from 'vue'
+import { onMounted, inject, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import ThemeAppearanceToggle from '@/components/ThemeAppearanceToggle.vue'
 
@@ -46,22 +50,6 @@ const { locale, t } = useI18n()
 
 /** 首页惰性挂载区块后，再滚动到 #projects 等锚点（由 HomeView provide） */
 const ensureHomeBelowFold = inject('ensureHomeBelowFold', null)
-
-/** 页面下移后关闭毛玻璃、改用略实的顶栏底，滚动更轻且仍整洁 */
-const navScrollCompact = ref(false)
-const SCROLL_COMPACT_PX = 28
-let scrollRaf = 0
-const syncNavScrollMode = () => {
-  const y = window.scrollY || document.documentElement.scrollTop || 0
-  navScrollCompact.value = y > SCROLL_COMPACT_PX
-}
-const onWindowScroll = () => {
-  if (scrollRaf) return
-  scrollRaf = requestAnimationFrame(() => {
-    scrollRaf = 0
-    syncNavScrollMode()
-  })
-}
 
 const toggleLanguage = () => {
   document.body.classList.add('language-transition')
@@ -104,67 +92,38 @@ onMounted(() => {
   document.querySelectorAll('.napkin-nav-link[href^="#"]').forEach((link) => {
     link.addEventListener('click', handleNavLinkClick)
   })
-  syncNavScrollMode()
-  window.addEventListener('scroll', onWindowScroll, { passive: true })
-})
-
-onUnmounted(() => {
-  window.removeEventListener('scroll', onWindowScroll)
-  if (scrollRaf) cancelAnimationFrame(scrollRaf)
 })
 </script>
 
 <!-- 组件内样式：导航栏布局与交互 -->
 <style scoped>
 /* =========================================
-   导航栏容器 - 毛玻璃效果
+   导航栏：固定窄边高度 + 实底层次阴影（无滚动缩放、无 backdrop-filter）
    ========================================= */
 .napkin-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /*
-   * 与 Hero / Projects / main.css 一致：默认紧凑，仅在 min-width 1600 / 1920 小幅加码，
-   * 避免用大系数 vw 在宽屏笔记本上把整条栏撑得过高。
-   */
-  --nav-pad-y: 0.5625rem;
+  --nav-pad-y: 0.375rem;
   --nav-pad-x: max(1rem, var(--page-pad-x));
   padding: var(--nav-pad-y) var(--nav-pad-x);
 
-  /* 引用半透明背景 */
-  background-color: var(--nav-bg);
-
-  /* 🔥 核心：高斯模糊，让背景看起来像磨砂玻璃 */
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-
-  /* 底部边框也需要半透明，避免太生硬 */
-  border-bottom: 1px solid var(--border-color);
+  background-color: var(--bg-color);
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--border-color) 38%, transparent);
+  /* 仅环境阴影，避免再叠一条 1px 与 border 形成「双轨线」 */
+  box-shadow: 0 4px 16px -6px color-mix(in srgb, var(--text-color) 6%, transparent);
 
   position: sticky;
   top: 0;
   z-index: 100;
   transition:
     background-color 0.38s ease,
-    backdrop-filter 0.38s ease,
-    -webkit-backdrop-filter 0.38s ease,
     border-bottom-color 0.38s ease,
     box-shadow 0.38s ease;
-  /* 独立合成层，减轻 document 滚动时与 backdrop-filter 叠加的开销（不改变样式数值） */
   transform: translateZ(0);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-}
-
-/*
- * 滚动后：去掉 backdrop-filter（大屏滚动成本主要来源），用略不透明白/暗底 + 轻阴影保持质感
- */
-.napkin-nav.napkin-nav--rolled {
-  background-color: rgba(255, 255, 255, 0.93);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  border-bottom-color: color-mix(in srgb, var(--border-color) 78%, transparent);
-  box-shadow: 0 6px 24px -18px rgba(15, 23, 42, 0.18);
 }
 
 /* =========================================
@@ -172,9 +131,9 @@ onUnmounted(() => {
    ========================================= */
 .napkin-logo {
   font-weight: 700;
-  font-size: 1.5rem;
+  font-size: 1.45rem;
   color: var(--text-color);
-  letter-spacing: -0.02em; /* 稍微紧凑一点 */
+  letter-spacing: -0.02em;
   cursor: default;
   transition: color 0.3s ease;
 }
@@ -188,7 +147,7 @@ onUnmounted(() => {
   transform: translateX(-50%);
   display: flex;
   align-items: center;
-  gap: 1.125rem;
+  gap: 1.625rem;
   /* 保证中层导航在左右两栏之上，避免偶发层叠导致「只有字能点」 */
   z-index: 1;
 }
@@ -199,29 +158,27 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  min-height: 2.25rem;
-  padding: 0.15rem 0.35rem;
+  min-height: 2.125rem;
+  padding: 0.15rem 0.4rem;
   margin: 0;
   cursor: pointer;
 
   color: var(--secondary-color); /* 默认次要颜色，不抢 Logo 风头 */
   text-decoration: none;
   font-weight: 500;
-  font-size: 0.9rem;
+  font-size: 0.925rem;
   position: relative;
   transition: color 0.2s ease;
 }
 
-/* 中间锚点：仅变色，无上移（与右侧控制钮交互一致） */
-.napkin-nav-link:not(.napkin-nav-game):hover {
+.napkin-nav-link:hover {
   color: var(--primary-color);
 }
 
-/* 「我的游戏」：主色常驻，与同排链接一样悬停不上移 */
+/* 「我的游戏」：主色常驻；左右间距由 .napkin-nav-links 的 gap 统一控制 */
 .napkin-nav-game {
   gap: 0.28rem;
-  margin-inline-start: 0.2rem;
-  padding: 0.15rem 0.32rem 0.15rem 0.22rem;
+  padding: 0.15rem 0.4rem;
   color: var(--primary-color);
   font-weight: 500;
 }
@@ -297,7 +254,7 @@ onUnmounted(() => {
 .napkin-controls {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.95rem;
 }
 
 .napkin-control-btn {
@@ -377,7 +334,7 @@ html.dark .napkin-control-btn.theme:hover {
 /* 响应式 */
 @media (max-width: 768px) {
   .napkin-nav {
-    --nav-pad-y: 0.5625rem;
+    --nav-pad-y: 0.375rem;
     --nav-pad-x: 1rem;
     padding: var(--nav-pad-y) var(--nav-pad-x);
   }
@@ -385,10 +342,6 @@ html.dark .napkin-control-btn.theme:hover {
   /* 小屏仅保留居中的「我的游戏」，其余锚点收入滚动或后续扩展 */
   .napkin-nav-link:not(.napkin-nav-game) {
     display: none;
-  }
-
-  .napkin-nav-game {
-    margin-inline-start: 0;
   }
 
   .napkin-control-btn span {
@@ -406,25 +359,25 @@ html.dark .napkin-control-btn.theme:hover {
 /* 与 main.css、HeroSection、ProjectsSection 同档断点 */
 @media (min-width: 1600px) {
   .napkin-nav {
-    --nav-pad-y: 0.6875rem;
+    --nav-pad-y: 0.4375rem;
   }
 
   .napkin-logo {
-    font-size: 1.65rem;
+    font-size: 1.58rem;
   }
 
   .napkin-nav-links {
-    gap: 1.375rem;
+    gap: 1.875rem;
   }
 
   .napkin-nav-link {
     font-size: 0.95rem;
-    min-height: 2.375rem;
-    padding: 0.2rem 0.4rem;
+    min-height: 2.25rem;
+    padding: 0.18rem 0.42rem;
   }
 
   .napkin-nav-game {
-    padding: 0.2rem 0.42rem 0.2rem 0.3rem;
+    padding: 0.18rem 0.42rem;
     gap: 0.3rem;
   }
 
@@ -438,7 +391,7 @@ html.dark .napkin-control-btn.theme:hover {
   }
 
   .napkin-controls {
-    gap: 1rem;
+    gap: 1.1rem;
   }
 
   .napkin-control-btn {
@@ -460,27 +413,26 @@ html.dark .napkin-control-btn.theme:hover {
 }
 
 @media (min-width: 1920px) {
-  .napkin-nav:not(.napkin-nav--rolled) {
-    --nav-pad-y: 0.75rem;
-    /* 略减 blur 半径；与 main.css 同步提高 --nav-bg 不透明度，观感几乎不变 */
-    backdrop-filter: blur(9px);
-    -webkit-backdrop-filter: blur(9px);
-  }
-
-  .napkin-nav.napkin-nav--rolled {
-    --nav-pad-y: 0.75rem;
+  .napkin-nav {
+    --nav-pad-y: 0.5rem;
   }
 
   .napkin-logo {
-    font-size: 1.8rem;
+    font-size: 1.72rem;
   }
 
   .napkin-nav-links {
-    gap: 1.5rem;
+    gap: 2rem;
+  }
+
+  .napkin-nav-link {
+    font-size: 0.97rem;
+    min-height: 2.3125rem;
+    padding: 0.2rem 0.44rem;
   }
 
   .napkin-nav-game {
-    padding: 0.2rem 0.45rem 0.2rem 0.32rem;
+    padding: 0.2rem 0.44rem;
     gap: 0.32rem;
   }
 
@@ -494,7 +446,7 @@ html.dark .napkin-control-btn.theme:hover {
   }
 
   .napkin-controls {
-    gap: 1.125rem;
+    gap: 1.2rem;
   }
 
   .napkin-control-btn {
@@ -517,31 +469,25 @@ html.dark .napkin-control-btn.theme:hover {
 <style>
 /* 与顶栏实际高度同档，供 #footer 等 scroll-margin（阶梯与上文断点一致） */
 html {
-  /* 与链接 min-height + 竖向 padding 对齐，供锚点 scroll-margin */
-  --layout-navbar-height: 56px;
+  --layout-navbar-height: 52px;
 }
 
 @media (min-width: 1600px) {
   html {
-    --layout-navbar-height: 58px;
+    --layout-navbar-height: 54px;
   }
 }
 
 @media (min-width: 1920px) {
   html {
-    --layout-navbar-height: 64px;
+    --layout-navbar-height: 56px;
   }
 }
 
-/* 深色：底边改浅灰半透明，避免与 body 背景形成「黑细缝」 */
+/* 深色：弱化底部分割线，不留第二条发丝投影 */
 html.dark .napkin-nav {
-  border-bottom-color: rgba(148, 163, 184, 0.16);
-}
-
-/* 深色：滚动压实顶栏底（scoped 外，需挂 html.dark） */
-html.dark .napkin-nav.napkin-nav--rolled {
-  background-color: rgba(28, 28, 30, 0.94);
-  border-bottom-color: rgba(148, 163, 184, 0.2);
-  box-shadow: 0 10px 36px -14px rgba(0, 0, 0, 0.62);
+  background-color: var(--bg-color);
+  border-bottom-color: color-mix(in srgb, var(--border-color) 22%, transparent);
+  box-shadow: 0 10px 26px -14px rgba(0, 0, 0, 0.38);
 }
 </style>

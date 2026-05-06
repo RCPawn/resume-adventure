@@ -77,7 +77,6 @@ export default {
         viewDetails: 'View Details',
         dateUnknown: 'Date TBD',
         dateCaption: 'Created',
-        indexHint: 'Use the index on the left to jump to a card',
         indexRailAria: 'Learning trail card index',
         /** Short rail labels; keys match projects.json id */
         indexLabels: {

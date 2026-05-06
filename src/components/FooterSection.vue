@@ -290,20 +290,21 @@ defineExpose({
   --footer-serif: var(--font-serif);
   --footer-sans: var(--font-sans);
   --footer-pad-x: clamp(1rem, 3.5vw, 1.75rem);
-  --footer-pad-top: clamp(0.75rem, 1.6vw, 1.25rem);
+  --footer-pad-top: clamp(0.5rem, 1.05vw, 0.95rem);
   --footer-pad-bottom: max(0.65rem, env(safe-area-inset-bottom, 0px));
   --footer-max: min(72rem, 96vw);
   --footer-section-gap: clamp(1rem, 2.2vw, 1.65rem);
   --footer-ctrl-h: 2.25rem;
+  /* 与顶栏一致底，顶边与底栏内分割共用弱对比线 */
+  --footer-sep: color-mix(in srgb, var(--border-color) 36%, transparent);
 
   position: relative;
   scroll-margin-top: calc(var(--layout-navbar-height, 72px) + 12px);
   padding: var(--footer-pad-top) var(--footer-pad-x) var(--footer-pad-bottom);
   font-family: var(--footer-sans);
   color: var(--text-color);
-  border-top: 1px solid var(--border-color);
-  /* 与卡片/面板一致，纯色底，无渐变叠层 */
-  background-color: var(--modal-bg);
+  border-top: 1px solid var(--footer-sep);
+  background-color: var(--bg-color);
 }
 
 .footer-inner {
@@ -614,8 +615,9 @@ defineExpose({
 }
 
 /* 底栏：单行三列 — 版权 | 统计 | 署名，节省纵向空间 */
+/* 底栏元信息上沿：与主顶边同一套弱分割 */
 .footer-bottom-wrap {
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid var(--footer-sep, color-mix(in srgb, var(--border-color) 36%, transparent));
   padding-top: clamp(0.45rem, 1vw, 0.65rem);
   padding-bottom: 0;
 }
@@ -827,7 +829,7 @@ defineExpose({
 
 @media (min-width: 1440px) {
   .footer-section {
-    --footer-pad-top: clamp(0.85rem, 1.5vw, 1.35rem);
+    --footer-pad-top: clamp(0.55rem, 1vw, 1rem);
   }
 
   .footer-container {
@@ -839,5 +841,12 @@ defineExpose({
   .footer-section {
     --footer-max: min(76rem, 94vw);
   }
+}
+</style>
+
+<style>
+/* 暗色：顶栏/大底边/元信息线统一更弱，避免高对比「硬线」 */
+html.dark .footer-section {
+  --footer-sep: color-mix(in srgb, var(--border-color) 18%, transparent);
 }
 </style>

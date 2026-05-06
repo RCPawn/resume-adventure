@@ -11,7 +11,6 @@
               <p class="subtitle">{{ t('projects.subtitle') }}</p>
             </div>
 
-            <p class="index-hint" aria-hidden="true">{{ t('projects.indexHint') }}</p>
             <nav class="scroll-indicator" :aria-label="t('projects.indexRailAria')">
               <div
                   v-for="(p, i) in projects"
@@ -41,6 +40,7 @@
               :key="project.id || project.nameKey || index"
               class="project-node"
               :data-index="index"
+              :data-project-id="project.id || ''"
               @click="handleProjectClick(project)"
           >
             <div class="node-background">
@@ -73,7 +73,18 @@
                   </div>
                   <div class="detail-link">
                     <span class="link-text">{{ t('projects.viewDetails') }}</span>
-                    <span class="link-arrow" aria-hidden="true"></span>
+                    <span class="link-arrow" aria-hidden="true">
+                      <svg class="link-arrow-svg" viewBox="0 0 14 10" width="14" height="10" focusable="false">
+                        <path
+                          d="M1 5h7M8 2.35L12.65 5 8 7.65"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.75"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -93,6 +104,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import projectsData from '@/data/projects.json';
 import WeatherModal from '@/components/WeatherModel.vue';
+import { stashHomeScrollForProjectReturn } from '@/utils/homeScrollRestore.js';
 
 const { t, te } = useI18n();
 const router = useRouter();
@@ -223,17 +235,31 @@ onUnmounted(() => {
   if (scrollSyncRaf) cancelAnimationFrame(scrollSyncRaf);
 });
 
+const projectReturnId = (p) => {
+  if (p.id != null && String(p.id).trim()) return String(p.id).trim();
+  const link = p.link;
+  if (typeof link !== 'string') return '';
+  const m = link.match(/^\/project\/([^/?#]+)/);
+  return m ? decodeURIComponent(m[1]) : '';
+};
+
 const handleProjectClick = (p) => {
   if (p.link === '/weather') showWeatherModal.value = true;
-  else if (p.link) router.push(p.link);
+  else if (p.link) {
+    if (typeof p.link === 'string' && p.link.startsWith('/project/')) {
+      const rid = projectReturnId(p);
+      if (rid) stashHomeScrollForProjectReturn(rid);
+    }
+    router.push(p.link);
+  }
 };
 const closeWeatherModal = () => { showWeatherModal.value = false; };
 </script>
 
 <style scoped>
 .projects-wrapper {
-  /* 顶距 120 → 80，与 Hero 垂直居中后的底部留白衔接更自然，不再产生大空洞 */
-  padding: 80px 0 100px 0;
+  /* 略加大区块间距，与各 Section 呼吸感对齐 */
+  padding: 96px 0 112px 0;
 }
 
 /*
@@ -279,20 +305,11 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
   margin-bottom: 0.75rem;
 }
 
-.index-hint {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  color: var(--secondary-color);
-  opacity: 0.85;
-  line-height: 1.45;
-  margin: 0 0 1.25rem;
-  max-width: 100%;
-}
-
 .scroll-indicator {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  margin-top: 0.35rem;
   border-left: 1px solid var(--border-color);
   padding-left: 20px;
   max-height: calc(100vh - 15rem);
@@ -314,11 +331,16 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
 .indicator-dot {
   font-size: 0.7rem;
   font-family: var(--font-mono);
-  color: var(--secondary-color);
-  opacity: 0.3;
-  transition: opacity 0.25s ease, transform 0.25s ease, color 0.25s ease;
+  /* 亮色下避免过浅：用正文色混合次要色，取消整体低 opacity 叠淡 */
+  color: color-mix(in srgb, var(--text-color) 52%, var(--secondary-color));
+  opacity: 1;
+  transition: color 0.2s ease, transform 0.25s ease;
   cursor: pointer;
   user-select: none;
+}
+
+html.dark .indicator-dot {
+  color: color-mix(in srgb, var(--text-color) 38%, var(--secondary-color));
 }
 
 .indicator-dot-inner {
@@ -337,7 +359,7 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
   font-size: 0.62rem;
   font-family: var(--font-mono);
   letter-spacing: 0.08em;
-  opacity: 0.85;
+  opacity: 0.92;
 }
 
 .index-rail-short {
@@ -352,7 +374,17 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
 }
 
 .indicator-dot:not(.active):hover {
-  opacity: 0.55;
+  color: color-mix(in srgb, var(--text-color) 62%, var(--secondary-color));
+}
+
+html.dark .indicator-dot:not(.active):hover {
+  color: color-mix(in srgb, var(--text-color) 48%, var(--secondary-color));
+}
+
+/* 暗色下 html.dark .indicator-dot 会盖过 .indicator-dot.active，须单独拉回主色 */
+html.dark .indicator-dot.active {
+  color: var(--primary-color);
+  text-shadow: 0 0 14px rgba(var(--primary-color-rgb), 0.32);
 }
 
 .indicator-dot:focus-visible {
@@ -376,7 +408,7 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
   gap: 60px;
 }
 
-/* ========== 核心优化：图片显示+底部阴影 ========== */
+/* ========== 学习足迹卡片：悬停边框主色倾向 + 轻阴影，封面层轻微放大（与作品影像 snap-card 一致） ========== */
 .project-node {
   position: relative;
   min-height: 480px;
@@ -386,42 +418,41 @@ const closeWeatherModal = () => { showWeatherModal.value = false; };
   cursor: pointer;
   display: flex;
   align-items: flex-end;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
   transform: none;
   box-shadow: var(--hover-shadow);
-  border-radius: 12px;
+  border-radius: 0;
   scroll-margin-top: 5.5rem;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
-.project-node:hover {
-  transform: translateY(-4px);
-  border-color: color-mix(in srgb, var(--border-color) 65%, var(--primary-color) 35%);
+.project-node:hover,
+.project-node:focus-within {
+  border-color: color-mix(in srgb, var(--primary-color) 35%, var(--border-color));
   box-shadow:
-    0 16px 48px -20px rgba(15, 23, 42, 0.18),
-    0 0 0 1px color-mix(in srgb, var(--border-color) 90%, var(--primary-color) 10%);
+    0 6px 12px -3px color-mix(in srgb, var(--text-color) 11%, transparent),
+    0 22px 44px -20px color-mix(in srgb, var(--primary-color) 16%, transparent);
 }
 
-html.dark .project-node:hover {
-  box-shadow:
-    0 20px 50px -24px rgba(0, 0, 0, 0.55),
-    0 0 0 1px color-mix(in srgb, var(--border-color) 75%, var(--primary-color) 25%);
-}
-
-/* 修复图片放大导致不完整：取消缩放，保持完整显示 */
+/* 封面层：裁切区内微缩放，外框与占位不变 */
 .node-background {
   position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 1;
+  transform-origin: center center;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.project-node:hover .node-background {
+  transform: scale(1.008);
 }
 .bg-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
-  opacity: 1;
-  transition: opacity 0.45s ease;
-}
-.project-node:hover .bg-image {
   opacity: 1;
 }
 
@@ -454,16 +485,6 @@ html.dark .project-node:hover {
     transparent 0%,
     rgba(0, 0, 0, 0.35) 18%,
     rgba(0, 0, 0, 0.72) 100%
-  );
-  transition: background 0.3s ease;
-}
-
-.project-node:hover .node-content-glass {
-  background: linear-gradient(
-    180deg,
-    transparent 0%,
-    rgba(0, 0, 0, 0.42) 18%,
-    rgba(0, 0, 0, 0.78) 100%
   );
 }
 
@@ -570,15 +591,10 @@ html.dark .project-node:hover {
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 
-.project-node:hover .p-tag {
-  background: rgba(var(--primary-color-rgb), 0.18);
-  border-color: rgba(var(--primary-color-rgb), 0.32);
-}
-
 .detail-link {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   color: var(--primary-color);
   font-family: var(--font-mono);
   font-weight: 600;
@@ -587,28 +603,17 @@ html.dark .project-node:hover {
 }
 
 .link-arrow {
-  width: 14px;
-  height: 2px;
-  background: var(--primary-color);
-  position: relative;
-  transition: width 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  color: inherit;
+  opacity: 0.92;
 }
 
-.link-arrow::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  top: -3px;
-  width: 6px;
-  height: 6px;
-  border-top: 2px solid var(--primary-color);
-  border-right: 2px solid var(--primary-color);
-  transform: rotate(45deg);
-}
-
-.project-node:hover .link-arrow {
-  width: 20px;
+.link-arrow-svg {
+  display: block;
+  vertical-align: middle;
 }
 
 /* 响应式：完全保留 */
@@ -618,7 +623,7 @@ html.dark .project-node:hover {
   .index-bus, .data-stream { width: 100%; }
   .sticky-content { position: relative; top: 0; margin-bottom: 40px; }
   .project-node { transform: none; }
-  .project-node:hover { transform: translateY(-4px); }
+  .project-node:hover { transform: none; }
 
   .scroll-indicator {
     flex-direction: row;
@@ -650,7 +655,25 @@ html.dark .project-node:hover {
   }
 
   .indicator-dot.active {
-    transform: translateY(-2px);
+    transform: translateX(3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-node {
+    transition: none;
+  }
+  .node-background {
+    transition: none;
+  }
+  .project-node:hover .node-background {
+    transform: none;
+  }
+  .indicator-dot {
+    transition: color 0.15s ease;
+  }
+  .indicator-dot.active {
+    transform: none;
   }
 }
 

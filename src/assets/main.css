@@ -5,19 +5,18 @@
    ========================================= */
 :root {
     color-scheme: light;
-    /* --- ☀️ 亮色模式 --- */
+    /* --- ☀️ 亮色模式（次要字与边框略加深，避免在白底上发灰、发糊） --- */
     --bg-color: #ffffff;
     --nav-bg: rgba(255, 255, 255, 0.75);
     --modal-bg: #ffffff;
-    --btn-bg: #f3f4f6;
-    --text-color: #1f2937;
-    --secondary-color: #6b7280;
+    --btn-bg: #f1f5f9;
+    --text-color: #111827;
+    --secondary-color: #4b5563;
     --primary-color: #3b82f6;
     --primary-color-rgb: 59, 130, 246;
-    --border-color: #e5e7eb;
+    --border-color: #d1d5db;
     --hover-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --icon-color: #374151;
-    --grid-line: rgba(0, 0, 0, 0.04);
+    --icon-color: #4b5563;
 
     /* 主内容区宽度与水平内边距（Hero / Projects 等共用，与顶栏独立） */
     --page-max-width: 1100px;
@@ -58,7 +57,6 @@ html.dark {
     --border-color: #374151;
     --hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
     --icon-color: #d1d5db;
-    --grid-line: rgba(255, 255, 255, 0.05);
 
     --page-max-width: 1100px;
     --page-max-width-lg: 1300px;
@@ -123,13 +121,17 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
     font-family: var(--font-sans);
     font-optical-sizing: auto;
+    font-size: 15px;
+    line-height: 1.6;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
 
-    /* 网格背景 */
-    background-image:
-            linear-gradient(var(--grid-line) 1px, transparent 1px),
-            linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-    background-size: 30px 30px;
-    background-position: center top;
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
 }
 
 /* 滚动条美化 */

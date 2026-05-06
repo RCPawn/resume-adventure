@@ -1,9 +1,7 @@
 <template>
   <section ref="heroRootRef" class="hero-section">
     <!-- 背景纹理保持不变 -->
-    <div class="paper-texture">
-      <div class="grid-lines"></div>
-    </div>
+    <div class="paper-texture"></div>
 
     <!-- 首屏占满视口高度，主内容与箭头之间用 flex 分配留白（箭头贴近一屏下沿、不压在内容下也不悬空） -->
     <div class="hero-shell">
@@ -57,6 +55,7 @@
                disable-zoom / disable-pan / interaction-prompt="none": 交互与提示见下行属性。
             -->
             <model-viewer
+                :key="heroModelViewerKey"
                 src="/models/mystery_shack.glb"
                 alt="Mystery Shack 3D Model"
                 loading="eager"
@@ -105,7 +104,7 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted, onUnmounted } from 'vue';
+import { computed, ref, onMounted, onUnmounted, onActivated, onDeactivated, nextTick } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { CodeBracketSquareIcon, CloudIcon, CubeTransparentIcon } from '@heroicons/vue/24/outline';
 
@@ -113,14 +112,24 @@ const { t, tm } = useI18n();
 
 /** 首屏滚走后暂停自转，显著减轻大屏 WebGL 压力；回到视口自动恢复（观感不变） */
 const heroRootRef = ref(null);
+/** 父级 keep-alive 隐藏再显示时，部分浏览器会丢 WebGL 合成；返回首页时 bump key 强制重建 model-viewer */
+const heroModelViewerKey = ref(0);
+let heroResumeRemountModel = false;
+
 const prefersReducedMotion =
     typeof window !== 'undefined' &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const heroAutoRotate = ref(!prefersReducedMotion);
 let heroIo = null;
 
-onMounted(() => {
+function teardownHeroIntersection() {
+  heroIo?.disconnect();
+  heroIo = null;
+}
+
+function setupHeroIntersection() {
   if (prefersReducedMotion || typeof IntersectionObserver === 'undefined') return;
+  teardownHeroIntersection();
   const el = heroRootRef.value;
   if (!el) return;
   heroIo = new IntersectionObserver(
@@ -131,11 +140,28 @@ onMounted(() => {
       { threshold: [0, 0.06, 0.12, 0.25] }
   );
   heroIo.observe(el);
+}
+
+onMounted(() => {
+  setupHeroIntersection();
 });
 
 onUnmounted(() => {
-  heroIo?.disconnect();
-  heroIo = null;
+  teardownHeroIntersection();
+});
+
+onDeactivated(() => {
+  teardownHeroIntersection();
+  heroResumeRemountModel = true;
+});
+
+onActivated(async () => {
+  if (heroResumeRemountModel) {
+    heroResumeRemountModel = false;
+    heroModelViewerKey.value += 1;
+    await nextTick();
+  }
+  setupHeroIntersection();
 });
 
 const professionIconMap = {

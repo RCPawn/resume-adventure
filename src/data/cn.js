@@ -72,7 +72,6 @@ export default {
         viewDetails: '查看详情',
         dateUnknown: '日期待定',
         dateCaption: '创建时间',
-        indexHint: '点击左侧目录可快速定位到对应卡片',
         indexRailAria: '学习足迹卡片索引',
         /** 与 projects.json 每条 id 对应，左侧目录短标题 */
         indexLabels: {
