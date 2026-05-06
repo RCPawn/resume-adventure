@@ -1,7 +1,7 @@
 <template>
-  <div class="page-container">
+  <div ref="pageContainerRef" class="page-container">
     <!-- 全宽功能条：返回、技术栈、统计与外链同一视觉轨道，避免「多个小组件」堆叠感 -->
-    <header class="action-bar">
+    <header ref="actionBarRef" class="action-bar">
       <div class="action-bar__inner">
         <div class="action-bar__cluster action-bar__cluster--grow">
           <div class="action-bar__nav">
@@ -59,11 +59,9 @@
         加载精彩内容中...
       </div>
       <div v-else-if="error" class="error-state">😕 {{ error }}</div>
-      <div v-else class="content-flex" :class="{ 'doc-layout--with-toc': toc.length > 0 }">
-        <aside v-if="toc.length" class="toc" :class="{ 'toc-hidden': isTocHidden }">
-          <!-- 仅用于与正文上内边距对齐；滚走后可避免整块 aside 吸顶时顶部大块留白 -->
-          <div class="toc-top-spacer" aria-hidden="true" />
-          <div class="toc-sticky">
+      <div v-else class="doc-layout" :class="{ 'doc-layout--with-toc': toc.length > 0 }">
+        <aside v-if="toc.length" ref="tocAsideRef" class="doc-layout__aside toc" :class="{ 'toc-hidden': isTocHidden }">
+          <div class="doc-toc">
             <div class="toc-header" @click="toggleToc" role="button" tabindex="0" @keydown.enter="toggleToc">
               <div class="toc-title">
                 <svg class="toc-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
@@ -79,13 +77,15 @@
                 </span>
               </button>
             </div>
-            <nav class="toc-list" v-if="!isTocHidden">
-              <ul>
-                <li v-for="item in toc" :key="item.slug" :class="`level-${item.level}`">
-                  <a :href="`#${item.slug}`" @click.prevent="scrollToId(item.slug)">{{ item.title }}</a>
-                </li>
-              </ul>
-            </nav>
+            <div v-if="!isTocHidden" class="toc-scroll">
+              <nav class="toc-list">
+                <ul>
+                  <li v-for="item in toc" :key="item.slug" :class="`level-${item.level}`">
+                    <a :href="`#${item.slug}`" @click.prevent="scrollToId(item.slug)">{{ item.title }}</a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
           </div>
         </aside>
         <main class="markdown-column markdown-body" v-html="htmlContent" />
@@ -95,7 +95,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch, nextTick } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import MarkdownIt from 'markdown-it'
 import mermaid from 'mermaid'
@@ -157,6 +157,49 @@ const htmlContent = ref('')
 const toc = ref([])
 const isTocHidden = ref(false)
 const currentProject = computed(() => projectsData.find(p => p.id === route.params.id))
+
+/** 顶栏实测高度 → --action-bar-actual；侧栏列占位 → 目录 position:fixed 的 left/width（桌面端消除 sticky 抖动） */
+const pageContainerRef = ref(null)
+const actionBarRef = ref(null)
+const tocAsideRef = ref(null)
+let actionBarResizeObserver = null
+let tocAsideResizeObserver = null
+let winResizeHandler = null
+
+const syncActionBarMetrics = () => {
+  const root = pageContainerRef.value
+  const bar = actionBarRef.value
+  if (!root || !bar || typeof bar.offsetHeight !== 'number') return
+  root.style.setProperty('--action-bar-actual', `${bar.offsetHeight}px`)
+}
+
+/** 桌面：目录固定于视口，left/width 与 Grid 侧栏列对齐；窄屏清除变量恢复流式布局 */
+const syncTocFixedPanel = () => {
+  const root = pageContainerRef.value
+  const aside = tocAsideRef.value
+  if (!root || typeof window === 'undefined') return
+  if (!aside || window.innerWidth <= 768) {
+    root.style.removeProperty('--toc-fixed-left')
+    root.style.removeProperty('--toc-fixed-width')
+    return
+  }
+  const r = aside.getBoundingClientRect()
+  root.style.setProperty('--toc-fixed-left', `${Math.round(r.left)}px`)
+  root.style.setProperty('--toc-fixed-width', `${Math.round(r.width)}px`)
+}
+
+const reconnectTocAsideObserver = () => {
+  if (tocAsideResizeObserver) {
+    tocAsideResizeObserver.disconnect()
+    tocAsideResizeObserver = null
+  }
+  const el = tocAsideRef.value
+  if (!el || typeof ResizeObserver === 'undefined') return
+  tocAsideResizeObserver = new ResizeObserver(() => {
+    syncTocFixedPanel()
+  })
+  tocAsideResizeObserver.observe(el)
+}
 
 const scrollToId = (id) => {
   const el = document.getElementById(id)
@@ -341,23 +384,83 @@ onMounted(async () => {
   }
   if (typeof window !== 'undefined' && window.innerWidth <= 768) isTocHidden.value = true
 
+  await nextTick()
+  syncActionBarMetrics()
+  if (typeof window !== 'undefined' && actionBarRef.value && typeof ResizeObserver !== 'undefined') {
+    actionBarResizeObserver = new ResizeObserver(() => {
+      syncActionBarMetrics()
+      syncTocFixedPanel()
+    })
+    actionBarResizeObserver.observe(actionBarRef.value)
+  }
+  if (typeof window !== 'undefined' && !winResizeHandler) {
+    winResizeHandler = () => {
+      syncActionBarMetrics()
+      syncTocFixedPanel()
+    }
+    window.addEventListener('resize', winResizeHandler, { passive: true })
+  }
+
   await fetchMarkdown()
+
+  await nextTick()
+  syncActionBarMetrics()
+  syncTocFixedPanel()
+  reconnectTocAsideObserver()
+})
+
+onUnmounted(() => {
+  if (actionBarResizeObserver && actionBarRef.value) {
+    try {
+      actionBarResizeObserver.unobserve(actionBarRef.value)
+    } catch {
+      /* noop */
+    }
+    actionBarResizeObserver.disconnect()
+    actionBarResizeObserver = null
+  }
+  if (tocAsideResizeObserver) {
+    tocAsideResizeObserver.disconnect()
+    tocAsideResizeObserver = null
+  }
+  if (typeof window !== 'undefined' && winResizeHandler) {
+    window.removeEventListener('resize', winResizeHandler)
+    winResizeHandler = null
+  }
+  const root = pageContainerRef.value
+  if (root) {
+    root.style.removeProperty('--toc-fixed-left')
+    root.style.removeProperty('--toc-fixed-width')
+  }
 })
 
 watch(
-    () => route.params.id,
-    () => {
-      fetchMarkdown()
-    }
+  () => route.params.id,
+  () => {
+    fetchMarkdown()
+  }
 )
+
+watch(toc, async () => {
+  await nextTick()
+  syncTocFixedPanel()
+  reconnectTocAsideObserver()
+})
 
 watch(htmlContent, async () => {
   await renderMermaidDiagrams()
+  await nextTick()
+  syncActionBarMetrics()
+  syncTocFixedPanel()
+  reconnectTocAsideObserver()
 })
 
-watch(isDarkMode, () => {
+watch(isDarkMode, async () => {
   if (!mdSourceText.value || loading.value) return
   htmlContent.value = md.render(mdSourceText.value)
+  await nextTick()
+  syncActionBarMetrics()
+  syncTocFixedPanel()
 })
 </script>
 
@@ -371,15 +474,21 @@ watch(isDarkMode, () => {
   --page-pad-x: clamp(16px, 2.5vw, 32px);
   --section-gap: clamp(12px, 2vw, 24px);
   --action-bar-h: 52px;
+  /* fixed 顶栏占位：优先 JS 写入的 --action-bar-actual，避免恒等 52px 与真实高度不符 */
+  padding-top: calc(var(--action-bar-actual, var(--action-bar-h)) + env(safe-area-inset-top, 0px));
   min-height: 100vh;
   min-height: 100dvh;
   background-color: var(--bg-color);
+  /* 减轻 Chrome 滚动锚定与异步内容导致的视口微跳（不影响目录 sticky 计算） */
+  overflow-anchor: none;
 }
 
-/* ---------- 全宽功能条：单轨、弱分隔、无「小药丸边框」堆叠 ---------- */
+/* ---------- 全宽功能条：fixed；正文区目录桌面端亦为 fixed（见 .doc-toc） ---------- */
 .action-bar {
-  position: sticky;
-  top: 0;
+  position: fixed;
+  top: env(safe-area-inset-top, 0px);
+  left: 0;
+  right: 0;
   z-index: 30;
   width: 100%;
   box-sizing: border-box;
@@ -391,9 +500,6 @@ watch(isDarkMode, () => {
   border-bottom: 1px solid color-mix(in srgb, var(--border-color) 45%, transparent);
   backdrop-filter: saturate(140%) blur(10px);
   -webkit-backdrop-filter: saturate(140%) blur(10px);
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
 }
 
 @media (min-width: 1920px) {
@@ -599,32 +705,34 @@ html.dark .action-bar__nav :deep(.back-btn.back-btn--ghost:hover) {
   width: 100%;
   max-width: var(--content-max);
   margin: 0 auto;
-  padding: clamp(12px, 2vw, 24px) var(--page-pad-x) clamp(32px, 5vh, 56px);
+  /* 与顶栏留出一线间距；正文/目录对齐仍靠 --doc-top-pad */
+  padding: clamp(8px, 1vw, 14px) var(--page-pad-x) clamp(32px, 5vh, 56px);
   box-sizing: border-box;
 }
 
 /* 正文区：无卡片描边，与页面背景一体 */
-.content-flex {
+.doc-layout {
   display: flex;
   gap: clamp(20px, 2.5vw, 36px);
   align-items: flex-start;
 }
 
-.content-flex.doc-layout--with-toc {
+.doc-layout.doc-layout--with-toc {
+  display: grid;
+  grid-template-columns: min(248px, 24vw) minmax(0, 1fr);
   gap: clamp(16px, 2.2vw, 32px);
   align-items: stretch;
   background: transparent;
   border: none;
   border-radius: 0;
   box-shadow: none;
-  --doc-top-pad: clamp(28px, 3.5vw, 48px);
+  /* 正文顶内边距与目录 .toc-header 顶内边距同源 */
+  --doc-top-pad: clamp(10px, 1.35vw, 18px);
   --doc-bottom-pad: clamp(36px, 4.5vw, 56px);
   --doc-main-pad-x: clamp(20px, 3vw, 48px);
   --doc-toc-pad-start: clamp(16px, 2vw, 24px);
   --doc-toc-pad-end: clamp(12px, 1.5vw, 18px);
-  --doc-sticky-top: calc(var(--action-bar-h, 52px) + 10px);
-  overflow-x: clip;
-  overflow-y: visible;
+  --doc-sticky-top: calc(var(--action-bar-actual, var(--action-bar-h)) + env(safe-area-inset-top, 0px) + 8px);
 }
 
 /* Markdown 主列：v-html 直接挂在本节点，无额外 wrapper */
@@ -636,69 +744,54 @@ html.dark .action-bar__nav :deep(.back-btn.back-btn--ghost:hover) {
   box-sizing: border-box;
 }
 
-.content-flex.doc-layout--with-toc .markdown-column.markdown-body {
-  flex: 1 1 min(0, 100%);
+.doc-layout.doc-layout--with-toc .markdown-column.markdown-body {
+  min-width: 0;
   padding: var(--doc-top-pad) var(--doc-main-pad-x) var(--doc-bottom-pad);
+  overflow-anchor: none;
 }
 
-.content-flex:not(.doc-layout--with-toc) .markdown-column.markdown-body {
+.doc-layout:not(.doc-layout--with-toc) .markdown-column.markdown-body {
   width: 100%;
   padding: 0 0 clamp(20px, 3vh, 40px);
 }
 
-/* TOC 侧边栏：与正文同属一块面板 */
-.toc {
-  width: 248px;
-  flex: 0 0 248px;
-  position: sticky;
-  align-self: flex-start;
-  top: 88px;
-  max-height: min(calc(100vh - 100px), calc(100dvh - 100px));
+/* 侧栏列仅占宽占位（Grid 第一轨）；桌面端目录 .doc-toc 为 position:fixed，left/width 由 JS 对齐本列 */
+.doc-layout.doc-layout--with-toc .doc-layout__aside {
+  position: static;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  overflow: visible;
+}
+
+/*
+ * 桌面：fixed 贴视口，避免 sticky 与整页滚动合成抖动；超长目录由内部 .toc-scroll 滚动。
+ * left/width：--toc-fixed-*（syncTocFixedPanel）；top：与顶栏留白一致。
+ */
+.doc-layout.doc-layout--with-toc .doc-toc {
+  position: fixed;
+  z-index: 11;
+  top: var(--doc-sticky-top);
+  left: var(--toc-fixed-left, 0px);
+  width: var(--toc-fixed-width, min(248px, 24vw));
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding: 0 var(--doc-toc-pad-end) clamp(20px, 3vh, 36px) var(--doc-toc-pad-start);
+  max-height: calc(100dvh - var(--doc-sticky-top) - max(12px, env(safe-area-inset-bottom, 0px)));
+  overflow: hidden;
+}
+
+.doc-layout.doc-layout--with-toc .toc-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-gutter: stable;
-  background: transparent;
-  border-radius: 12px;
-  padding: 12px;
-  box-sizing: border-box;
-  transition: opacity .2s ease;
-}
-
-.content-flex.doc-layout--with-toc .toc {
-  position: static;
-  top: auto;
-  align-self: stretch;
-  display: flex;
-  flex-direction: column;
-  max-height: none;
-  height: auto;
-  overflow: visible;
-  overflow-x: visible;
-  overscroll-behavior: auto;
-  scrollbar-gutter: auto;
-  width: min(248px, 24vw);
-  flex: 0 0 min(248px, 24vw);
-  padding: 0;
-  border-radius: 0;
-  background: transparent;
-  border-right: none;
-  box-shadow: none;
-}
-
-.content-flex.doc-layout--with-toc .toc-top-spacer {
-  flex-shrink: 0;
-  height: var(--doc-top-pad);
-  pointer-events: none;
-}
-
-.content-flex.doc-layout--with-toc .toc-sticky {
-  position: sticky;
-  top: var(--doc-sticky-top);
-  flex-shrink: 0;
-  /* 底留白略小于正文区，避免目录较短时在链接下方出现大块「空垫」 */
-  padding: 10px var(--doc-toc-pad-end) clamp(20px, 3vh, 36px) var(--doc-toc-pad-start);
-  box-sizing: border-box;
 }
 
 .toc.toc-hidden {
@@ -706,12 +799,13 @@ html.dark .action-bar__nav :deep(.back-btn.back-btn--ghost:hover) {
 }
 
 /* 目录顶栏：扁平文案 + 细分隔线，不再套一层「卡片」 */
-.content-flex.doc-layout--with-toc .toc-header {
+.doc-layout.doc-layout--with-toc .toc-header {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 0 0 12px;
+  padding: var(--doc-top-pad) 0 12px;
   margin: 0 0 4px;
   cursor: pointer;
   border-radius: 0;
@@ -721,18 +815,18 @@ html.dark .action-bar__nav :deep(.back-btn.back-btn--ghost:hover) {
   transition: border-color 0.15s ease;
 }
 
-.content-flex.doc-layout--with-toc .toc-header:hover {
+.doc-layout.doc-layout--with-toc .toc-header:hover {
   background: none;
   border-bottom-color: color-mix(in srgb, var(--border-color) 72%, transparent);
 }
 
 @supports not (color: color-mix(in srgb, red, blue)) {
-  .content-flex.doc-layout--with-toc .toc-header {
+  .doc-layout.doc-layout--with-toc .toc-header {
     border-bottom-color: var(--border-color);
   }
 }
 
-.content-flex.doc-layout--with-toc .toc-title {
+.doc-layout.doc-layout--with-toc .toc-title {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -743,12 +837,12 @@ html.dark .action-bar__nav :deep(.back-btn.back-btn--ghost:hover) {
   color: var(--secondary-color);
 }
 
-.content-flex.doc-layout--with-toc .toc-title strong {
+.doc-layout.doc-layout--with-toc .toc-title strong {
   font-weight: 600;
   color: inherit;
 }
 
-.content-flex.doc-layout--with-toc .toc-icon {
+.doc-layout.doc-layout--with-toc .toc-icon {
   flex-shrink: 0;
   width: 16px;
   height: 16px;
@@ -757,7 +851,7 @@ html.dark .action-bar__nav :deep(.back-btn.back-btn--ghost:hover) {
 }
 
 /* 折叠：图标级幽灵按钮，弱化「又一个方块组件」 */
-.content-flex.doc-layout--with-toc .toc-toggle {
+.doc-layout.doc-layout--with-toc .toc-toggle {
   background: transparent;
   border: none;
   border-radius: 6px;
@@ -770,18 +864,18 @@ html.dark .action-bar__nav :deep(.back-btn.back-btn--ghost:hover) {
   transition: background 0.15s ease, color 0.15s ease, opacity 0.15s ease;
 }
 
-.content-flex.doc-layout--with-toc .toc-toggle:hover {
+.doc-layout.doc-layout--with-toc .toc-toggle:hover {
   opacity: 1;
   color: var(--text-color);
   background: color-mix(in srgb, var(--text-color) 6%, transparent);
 }
 
 @supports not (background: color-mix(in srgb, red, blue)) {
-  .content-flex.doc-layout--with-toc .toc-toggle:hover {
+  .doc-layout.doc-layout--with-toc .toc-toggle:hover {
     background: rgba(0, 0, 0, 0.06);
   }
 
-  html.dark .content-flex.doc-layout--with-toc .toc-toggle:hover {
+  html.dark .doc-layout.doc-layout--with-toc .toc-toggle:hover {
     background: rgba(255, 255, 255, 0.07);
   }
 }
@@ -796,50 +890,50 @@ html.dark .action-bar__nav :deep(.back-btn.back-btn--ghost:hover) {
   transform: rotate(0deg);
 }
 
-/* TOC 列表：与正文同一阅读平面，交互保持轻量 */
-.content-flex.doc-layout--with-toc .toc-list {
+/* TOC 列表：与正文同一阅读平面；纵向滚动由父级 .toc-scroll 承担 */
+.doc-layout.doc-layout--with-toc .toc-list {
   font-size: 0.875rem;
   padding-top: 10px;
 }
 
-.content-flex.doc-layout--with-toc .toc-list ul {
+.doc-layout.doc-layout--with-toc .toc-list ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.content-flex.doc-layout--with-toc .toc-list li {
+.doc-layout.doc-layout--with-toc .toc-list li {
   margin: 1px 0;
   line-height: 1.45;
 }
 
-.content-flex.doc-layout--with-toc .toc-list li.level-2 {
+.doc-layout.doc-layout--with-toc .toc-list li.level-2 {
   padding-left: 0;
 }
 
-.content-flex.doc-layout--with-toc .toc-list li.level-3 {
+.doc-layout.doc-layout--with-toc .toc-list li.level-3 {
   padding-left: 14px;
   font-size: 0.875rem;
 }
 
-.content-flex.doc-layout--with-toc .toc-list li.level-4 {
+.doc-layout.doc-layout--with-toc .toc-list li.level-4 {
   padding-left: 24px;
   font-size: 0.8125rem;
 }
 
-.content-flex.doc-layout--with-toc .toc-list li.level-3 a,
-.content-flex.doc-layout--with-toc .toc-list li.level-4 a {
+.doc-layout.doc-layout--with-toc .toc-list li.level-3 a,
+.doc-layout.doc-layout--with-toc .toc-list li.level-4 a {
   color: color-mix(in srgb, var(--text-color) 72%, var(--secondary-color));
 }
 
 @supports not (color: color-mix(in srgb, red, blue)) {
-  .content-flex.doc-layout--with-toc .toc-list li.level-3 a,
-  .content-flex.doc-layout--with-toc .toc-list li.level-4 a {
+  .doc-layout.doc-layout--with-toc .toc-list li.level-3 a,
+  .doc-layout.doc-layout--with-toc .toc-list li.level-4 a {
     color: var(--secondary-color);
   }
 }
 
-.content-flex.doc-layout--with-toc .toc-list a {
+.doc-layout.doc-layout--with-toc .toc-list a {
   display: block;
   padding: 5px 8px;
   margin: 0 -6px;
@@ -849,17 +943,17 @@ html.dark .action-bar__nav :deep(.back-btn.back-btn--ghost:hover) {
   transition: background 0.14s ease, color 0.14s ease;
 }
 
-.content-flex.doc-layout--with-toc .toc-list a:hover {
+.doc-layout.doc-layout--with-toc .toc-list a:hover {
   color: var(--primary-color);
   background: color-mix(in srgb, var(--text-color) 5.5%, transparent);
 }
 
 @supports not (background: color-mix(in srgb, red, blue)) {
-  .content-flex.doc-layout--with-toc .toc-list a:hover {
+  .doc-layout.doc-layout--with-toc .toc-list a:hover {
     background: rgba(0, 0, 0, 0.05);
   }
 
-  html.dark .content-flex.doc-layout--with-toc .toc-list a:hover {
+  html.dark .doc-layout.doc-layout--with-toc .toc-list a:hover {
     background: rgba(255, 255, 255, 0.065);
   }
 }
@@ -881,12 +975,17 @@ html.dark .action-bar__nav :deep(.back-btn.back-btn--ghost:hover) {
 :deep(.markdown-body h4),
 :deep(.markdown-body h5),
 :deep(.markdown-body h6) {
-  scroll-margin-top: calc(var(--action-bar-h, 52px) + 12px);
+  scroll-margin-top: calc(var(--action-bar-actual, var(--action-bar-h)) + env(safe-area-inset-top, 0px) + 12px);
 }
 
 /* 正文自带主标题时，收紧首段顶距，让首屏尽量落在文档内容 */
 :deep(.markdown-body > h1:first-child) {
   margin-top: 0.25em;
+}
+
+/* 带侧栏时首条 h1 与「目录」同行对齐，不再额外下移 */
+.doc-layout.doc-layout--with-toc :deep(.markdown-body > h1:first-child) {
+  margin-top: 0;
 }
 
 /* 图片（方角，与截图/文档类素材更一致） */
@@ -901,11 +1000,11 @@ html.dark .action-bar__nav :deep(.back-btn.back-btn--ghost:hover) {
 }
 
 /* 带侧栏长文：压一层阴影，减少「嵌套卡片」感（须在本块之后以覆盖上一段） */
-.content-flex.doc-layout--with-toc :deep(.markdown-body img) {
+.doc-layout.doc-layout--with-toc :deep(.markdown-body img) {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.055);
 }
 
-html.dark .content-flex.doc-layout--with-toc :deep(.markdown-body img) {
+html.dark .doc-layout.doc-layout--with-toc :deep(.markdown-body img) {
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
 }
 
@@ -1118,45 +1217,52 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
     flex-wrap: wrap;
   }
 
-  .content-flex {
+  .doc-layout {
     flex-direction: column;
     gap: 12px;
   }
 
-  .content-flex.doc-layout--with-toc {
+  .doc-layout.doc-layout--with-toc {
+    display: flex;
+    flex-direction: column;
     gap: clamp(12px, 2vw, 20px);
     border-radius: 0;
-    align-items: flex-start;
-    --doc-top-pad: 18px;
+    align-items: stretch;
+    --doc-top-pad: clamp(8px, 2vw, 14px);
     --doc-bottom-pad: 28px;
     --doc-main-pad-x: 20px;
     --doc-toc-pad-start: 18px;
     --doc-toc-pad-end: 18px;
   }
 
-  .content-flex.doc-layout--with-toc .toc {
+  .doc-layout.doc-layout--with-toc .doc-layout__aside {
     width: 100%;
-    flex: 0 0 auto;
-    max-height: none;
-    position: relative;
-    top: auto;
-    align-self: stretch;
-    display: flex;
-    flex-direction: column;
-    overflow: visible;
+    max-width: none;
     border-right: none;
     border-bottom: 1px solid color-mix(in srgb, var(--border-color) 35%, transparent);
     box-shadow: none;
-    padding: 0;
   }
 
-  .content-flex.doc-layout--with-toc .toc-sticky {
+  .doc-layout.doc-layout--with-toc .doc-toc {
     position: relative;
+    left: auto;
+    width: auto;
     top: auto;
+    z-index: auto;
+    max-height: none;
+    overflow: visible;
+    display: block;
     padding: 0 var(--doc-toc-pad-end) 14px var(--doc-toc-pad-start);
   }
 
-  .content-flex.doc-layout--with-toc .markdown-column.markdown-body {
+  .doc-layout.doc-layout--with-toc .toc-scroll {
+    flex: none;
+    min-height: 0;
+    overflow: visible;
+    scrollbar-gutter: auto;
+  }
+
+  .doc-layout.doc-layout--with-toc .markdown-column.markdown-body {
     /* 纵向 flex 下勿 flex-grow，避免主列被撑出大块空白 */
     flex: 0 1 auto;
     min-width: 0;
@@ -1175,7 +1281,7 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
     display: none;
   }
 
-  .content-flex:not(.doc-layout--with-toc) .markdown-column.markdown-body {
+  .doc-layout:not(.doc-layout--with-toc) .markdown-column.markdown-body {
     padding-bottom: 28px;
   }
 }
@@ -1187,8 +1293,8 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
     padding-right: max(12px, env(safe-area-inset-right, 0px));
   }
 
-  .content-flex.doc-layout--with-toc {
-    --doc-top-pad: 14px;
+  .doc-layout.doc-layout--with-toc {
+    --doc-top-pad: clamp(8px, 2vw, 12px);
     --doc-bottom-pad: 24px;
     --doc-main-pad-x: 14px;
     --doc-toc-pad-start: 14px;
@@ -1217,8 +1323,9 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
     --content-max: min(1580px, min(93vw, 100vw - 40px));
   }
 
-  .content-flex.doc-layout--with-toc {
-    --doc-top-pad: clamp(40px, 3.5vw, 64px);
+  .doc-layout.doc-layout--with-toc {
+    grid-template-columns: min(300px, min(18vw, 320px)) minmax(0, 1fr);
+    --doc-top-pad: clamp(14px, 1.6vw, 22px);
     --doc-bottom-pad: clamp(48px, 4vw, 80px);
     --doc-main-pad-x: clamp(36px, 3vw, 72px);
     --doc-toc-pad-start: clamp(22px, 2.4vw, 30px);
@@ -1226,16 +1333,11 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
     gap: clamp(0px, 2.5vw, 36px);
   }
 
-  .content-flex.doc-layout--with-toc .toc {
-    width: min(300px, min(18vw, 320px));
-    flex: 0 0 min(300px, min(18vw, 320px));
-  }
-
-  .content-flex {
+  .doc-layout {
     gap: 30px;
   }
 
-  .content-flex:not(.doc-layout--with-toc) .markdown-column.markdown-body {
+  .doc-layout:not(.doc-layout--with-toc) .markdown-column.markdown-body {
     padding-top: clamp(4px, 1vw, 12px);
     padding-bottom: clamp(28px, 3.5vw, 52px);
   }
@@ -1253,9 +1355,8 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
     --page-pad-x: clamp(20px, 2.2vw, 40px);
   }
 
-  .content-flex.doc-layout--with-toc .toc {
-    width: min(300px, min(16vw, 320px));
-    flex: 0 0 min(300px, min(16vw, 320px));
+  .doc-layout.doc-layout--with-toc {
+    grid-template-columns: min(300px, min(16vw, 320px)) minmax(0, 1fr);
   }
 }
 
