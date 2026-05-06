@@ -223,19 +223,15 @@ const mountMermaidInShadowRoot = (svgMarkup, isDark) => {
   return host
 }
 
-/** 将 markdown-it 输出的 ```mermaid 代码块替换为 SVG（需在 htmlContent 注入 DOM 后调用） */
-const renderMermaidDiagrams = async () => {
-  await nextTick()
-  const root = document.querySelector('.markdown-body')
-  if (!root) return
-  const codes = root.querySelectorAll('pre code.language-mermaid')
-  if (!codes.length) return
-
-  const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark')
-  /** 贴近 Mermaid 默认与 GitHub 所用管线：少覆盖 themeVariables，减少与 htmlLabels 的布局打架 */
+/** 仅在亮/暗主题切换时调用 initialize，避免每次正文变更重复配置 */
+let mermaidConfiguredThemeKey = null
+const ensureMermaidConfigured = (isDark) => {
+  const themeKey = isDark ? 'dark' : 'default'
+  if (mermaidConfiguredThemeKey === themeKey) return
+  mermaidConfiguredThemeKey = themeKey
   mermaid.initialize({
     startOnLoad: false,
-    theme: isDark ? 'dark' : 'default',
+    theme: themeKey,
     securityLevel: 'loose',
     fontFamily: MERMAID_FONT_STACK,
     flowchart: {
@@ -259,6 +255,23 @@ const renderMermaidDiagrams = async () => {
       mirrorActors: true,
     },
   })
+}
+
+/** 并发渲染代际：快速切换路由或反复替换 htmlContent 时，丢弃过期的异步结果，避免误改 DOM */
+let mermaidRenderGeneration = 0
+
+/** 将 markdown-it 输出的 ```mermaid 代码块替换为 SVG（需在 htmlContent 注入 DOM 后调用） */
+const renderMermaidDiagrams = async () => {
+  const gen = ++mermaidRenderGeneration
+  await nextTick()
+  if (gen !== mermaidRenderGeneration) return
+  const root = document.querySelector('.markdown-body')
+  if (!root) return
+  const codes = root.querySelectorAll('pre code.language-mermaid')
+  if (!codes.length) return
+
+  const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark')
+  ensureMermaidConfigured(isDark)
 
   let i = 0
   for (const code of codes) {
@@ -269,10 +282,12 @@ const renderMermaidDiagrams = async () => {
     const id = `mmd-${i++}-${Math.random().toString(36).slice(2, 9)}`
     try {
       const { svg } = await mermaid.render(id, graph)
+      if (gen !== mermaidRenderGeneration) return
       const host = mountMermaidInShadowRoot(svg, isDark)
       pre.replaceWith(host)
     } catch (err) {
       console.warn('[mermaid]', err)
+      if (gen !== mermaidRenderGeneration) return
       const fail = document.createElement('pre')
       fail.className = 'mermaid-error'
       fail.textContent = `图表渲染失败：${err?.message || String(err)}`

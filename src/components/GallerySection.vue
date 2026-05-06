@@ -21,8 +21,8 @@
       <section class="gallery-section">
         <div class="scroll-container row-one">
           <div
+              ref="rowOneTrackRef"
               class="scroll-track"
-              :style="{ transform: `translateX(${rowOneScrollPosition}px)` }"
               @mouseenter="pauseAnimation(1)"
               @mouseleave="resumeAnimation(1)"
           >
@@ -48,8 +48,8 @@
 
         <div class="scroll-container row-two">
           <div
+              ref="rowTwoTrackRef"
               class="scroll-track"
-              :style="{ transform: `translateX(${rowTwoScrollPosition}px)` }"
               @mouseenter="pauseAnimation(2)"
               @mouseleave="resumeAnimation(2)"
           >
@@ -92,7 +92,7 @@
 </template>
 
 <script setup>
-import {ref, computed, onMounted, onUnmounted} from 'vue';
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
 import {useI18n} from 'vue-i18n';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
@@ -144,11 +144,13 @@ const rowTwoReversed = [...rowTwoItems].reverse();
 const rowOneDuplicated = computed(() => [...rowOneItems, ...rowOneItems, ...rowOneItems]);
 const rowTwoDuplicated = computed(() => [...rowTwoReversed, ...rowTwoReversed, ...rowTwoReversed]);
 
-// --- 滚动逻辑 ---
-const rowOneScrollPosition = ref(0);
+// --- 滚动逻辑：位移用普通变量 + 直接写 DOM transform，避免每帧触发 Vue 响应式更新 ---
+const rowOneTrackRef = ref(null);
+const rowTwoTrackRef = ref(null);
+let rowOneScrollPosition = 0;
+let rowTwoScrollPosition = 0;
 const rowOneSpeed = ref(0.8);
 const rowOneBaseSpeed = 0.8;
-const rowTwoScrollPosition = ref(0);
 const rowTwoSpeed = ref(1.0);
 const rowTwoBaseSpeed = 1.0;
 
@@ -157,17 +159,40 @@ const ROW2_WIDTH = 260;
 const rowOneSingleSetWidth = computed(() => rowOneItems.length * ROW1_WIDTH);
 const rowTwoSingleSetWidth = computed(() => rowTwoItems.length * ROW2_WIDTH);
 
-let animationFrameId;
-const animate = () => {
-  rowOneScrollPosition.value -= rowOneSpeed.value;
-  if (Math.abs(rowOneScrollPosition.value) >= rowOneSingleSetWidth.value) {
-    rowOneScrollPosition.value += rowOneSingleSetWidth.value;
-  }
-  rowTwoScrollPosition.value += rowTwoSpeed.value;
-  if (rowTwoScrollPosition.value >= 0) {
-    rowTwoScrollPosition.value -= rowTwoSingleSetWidth.value;
-  }
+let animationFrameId = null;
+
+const syncTrackTransforms = () => {
+  const t1 = rowOneTrackRef.value;
+  const t2 = rowTwoTrackRef.value;
+  if (t1) t1.style.transform = `translateX(${rowOneScrollPosition}px)`;
+  if (t2) t2.style.transform = `translateX(${rowTwoScrollPosition}px)`;
+};
+
+const startAnimationLoop = () => {
+  if (animationFrameId != null) return;
   animationFrameId = requestAnimationFrame(animate);
+};
+
+const animate = () => {
+  if (!rowOnePaused.value) {
+    rowOneScrollPosition -= rowOneSpeed.value;
+    if (Math.abs(rowOneScrollPosition) >= rowOneSingleSetWidth.value) {
+      rowOneScrollPosition += rowOneSingleSetWidth.value;
+    }
+  }
+  if (!rowTwoPaused.value) {
+    rowTwoScrollPosition += rowTwoSpeed.value;
+    if (rowTwoScrollPosition >= 0) {
+      rowTwoScrollPosition -= rowTwoSingleSetWidth.value;
+    }
+  }
+  syncTrackTransforms();
+
+  if (!rowOnePaused.value || !rowTwoPaused.value) {
+    animationFrameId = requestAnimationFrame(animate);
+  } else {
+    animationFrameId = null;
+  }
 };
 
 const pauseAnimation = (row) => {
@@ -190,6 +215,7 @@ const resumeAnimation = (row) => {
     rowTwoSpeed.value = rowTwoBaseSpeed;
     rowTwoPaused.value = false;
   }
+  startAnimationLoop();
 };
 
 // --- Lightbox 逻辑 ---
@@ -214,13 +240,19 @@ const handleEscapeKey = (e) => {
 };
 
 onMounted(() => {
-  rowTwoScrollPosition.value = -rowTwoSingleSetWidth.value;
-  animationFrameId = requestAnimationFrame(animate);
+  rowTwoScrollPosition = -rowTwoSingleSetWidth.value;
+  nextTick(() => {
+    syncTrackTransforms();
+    startAnimationLoop();
+  });
   document.addEventListener('keydown', handleEscapeKey);
 });
 
 onUnmounted(() => {
-  if (animationFrameId) cancelAnimationFrame(animationFrameId);
+  if (animationFrameId != null) {
+    cancelAnimationFrame(animationFrameId);
+    animationFrameId = null;
+  }
   document.removeEventListener('keydown', handleEscapeKey);
 });
 </script>

@@ -147,10 +147,8 @@ const runningDays = computed(() => {
   return Math.floor(diff / (1000 * 60 * 60 * 24))
 })
 
+/** 不蒜子按每次 POST 计 PV；切勿用定时器反复请求，否则长时间停留会虚增阅读量。统计刷新依赖：首屏、路由、回到前台（visibility/pageshow）。 */
 const CACHE_KEY = 'footer_busuanzi_cache_v1'
-const REFRESH_INTERVAL = 60000
-
-let refreshTimer = null
 
 const readCache = () => {
   try {
@@ -243,20 +241,6 @@ const refreshBusuanzi = async () => {
   }, 180)
 }
 
-const startAutoRefresh = () => {
-  stopAutoRefresh()
-  refreshTimer = window.setInterval(() => {
-    refreshBusuanzi()
-  }, REFRESH_INTERVAL)
-}
-
-const stopAutoRefresh = () => {
-  if (refreshTimer) {
-    clearInterval(refreshTimer)
-    refreshTimer = null
-  }
-}
-
 const handleVisibilityChange = () => {
   if (document.visibilityState === 'visible') {
     refreshBusuanzi()
@@ -271,7 +255,6 @@ onMounted(async () => {
   hydrateFromCache()
 
   refreshBusuanzi()
-  startAutoRefresh()
 
   document.addEventListener('visibilitychange', handleVisibilityChange)
   window.addEventListener('pageshow', handlePageShow)
@@ -294,7 +277,6 @@ watch(
 )
 
 onUnmounted(() => {
-  stopAutoRefresh()
   document.removeEventListener('visibilitychange', handleVisibilityChange)
   window.removeEventListener('pageshow', handlePageShow)
 })
