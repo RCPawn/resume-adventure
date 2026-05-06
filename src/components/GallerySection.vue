@@ -31,7 +31,20 @@
                   <i class="bi bi-chevron-right" aria-hidden="true"></i>
                 </button>
               </div>
-              <div class="header-counter-box">
+              <div
+                class="header-counter-box"
+                :role="filteredTotal > 1 ? 'progressbar' : undefined"
+                :aria-valuemin="filteredTotal > 1 ? 1 : undefined"
+                :aria-valuemax="filteredTotal > 1 ? filteredTotal : undefined"
+                :aria-valuenow="filteredTotal > 1 ? globalDisplayIndex : undefined"
+                :aria-label="filteredTotal > 1 ? t('gallery.progressAria') : undefined"
+              >
+                <div
+                  v-if="filteredTotal > 1"
+                  class="header-counter-liquid"
+                  aria-hidden="true"
+                  :style="{ transform: `scaleX(${progressFraction}) translateZ(0)` }"
+                />
                 <span class="header-counter">{{ counterDisplay }}</span>
               </div>
             </div>
@@ -154,45 +167,6 @@
               </article>
             </div>
           </div>
-
-          <div v-if="filteredTotal > 1" class="gallery-indicator">
-            <div
-              class="gallery-indicator-track"
-              role="progressbar"
-              :aria-valuemin="1"
-              :aria-valuemax="filteredTotal"
-              :aria-valuenow="globalDisplayIndex"
-              :aria-label="t('gallery.progressAria')"
-            >
-              <div
-                class="gallery-indicator-fill"
-                :style="{ transform: `scaleX(${progressFraction})` }"
-              />
-            </div>
-            <div
-              v-if="showSegmentStrip"
-              class="gallery-indicator-segments"
-              role="tablist"
-              :aria-label="t('gallery.snapDotsAria')"
-            >
-              <button
-                v-for="(item, idx) in visibleItems"
-                :key="'ind-seg-' + item.id"
-                type="button"
-                role="tab"
-                class="gallery-indicator-seg"
-                :class="{ 'is-active': idx === activeIndex }"
-                :aria-selected="idx === activeIndex"
-                :aria-label="
-                  t('gallery.indicatorSegAria', {
-                    n: globalStartIndex + idx + 1,
-                    title: t(`gallery.items.${item.id}.title`),
-                  })
-                "
-                @click="goToIndexInPage(idx)"
-              />
-            </div>
-          </div>
         </template>
       </section>
     </div>
@@ -229,8 +203,6 @@ const { t } = useI18n();
 
 /** 每页最多渲染条数：大图多时控制 DOM，配合分页与下拉跳转浏览 */
 const PAGE_SIZE = 24;
-/** 底部细分段最多条数：再多则只保留顶栏进度条，避免挤成一团 */
-const INDICATOR_SEG_MAX = 16;
 
 const categoryOptions = [
   { key: 'all', labelKey: 'gallery.categoryAll' },
@@ -303,16 +275,11 @@ const globalDisplayIndex = computed(() => {
   return globalStartIndex.value + activeIndex.value + 1;
 });
 
-/** 全局进度 0–1，用于底部主轨填充（与标题区「当前/总数」一致） */
+/** 全局进度 0–1：顶栏液态能量条（第 1 张亦有可见占比，避免首张空槽） */
 const progressFraction = computed(() => {
   if (filteredTotal.value <= 1) return 1;
-  return (globalDisplayIndex.value - 1) / (filteredTotal.value - 1);
+  return globalDisplayIndex.value / filteredTotal.value;
 });
-
-const showSegmentStrip = computed(
-  () =>
-    visibleItems.value.length > 1 && visibleItems.value.length <= INDICATOR_SEG_MAX,
-);
 
 const jumpSelectValue = computed(() =>
   filteredTotal.value ? String(globalStartIndex.value + activeIndex.value) : '-1',
@@ -345,10 +312,20 @@ watch([searchQuery, activeCategory], () => {
   pageIndex.value = 0;
   activeIndex.value = 0;
   slideRefs.value = [];
+  if (scrollLockTimer != null) {
+    clearTimeout(scrollLockTimer);
+    scrollLockTimer = null;
+  }
+  programmaticTargetIndex.value = null;
   nextTick(resetScrollerScroll);
 });
 
 function resetScrollerScroll() {
+  if (scrollLockTimer != null) {
+    clearTimeout(scrollLockTimer);
+    scrollLockTimer = null;
+  }
+  programmaticTargetIndex.value = null;
   const scroller = snapScrollerRef.value;
   if (scroller) scroller.scrollLeft = 0;
   requestAnimationFrame(syncActiveIndexFromScroll);
@@ -357,26 +334,47 @@ function resetScrollerScroll() {
 const snapScrollerRef = ref(null);
 const slideRefs = ref([]);
 
+/** 按钮/点选触发的平滑滚动期间，忽略按视口中心的 scroll 同步，避免序号与指示器在相邻张之间来回跳 */
+const programmaticTargetIndex = ref(null);
+let scrollLockTimer = null;
+let scrollRaf = null;
+let snapScrollEndHandler = null;
+
 const setSlideRef = (el, idx) => {
   if (el) slideRefs.value[idx] = el;
 };
 
-let scrollRaf = null;
+/** 程序化滚动结束后不再强制 sync：避免首张等边界处误判到相邻张 */
+function releaseScrollLock() {
+  if (scrollLockTimer != null) {
+    clearTimeout(scrollLockTimer);
+    scrollLockTimer = null;
+  }
+  programmaticTargetIndex.value = null;
+}
+
+/** 与 scroll-snap + scroll-behavior: smooth 对齐；无 scrollend 时由定时器释放 */
+function armScrollLock(clamped) {
+  programmaticTargetIndex.value = clamped;
+  if (scrollLockTimer != null) clearTimeout(scrollLockTimer);
+  scrollLockTimer = setTimeout(releaseScrollLock, 560);
+}
+
 const syncActiveIndexFromScroll = () => {
   scrollRaf = null;
+  if (programmaticTargetIndex.value !== null) return;
+
   const scroller = snapScrollerRef.value;
   const slides = slideRefs.value;
   if (!scroller || !slides.length) return;
 
-  const scrollerRect = scroller.getBoundingClientRect();
-  const viewMid = scrollerRect.left + scrollerRect.width / 2;
+  const viewMidX = scroller.scrollLeft + scroller.clientWidth / 2;
   let best = 0;
   let bestDist = Infinity;
   slides.forEach((slide, i) => {
     if (!slide) return;
-    const r = slide.getBoundingClientRect();
-    const mid = r.left + r.width / 2;
-    const d = Math.abs(mid - viewMid);
+    const mid = slide.offsetLeft + slide.offsetWidth / 2;
+    const d = Math.abs(mid - viewMidX);
     if (d < bestDist) {
       bestDist = d;
       best = i;
@@ -386,6 +384,7 @@ const syncActiveIndexFromScroll = () => {
 };
 
 const onSnapScroll = () => {
+  if (programmaticTargetIndex.value !== null) return;
   if (scrollRaf != null) return;
   scrollRaf = requestAnimationFrame(syncActiveIndexFromScroll);
 };
@@ -394,11 +393,12 @@ const goToIndexInPage = (idx) => {
   const len = visibleItems.value.length;
   if (!len) return;
   const clamped = Math.max(0, Math.min(len - 1, idx));
+  activeIndex.value = clamped;
+  armScrollLock(clamped);
   const slide = slideRefs.value[clamped];
   if (slide && typeof slide.scrollIntoView === 'function') {
     slide.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
   }
-  activeIndex.value = clamped;
 };
 
 function goPrevSlide() {
@@ -522,12 +522,24 @@ const handleEscapeKey = (e) => {
 
 onMounted(() => {
   document.addEventListener('keydown', handleEscapeKey);
-  nextTick(() => requestAnimationFrame(syncActiveIndexFromScroll));
+  nextTick(() => {
+    requestAnimationFrame(syncActiveIndexFromScroll);
+    const el = snapScrollerRef.value;
+    if (el) {
+      snapScrollEndHandler = () => {
+        if (programmaticTargetIndex.value !== null) releaseScrollLock();
+      };
+      el.addEventListener('scrollend', snapScrollEndHandler);
+    }
+  });
 });
 
 onUnmounted(() => {
   document.removeEventListener('keydown', handleEscapeKey);
   if (scrollRaf != null) cancelAnimationFrame(scrollRaf);
+  if (scrollLockTimer != null) clearTimeout(scrollLockTimer);
+  const el = snapScrollerRef.value;
+  if (el && snapScrollEndHandler) el.removeEventListener('scrollend', snapScrollEndHandler);
 });
 </script>
 
@@ -572,7 +584,7 @@ onUnmounted(() => {
 .header-left {
   min-width: 0;
   flex: 1 1 auto;
-  max-width: calc(100% - 11.5rem);
+  max-width: calc(100% - 13rem);
 }
 
 .gallery-prefix {
@@ -644,21 +656,82 @@ onUnmounted(() => {
 }
 
 .header-counter-box {
+  position: relative;
+  overflow: hidden;
   display: flex;
   align-items: center;
-  min-height: 32px;
-  padding: 0 10px;
+  justify-content: center;
+  min-height: 34px;
+  min-width: 12rem;
+  padding: 0 12px;
   background: var(--btn-bg);
   border: 1px solid var(--border-color);
-  border-radius: 4px;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.header-counter-liquid {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  transform-origin: left center;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(
+    105deg,
+    color-mix(in srgb, var(--primary-color) 58%, transparent) 0%,
+    color-mix(in srgb, var(--primary-color) 38%, transparent) 42%,
+    color-mix(in srgb, var(--primary-color) 72%, transparent) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.14),
+    0 0 22px rgb(var(--primary-color-rgb) / 0.24);
+  opacity: 0.9;
+  transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
+  will-change: transform;
+}
+
+.header-counter-liquid::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgb(255 255 255 / 0.16) 50%,
+    transparent 100%
+  );
+  background-size: 220% 100%;
+  animation: header-counter-liquid-shimmer 2.8s ease-in-out infinite;
+}
+
+@keyframes header-counter-liquid-shimmer {
+  0% {
+    background-position: 130% 0;
+  }
+  100% {
+    background-position: -130% 0;
+  }
 }
 
 .header-counter {
+  position: relative;
+  z-index: 1;
   font-family: var(--font-mono);
   font-size: 0.72rem;
+  font-weight: 600;
   color: var(--text-color);
   font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
   white-space: nowrap;
+  text-align: center;
+  min-width: 9.5ch;
+  text-shadow:
+    0 0 10px color-mix(in srgb, var(--btn-bg) 75%, transparent),
+    0 1px 2px color-mix(in srgb, var(--bg-color) 35%, transparent);
 }
 
 .gallery-controls {
@@ -826,78 +899,17 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.25rem;
-}
-
-/* 底部指示器：与标题区 HUD（边框 + mono）同一语境 */
-.gallery-indicator {
-  width: 100%;
-  max-width: min(560px, 100%);
-  padding: 0 var(--page-content-pad-x);
-  box-sizing: border-box;
-}
-
-.gallery-indicator-track {
-  height: 4px;
-  border-radius: 4px;
-  border: 1px solid var(--border-color);
-  background: var(--btn-bg);
-  overflow: hidden;
-  position: relative;
-}
-
-.gallery-indicator-fill {
-  position: absolute;
-  inset: 0;
-  transform-origin: left center;
-  border-radius: inherit;
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--primary-color) 82%, var(--text-color)),
-    var(--primary-color)
-  );
-  box-shadow: 0 0 16px rgb(var(--primary-color-rgb) / 0.28);
-  transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.gallery-indicator-segments {
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 5px;
-  margin-top: 0.65rem;
-  width: 100%;
-}
-
-.gallery-indicator-seg {
-  flex: 1 1 0;
-  min-width: 0;
-  max-width: 36px;
-  height: 10px;
-  padding: 0;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-  background: color-mix(in srgb, var(--border-color) 88%, var(--secondary-color));
-  transition:
-    background 0.2s ease,
-    height 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.gallery-indicator-seg:hover {
-  background: color-mix(in srgb, var(--secondary-color) 35%, var(--border-color));
-}
-
-.gallery-indicator-seg.is-active {
-  height: 12px;
-  background: var(--primary-color);
-  box-shadow: 0 0 12px rgb(var(--primary-color-rgb) / 0.35);
+  gap: 0.75rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .gallery-indicator-fill {
+  .header-counter-liquid {
     transition: none;
+    will-change: auto;
+  }
+
+  .header-counter-liquid::after {
+    animation: none;
   }
 }
 

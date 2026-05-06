@@ -1,6 +1,5 @@
 <template>
   <footer id="footer" class="footer-section">
-    <div class="footer-paper" aria-hidden="true" />
     <div class="footer-inner">
       <div class="footer-ornament" aria-hidden="true">
         <span class="footer-ornament__line" />
@@ -290,12 +289,12 @@ defineExpose({
 .footer-section {
   --footer-serif: var(--font-serif);
   --footer-sans: var(--font-sans);
-  --footer-pad-x: clamp(1rem, 4vw, 2rem);
-  --footer-pad-top: clamp(1.2rem, 2.8vw, 2.1rem);
-  --footer-pad-bottom: max(1.1rem, env(safe-area-inset-bottom, 0px));
+  --footer-pad-x: clamp(1rem, 3.5vw, 1.75rem);
+  --footer-pad-top: clamp(0.75rem, 1.6vw, 1.25rem);
+  --footer-pad-bottom: max(0.65rem, env(safe-area-inset-bottom, 0px));
   --footer-max: min(72rem, 96vw);
-  --footer-section-gap: clamp(1.35rem, 2.8vw, 2.35rem);
-  --footer-ctrl-h: 2.5rem;
+  --footer-section-gap: clamp(1rem, 2.2vw, 1.65rem);
+  --footer-ctrl-h: 2.25rem;
 
   position: relative;
   scroll-margin-top: calc(var(--layout-navbar-height, 72px) + 12px);
@@ -303,47 +302,8 @@ defineExpose({
   font-family: var(--footer-sans);
   color: var(--text-color);
   border-top: 1px solid var(--border-color);
-  /* 实底遮挡 body 的 30px 网格，避免半透明 nav-bg 透出 */
+  /* 与卡片/面板一致，纯色底，无渐变叠层 */
   background-color: var(--modal-bg);
-  overflow: hidden;
-}
-
-.footer-section::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  /* 顶缘轻微层次，不依赖半透明露出 body */
-  background: linear-gradient(180deg, var(--btn-bg) 0%, transparent 38%);
-  opacity: 0.28;
-}
-
-html.dark .footer-section::after {
-  opacity: 0.22;
-}
-
-.footer-paper {
-  pointer-events: none;
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  opacity: 0.22;
-  /* 与 body 网格区分：仅横线、大间距、颜色贴近底而非 --grid-line */
-  background-image: linear-gradient(
-    color-mix(in srgb, var(--border-color) 22%, var(--modal-bg)) 1px,
-    transparent 1px
-  );
-  background-size: 100% 72px;
-  background-position: center top;
-  mask-image: linear-gradient(to bottom, black 0%, black 50%, transparent 100%);
-}
-
-@supports not (color: color-mix(in srgb, white 50%, black)) {
-  .footer-paper {
-    background-image: linear-gradient(var(--border-color) 1px, transparent 1px);
-    opacity: 0.12;
-  }
 }
 
 .footer-inner {
@@ -357,15 +317,15 @@ html.dark .footer-section::after {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.65rem;
-  margin-bottom: clamp(0.5rem, 1.2vw, 0.85rem);
+  gap: 0.5rem;
+  margin-bottom: clamp(0.35rem, 0.9vw, 0.55rem);
 }
 
 .footer-ornament__line {
   flex: 1;
-  max-width: 6rem;
+  max-width: 5rem;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+  background-color: var(--border-color);
 }
 
 .footer-ornament__diamond {
@@ -381,9 +341,9 @@ html.dark .footer-section::after {
   display: grid;
   grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr) minmax(0, 1.02fr);
   column-gap: var(--footer-section-gap);
-  row-gap: clamp(1rem, 2vw, 1.35rem);
+  row-gap: clamp(0.75rem, 1.6vw, 1.05rem);
   align-items: start;
-  margin-bottom: clamp(1rem, 2.5vw, 1.65rem);
+  margin-bottom: clamp(0.65rem, 1.5vw, 1.1rem);
 }
 
 .footer-brand {
@@ -404,7 +364,7 @@ html.dark .footer-section::after {
   display: inline-flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  gap: clamp(1.75rem, 2.6vw, 2.5rem);
+  gap: clamp(1.25rem, 2.2vw, 1.85rem);
   width: max-content;
   max-width: 100%;
 }
@@ -417,7 +377,7 @@ html.dark .footer-section::after {
 
 /* 品牌区：杂志式眉题 + 衬线标题 */
 .brand-eyebrow {
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.35rem;
   font-size: 0.6875rem;
   font-weight: 600;
   letter-spacing: 0.22em;
@@ -427,18 +387,18 @@ html.dark .footer-section::after {
 
 .brand-name {
   font-family: var(--footer-serif);
-  font-size: clamp(1.65rem, 2.5vw, 2.1rem);
+  font-size: clamp(1.45rem, 2.2vw, 1.85rem);
   font-weight: 600;
-  margin: 0 0 0.65rem;
+  margin: 0 0 0.45rem;
   color: var(--text-color);
   letter-spacing: 0.02em;
   line-height: 1.2;
 }
 
 .brand-tagline {
-  margin: 0 0 clamp(1.1rem, 2vw, 1.65rem);
-  font-size: clamp(0.9375rem, 1.2vw, 1.0625rem);
-  line-height: 1.65;
+  margin: 0 0 clamp(0.75rem, 1.5vw, 1.1rem);
+  font-size: clamp(0.875rem, 1.1vw, 1rem);
+  line-height: 1.55;
   color: var(--secondary-color);
   max-width: 22rem;
 }
@@ -561,7 +521,7 @@ html.dark .footer-section::after {
 
 /* 技术栈：与左右列形成「左齐 / 中轴 / 右齐」节奏 */
 .footer-tech h3 {
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.5rem;
   text-align: center;
   font-size: 0.6875rem;
   font-weight: 600;
@@ -573,12 +533,12 @@ html.dark .footer-section::after {
 .tech-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.45rem 0.5rem;
+  gap: 0.35rem 0.45rem;
   justify-content: center;
 }
 
 .tech-tag {
-  padding: 0.35rem 0.75rem;
+  padding: 0.28rem 0.62rem;
   background: color-mix(in srgb, var(--btn-bg) 92%, transparent);
   border-radius: 6px;
   font-size: 0.8125rem;
@@ -610,7 +570,7 @@ html.dark .footer-section::after {
 }
 
 .nav-group h4 {
-  margin: 0 0 0.85rem;
+  margin: 0 0 0.55rem;
   font-size: 0.6875rem;
   font-weight: 600;
   letter-spacing: 0.18em;
@@ -625,7 +585,7 @@ html.dark .footer-section::after {
 }
 
 .nav-group li {
-  margin-bottom: 0.55rem;
+  margin-bottom: 0.4rem;
 }
 
 .nav-group li:last-child {
@@ -655,23 +615,17 @@ html.dark .footer-section::after {
 
 /* 底栏：单行三列 — 版权 | 统计 | 署名，节省纵向空间 */
 .footer-bottom-wrap {
-  border-top: 1px solid color-mix(in srgb, var(--border-color) 85%, transparent);
-  padding-top: clamp(0.65rem, 1.2vw, 0.95rem);
-  padding-bottom: 0.05rem;
-}
-
-@supports not (border-color: color-mix(in srgb, white 50%, black)) {
-  .footer-bottom-wrap {
-    border-top-color: var(--border-color);
-  }
+  border-top: 1px solid var(--border-color);
+  padding-top: clamp(0.45rem, 1vw, 0.65rem);
+  padding-bottom: 0;
 }
 
 .footer-meta-bar {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  column-gap: clamp(0.85rem, 2.2vw, 1.65rem);
-  row-gap: 0.4rem;
+  column-gap: clamp(0.65rem, 1.8vw, 1.35rem);
+  row-gap: 0.3rem;
 }
 
 .copyright {
@@ -773,7 +727,7 @@ html.dark .footer-section::after {
 @media (max-width: 1024px) {
   .footer-container {
     grid-template-columns: 1fr;
-    gap: clamp(2rem, 5vw, 2.75rem);
+    gap: clamp(1.35rem, 3.5vw, 1.85rem);
     text-align: center;
   }
 
@@ -873,11 +827,11 @@ html.dark .footer-section::after {
 
 @media (min-width: 1440px) {
   .footer-section {
-    --footer-pad-top: clamp(1.35rem, 2.4vw, 2.15rem);
+    --footer-pad-top: clamp(0.85rem, 1.5vw, 1.35rem);
   }
 
   .footer-container {
-    column-gap: clamp(1.65rem, 2.6vw, 2.55rem);
+    column-gap: clamp(1.2rem, 2vw, 1.85rem);
   }
 }
 
