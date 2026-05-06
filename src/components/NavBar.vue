@@ -155,23 +155,20 @@ onMounted(() => {
   font-weight: 500;
   font-size: 0.9rem;
   position: relative;
-  transition:
-    color 0.2s ease,
-    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: color 0.2s ease;
 }
 
-/* 中间锚点：变色 + 单次方向位移（仅纵向），悬浮态保持在上沿——确定性反馈，无左右晃 */
+/* 中间锚点：仅变色，无上移（与右侧控制钮交互一致） */
 .napkin-nav-link:not(.napkin-nav-game):hover {
   color: var(--primary-color);
-  transform: translateY(-2px);
 }
 
-/* 「我的游戏」：与同排锚点同一套纵向落定；无图标拧摆，避免轻浮感（与右侧工具钮仍靠形态区分） */
+/* 「我的游戏」：主色常驻，与同排链接一样悬停不上移 */
 .napkin-nav-game {
   gap: 0.28rem;
   margin-inline-start: 0.2rem;
   padding: 0.15rem 0.32rem 0.15rem 0.22rem;
-  color: var(--secondary-color);
+  color: var(--primary-color);
   font-weight: 500;
 }
 
@@ -179,9 +176,31 @@ onMounted(() => {
   flex-shrink: 0;
   width: 14px;
   height: 14px;
+  display: block;
+  transform-origin: 50% 50%;
   color: inherit;
-  opacity: 0.88;
-  transition: opacity 0.2s ease;
+  opacity: 1;
+}
+
+/* 悬停：图标轻微摆动，文案不位移 */
+@keyframes napkin-nav-game-icon-wiggle {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  22% {
+    transform: translate(-1px, 0.5px) rotate(-2.5deg);
+  }
+  48% {
+    transform: translate(1px, -0.5px) rotate(2.5deg);
+  }
+  72% {
+    transform: translate(-0.5px, 0) rotate(-1deg);
+  }
+}
+
+.napkin-nav-game:hover .napkin-nav-game-icon {
+  animation: napkin-nav-game-icon-wiggle 0.38s ease-out both;
 }
 
 .napkin-nav-game-label {
@@ -189,15 +208,6 @@ onMounted(() => {
   font-weight: 500;
   letter-spacing: 0.02em;
   line-height: 1.25;
-}
-
-.napkin-nav-game:hover {
-  color: var(--primary-color);
-  transform: translateY(-2px);
-}
-
-.napkin-nav-game:hover .napkin-nav-game-icon {
-  opacity: 1;
 }
 
 .napkin-nav-game.router-link-active {
@@ -213,8 +223,16 @@ onMounted(() => {
     transition: color 0.2s ease;
   }
 
-  .napkin-nav-link:not(.napkin-nav-game):hover,
-  .napkin-nav-game:hover {
+  .napkin-control-btn {
+    transition: color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .napkin-nav-game:hover .napkin-nav-game-icon {
+    animation: none;
+  }
+
+  .napkin-control-btn.github:hover .napkin-icon,
+  .napkin-control-btn.language:hover .napkin-icon {
     transform: none;
   }
 }
@@ -237,49 +255,69 @@ onMounted(() => {
   height: 34px;
   padding: 0 11px;
 
-  /* 样式优化 */
-  background-color: transparent; /* 默认透明，更清爽 */
-  border: 1px solid transparent; /* 预留边框位置 */
+  /* 与毛玻璃顶栏协调：常驻柔和底，悬停不再叠一层底色，避免「整块亮起」打断阅读 */
+  background-color: var(--btn-bg);
+  border: none;
   border-radius: 7px;
+  box-shadow: none;
 
   color: var(--secondary-color);
   font-size: 0.8125rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease;
   text-decoration: none;
 }
 
-/* 按钮悬浮态：显示背景和边框 */
+.napkin-control-btn:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* 悬停仅强化文字色，背景保持与默认一致 */
 .napkin-control-btn:hover {
-  background-color: var(--btn-bg);
-  border-color: var(--border-color);
   color: var(--text-color);
-  transform: translateY(-1px); /* 轻微上浮 */
 }
 
-/* GitHub 按钮特殊处理：一直显示浅色背景，突出 CTA */
-.napkin-control-btn.github {
-  background-color: var(--btn-bg);
-  border-color: var(--border-color);
-  color: var(--text-color);
-}
-.napkin-control-btn.github:hover {
-  border-color: var(--primary-color);
+/* 主题：与 GoBack ghost 同款主色浅底（仅 hover，无图标震动） */
+.napkin-control-btn.theme:hover {
+  background-color: rgba(var(--primary-color-rgb), 0.1);
   color: var(--primary-color);
-  box-shadow: var(--hover-shadow);
 }
 
-/* 图标 */
+html.dark .napkin-control-btn.theme:hover {
+  background-color: rgba(var(--primary-color-rgb), 0.2);
+}
+
+/* GitHub / 语言：悬停文案与图标为主色（与主题钮文字反馈一致） */
+.napkin-control-btn.github:hover,
+.napkin-control-btn.language:hover {
+  color: var(--primary-color);
+}
+
+/* 图标：GitHub / 语言 悬停旋转 */
+.napkin-control-btn .napkin-icon {
+  display: block;
+  flex-shrink: 0;
+  transform-origin: 50% 50%;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .napkin-icon {
   width: 16px;
   height: 16px;
   color: inherit; /* 跟随文字颜色 */
-  transition: transform 0.3s ease;
 }
 
-.napkin-control-btn:hover .napkin-icon {
-  transform: rotate(10deg); /* 俏皮一点的交互 */
+/* 顶栏断点与 .napkin-icon 同档，避免右排图标大小不一 */
+.napkin-control-btn.theme :deep(.theme-appearance-toggle__ico) {
+  width: 16px;
+  height: 16px;
+}
+
+.napkin-control-btn.github:hover .napkin-icon,
+.napkin-control-btn.language:hover .napkin-icon {
+  transform: rotate(10deg);
 }
 
 /* 响应式 */
@@ -360,6 +398,11 @@ onMounted(() => {
     width: 17px;
     height: 17px;
   }
+
+  .napkin-control-btn.theme :deep(.theme-appearance-toggle__ico) {
+    width: 17px;
+    height: 17px;
+  }
 }
 
 @media (min-width: 1920px) {
@@ -399,6 +442,11 @@ onMounted(() => {
   }
 
   .napkin-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .napkin-control-btn.theme :deep(.theme-appearance-toggle__ico) {
     width: 18px;
     height: 18px;
   }

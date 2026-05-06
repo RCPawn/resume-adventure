@@ -348,7 +348,8 @@ watch(isDarkMode, () => {
    基础布局
    ================================= */
 .page-container {
-  --content-max: min(1420px, min(96vw, 100vw - 24px));
+  /* 与带 TOC 的 flex 布局一起算宽；大屏再分级放宽，避免只靠放大字号撑满 */
+  --content-max: min(1460px, min(96vw, 100vw - 24px));
   --page-pad-x: clamp(16px, 2.5vw, 32px);
   --section-gap: clamp(12px, 2vw, 24px);
   --action-bar-h: 52px;
@@ -431,32 +432,18 @@ watch(isDarkMode, () => {
   width: 38px;
   height: 38px;
   border-radius: 10px;
-  border-color: transparent;
-  background: color-mix(in srgb, var(--text-color) 4%, transparent);
+  border: none;
+  background-color: var(--btn-bg);
+  transition: color 0.2s ease, background-color 0.2s ease;
 }
 
 .action-bar__nav :deep(.back-btn.back-btn--ghost:hover) {
-  background: color-mix(in srgb, var(--text-color) 8%, transparent);
-  border-color: color-mix(in srgb, var(--border-color) 50%, transparent);
+  background-color: rgba(var(--primary-color-rgb), 0.1);
   color: var(--primary-color);
 }
 
-@supports not (background: color-mix(in srgb, red, blue)) {
-  .action-bar__nav :deep(.back-btn.back-btn--ghost) {
-    background: rgba(0, 0, 0, 0.04);
-  }
-
-  .action-bar__nav :deep(.back-btn.back-btn--ghost:hover) {
-    background: rgba(0, 0, 0, 0.07);
-  }
-
-  html.dark .action-bar__nav :deep(.back-btn.back-btn--ghost) {
-    background: rgba(255, 255, 255, 0.06);
-  }
-
-  html.dark .action-bar__nav :deep(.back-btn.back-btn--ghost:hover) {
-    background: rgba(255, 255, 255, 0.1);
-  }
+html.dark .action-bar__nav :deep(.back-btn.back-btn--ghost:hover) {
+  background-color: rgba(var(--primary-color-rgb), 0.2);
 }
 
 .action-bar__rule {
@@ -1081,8 +1068,10 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
 
 /* 小屏设备：TOC 在上、正文在下，仍保持「同一面板」视觉 */
 @media (max-width: 768px) {
+  /* 小屏取消整页 min-height:100dvh，避免短文时下半屏大块留白 */
   .page-container {
     --action-bar-h: 48px;
+    min-height: auto;
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
@@ -1109,6 +1098,7 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
   .content-flex.doc-layout--with-toc {
     gap: clamp(12px, 2vw, 20px);
     border-radius: 0;
+    align-items: flex-start;
     --doc-top-pad: 18px;
     --doc-bottom-pad: 28px;
     --doc-main-pad-x: 20px;
@@ -1139,6 +1129,10 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
   }
 
   .content-flex.doc-layout--with-toc .markdown-column.markdown-body {
+    /* 纵向 flex 下勿 flex-grow，避免主列被撑出大块空白 */
+    flex: 0 1 auto;
+    min-width: 0;
+    width: 100%;
     padding: var(--doc-top-pad) var(--doc-main-pad-x) var(--doc-bottom-pad);
   }
 
@@ -1189,10 +1183,10 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
   }
 }
 
-/* 大屏：略放宽内容区 + 目录列，阅读与表格更舒展 */
+/* 大屏：加宽容器与留白；正文字号保持与常规桌面一致，避免 27″ 上因字号变大而比笔记本更早换行 */
 @media (min-width: 1600px) {
   .page-container {
-    --content-max: min(1520px, min(94vw, 100vw - 40px));
+    --content-max: min(1580px, min(93vw, 100vw - 40px));
   }
 
   .content-flex.doc-layout--with-toc {
@@ -1205,8 +1199,8 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
   }
 
   .content-flex.doc-layout--with-toc .toc {
-    width: min(292px, 22vw);
-    flex: 0 0 min(292px, 22vw);
+    width: min(300px, min(18vw, 320px));
+    flex: 0 0 min(300px, min(18vw, 320px));
   }
 
   .content-flex {
@@ -1218,22 +1212,22 @@ html:not(.dark) :deep(.markdown-body .mermaid-github-host) {
     padding-bottom: clamp(28px, 3.5vw, 52px);
   }
 
-  .markdown-column.markdown-body {
-    font-size: 1.1rem;
-  }
-
-  :deep(.markdown-body h2) {
-    font-size: 2rem;
-  }
-
-  :deep(.markdown-body p) {
-    font-size: 1.15rem;
-    line-height: 1.9;
-  }
-
   :deep(.markdown-body img) {
     border-radius: 0;
     margin: 25px 0;
+  }
+}
+
+/* 27″ / 2K 等：再放宽总宽，目录列用 vw 上限避免占掉过多正文 */
+@media (min-width: 1920px) {
+  .page-container {
+    --content-max: min(1720px, min(90vw, 100vw - 48px));
+    --page-pad-x: clamp(20px, 2.2vw, 40px);
+  }
+
+  .content-flex.doc-layout--with-toc .toc {
+    width: min(300px, min(16vw, 320px));
+    flex: 0 0 min(300px, min(16vw, 320px));
   }
 }
 

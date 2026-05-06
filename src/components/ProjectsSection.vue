@@ -41,7 +41,6 @@
               :key="project.id || project.nameKey || index"
               class="project-node"
               :data-index="index"
-              @mouseenter="playTickSound"
               @click="handleProjectClick(project)"
           >
             <div class="node-background">
@@ -165,22 +164,6 @@ const projects = computed(() => {
   });
 });
 
-// --- 🔉 音效逻辑 ---
-let audioCtx = null;
-const initAudio = () => { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); };
-const playTickSound = () => {
-  if (!audioCtx) initAudio();
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  osc.type = 'sine';
-  osc.frequency.setValueAtTime(1400, audioCtx.currentTime);
-  gain.gain.setValueAtTime(0.008, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.03);
-  osc.connect(gain); gain.connect(audioCtx.destination);
-  osc.start(); osc.stop(audioCtx.currentTime + 0.03);
-};
-
 // --- 滚动监听（限定在本节卡片容器，避免误观察到其他页面节点） ---
 let observer = null;
 const bindScrollObserver = () => {
@@ -202,7 +185,6 @@ const bindScrollObserver = () => {
 };
 
 onMounted(() => {
-  document.addEventListener('mousedown', initAudio, { once: true });
   nextTick(bindScrollObserver);
 });
 watch(() => projects.value.length, () => nextTick(bindScrollObserver));

@@ -25,7 +25,7 @@ import { useAppearanceTheme } from '@/composables/useAppearanceTheme'
 defineOptions({ inheritAttrs: false })
 
 defineProps({
-  /** nav：由外层 napkin 按钮类控制尺寸；doc：项目详情顶栏 38px 方钮 */
+  /** nav：由外层 napkin 控制尺寸；doc：详情顶栏 38px，常驻 btn-bg，悬停主色浅底 */
   variant: {
     type: String,
     default: 'nav',
@@ -45,15 +45,12 @@ const { isDarkMode, toggleTheme } = useAppearanceTheme()
 }
 
 .theme-appearance-toggle__ico {
-  width: 1.125rem;
-  height: 1.125rem;
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
+  display: block;
+  transform-origin: 50% 50%;
   color: inherit;
-}
-
-.theme-appearance-toggle--doc .theme-appearance-toggle__ico {
-  width: 1.25rem;
-  height: 1.25rem;
 }
 
 /* 浅色模式：实心太阳略偏琥珀，和月亮的冷色形成对比 */
@@ -66,7 +63,7 @@ html.dark .theme-appearance-toggle:not(.theme-appearance-toggle--light-on) .them
   color: var(--primary-color);
 }
 
-/* 文档顶栏：与返回键同系 */
+/* 详情顶栏：常驻 btn-bg；悬停与 GoBack ghost 同款主色浅底 */
 .theme-appearance-toggle--doc {
   box-sizing: border-box;
   margin: 0;
@@ -75,42 +72,24 @@ html.dark .theme-appearance-toggle:not(.theme-appearance-toggle--light-on) .them
   height: 38px;
   flex-shrink: 0;
   border-radius: 10px;
-  border: 1px solid transparent;
-  background: color-mix(in srgb, var(--text-color) 4%, transparent);
+  border: none;
+  background-color: var(--btn-bg);
   color: var(--text-color);
   cursor: pointer;
-  transition:
-    color 0.2s ease,
-    background-color 0.2s ease,
-    border-color 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease;
 }
 
 .theme-appearance-toggle--doc:hover {
-  background: color-mix(in srgb, var(--text-color) 8%, transparent);
-  border-color: color-mix(in srgb, var(--border-color) 50%, transparent);
+  background-color: rgba(var(--primary-color-rgb), 0.1);
   color: var(--primary-color);
+}
+
+html.dark .theme-appearance-toggle--doc:hover {
+  background-color: rgba(var(--primary-color-rgb), 0.2);
 }
 
 .theme-appearance-toggle--doc:focus-visible {
   outline: 2px solid var(--primary-color);
   outline-offset: 2px;
-}
-
-@supports not (background: color-mix(in srgb, red, blue)) {
-  .theme-appearance-toggle--doc {
-    background: rgba(0, 0, 0, 0.04);
-  }
-
-  .theme-appearance-toggle--doc:hover {
-    background: rgba(0, 0, 0, 0.07);
-  }
-
-  html.dark .theme-appearance-toggle--doc {
-    background: rgba(255, 255, 255, 0.06);
-  }
-
-  html.dark .theme-appearance-toggle--doc:hover {
-    background: rgba(255, 255, 255, 0.1);
-  }
 }
 </style>
