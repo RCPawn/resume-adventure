@@ -1,0 +1,67 @@
+---
+description: 与本仓库现有实现一致的界面视觉风格（配色 token、字体、毛玻璃与阴影）
+globs: src/**/*.vue,src/assets/main.css,src/assets/base.css,src/assets/styles/**/*.css
+alwaysApply: false
+---
+
+# 界面视觉风格（沿用本仓库既有做法）
+
+以下规则**仅整理仓库里已经采用的做法**；与视口断点、安全区、`dvh` 等有关的布局适配见 **`.cursor/rules/ui-screen-adaptation.mdc`**，本文件不重复展开。
+
+## 语义色与表面（优先用 CSS 变量）
+
+全站主题 token 定义在 `src/assets/main.css` 的 `:root` 与 `html.dark` 中，组件样式应优先引用变量，避免为同一语义再写一套硬编码色值：
+
+- **页面底**：`--bg-color`
+- **顶栏/半透明浮层底**：`--nav-bg`（亮色/暗色下均为 rgba；宽屏下在 `main.css` 的 `min-width: 1920px` 中会略提高不透明度）
+- **卡片/面板底**：`--modal-bg`；**次级块/按钮灰底**：`--btn-bg`
+- **正文**：`--text-color`；**次要文案**：`--secondary-color`；**主色与强调**：`--primary-color`，以及配套的 **`--primary-color-rgb`**（用于 `rgba(...)` / `rgb(var(...) / α)` 等）
+- **描边**：`--border-color`；**图标默认色**：`--icon-color`
+- **悬停阴影**：`--hover-shadow`（亮/暗两套数值不同，已随主题切换）
+
+`body` 在 `main.css` 中还使用 **`--grid-line`** 画全局浅色网格线背景；新增全屏遮罩或大面积实色层时，注意是否会完全盖住该视觉特征（若刻意为之需在设计上说得通）。
+
+## 明暗主题切换
+
+- 暗色通过根节点 **`html.dark`** 切换（与 `index.html` 内联脚本、`useColorMode` 等现有逻辑一致）。
+- `:root` / `html.dark` 使用 **`color-scheme: light` / `dark`**，与 `index.html` 的 `meta name="color-scheme"` 一致；新页面勿破坏该组合导致系统控件/表单与页面主题脱节。
+
+## 字体
+
+`main.css` 中已定义字体栈变量，正文与 UI 以无衬线为主：
+
+- **`--font-sans`**：Bricolage Grotesque + Noto Sans SC + 系统 UI 栈（与 `index.html` 引入的 Google Fonts 一致）
+- **`--font-serif`**、**`--font-mono`**、**`--font-handwriting`**（Kalam）：按场景选用；首页 Hero 等已有手写/展示性用法可参考邻近组件。
+
+`body` 使用 `font-family: var(--font-sans)`。新增独立页面时，除非有与现网一致的设计依据，否则不要随意再挂一套与上述无关的 Webfont。
+
+## 区块标题层级（与主栏对齐）
+
+`ProjectsSection`、`GallerySection` 等主栏区块的标题字号使用全局变量：**`--section-heading-prefix-size`**、**`--section-heading-title-size`**、**`--section-heading-subtitle-size`**（在 `main.css` 中随断点调整）。新增同级大区块时应复用同一组变量，避免同一屏出现多套「前缀/主标题/副标题」比例。
+
+## 毛玻璃、渐变与阴影（已有数值范围）
+
+仓库中已出现的做法包括（按需就近拷贝模式，而非统一成单一 magic number）：
+
+- **`backdrop-filter` / `-webkit-backdrop-filter`**：`blur(5px)`～`blur(16px)` 均有使用；顶栏 `NavBar` 默认 **`blur(12px)`**，滚动收起毛玻璃后改为实色底 + 轻阴影（见组件内注释）。
+- **`ProjectDetail` 顶栏**：`saturate(...) blur(10px)`（大屏略降为 `blur(8px)`），背景用 **`color-mix`** 混合 `--bg-color` 与 `--modal-bg`。
+- **卡片阴影**：常见为 **`box-shadow: var(--hover-shadow)`**；`GallerySection` 等另有基于 **`color-mix(in srgb, var(--text-color) …)`** / **`var(--primary-color)`** 的分层阴影与悬停加强。
+- **圆角**：组件内已出现 **3px～20px**、以及 **`999px`（胶囊）** 等；与邻近按钮/卡片统一即可，无需强行全局单一圆角。
+
+## `color-mix` 与降级
+
+部分样式用 **`color-mix(in srgb, …)`** 做边框/背景/描边的柔和过渡（如 `GoBackButton`、`ProjectDetail` 的 `action-bar`、作品卡片悬停）。若需支持不支持 `color-mix` 的环境，应像 **`GoBackButton.vue` / `ProjectDetail.vue`** 一样保留 **`@supports not (background: color-mix(...))`**（或等价选择器）下的回退色值，不要只写 `color-mix` 一条路径。
+
+## 草稿纸类背景（Napkin）
+
+`src/assets/styles/NapkinBackground.css` 为 **`.napkin-background` / `.napkin-paper-lines`** 等提供横线纸纹理；其中亮/暗底色为 **`#fff` / `#1a1a1a`**，与 `main.css` 里 **`--bg-color`** 的 hex 并不完全相同。若页面套用了该背景类，**不要假设**其与 `--bg-color` 自动一致；改色时需对照该文件与 `html.dark` 规则一并检查。
+
+## 全局滚动条
+
+`main.css` 对 **WebKit 滚动条**（宽度、轨道、thumb 颜色引用 `--border-color` / `--secondary-color`）做了样式；自定义 `overflow` 区域若使用 `scrollbar-width: thin` 等，可参考 **`ProjectsSection`** 等与现有滚动条视觉协调。
+
+## 实施顺序建议
+
+1. 新 UI 先能完全用 **`var(--*)`** 表达颜色与阴影。  
+2. 需要半透明/混合色时，优先 **`color-mix`** + **`@supports`** 回退（与现有按钮、文档顶栏一致）。  
+3. 需要强调主色时，优先 **`--primary-color`** 与 **`--primary-color-rgb`**，与 **`GoBackButton` / `GallerySection` / `ProjectsSection`** 等现有写法对齐。

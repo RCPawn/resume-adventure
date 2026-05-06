@@ -1,74 +1,199 @@
 <template>
-  <div id="gallery" ref="galleryRootRef" class="main-container">
+  <div id="gallery" class="main-container">
     <div class="gallery-viewport">
 
       <div class="gallery-header-wrap">
-        <header class="gallery-cyber-header">
-          <div class="header-left">
-            <span class="gallery-prefix">{{ t('gallery.streamPrefix') }}</span>
-            <h2 class="gallery-main-title">{{ t('gallery.title') }}</h2>
-            <p class="gallery-subtitle">{{ t('gallery.subtitle') }}</p>
-          </div>
-          <div class="header-right">
-            <div class="gallery-status-box" :class="{ paused: galleryScrollPaused }">
-              <span class="gallery-status-dot" :class="{ paused: galleryScrollPaused }" aria-hidden="true"></span>
-              <span class="gallery-status-text">{{ galleryStatusLabel }}</span>
+        <div class="gallery-cyber-block">
+          <header class="gallery-cyber-header">
+            <div class="header-left">
+              <span class="gallery-prefix">{{ t('gallery.streamPrefix') }}</span>
+              <h2 id="gallery-heading" class="gallery-main-title">{{ t('gallery.title') }}</h2>
+              <p class="gallery-subtitle">{{ t('gallery.subtitle') }}</p>
+            </div>
+            <div class="header-right" aria-live="polite">
+              <div class="header-nav-cluster">
+                <button
+                  type="button"
+                  class="header-icon-btn"
+                  :disabled="!canGoPrev"
+                  :aria-label="t('gallery.snapPrevAria')"
+                  @click="goPrevSlide"
+                >
+                  <i class="bi bi-chevron-left" aria-hidden="true"></i>
+                </button>
+                <button
+                  type="button"
+                  class="header-icon-btn"
+                  :disabled="!canGoNext"
+                  :aria-label="t('gallery.snapNextAria')"
+                  @click="goNextSlide"
+                >
+                  <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                </button>
+              </div>
+              <div class="header-counter-box">
+                <span class="header-counter">{{ counterDisplay }}</span>
+              </div>
+            </div>
+          </header>
+
+          <div class="gallery-controls" :aria-label="t('gallery.toolbarAria')">
+            <div class="control-search-wrap">
+              <i class="bi bi-search control-search-icon" aria-hidden="true"></i>
+              <input
+                v-model.trim="searchQuery"
+                type="search"
+                class="control-search-input"
+                :placeholder="t('gallery.searchPlaceholder')"
+                :aria-label="t('gallery.searchAria')"
+                autocomplete="off"
+              />
+            </div>
+
+            <div class="control-chips" role="group" :aria-label="t('gallery.categoryGroupAria')">
+              <button
+                v-for="opt in categoryOptions"
+                :key="opt.key"
+                type="button"
+                class="control-chip"
+                :class="{ 'is-active': activeCategory === opt.key }"
+                @click="activeCategory = opt.key"
+              >
+                {{ t(opt.labelKey) }}
+              </button>
+            </div>
+
+            <select
+              id="gallery-jump-select"
+              class="control-jump-select"
+              :disabled="!filteredTotal"
+              :value="jumpSelectValue"
+              :aria-label="t('gallery.jumpAria')"
+              @change="onJumpChange"
+            >
+              <option value="-1" disabled>{{ t('gallery.jumpPlaceholder') }}</option>
+              <option
+                v-for="(item, gIdx) in filteredItems"
+                :key="'jump-' + item.id"
+                :value="String(gIdx)"
+              >
+                {{ formatJumpOption(gIdx, item) }}
+              </option>
+            </select>
+
+            <div v-if="pageCount > 1 && filteredTotal" class="control-page-cluster">
+              <button
+                type="button"
+                class="control-page-icon"
+                :disabled="pageIndex <= 0"
+                :aria-label="t('gallery.pagePrevAria')"
+                @click="goPrevPage"
+              >
+                <i class="bi bi-chevron-double-left" aria-hidden="true"></i>
+              </button>
+              <span class="control-page-text" aria-hidden="true">{{
+                t('gallery.pageIndicator', { current: pageIndex + 1, total: pageCount })
+              }}</span>
+              <button
+                type="button"
+                class="control-page-icon"
+                :disabled="pageIndex >= pageCount - 1"
+                :aria-label="t('gallery.pageNextAria')"
+                @click="goNextPage"
+              >
+                <i class="bi bi-chevron-double-right" aria-hidden="true"></i>
+              </button>
             </div>
           </div>
-        </header>
+        </div>
       </div>
 
-      <section class="gallery-section">
-        <div class="scroll-container row-one">
-          <div
-              ref="rowOneTrackRef"
-              class="scroll-track"
-              @mouseenter="pauseAnimation(1)"
-              @mouseleave="resumeAnimation(1)"
-          >
-            <div
-                class="gallery-card polaroid-style"
-                v-for="(item, idx) in rowOneDuplicated"
-                :key="`row1-${idx}`"
-                @click="openLightbox(item)"
-            >
-              <div class="image-wrapper">
-                <img :src="item.imageUrl" loading="lazy" :alt="t(`gallery.items.${item.id}.title`)"
-                     class="gallery-image"/>
-                <div class="hover-overlay">
-                  <i class="bi bi-zoom-in view-icon" aria-hidden="true"></i>
-                </div>
-              </div>
-              <div class="card-footer">
-                <span class="card-tag"># {{ t(`gallery.items.${item.id}.title`) }}</span>
-              </div>
-            </div>
-          </div>
+      <section class="gallery-section" aria-labelledby="gallery-heading">
+        <div v-if="!filteredTotal" class="gallery-empty" role="status">
+          {{ t('gallery.emptyFiltered') }}
         </div>
 
-        <div class="scroll-container row-two">
-          <div
-              ref="rowTwoTrackRef"
-              class="scroll-track"
-              @mouseenter="pauseAnimation(2)"
-              @mouseleave="resumeAnimation(2)"
-          >
+        <template v-else>
+          <div class="snap-stage">
             <div
-                class="gallery-card film-style"
-                v-for="(item, idx) in rowTwoDuplicated"
-                :key="`row2-${idx}`"
-                @click="openLightbox(item)"
+              ref="snapScrollerRef"
+              class="snap-scroller"
+              tabindex="0"
+              role="region"
+              :aria-label="t('gallery.snapRegionAria')"
+              @scroll.passive="onSnapScroll"
+              @keydown="onSnapKeydown"
             >
-              <div class="image-wrapper">
-                <img :src="item.imageUrl" loading="lazy" :alt="t(`gallery.items.${item.id}.title`)"
-                     class="gallery-image"/>
-                <div class="hover-overlay">
-                  <i class="bi bi-zoom-in view-icon" aria-hidden="true"></i>
+              <article
+                v-for="(item, idx) in visibleItems"
+                :key="item.id"
+                :ref="(el) => setSlideRef(el, idx)"
+                class="snap-slide"
+                :class="{ 'is-active': idx === activeIndex }"
+                @click="openLightbox(item)"
+              >
+                <div class="snap-card">
+                  <div class="snap-media">
+                    <img
+                      :src="item.imageUrl"
+                      :loading="idx < 2 ? 'eager' : 'lazy'"
+                      :fetchpriority="pageIndex === 0 && idx === 0 ? 'high' : undefined"
+                      decoding="async"
+                      class="snap-image"
+                      :alt="t(`gallery.items.${item.id}.title`)"
+                    />
+                    <div class="snap-media-overlay" aria-hidden="true">
+                      <i class="bi bi-zoom-in snap-zoom-icon"></i>
+                    </div>
+                  </div>
+                  <footer class="snap-caption">
+                    <span class="snap-caption-index">{{ formatSlideOrdinal(idx) }}</span>
+                    <span class="snap-caption-title">{{ t(`gallery.items.${item.id}.title`) }}</span>
+                  </footer>
                 </div>
-              </div>
+              </article>
             </div>
           </div>
-        </div>
+
+          <div v-if="filteredTotal > 1" class="gallery-indicator">
+            <div
+              class="gallery-indicator-track"
+              role="progressbar"
+              :aria-valuemin="1"
+              :aria-valuemax="filteredTotal"
+              :aria-valuenow="globalDisplayIndex"
+              :aria-label="t('gallery.progressAria')"
+            >
+              <div
+                class="gallery-indicator-fill"
+                :style="{ transform: `scaleX(${progressFraction})` }"
+              />
+            </div>
+            <div
+              v-if="showSegmentStrip"
+              class="gallery-indicator-segments"
+              role="tablist"
+              :aria-label="t('gallery.snapDotsAria')"
+            >
+              <button
+                v-for="(item, idx) in visibleItems"
+                :key="'ind-seg-' + item.id"
+                type="button"
+                role="tab"
+                class="gallery-indicator-seg"
+                :class="{ 'is-active': idx === activeIndex }"
+                :aria-selected="idx === activeIndex"
+                :aria-label="
+                  t('gallery.indicatorSegAria', {
+                    n: globalStartIndex + idx + 1,
+                    title: t(`gallery.items.${item.id}.title`),
+                  })
+                "
+                @click="goToIndexInPage(idx)"
+              />
+            </div>
+          </div>
+        </template>
       </section>
     </div>
 
@@ -76,9 +201,13 @@
       <Transition name="fade">
         <div v-if="isLightboxOpen" class="lightbox-overlay" @click="closeLightbox">
           <div class="lightbox-content" @click.stop>
-            <button class="close-btn" @click="closeLightbox">&times;</button>
+            <button type="button" class="close-btn" @click="closeLightbox">&times;</button>
 
-            <img :src="activeItem.imageUrl" class="lightbox-image"/>
+            <img
+              :src="activeItem.imageUrl"
+              class="lightbox-image"
+              :alt="t(`gallery.items.${activeItem.id}.title`)"
+            />
 
             <div class="lightbox-caption">
               <h3>{{ t(`gallery.items.${activeItem.id}.title`) }}</h3>
@@ -92,148 +221,287 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
-import {useI18n} from 'vue-i18n';
+import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue';
+import { useI18n } from 'vue-i18n';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-const {t} = useI18n();
+const { t } = useI18n();
 
-const rowOnePaused = ref(false);
-const rowTwoPaused = ref(false);
+/** 每页最多渲染条数：大图多时控制 DOM，配合分页与下拉跳转浏览 */
+const PAGE_SIZE = 24;
+/** 底部细分段最多条数：再多则只保留顶栏进度条，避免挤成一团 */
+const INDICATOR_SEG_MAX = 16;
 
-const galleryScrollPaused = computed(() => rowOnePaused.value || rowTwoPaused.value);
+const categoryOptions = [
+  { key: 'all', labelKey: 'gallery.categoryAll' },
+  { key: 'exhibition', labelKey: 'gallery.categoryExhibition' },
+  { key: 'gateway', labelKey: 'gallery.categoryGateway' },
+  { key: 'other', labelKey: 'gallery.categoryOther' },
+];
 
-const galleryStatusLabel = computed(() => {
-  if (rowOnePaused.value && rowTwoPaused.value) return t('gallery.statusBothPaused');
-  if (rowOnePaused.value) return t('gallery.statusTrackOnePaused');
-  if (rowTwoPaused.value) return t('gallery.statusTrackTwoPaused');
-  return t('gallery.statusAutoScroll');
-});
-
-// --- 数据准备：从展览、网关、技术亮点中精选截图（非遗展陈使用 public/projects/exhibition.assets，中文文件名便于运营对齐） ---
+/** category 用于筛选；新增图片时请带上 category，并在 i18n 中补 items.{id} */
 const rowOneItems = [
-  // 非遗展览：按视觉优先级 — 驾驶舱 → 门户 → 在线展厅 → 传承网络
-  {id: 'work0', imageUrl: "/projects/exhibition.assets/数字驾驶舱.png"},
-  {id: 'work1', imageUrl: "/projects/exhibition.assets/文化门户首页.png"},
-  {id: 'work2', imageUrl: "/projects/exhibition.assets/在线展厅.png"},
-  {id: 'work3', imageUrl: "/projects/exhibition.assets/传承关系网络.png"},
-  // 网关平台
-  {id: 'work4', imageUrl: "/images/works/网关控制台.png"},
-  {id: 'work5', imageUrl: "/images/works/流量防卫.png"},
-  {id: 'work6', imageUrl: "/images/works/路由矩阵配置.png"},
-  {id: 'work7', imageUrl: "/images/works/审计日志.png"},
-  // 更多亮点
-  {id: 'work8', imageUrl: "/images/works/甜甜圈.png"},
+  { id: 'work0', imageUrl: '/projects/exhibition.assets/数字驾驶舱.png', category: 'exhibition' },
+  { id: 'work1', imageUrl: '/projects/exhibition.assets/文化门户首页.png', category: 'exhibition' },
+  { id: 'work2', imageUrl: '/projects/exhibition.assets/在线展厅.png', category: 'exhibition' },
+  { id: 'work3', imageUrl: '/projects/exhibition.assets/传承关系网络.png', category: 'exhibition' },
+  { id: 'work4', imageUrl: '/images/works/网关控制台.png', category: 'gateway' },
+  { id: 'work5', imageUrl: '/images/works/流量防卫.png', category: 'gateway' },
+  { id: 'work6', imageUrl: '/images/works/路由矩阵配置.png', category: 'gateway' },
+  { id: 'work7', imageUrl: '/images/works/审计日志.png', category: 'gateway' },
+  { id: 'work8', imageUrl: '/images/works/甜甜圈.png', category: 'other' },
 ];
 
 const rowTwoItems = [
-  // 网关平台
-  {id: 'work10', imageUrl: "/images/works/网关架构.png"},
-  {id: 'work11', imageUrl: "/images/works/流量防卫配置.png"},
-  {id: 'work12', imageUrl: "/images/works/路由矩阵.png"},
-  {id: 'work13', imageUrl: "/images/works/异步日志.png"},
-  // 展览项目补充：沉浸看图 → 展品详情 → 网关文档 → 图集瀑布流
-  {id: 'work14', imageUrl: "/projects/exhibition.assets/纸上乾坤详情.png"},
-  {id: 'work15', imageUrl: "/projects/exhibition.assets/展品详情页.png"},
-  {id: 'work16', imageUrl: "/projects/gateway.assets/image-20260217132934258.png"},
-  {id: 'work17', imageUrl: "/projects/exhibition.assets/纸上乾坤图集.png"},
+  { id: 'work10', imageUrl: '/images/works/网关架构.png', category: 'gateway' },
+  { id: 'work11', imageUrl: '/images/works/流量防卫配置.png', category: 'gateway' },
+  { id: 'work12', imageUrl: '/images/works/路由矩阵.png', category: 'gateway' },
+  { id: 'work13', imageUrl: '/images/works/异步日志.png', category: 'gateway' },
+  { id: 'work14', imageUrl: '/projects/exhibition.assets/纸上乾坤详情.png', category: 'exhibition' },
+  { id: 'work15', imageUrl: '/projects/exhibition.assets/展品详情页.png', category: 'exhibition' },
+  { id: 'work16', imageUrl: '/projects/gateway.assets/image-20260217132934258.png', category: 'gateway' },
+  { id: 'work17', imageUrl: '/projects/exhibition.assets/纸上乾坤图集.png', category: 'exhibition' },
 ];
 
-const rowTwoReversed = [...rowTwoItems].reverse();
+const sourceItems = [...rowOneItems, ...rowTwoItems];
 
-const rowOneDuplicated = computed(() => [...rowOneItems, ...rowOneItems, ...rowOneItems]);
-const rowTwoDuplicated = computed(() => [...rowTwoReversed, ...rowTwoReversed, ...rowTwoReversed]);
+const searchQuery = ref('');
+const activeCategory = ref('all');
+const pageIndex = ref(0);
+const activeIndex = ref(0);
 
-// --- 滚动逻辑：位移用普通变量 + 直接写 DOM transform，避免每帧触发 Vue 响应式更新 ---
-const galleryRootRef = ref(null);
-const rowOneTrackRef = ref(null);
-const rowTwoTrackRef = ref(null);
-/** 滚离图库区块时停止 rAF，避免与整页滚动抢帧；回到视口自动恢复 */
-const isGalleryInView = ref(true);
-let galleryVisibilityIo = null;
-let rowOneScrollPosition = 0;
-let rowTwoScrollPosition = 0;
-const rowOneSpeed = ref(0.8);
-const rowOneBaseSpeed = 0.8;
-const rowTwoSpeed = ref(1.0);
-const rowTwoBaseSpeed = 1.0;
+const normalize = (s) => s.trim().toLowerCase();
 
-const ROW1_WIDTH = 320;
-const ROW2_WIDTH = 260;
-const rowOneSingleSetWidth = computed(() => rowOneItems.length * ROW1_WIDTH);
-const rowTwoSingleSetWidth = computed(() => rowTwoItems.length * ROW2_WIDTH);
+const filteredItems = computed(() => {
+  const q = normalize(searchQuery.value);
+  return sourceItems.filter((item) => {
+    if (activeCategory.value !== 'all' && item.category !== activeCategory.value) return false;
+    if (!q) return true;
+    const title = t(`gallery.items.${item.id}.title`).toLowerCase();
+    const desc = t(`gallery.items.${item.id}.desc`).toLowerCase();
+    return title.includes(q) || desc.includes(q);
+  });
+});
 
-let animationFrameId = null;
+const filteredTotal = computed(() => filteredItems.value.length);
 
-const syncTrackTransforms = () => {
-  const t1 = rowOneTrackRef.value;
-  const t2 = rowTwoTrackRef.value;
-  if (t1) t1.style.transform = `translateX(${rowOneScrollPosition}px)`;
-  if (t2) t2.style.transform = `translateX(${rowTwoScrollPosition}px)`;
+const pageCount = computed(() =>
+  filteredTotal.value ? Math.ceil(filteredTotal.value / PAGE_SIZE) : 0,
+);
+
+const visibleItems = computed(() => {
+  const all = filteredItems.value;
+  if (!all.length) return [];
+  const start = pageIndex.value * PAGE_SIZE;
+  return all.slice(start, start + PAGE_SIZE);
+});
+
+const globalStartIndex = computed(() => pageIndex.value * PAGE_SIZE);
+
+const globalDisplayIndex = computed(() => {
+  if (!filteredTotal.value) return 0;
+  return globalStartIndex.value + activeIndex.value + 1;
+});
+
+/** 全局进度 0–1，用于底部主轨填充（与标题区「当前/总数」一致） */
+const progressFraction = computed(() => {
+  if (filteredTotal.value <= 1) return 1;
+  return (globalDisplayIndex.value - 1) / (filteredTotal.value - 1);
+});
+
+const showSegmentStrip = computed(
+  () =>
+    visibleItems.value.length > 1 && visibleItems.value.length <= INDICATOR_SEG_MAX,
+);
+
+const jumpSelectValue = computed(() =>
+  filteredTotal.value ? String(globalStartIndex.value + activeIndex.value) : '-1',
+);
+
+/** 右栏计数：当前序号/总数；多页时在同一行追加页码，不再单独占标签 */
+const counterDisplay = computed(() => {
+  if (!filteredTotal.value) return '—';
+  const main = t('gallery.snapCounter', {
+    current: globalDisplayIndex.value,
+    total: filteredTotal.value,
+  });
+  if (pageCount.value <= 1) return main;
+  return `${main} · ${pageIndex.value + 1}/${pageCount.value}`;
+});
+
+const canGoPrev = computed(() => globalDisplayIndex.value > 1);
+
+const canGoNext = computed(() =>
+  filteredTotal.value ? globalDisplayIndex.value < filteredTotal.value : false,
+);
+
+watch(filteredItems, (list) => {
+  const maxPage = list.length ? Math.ceil(list.length / PAGE_SIZE) - 1 : 0;
+  if (pageIndex.value > maxPage) pageIndex.value = maxPage;
+  if (pageIndex.value < 0) pageIndex.value = 0;
+});
+
+watch([searchQuery, activeCategory], () => {
+  pageIndex.value = 0;
+  activeIndex.value = 0;
+  slideRefs.value = [];
+  nextTick(resetScrollerScroll);
+});
+
+function resetScrollerScroll() {
+  const scroller = snapScrollerRef.value;
+  if (scroller) scroller.scrollLeft = 0;
+  requestAnimationFrame(syncActiveIndexFromScroll);
+}
+
+const snapScrollerRef = ref(null);
+const slideRefs = ref([]);
+
+const setSlideRef = (el, idx) => {
+  if (el) slideRefs.value[idx] = el;
 };
 
-const startAnimationLoop = () => {
-  if (!isGalleryInView.value || animationFrameId != null) return;
-  animationFrameId = requestAnimationFrame(animate);
+let scrollRaf = null;
+const syncActiveIndexFromScroll = () => {
+  scrollRaf = null;
+  const scroller = snapScrollerRef.value;
+  const slides = slideRefs.value;
+  if (!scroller || !slides.length) return;
+
+  const scrollerRect = scroller.getBoundingClientRect();
+  const viewMid = scrollerRect.left + scrollerRect.width / 2;
+  let best = 0;
+  let bestDist = Infinity;
+  slides.forEach((slide, i) => {
+    if (!slide) return;
+    const r = slide.getBoundingClientRect();
+    const mid = r.left + r.width / 2;
+    const d = Math.abs(mid - viewMid);
+    if (d < bestDist) {
+      bestDist = d;
+      best = i;
+    }
+  });
+  activeIndex.value = Math.min(best, visibleItems.value.length - 1);
 };
 
-const stopGalleryRaf = () => {
-  if (animationFrameId != null) {
-    cancelAnimationFrame(animationFrameId);
-    animationFrameId = null;
+const onSnapScroll = () => {
+  if (scrollRaf != null) return;
+  scrollRaf = requestAnimationFrame(syncActiveIndexFromScroll);
+};
+
+const goToIndexInPage = (idx) => {
+  const len = visibleItems.value.length;
+  if (!len) return;
+  const clamped = Math.max(0, Math.min(len - 1, idx));
+  const slide = slideRefs.value[clamped];
+  if (slide && typeof slide.scrollIntoView === 'function') {
+    slide.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
   }
+  activeIndex.value = clamped;
 };
 
-const animate = () => {
-  if (!isGalleryInView.value) {
-    animationFrameId = null;
+function goPrevSlide() {
+  if (activeIndex.value > 0) {
+    goToIndexInPage(activeIndex.value - 1);
     return;
   }
-  if (!rowOnePaused.value) {
-    rowOneScrollPosition -= rowOneSpeed.value;
-    if (Math.abs(rowOneScrollPosition) >= rowOneSingleSetWidth.value) {
-      rowOneScrollPosition += rowOneSingleSetWidth.value;
-    }
+  if (pageIndex.value > 0) {
+    pageIndex.value -= 1;
+    slideRefs.value = [];
+    nextTick(() => {
+      const scroller = snapScrollerRef.value;
+      if (scroller) scroller.scrollLeft = 0;
+      const last = visibleItems.value.length - 1;
+      requestAnimationFrame(() => goToIndexInPage(Math.max(0, last)));
+    });
   }
-  if (!rowTwoPaused.value) {
-    rowTwoScrollPosition += rowTwoSpeed.value;
-    if (rowTwoScrollPosition >= 0) {
-      rowTwoScrollPosition -= rowTwoSingleSetWidth.value;
-    }
-  }
-  syncTrackTransforms();
+}
 
-  if (!rowOnePaused.value || !rowTwoPaused.value) {
-    animationFrameId = requestAnimationFrame(animate);
+function goNextSlide() {
+  const vis = visibleItems.value.length;
+  if (!vis) return;
+  if (activeIndex.value < vis - 1) {
+    goToIndexInPage(activeIndex.value + 1);
+    return;
+  }
+  if (pageIndex.value < pageCount.value - 1) {
+    pageIndex.value += 1;
+    slideRefs.value = [];
+    activeIndex.value = 0;
+    nextTick(() => {
+      const scroller = snapScrollerRef.value;
+      if (scroller) scroller.scrollLeft = 0;
+      requestAnimationFrame(() => goToIndexInPage(0));
+    });
+  }
+}
+
+function goPrevPage() {
+  if (pageIndex.value <= 0) return;
+  pageIndex.value -= 1;
+  activeIndex.value = 0;
+  slideRefs.value = [];
+  nextTick(resetScrollerScroll);
+}
+
+function goNextPage() {
+  if (pageIndex.value >= pageCount.value - 1) return;
+  pageIndex.value += 1;
+  activeIndex.value = 0;
+  slideRefs.value = [];
+  nextTick(resetScrollerScroll);
+}
+
+function focusGlobalIndex(gIdx) {
+  const list = filteredItems.value;
+  if (gIdx < 0 || gIdx >= list.length) return;
+  const page = Math.floor(gIdx / PAGE_SIZE);
+  const local = gIdx % PAGE_SIZE;
+  if (pageIndex.value !== page) {
+    pageIndex.value = page;
+    slideRefs.value = [];
+    nextTick(() => {
+      const scroller = snapScrollerRef.value;
+      if (scroller) scroller.scrollLeft = 0;
+      requestAnimationFrame(() => goToIndexInPage(local));
+    });
   } else {
-    animationFrameId = null;
+    goToIndexInPage(local);
+  }
+}
+
+function onJumpChange(e) {
+  const raw = e.target?.value;
+  const gIdx = parseInt(raw, 10);
+  if (Number.isNaN(gIdx)) return;
+  focusGlobalIndex(gIdx);
+}
+
+function formatJumpOption(gIdx, item) {
+  const title = t(`gallery.items.${item.id}.title`);
+  const n = gIdx + 1;
+  const w = Math.max(2, String(filteredTotal.value || 1).length);
+  return `${String(n).padStart(w, '0')} · ${title}`;
+}
+
+function formatSlideOrdinal(idxInPage) {
+  const n = globalStartIndex.value + idxInPage + 1;
+  const w = Math.max(2, String(filteredTotal.value || 1).length);
+  return String(n).padStart(w, '0');
+}
+
+const onSnapKeydown = (e) => {
+  if (e.key === 'ArrowRight') {
+    e.preventDefault();
+    goNextSlide();
+  } else if (e.key === 'ArrowLeft') {
+    e.preventDefault();
+    goPrevSlide();
   }
 };
 
-const pauseAnimation = (row) => {
-  if (row === 1) {
-    rowOneSpeed.value = 0;
-    rowOnePaused.value = true;
-  }
-  if (row === 2) {
-    rowTwoSpeed.value = 0;
-    rowTwoPaused.value = true;
-  }
-};
-
-const resumeAnimation = (row) => {
-  if (row === 1) {
-    rowOneSpeed.value = rowOneBaseSpeed;
-    rowOnePaused.value = false;
-  }
-  if (row === 2) {
-    rowTwoSpeed.value = rowTwoBaseSpeed;
-    rowTwoPaused.value = false;
-  }
-  if (isGalleryInView.value) startAnimationLoop();
-};
-
-// --- Lightbox 逻辑 ---
+/** Lightbox */
 const isLightboxOpen = ref(false);
 const activeItem = ref({});
 
@@ -249,54 +517,28 @@ const closeLightbox = () => {
 };
 
 const handleEscapeKey = (e) => {
-  if (e.key === 'Escape' && isLightboxOpen.value) {
-    closeLightbox();
-  }
+  if (e.key === 'Escape' && isLightboxOpen.value) closeLightbox();
 };
 
 onMounted(() => {
-  rowTwoScrollPosition = -rowTwoSingleSetWidth.value;
-  nextTick(() => {
-    syncTrackTransforms();
-    const root = galleryRootRef.value;
-    if (root && typeof IntersectionObserver !== 'undefined') {
-      galleryVisibilityIo = new IntersectionObserver(
-          (entries) => {
-            const hit = entries[0];
-            const vis = !!(hit?.isIntersecting && hit.intersectionRatio >= 0.04);
-            isGalleryInView.value = vis;
-            if (vis) startAnimationLoop();
-            else stopGalleryRaf();
-          },
-          { threshold: [0, 0.04, 0.08, 0.15], rootMargin: '80px 0px 80px 0px' }
-      );
-      galleryVisibilityIo.observe(root);
-    } else {
-      startAnimationLoop();
-    }
-  });
   document.addEventListener('keydown', handleEscapeKey);
+  nextTick(() => requestAnimationFrame(syncActiveIndexFromScroll));
 });
 
 onUnmounted(() => {
-  galleryVisibilityIo?.disconnect();
-  galleryVisibilityIo = null;
-  stopGalleryRaf();
   document.removeEventListener('keydown', handleEscapeKey);
+  if (scrollRaf != null) cancelAnimationFrame(scrollRaf);
 });
 </script>
 
 <style scoped>
-/* =================================
-   布局容器
-   ================================= */
 .main-container {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 120px 0 100px 0;
+  padding: 120px 0 100px;
   overflow: hidden;
 }
 
@@ -305,15 +547,18 @@ onUnmounted(() => {
   position: relative;
 }
 
-/* =================================
-   标题区域（与 Projects / Skills HUD 对齐）
-   ================================= */
 .gallery-header-wrap {
   box-sizing: border-box;
   width: 100%;
   max-width: var(--page-content-max-width);
-  margin: 0 auto 3.5rem;
+  margin: 0 auto 2.75rem;
   padding: 0 var(--page-content-pad-x);
+}
+
+.gallery-cyber-block {
+  width: 100%;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.9rem;
 }
 
 .gallery-cyber-header {
@@ -322,15 +567,12 @@ onUnmounted(() => {
   align-items: flex-end;
   gap: var(--page-main-layout-gap);
   width: 100%;
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: 1rem;
 }
 
 .header-left {
   min-width: 0;
-  /* 左缘与 Projects 的 title-group 对齐（同属 content 内边距起点）；横向占满除状态条外的空间，避免副标题被窄栏强制换行 */
   flex: 1 1 auto;
-  max-width: calc(100% - 14rem);
+  max-width: calc(100% - 11.5rem);
 }
 
 .gallery-prefix {
@@ -339,7 +581,6 @@ onUnmounted(() => {
   font-size: var(--section-heading-prefix-size);
   font-weight: bold;
   color: var(--primary-color);
-  /* 与 Projects .prefix 一致：无额外字距，避免视觉右移 */
   letter-spacing: normal;
 }
 
@@ -363,180 +604,476 @@ onUnmounted(() => {
 
 .header-right {
   flex-shrink: 0;
-}
-
-.gallery-status-box {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 0.72rem;
-  padding: 6px 14px;
+  gap: 0.5rem;
+}
+
+.header-nav-cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.header-icon-btn {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: var(--btn-bg);
+  color: var(--text-color);
+  cursor: pointer;
+  font-size: 1rem;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.header-icon-btn:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--primary-color) 35%, var(--border-color));
+  background: var(--modal-bg);
+}
+
+.header-icon-btn:disabled {
+  opacity: 0.32;
+  cursor: not-allowed;
+}
+
+.header-counter-box {
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 10px;
   background: var(--btn-bg);
   border: 1px solid var(--border-color);
   border-radius: 4px;
-  transition: border-color 0.25s ease, background-color 0.25s ease;
 }
 
-.gallery-status-box.paused {
-  border-color: color-mix(in srgb, var(--border-color) 70%, #f59e0b 30%);
-}
-
-.gallery-status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #10b981;
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.55);
-  animation: gallery-pulse 2s ease-in-out infinite;
-}
-
-.gallery-status-dot.paused {
-  background: #f59e0b;
-  box-shadow: 0 0 10px rgba(245, 158, 11, 0.55);
-  animation: none;
-}
-
-.gallery-status-text {
+.header-counter {
   font-family: var(--font-mono);
   font-size: 0.72rem;
-  color: var(--secondary-color);
+  color: var(--text-color);
+  font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
-.gallery-status-box.paused .gallery-status-text {
+.gallery-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem 0.55rem;
+  margin-top: 0.75rem;
+}
+
+.control-search-wrap {
+  flex: 1 1 140px;
+  min-width: min(100%, 160px);
+  max-width: min(100%, 280px);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  height: 32px;
+  padding: 0 0.5rem 0 0.55rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: var(--btn-bg);
+}
+
+.control-search-icon {
+  font-size: 0.85rem;
+  color: var(--secondary-color);
+  flex-shrink: 0;
+}
+
+.control-search-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: var(--text-color);
+  outline: none;
+}
+
+.control-search-input::placeholder {
+  color: color-mix(in srgb, var(--secondary-color) 80%, transparent);
+}
+
+.control-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  flex: 1 1 auto;
+  justify-content: flex-end;
+}
+
+.control-chip {
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--secondary-color);
+  cursor: pointer;
+  line-height: 1.3;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+.control-chip:hover {
+  border-color: color-mix(in srgb, var(--primary-color) 32%, var(--border-color));
   color: var(--text-color);
 }
 
-@keyframes gallery-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.45; }
+.control-chip.is-active {
+  border-color: color-mix(in srgb, var(--primary-color) 42%, var(--border-color));
+  background: color-mix(in srgb, var(--primary-color) 12%, transparent);
+  color: var(--text-color);
 }
 
-/* =================================
-   滚动轨道通用样式
-   ================================= */
-.scroll-container {
-  width: 100%;
-  padding: 1rem 0;
-  overflow: hidden;
-  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-}
-
-.scroll-track {
-  display: flex;
-  width: max-content;
-}
-
-/* =================================
-   卡片设计
-   ================================= */
-.gallery-card {
-  flex-shrink: 0;
-  position: relative;
+.control-jump-select {
+  flex: 1 1 160px;
+  min-width: min(100%, 140px);
+  max-width: min(100%, 320px);
+  height: 32px;
+  padding: 0 1.75rem 0 0.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: var(--btn-bg);
+  color: var(--text-color);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
   cursor: pointer;
-  background-color: var(--modal-bg);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 16 16'%3E%3Cpath fill='%23888' d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.45rem center;
+}
+
+.control-jump-select:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.control-page-cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.control-page-icon {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--secondary-color);
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+.control-page-icon:hover:not(:disabled) {
+  color: var(--text-color);
+  background: color-mix(in srgb, var(--btn-bg) 80%, transparent);
+}
+
+.control-page-icon:disabled {
+  opacity: 0.28;
+  cursor: not-allowed;
+}
+
+.control-page-text {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--secondary-color);
+  font-variant-numeric: tabular-nums;
+  padding: 0 4px;
+  white-space: nowrap;
+}
+
+.gallery-empty {
+  width: 100%;
+  max-width: var(--page-content-max-width);
+  padding: 2.5rem 1.5rem;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--secondary-color);
+  border: 1px dashed var(--border-color);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--btn-bg) 40%, transparent);
+}
+
+.gallery-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+/* 底部指示器：与标题区 HUD（边框 + mono）同一语境 */
+.gallery-indicator {
+  width: 100%;
+  max-width: min(560px, 100%);
+  padding: 0 var(--page-content-pad-x);
+  box-sizing: border-box;
+}
+
+.gallery-indicator-track {
+  height: 4px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  background: var(--btn-bg);
+  overflow: hidden;
+  position: relative;
+}
+
+.gallery-indicator-fill {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--primary-color) 82%, var(--text-color)),
+    var(--primary-color)
+  );
+  box-shadow: 0 0 16px rgb(var(--primary-color-rgb) / 0.28);
+  transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.gallery-indicator-segments {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 0.65rem;
+  width: 100%;
+}
+
+.gallery-indicator-seg {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 36px;
+  height: 10px;
+  padding: 0;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  background: color-mix(in srgb, var(--border-color) 88%, var(--secondary-color));
+  transition:
+    background 0.2s ease,
+    height 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.gallery-indicator-seg:hover {
+  background: color-mix(in srgb, var(--secondary-color) 35%, var(--border-color));
+}
+
+.gallery-indicator-seg.is-active {
+  height: 12px;
+  background: var(--primary-color);
+  box-shadow: 0 0 12px rgb(var(--primary-color-rgb) / 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery-indicator-fill {
+    transition: none;
+  }
+}
+
+/* —— 橱窗舞台：边缘羽化 + scroll-snap —— */
+.snap-stage {
+  --snap-w: min(540px, 86vw);
+  --snap-gap: clamp(12px, 2.5vw, 20px);
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  isolation: isolate;
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black min(8%, 48px),
+    black max(92%, calc(100% - 48px)),
+    transparent 100%
+  );
+}
+
+.snap-scroller {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: var(--snap-gap);
+  width: 100%;
+  padding-block: 0.5rem 0.25rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scroll-padding-inline: max(1rem, calc(50% - var(--snap-w) / 2));
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  outline: none;
+}
+
+.snap-scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.snap-scroller:focus-visible {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-color) 55%, transparent);
+  border-radius: 12px;
+}
+
+.snap-slide {
+  flex: 0 0 var(--snap-w);
+  scroll-snap-align: center;
+  scroll-snap-stop: normal;
+  min-width: 0;
+  cursor: pointer;
+  border-radius: 14px;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
+}
+
+.snap-slide:not(.is-active) {
+  opacity: 0.72;
+  transform: scale(0.94);
+}
+
+.snap-slide.is-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .snap-scroller {
+    scroll-behavior: auto;
+  }
+  .snap-slide {
+    transition: none;
+  }
+  .snap-slide:not(.is-active) {
+    opacity: 0.88;
+    transform: none;
+  }
+}
+
+.snap-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--modal-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  box-shadow:
+    0 4px 6px -1px color-mix(in srgb, var(--text-color) 8%, transparent),
+    0 18px 40px -18px color-mix(in srgb, var(--text-color) 22%, transparent);
   overflow: hidden;
   user-select: none;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
-.row-one .polaroid-style {
-  width: 300px;
-  height: 240px;
-  margin-right: 20px;
-  padding: 10px 10px 40px 10px;
-  border-radius: 4px;
+.snap-slide:hover .snap-card,
+.snap-slide:focus-within .snap-card {
+  border-color: color-mix(in srgb, var(--primary-color) 35%, var(--border-color));
+  box-shadow:
+    0 8px 16px -4px color-mix(in srgb, var(--text-color) 12%, transparent),
+    0 28px 56px -24px color-mix(in srgb, var(--primary-color) 18%, transparent);
 }
 
-.row-one .polaroid-style:nth-child(even) {
-  transform: rotate(1deg);
-}
-
-.row-one .polaroid-style:nth-child(odd) {
-  transform: rotate(-1deg);
-}
-
-.row-two .film-style {
-  width: 240px;
-  height: 160px;
-  margin-right: 20px;
-  padding: 8px;
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
-}
-
-.image-wrapper {
-  width: 100%;
-  height: 100%;
+.snap-media {
   position: relative;
+  aspect-ratio: 16 / 10;
+  background: var(--btn-bg);
   overflow: hidden;
-  border-radius: 2px;
-  background-color: var(--btn-bg);
 }
 
-.gallery-image {
+.snap-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.card-footer {
-  position: absolute;
-  bottom: 10px;
-  left: 0;
-  width: 100%;
-  text-align: center;
+.snap-slide:hover .snap-image,
+.snap-slide:focus-within .snap-image {
+  transform: scale(1.04);
 }
 
-.card-tag {
-  color: var(--secondary-color);
-  font-size: 1rem;
-  font-weight: 500;
-}
-
-/* =================================
-   悬停效果
-   ================================= */
-.gallery-card:hover {
-  transform: scale(1.05) rotate(0deg) !important;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
-  z-index: 10;
-}
-
-.hover-overlay {
+.snap-media-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
+  background: linear-gradient(to top, color-mix(in srgb, var(--text-color) 55%, transparent) 0%, transparent 45%);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
 
-.gallery-card:hover .hover-overlay {
+.snap-slide:hover .snap-media-overlay,
+.snap-slide:focus-within .snap-media-overlay {
   opacity: 1;
 }
 
-.view-icon {
-  font-size: 1.35rem;
+.snap-zoom-icon {
+  font-size: 1.5rem;
   color: #fff;
-  transition: transform 0.3s ease;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45));
 }
 
-.gallery-card:hover .gallery-image {
-  transform: scale(1.1);
+.snap-caption {
+  display: flex;
+  align-items: baseline;
+  gap: 0.65rem;
+  padding: 0.65rem 1rem 0.85rem;
+  border-top: 1px solid var(--border-color);
+  background: color-mix(in srgb, var(--btn-bg) 65%, var(--modal-bg));
 }
 
-.gallery-card:hover .view-icon {
-  transform: scale(1.08);
+.snap-caption-index {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  opacity: 0.9;
+  font-variant-numeric: tabular-nums;
 }
 
-/* =================================
-   Lightbox 灯箱 (核心修复)
-   ================================= */
+.snap-caption-title {
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text-color);
+  line-height: 1.35;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Lightbox */
 .lightbox-overlay {
   position: fixed;
   inset: 0;
@@ -558,7 +1095,7 @@ onUnmounted(() => {
 }
 
 .lightbox-content {
-  position: relative; /* 必须为按钮提供定位基准 */
+  position: relative;
   max-width: 90vw;
   max-height: 90vh;
   display: flex;
@@ -593,11 +1130,10 @@ onUnmounted(() => {
   max-width: 600px;
 }
 
-/* 按钮定位修复 */
 .close-btn {
   position: absolute;
   top: -10px;
-  right: -50px; /* 默认在图片外部右上角 */
+  right: -50px;
   background: none;
   border: none;
   color: white;
@@ -614,72 +1150,73 @@ onUnmounted(() => {
   transform: scale(1.1);
 }
 
-/* Vue Transition */
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.3s ease;
 }
 
-.fade-enter-from, .fade-leave-to {
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
 }
 
-/* =================================
-   响应式适配
-   ================================= */
 @media (max-width: 1024px) {
   .close-btn {
-    right: 0px;
-    top: -50px; /* 屏幕较窄时放在图片上方中间或右侧 */
+    right: 0;
+    top: -50px;
   }
 }
 
 @media (max-width: 900px) {
   .gallery-header-wrap {
-    margin-bottom: 2.5rem;
+    margin-bottom: 1.75rem;
   }
 
   .gallery-cyber-header {
     flex-direction: column;
     align-items: flex-start;
+    gap: 0.75rem;
   }
 
   .header-left {
     max-width: 100%;
   }
 
+  .header-right {
+    align-self: stretch;
+    justify-content: space-between;
+  }
+
   .gallery-subtitle {
     white-space: normal;
   }
 
-  .header-right {
-    align-self: stretch;
+  .gallery-controls {
+    margin-top: 0.65rem;
   }
 
-  .gallery-status-box {
-    justify-content: center;
+  .control-chips {
+    justify-content: flex-start;
+  }
+
+  .control-search-wrap {
+    max-width: 100%;
+    flex: 1 1 100%;
+  }
+
+  .control-jump-select {
+    max-width: 100%;
+    flex: 1 1 100%;
+  }
+
+  .control-page-cluster {
     width: 100%;
-  }
-
-  .gallery-status-text {
-    white-space: normal;
-    text-align: center;
-    line-height: 1.35;
+    justify-content: center;
+    padding-top: 0.15rem;
   }
 }
 
 @media (max-width: 768px) {
-  .row-one .polaroid-style {
-    width: 220px;
-    height: 180px;
-    padding: 6px 6px 30px 6px;
-  }
-
-  .row-two .film-style {
-    width: 180px;
-    height: 120px;
-  }
-
-  /* 移动端按钮放在图片内部右上角 */
   .close-btn {
     top: 10px;
     right: 10px;
@@ -692,27 +1229,21 @@ onUnmounted(() => {
     align-items: center;
     justify-content: center;
   }
+
+  .snap-stage {
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 5%,
+      black 95%,
+      transparent 100%
+    );
+  }
 }
 
-/* 大屏：主栏宽度与字号由 main.css 变量驱动，与 Projects 一致 */
 @media (min-width: 1600px) {
-  .row-one .polaroid-style {
-    width: 340px;
-    height: 270px;
-  }
-  
-  .row-two .film-style {
-    width: 280px;
-    height: 190px;
-  }
-  
-  .scroll-container {
-    padding: 1.2rem 0;
-  }
-  
-  .row-one .polaroid-style,
-  .row-two .film-style {
-    margin-right: 25px;
+  .snap-stage {
+    --snap-w: min(580px, 84vw);
   }
 }
 </style>

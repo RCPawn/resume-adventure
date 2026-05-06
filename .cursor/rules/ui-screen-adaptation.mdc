@@ -1,0 +1,57 @@
+---
+description: 与本仓库现有实现一致的界面适配屏幕（断点、CSS 变量、安全区与 dvh）
+globs: src/**/*.vue,src/assets/main.css,src/assets/base.css
+alwaysApply: false
+---
+
+# 界面适配屏幕（沿用本仓库既有做法）
+
+以下规则**仅整理仓库里已经采用的做法**，新增或修改界面时请对齐这些模式；不要凭想象引入本文件未列出的「团队规范」（例如本仓库未使用 `@container` 查询）。
+
+## 全局宽度与内边距（优先复用变量）
+
+主站布局在 `src/assets/main.css` 的 `:root` / `html.dark` 中定义了与首页、作品区等共用的 token，新的大区块应优先使用它们，而不是各组件写死另一套 max-width：
+
+- `--page-max-width`（默认 1100px）、`--page-max-width-lg`（1300px）、`--page-max-width-xl`（1560px）
+- `--page-pad-x`（默认 43px；大屏上部分页面会用 `clamp` 微调）
+- `--page-content-max-width`、`--page-content-pad-x`（与主栏/学习足迹等对齐）
+- `--page-index-rail-width`、`--page-main-layout-gap`、区块标题字号变量（`--section-heading-*`）
+
+同一文件里用媒体查询**覆盖这些变量**，而不是在每个组件里重复另一套「页面总宽」数值：
+
+- `max-width: 900px`：`--page-content-pad-x` 收紧为 `1rem`
+- `min-width: 1600px`：`--page-content-max-width` 切到 `lg`，标题略放大
+- `min-width: 1920px`：`--page-content-max-width` 切到 `xl`，侧栏宽度与标题用 `clamp` 等略放大；顶栏 `--nav-bg` 不透明度略提高（与 `NavBar` 注释一致）
+
+## 本仓库里实际出现的断点（按需选用，勿随意发明新档位）
+
+在现有 Vue/CSS 中已出现过的 `min-width` / `max-width` 大致包括：**480px、520px、600px、768px、900px、1024px、1180px、1440px、1600px、1920px**。新组件若需要响应式，应**从上述档位中选与邻近模块一致的**，避免再增加大量零散断点。
+
+典型用途（与当前代码一致，便于对齐）：
+
+- **900px**：主栏水平内边距、作品区 `ProjectsSection` 侧栏改纵向、横向滚动指示条等
+- **768px**：导航 `NavBar`、文档页 `ProjectDetail`、返回按钮、部分全屏视图等「平板/手机分界」
+- **1024px**：`HeroSection` 首屏双列改单列、`FooterSection` 底栏栅格改单列
+- **1180px**：底栏元信息区 `footer-meta-bar` 改为两行网格
+- **480px / 520px**：更窄手机上的间距、字号、底栏元信息改纵向堆叠、作品卡片页脚等
+- **1600px / 1920px**：大屏加宽容器、间距与正文字号策略（文档页注释：大屏不盲目放大正文以免过早换行；用加宽与留白为主）
+
+## 布局与交互模式（与现有组件一致）
+
+- **窄屏纵向堆叠**：多栏布局在断点处改为 `flex-direction: column`，侧栏/目录宽度 `100%`，必要时取消 `sticky` 或改为 `position: relative`（见 `ProjectDetail`、`ProjectsSection`）。
+- **横向滚动列表**：需要时在窄屏使用 `overflow-x: auto`、`-webkit-overflow-scrolling: touch`、`flex-shrink: 0`，并可配合边缘渐变 `mask-image`（见 `ProjectsSection` 滚动指示条）。
+- **流体尺寸**：已广泛使用 `clamp()`、`min()` / `max()` 混合 `vw`、`rem`、`px` 控制字号与内外边距；**避免在普通笔记本宽度上用过大系数的纯 `vw` 撑满整条导航或首屏**（`NavBar` 内注释与 `1600px` / `1920px` 分级加码的做法）。
+- **视口高度**：全屏或接近全屏的区域已采用 **`100vh` 与 `100dvh` 并列**（如 `HeroSection`、`OlivePpt`、`ProjectDetail` 相关场景），以兼顾移动端浏览器 UI 伸缩。
+- **刘海与底部安全区**：文档等页面在窄屏使用 **`env(safe-area-inset-*)`** 与 `max(12px, env(...))` 等形式（见 `ProjectDetail`），避免贴边被遮挡。
+- **减少动效**：部分组件对 `@media (prefers-reduced-motion: reduce)` 关闭或弱化动画（如 `NavBar`、`HeroSection`、`ChatbotButton`），新加显著动画时应保持同类处理。
+
+## 根页面与盒模型
+
+- `index.html` 已包含 **`meta viewport`（`width=device-width, initial-scale=1.0`）**，不要移除或改成会破坏移动端缩放的配置。
+- 全局 `box-sizing: border-box` 在 `src/assets/base.css`；新样式默认按此心智即可。
+
+## 实施顺序建议
+
+1. 先查 `main.css` 是否已有可复用的 `--page-*` / 标题变量。  
+2. 对照同页或相邻区块（Hero / Projects / Footer / ProjectDetail）已用的断点与写法。  
+3. 需要大屏再加宽时，优先在 **`min-width: 1600px` 与 `min-width: 1920px`** 两档增量调整，与现有注释意图一致。
