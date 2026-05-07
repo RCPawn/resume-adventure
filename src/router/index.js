@@ -38,6 +38,16 @@ const router = createRouter({
             name: 'project',
             component: () => import('../views/ProjectDetail.vue'),
         },
+        {
+            path: '/share',
+            name: 'share-home',
+            component: () => import('../views/ShareListView.vue'),
+        },
+        {
+            path: '/share/:slug',
+            name: 'share-detail',
+            component: () => import('../views/ShareDetail.vue'),
+        },
     ],
 })
 

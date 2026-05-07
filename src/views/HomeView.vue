@@ -215,4 +215,5 @@ onUnmounted(() => {
   pointer-events: none;
   visibility: hidden;
 }
+
 </style>

@@ -1,0 +1,131 @@
+/* Scoped hljs — regenerate: node scripts/prefix-hljs-doc-themes.mjs */
+html.dark .markdown-body pre code.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0;
+}
+html.dark .markdown-body code.hljs {
+  padding: 3px 5px
+}
+/*!
+  Theme: GitHub Dark
+  Description: Dark theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-dark
+  Current colors taken from GitHub's CSS
+*/
+html.dark .markdown-body .hljs {
+  color: #c9d1d9;
+  background: transparent;
+}
+html.dark .markdown-body .hljs-doctag,
+html.dark .markdown-body .hljs-keyword,
+html.dark .markdown-body .hljs-meta .hljs-keyword,
+html.dark .markdown-body .hljs-template-tag,
+html.dark .markdown-body .hljs-template-variable,
+html.dark .markdown-body .hljs-type,
+html.dark .markdown-body .hljs-variable.language_ {
+  /* prettylights-syntax-keyword */
+  color: #ff7b72
+}
+html.dark .markdown-body .hljs-title,
+html.dark .markdown-body .hljs-title.class_,
+html.dark .markdown-body .hljs-title.class_.inherited__,
+html.dark .markdown-body .hljs-title.function_ {
+  /* prettylights-syntax-entity */
+  color: #d2a8ff
+}
+html.dark .markdown-body .hljs-attr,
+html.dark .markdown-body .hljs-attribute,
+html.dark .markdown-body .hljs-literal,
+html.dark .markdown-body .hljs-meta,
+html.dark .markdown-body .hljs-number,
+html.dark .markdown-body .hljs-operator,
+html.dark .markdown-body .hljs-variable,
+html.dark .markdown-body .hljs-selector-attr,
+html.dark .markdown-body .hljs-selector-class,
+html.dark .markdown-body .hljs-selector-id {
+  /* prettylights-syntax-constant */
+  color: #79c0ff
+}
+html.dark .markdown-body .hljs-regexp,
+html.dark .markdown-body .hljs-string,
+html.dark .markdown-body .hljs-meta .hljs-string {
+  /* prettylights-syntax-string */
+  color: #a5d6ff
+}
+html.dark .markdown-body .hljs-built_in,
+html.dark .markdown-body .hljs-symbol {
+  /* prettylights-syntax-variable */
+  color: #ffa657
+}
+html.dark .markdown-body .hljs-comment {
+  color: #6e7681;
+  font-style: italic
+}
+html.dark .markdown-body .hljs-code,
+html.dark .markdown-body .hljs-formula {
+  color: #8b949e
+}
+html.dark .markdown-body .hljs-name,
+html.dark .markdown-body .hljs-quote,
+html.dark .markdown-body .hljs-selector-tag,
+html.dark .markdown-body .hljs-selector-pseudo {
+  /* prettylights-syntax-entity-tag */
+  color: #7ee787
+}
+html.dark .markdown-body .hljs-subst {
+  /* prettylights-syntax-storage-modifier-import */
+  color: #c9d1d9
+}
+html.dark .markdown-body .hljs-section {
+  /* prettylights-syntax-markup-heading */
+  color: #1f6feb;
+  font-weight: bold
+}
+html.dark .markdown-body .hljs-bullet {
+  /* prettylights-syntax-markup-list */
+  color: #f2cc60
+}
+html.dark .markdown-body .hljs-emphasis {
+  /* prettylights-syntax-markup-italic */
+  color: #c9d1d9;
+  font-style: italic
+}
+html.dark .markdown-body .hljs-strong {
+  /* prettylights-syntax-markup-bold */
+  color: #c9d1d9;
+  font-weight: bold
+}
+html.dark .markdown-body .hljs-addition {
+  /* prettylights-syntax-markup-inserted */
+  color: #aff5b4;
+  background-color: #033a16
+}
+html.dark .markdown-body .hljs-deletion {
+  /* prettylights-syntax-markup-deleted */
+  color: #ffdcd7;
+  background-color: #67060c
+}
+html.dark .markdown-body .hljs-char.escape_ {
+  color: #79c0ff;
+}
+html.dark .markdown-body .hljs-link {
+  color: #58a6ff !important;
+}
+html.dark .markdown-body .hljs-params {
+  color: #c9d1d9;
+}
+html.dark .markdown-body .hljs-property {
+  color: #79c0ff !important;
+}
+html.dark .markdown-body .hljs-punctuation {
+  color: #8b949e !important;
+}
+html.dark .markdown-body .hljs-tag {
+  color: #7ee787 !important;
+}
+

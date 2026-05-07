@@ -11,15 +11,14 @@
       <a href="#projects" class="napkin-nav-link">{{ t('nav.journey') }}</a>
       <a href="#gallery" class="napkin-nav-link">{{ t('nav.works') }}</a>
       <a href="#footer" class="napkin-nav-link">{{ t('nav.contact') }}</a>
-      <router-link to="/game" class="napkin-nav-link napkin-nav-game">
-        <svg class="napkin-nav-game-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
-          <path
-            fill="currentColor"
-            d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H9v2H7v-2H5v-2h2V9h2v2h2v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5S20.33 12 19.5 12z"
-          />
-        </svg>
-        <span class="napkin-nav-game-label">{{ t('nav.game') }}</span>
-      </router-link>
+      <div class="napkin-nav-app-cluster" role="group">
+        <router-link
+          :to="{ name: 'share-home' }"
+          class="napkin-nav-link napkin-nav-share"
+          :class="{ 'router-link-active': shareNavActive }"
+        >{{ t('nav.share') }}</router-link>
+        <router-link to="/game" class="napkin-nav-link napkin-nav-game">{{ t('nav.game') }}</router-link>
+      </div>
     </div>
     <div class="napkin-controls">
       <!-- GitHub 按钮 -->
@@ -42,11 +41,18 @@
 </template>
 
 <script setup>
-import { onMounted, inject, nextTick } from 'vue'
+import { onMounted, inject, nextTick, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import ThemeAppearanceToggle from '@/components/ThemeAppearanceToggle.vue'
 
 const { locale, t } = useI18n()
+const route = useRoute()
+
+/** 全文库列表与详情同属「栈迹文库」导航态 */
+const shareNavActive = computed(
+  () => route.name === 'share-home' || route.name === 'share-detail',
+)
 
 /** 首页惰性挂载区块后，再滚动到 #projects 等锚点（由 HomeView provide） */
 const ensureHomeBelowFold = inject('ensureHomeBelowFold', null)
@@ -152,6 +158,31 @@ onMounted(() => {
   z-index: 1;
 }
 
+/* 文库 + 游戏：同一视觉组，组内间距远小于主导航 gap，避免两道主色并排抢戏 */
+.napkin-nav-app-cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.12rem;
+}
+
+.napkin-nav-app-cluster .napkin-nav-share {
+  position: relative;
+  padding-right: 0.44rem;
+}
+
+.napkin-nav-app-cluster .napkin-nav-share::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 0.7rem;
+  background: color-mix(in srgb, var(--border-color) 58%, transparent);
+  border-radius: 1px;
+  pointer-events: none;
+}
+
 .napkin-nav-link {
   /* inline 时 padding 的命中区域不稳定；inline-flex 整块可点（常见导航做法） */
   display: inline-flex;
@@ -175,58 +206,28 @@ onMounted(() => {
   color: var(--primary-color);
 }
 
-/* 「我的游戏」：主色常驻；左右间距由 .napkin-nav-links 的 gap 统一控制 */
-.napkin-nav-game {
-  gap: 0.28rem;
-  padding: 0.15rem 0.4rem;
-  color: var(--primary-color);
+/* 「栈迹文库」「我的游戏」：默认与主导航同为次要色；悬停 / 当前路由才主色，避免双蓝并排。
+ * 字号与当初仅去图标时一致（原 label 样式），略小于其它锚点。 */
+.napkin-nav-game,
+.napkin-nav-share {
+  padding: 0.15rem 0.32rem;
+  color: var(--secondary-color);
   font-weight: 500;
-}
-
-.napkin-nav-game-icon {
-  flex-shrink: 0;
-  width: 14px;
-  height: 14px;
-  display: block;
-  transform-origin: 50% 50%;
-  color: inherit;
-  opacity: 1;
-}
-
-/* 悬停：图标轻微摆动，文案不位移 */
-@keyframes napkin-nav-game-icon-wiggle {
-  0%,
-  100% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-  22% {
-    transform: translate(-1px, 0.5px) rotate(-2.5deg);
-  }
-  48% {
-    transform: translate(1px, -0.5px) rotate(2.5deg);
-  }
-  72% {
-    transform: translate(-0.5px, 0) rotate(-1deg);
-  }
-}
-
-.napkin-nav-game:hover .napkin-nav-game-icon {
-  animation: napkin-nav-game-icon-wiggle 0.38s ease-out both;
-}
-
-.napkin-nav-game-label {
   font-size: 0.8125rem;
-  font-weight: 500;
   letter-spacing: 0.02em;
   line-height: 1.25;
 }
 
-.napkin-nav-game.router-link-active {
+.napkin-nav-game:hover,
+.napkin-nav-share:hover,
+.napkin-nav-game.router-link-active,
+.napkin-nav-share.router-link-active {
   color: var(--primary-color);
 }
 
-.napkin-nav-game.router-link-active .napkin-nav-game-icon {
-  opacity: 1;
+.napkin-nav-game.router-link-active,
+.napkin-nav-share.router-link-active {
+  font-weight: 600;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -236,10 +237,6 @@ onMounted(() => {
 
   .napkin-control-btn {
     transition: color 0.2s ease, background-color 0.2s ease;
-  }
-
-  .napkin-nav-game:hover .napkin-nav-game-icon {
-    animation: none;
   }
 
   .napkin-control-btn.github:hover .napkin-icon,
@@ -339,8 +336,15 @@ html.dark .napkin-control-btn.theme:hover {
     padding: var(--nav-pad-y) var(--nav-pad-x);
   }
 
-  /* 小屏仅保留居中的「我的游戏」，其余锚点收入滚动或后续扩展 */
-  .napkin-nav-link:not(.napkin-nav-game) {
+  /* 小屏仅保留文库+游戏；组内再收紧，与右排按钮区平衡 */
+  .napkin-nav-app-cluster {
+    gap: 0.08rem;
+  }
+
+  .napkin-nav-app-cluster .napkin-nav-share {
+    padding-right: 0.38rem;
+  }
+  .napkin-nav-link:not(.napkin-nav-game):not(.napkin-nav-share) {
     display: none;
   }
 
@@ -370,24 +374,28 @@ html.dark .napkin-control-btn.theme:hover {
     gap: 1.875rem;
   }
 
+  .napkin-nav-app-cluster {
+    gap: 0.15rem;
+  }
+
+  .napkin-nav-app-cluster .napkin-nav-share {
+    padding-right: 0.48rem;
+  }
+
+  .napkin-nav-app-cluster .napkin-nav-share::after {
+    height: 0.75rem;
+  }
+
   .napkin-nav-link {
     font-size: 0.95rem;
     min-height: 2.25rem;
     padding: 0.18rem 0.42rem;
   }
 
-  .napkin-nav-game {
+  .napkin-nav-game,
+  .napkin-nav-share {
     padding: 0.18rem 0.42rem;
-    gap: 0.3rem;
-  }
-
-  .napkin-nav-game-label {
     font-size: 0.85rem;
-  }
-
-  .napkin-nav-game-icon {
-    width: 15px;
-    height: 15px;
   }
 
   .napkin-controls {
@@ -425,24 +433,20 @@ html.dark .napkin-control-btn.theme:hover {
     gap: 2rem;
   }
 
+  .napkin-nav-app-cluster {
+    gap: 0.18rem;
+  }
+
   .napkin-nav-link {
     font-size: 0.97rem;
     min-height: 2.3125rem;
     padding: 0.2rem 0.44rem;
   }
 
-  .napkin-nav-game {
+  .napkin-nav-game,
+  .napkin-nav-share {
     padding: 0.2rem 0.44rem;
-    gap: 0.32rem;
-  }
-
-  .napkin-nav-game-label {
     font-size: 0.875rem;
-  }
-
-  .napkin-nav-game-icon {
-    width: 16px;
-    height: 16px;
   }
 
   .napkin-controls {

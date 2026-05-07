@@ -170,8 +170,9 @@ resume-adventure/
 
 仓库内部分设计/接入说明（持续补充）：
 
-- [`docs/不蒜子接入说明.md`](docs/不蒜子接入说明.md) — 访问量统计的 DOM 与请求约定  
-- [`docs/技术分享模块-设计文档.md`](docs/技术分享模块-设计文档.md) — 技术分享 / 站内知识库模块的规划与信息架构（与现有「学习足迹」叙事互补）
+- [`docs/technical/不蒜子接入说明.md`](docs/technical/不蒜子接入说明.md) — 访问量统计的 DOM 与请求约定  
+- [`docs/design/技术分享模块-设计文档.md`](docs/design/技术分享模块-设计文档.md) — 栈迹文库模块的规划与信息架构（与现有「学习足迹」叙事互补）  
+- 栈迹文库正文列表的数据源：`src/data/shareDocsRegistry.js`（构建期 `import.meta.glob` 收录 `docs/technical/*.md`）；学习足迹项目详情则见 `src/data/projects.json` 中的 `mdFile` 字段。
 
 ---
 

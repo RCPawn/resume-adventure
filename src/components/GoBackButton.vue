@@ -3,8 +3,8 @@
     type="button"
     @click="goBack"
     :class="['back-btn', `back-btn--${variant}`, { 'back-btn--inline': inline }]"
-    title="返回上一级"
-    aria-label="返回上一页"
+    :aria-label="ariaLabel || '返回上一页'"
+    :title="ariaLabel || '返回上一级'"
   >
     <svg class="back-btn__icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
       <path
@@ -18,7 +18,7 @@
 <script setup>
 import { useRouter } from 'vue-router'
 
-defineProps({
+const props = defineProps({
   /** surface：与顶栏控制按钮一致的浅色底+描边；hero：叠在大图/暗底上时的高对比毛玻璃 */
   variant: {
     type: String,
@@ -30,16 +30,39 @@ defineProps({
     type: Boolean,
     default: false,
   },
+  /** 无历史栈或仅单条记录时的回退路径（如栈迹文库详情 → /share） */
+  fallbackPath: {
+    type: String,
+    default: '',
+  },
+  /** 优先于 fallbackPath：Vue Router 位置对象（如 `{ name: 'home', hash: '#share' }`） */
+  fallbackRoute: {
+    type: Object,
+    default: null,
+  },
+  /** 覆盖无障碍标签（如「返回栈迹汇编列表」） */
+  ariaLabel: {
+    type: String,
+    default: '',
+  },
 })
 
 const router = useRouter()
 
 const goBack = () => {
-  if (window.history.length <= 1) {
-    router.push('/')
-  } else {
+  if (typeof window !== 'undefined' && window.history.length > 1) {
     router.go(-1)
+    return
   }
+  if (props.fallbackRoute && typeof props.fallbackRoute === 'object') {
+    router.push(props.fallbackRoute)
+    return
+  }
+  if (props.fallbackPath) {
+    router.push(props.fallbackPath)
+    return
+  }
+  router.push('/')
 }
 </script>
 

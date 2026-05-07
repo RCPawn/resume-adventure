@@ -7,7 +7,8 @@ export default {
         journey: '学习足迹',
         works: '作品影像',
         contact: '联系方式',
-        game: '我的游戏'
+        game: '我的游戏',
+        share: '栈迹文库'
     },
 
     /** 悬浮 AI 对话 Chatbot */
@@ -134,6 +135,43 @@ export default {
         }
     },
 
+    /** 栈迹文库 ShareListView / ShareDetail（正文来自 docs/technical） */
+    share: {
+        title: '栈迹汇编',
+        toolbarAria: '栈迹汇编筛选与分页',
+        listTotal: '收录 {n} 篇',
+        listFiltered: '筛选 {m} / {n} 篇',
+        listProgressAria: '列表与筛选状态',
+        backToSection: '返回首页',
+        searchPlaceholder: '搜索标题或摘要…',
+        searchAria: '按标题或摘要筛选',
+        tagGroupAria: '按标签筛选',
+        tagFilterLabel: '标签',
+        tagAll: '全部',
+        pagePrevAria: '上一页',
+        pageNextAria: '下一页',
+        pageIndicator: '{current}/{total}',
+        emptyNone: '暂无收录。',
+        emptyFiltered: '没有匹配的文章，可清空筛选后再试。',
+        clearFilters: '清除筛选',
+        readMore: '阅读全文',
+        categories: {
+            integrations: '接入与集成',
+            general: '综合',
+            engineering: '前端工程化',
+            architecture: '架构与网关',
+            visualization: '可视化与图形'
+        },
+        loading: '加载正文…',
+        detailNotFound: '未找到该文档。',
+        tocTitle: '目录',
+        tocToggleAria: '展开或收起目录',
+        tagsAria: '文档标签',
+        dateCaption: '文档日期',
+        pagePvCaption: '本页阅读量（不蒜子）',
+        pagePvSuffix: '次'
+    },
+
     /** 页脚 FooterSection */
     footer: {
         appName: '开发者空间',
@@ -167,6 +205,7 @@ export default {
                 title: '站内',
                 links: [
                     {text: 'GitHub', url: 'https://github.com/RCPawn'},
+                    {text: '栈迹文库', url: '/share'},
                     {text: '我的游戏', url: '/game'}
                 ]
             }

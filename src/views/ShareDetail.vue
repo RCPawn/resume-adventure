@@ -1,18 +1,18 @@
 <template>
   <div ref="pageContainerRef" class="page-container">
-    <!-- 全宽功能条：返回、技术栈、统计与外链同一视觉轨道，避免「多个小组件」堆叠感 -->
+    <!-- 全宽功能条：返回、标签、统计同一视觉轨道（栈迹文库正文来自 docs/technical） -->
     <header ref="actionBarRef" class="action-bar">
       <div class="action-bar__inner">
         <div class="action-bar__cluster action-bar__cluster--grow">
           <div class="action-bar__nav">
-            <GoBackButton variant="ghost" inline />
+            <GoBackButton variant="ghost" inline fallback-path="/share" />
             <ThemeAppearanceToggle variant="doc" />
           </div>
-          <template v-if="currentProject">
+          <template v-if="article">
             <span class="action-bar__rule" aria-hidden="true" />
-            <div class="action-bar__tags" aria-label="技术栈">
+            <div class="action-bar__tags" :aria-label="t('share.tagsAria')">
               <span
-                v-for="tag in (currentProject.tags || [])"
+                v-for="tag in (article.tags || [])"
                 :key="tag"
                 class="action-tag"
                 :title="tag"
@@ -20,35 +20,22 @@
             </div>
           </template>
         </div>
-        <div v-if="currentProject" class="action-bar__cluster action-bar__cluster--end">
-          <span class="action-kpi" title="文档日期">
+        <div v-if="article" class="action-bar__cluster action-bar__cluster--end">
+          <span class="action-kpi" :title="t('share.dateCaption')">
             <svg class="action-kpi__ico" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
               <path fill="currentColor" d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/>
             </svg>
-            {{ currentProject.date || '—' }}
+            {{ article.date || '—' }}
           </span>
           <span class="action-bar__rule action-bar__rule--soft" aria-hidden="true" />
-          <span class="action-kpi" title="本页阅读量（不蒜子）">
+          <span class="action-kpi" :title="t('share.pagePvCaption')">
             <svg class="action-kpi__ico" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
               <path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
             </svg>
             <!-- 不蒜子会写入纯文本；勿放初始「--」在节点内，否则部分环境下脚本不覆盖；占位由 :empty::before 提供 -->
             <span id="busuanzi_page_pv" v-once class="page-pv-num page-pv-busuanzi" aria-live="polite" />
-            <span class="page-pv-suffix">次</span>
+            <span class="page-pv-suffix">{{ t('share.pagePvSuffix') }}</span>
           </span>
-          <a
-            v-if="currentProject.repoLink"
-            :href="currentProject.repoLink"
-            target="_blank"
-            class="action-kpi action-kpi--link"
-            rel="noreferrer"
-            title="在浏览器中打开源码仓库"
-          >
-            <svg class="action-kpi__ico" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
-              <path fill="currentColor" d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
-            </svg>
-            源码
-          </a>
         </div>
       </div>
     </header>
@@ -56,7 +43,7 @@
     <div class="doc-stage">
       <div v-if="loading" class="loading-state">
         <div class="spinner"></div>
-        加载精彩内容中...
+        {{ t('share.loading') }}
       </div>
       <div v-else-if="error" class="error-state">😕 {{ error }}</div>
       <div v-else class="doc-layout" :class="{ 'doc-layout--with-toc': toc.length > 0 }">
@@ -67,9 +54,9 @@
                 <svg class="toc-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
                   <path fill="currentColor" d="M3 6h18v2H3zM3 11h18v2H3zM3 16h18v2H3z"></path>
                 </svg>
-                <strong>目录</strong>
+                <strong>{{ t('share.tocTitle') }}</strong>
               </div>
-              <button type="button" class="toc-toggle" aria-label="切换目录">
+              <button type="button" class="toc-toggle" :aria-label="t('share.tocToggleAria')">
                 <span class="chev" :class="{ open: !isTocHidden }">
                   <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
                     <path fill="currentColor" d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/>
@@ -90,7 +77,7 @@
         </aside>
         <main
           class="markdown-column markdown-body"
-          :key="`project-md-${String(route.params.id)}-${isDarkMode}`"
+          :key="`share-md-${String(route.params.slug)}-${isDarkMode}`"
           v-html="htmlContent"
         />
       </div>
@@ -101,67 +88,34 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
-import MarkdownIt from 'markdown-it'
+import { useI18n } from 'vue-i18n'
 import mermaid from 'mermaid'
-import projectsData from '@/data/projects.json'
+import { getShareArticleBySlug } from '@/data/shareDocsRegistry'
+import { createDocMarkdownIt } from '@/utils/markdownItDoc'
 import GoBackButton from '@/components/GoBackButton.vue'
 import ThemeAppearanceToggle from '@/components/ThemeAppearanceToggle.vue'
 import { useAppearanceTheme } from '@/composables/useAppearanceTheme'
 import { requestBusuanziApply } from '@/utils/busuanziApi'
 import 'github-markdown-css/github-markdown.css'
 import '@/assets/doc-github-markdown-theme-bridge.css'
+import '@/assets/doc-hljs-github-light-scoped.css'
+import '@/assets/doc-hljs-github-dark-scoped.css'
 
 const route = useRoute()
 const { isDarkMode } = useAppearanceTheme()
+const { t } = useI18n()
 
-const md = new MarkdownIt({ html: true, linkify: true, typographer: true })
-const defaultHeadingOpen = md.renderer.rules.heading_open || function (tokens, idx, options, env, self) {
-  return self.renderToken(tokens, idx, options)
-}
-const defaultImageRender = md.renderer.rules.image || function (tokens, idx, options, env, self) {
-  return self.renderToken(tokens, idx, options)
-}
-
-const slugify = (str) => {
-  if (!str) return ''
-  return String(str).trim().toLowerCase()
-      .replace(/[\s+~\/]+/g, '-')
-      .replace(/[^\w\-一-龥\u4E00-\u9FFF]+/g, '')
-      .replace(/-+/g, '-').replace(/(^-|-$)/g, '')
-}
-
-md.renderer.rules.heading_open = function (tokens, idx, options, env, self) {
-  const next = tokens[idx + 1]
-  let title = ''
-  if (next && next.type === 'inline') title = next.content
-  const id = slugify(title || `heading-${idx}`)
-  const existing = tokens[idx].attrIndex && tokens[idx].attrIndex('id')
-  if (existing === -1) tokens[idx].attrPush(['id', id])
-  else tokens[idx].attrs[existing][1] = id
-  return defaultHeadingOpen(tokens, idx, options, env, self)
-}
-
-md.renderer.rules.image = function (tokens, idx, options, env, self) {
-  const token = tokens[idx]
-  const srcIndex = token.attrIndex('src')
-  if (srcIndex >= 0) {
-    let src = token.attrs[srcIndex][1] || ''
-    if (!src.startsWith('http') && !src.startsWith('/') && !src.startsWith('data:'))
-      token.attrs[srcIndex][1] = `/projects/${src}`
-  }
-  token.attrPush(['loading', 'lazy'])
-  token.attrJoin('class', 'md-img')
-  return defaultImageRender(tokens, idx, options, env, self)
-}
+/** 当前 slug 对应的 MarkdownIt（含相对图片前缀），随路由重建 */
+const mdRef = ref(null)
 
 const loading = ref(true)
 const error = ref('')
-/** 成功拉取后的原始 Markdown，用于亮暗切换时重渲染正文与 Mermaid */
+/** 成功解析后的正文 Markdown（无 frontmatter），用于亮暗切换时重渲染正文与 Mermaid */
 const mdSourceText = ref('')
 const htmlContent = ref('')
 const toc = ref([])
 const isTocHidden = ref(false)
-const currentProject = computed(() => projectsData.find(p => p.id === route.params.id))
+const article = computed(() => getShareArticleBySlug(route.params.slug))
 
 /** 顶栏实测高度 → --action-bar-actual；侧栏列占位 → 目录 position:fixed 的 left/width（桌面端消除 sticky 抖动） */
 const pageContainerRef = ref(null)
@@ -350,19 +304,20 @@ const fetchMarkdown = async () => {
   toc.value = []
   mdSourceText.value = ''
   try {
-    if (!currentProject.value) throw new Error('未找到项目')
-    const fileName = currentProject.value.mdFile
-    if (!fileName) throw new Error('暂无内容')
-    const response = await fetch(`/projects/${fileName}`)
-    if (!response.ok) throw new Error('加载失败')
-    const text = await response.text()
+    const art = getShareArticleBySlug(route.params.slug)
+    if (!art) throw new Error(t('share.detailNotFound'))
+    const { md, slugify } = createDocMarkdownIt({ assetBase: art.assetDir })
+    mdRef.value = md
+
+    const text = art.body || ''
     mdSourceText.value = text
+
     const tokens = md.parse(text, {})
     const list = []
     for (let i = 0; i < tokens.length; i++) {
-      const t = tokens[i]
-      if (t.type === 'heading_open') {
-        const level = parseInt(t.tag.replace('h', ''), 10)
+      const tok = tokens[i]
+      if (tok.type === 'heading_open') {
+        const level = parseInt(tok.tag.replace('h', ''), 10)
         const next = tokens[i + 1]
         const title = next && next.type === 'inline' ? next.content : ''
         const slug = slugify(title || `heading-${i}`)
@@ -375,18 +330,15 @@ const fetchMarkdown = async () => {
     error.value = err.message || String(err)
     mdSourceText.value = ''
     htmlContent.value = ''
+    mdRef.value = null
   } finally {
     loading.value = false
-    // 正文与 action 栏就绪后再拉不蒜子；具体合并与去重见 @/utils/busuanziApi
     await nextTick()
     requestBusuanziApply()
   }
 }
 
 onMounted(async () => {
-  if (typeof window !== 'undefined') {
-    void import('@/components/ProjectsSection.vue')
-  }
   if (typeof window !== 'undefined' && window.innerWidth <= 768) isTocHidden.value = true
 
   await nextTick()
@@ -440,7 +392,7 @@ onUnmounted(() => {
 })
 
 watch(
-  () => route.params.id,
+  () => route.params.slug,
   () => {
     fetchMarkdown()
   }
@@ -462,6 +414,8 @@ watch(htmlContent, async () => {
 
 watch(isDarkMode, async () => {
   if (!mdSourceText.value || loading.value) return
+  if (!mdRef.value) return
+  /* 正文 HTML 可能不变，v-html 不会重建，Mermaid 已被替换成 Shadow host；用 main 的 :key 强制重挂并重新跑 Mermaid */
   mermaidConfiguredThemeKey = null
   await nextTick()
   await renderMermaidDiagrams()
@@ -746,6 +700,7 @@ html.dark .action-bar__nav :deep(.back-btn.back-btn--ghost:hover) {
 .markdown-column.markdown-body {
   flex: 1 1 0;
   min-width: 0;
+  /* 横向滚动交给 pre / table 等块级元素，避免与代码块双层横向滚动 */
   overflow-x: visible;
   overflow-y: visible;
   box-sizing: border-box;
@@ -1015,7 +970,7 @@ html.dark .doc-layout.doc-layout--with-toc :deep(.markdown-body img) {
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
 }
 
-/* 代码块：Typora 式仅靠底色分区，无描边 */
+/* 代码块：Typora 式仅靠底色分区，无描边（避免与正文「卡片框」抢视觉） */
 :deep(.markdown-body pre) {
   margin: 1.15rem 0;
   padding: 14px 18px !important;
@@ -1031,15 +986,19 @@ html.dark .doc-layout.doc-layout--with-toc :deep(.markdown-body img) {
 }
 
 :deep(.markdown-body pre code) {
-  background: transparent !important;
-  border-radius: 0 !important;
-  padding: 0;
-  color: inherit;
   font-family: var(--font-mono);
   font-size: inherit;
   line-height: inherit;
+  color: inherit;
   tab-size: 2;
   -moz-tab-size: 2;
+}
+
+:deep(.markdown-body pre code.hljs) {
+  display: block;
+  overflow-x: auto;
+  background: transparent !important;
+  border-radius: inherit !important;
 }
 
 html:not(.dark) :deep(.markdown-body pre) {
@@ -1052,7 +1011,7 @@ html.dark :deep(.markdown-body pre) {
   background-color: #161b22 !important;
 }
 
-/* Mermaid 外层：与代码块同一底色语言，无框线 */
+/* Mermaid：与围栏代码同一底色语言，无框线 */
 :deep(.markdown-body .mermaid-github-host) {
   margin: 1.5rem 0;
   padding: 0;
@@ -1082,7 +1041,7 @@ html.dark :deep(.markdown-body .mermaid-github-host) {
   overflow: auto;
 }
 
-/* 行内代码：Typora 式弱对比 */
+/* 行内代码：Typora 式弱对比（灰底 + 接近正文色，不用主色链蓝） */
 :deep(.markdown-body :not(pre) > code),
 :deep(.markdown-body td > code),
 :deep(.markdown-body th > code) {
@@ -1186,26 +1145,15 @@ html.dark :deep(.markdown-body th > code) {
   margin-bottom: 0.4em;
 }
 
-/* 标题样式 */
+/* 二级标题：与 Vue / Vite 文档类似的清爽层级，无左侧装饰条 */
 :deep(.markdown-body h2) {
-  border-bottom: none;
-  font-size: 1.8rem;
-  margin-top: 2em;
-  margin-bottom: 1em;
+  border-bottom: 1px solid color-mix(in srgb, var(--border-color) 55%, transparent);
+  font-size: 1.45rem;
+  font-weight: 600;
+  margin-top: 2.25rem;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.4rem;
   color: var(--text-color);
-  position: relative;
-  padding-left: 16px;
-}
-
-:deep(.markdown-body h2::before) {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 6px;
-  bottom: 6px;
-  width: 4px;
-  background: var(--primary-color);
-  border-radius: 2px;
 }
 
 /* 段落与文字（Typora 类节奏：略收紧段距，仍保持 1.8 行高可读） */
@@ -1356,14 +1304,8 @@ html.dark :deep(.markdown-body th > code) {
   }
 
   .page-container :deep(.markdown-body h2) {
-    font-size: 1.45rem;
+    font-size: 1.3rem;
     margin-top: 1.35em;
-    padding-left: 12px;
-  }
-
-  .page-container :deep(.markdown-body h2::before) {
-    top: 4px;
-    bottom: 4px;
   }
 
   .page-container :deep(.markdown-body p) {

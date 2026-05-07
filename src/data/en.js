@@ -7,7 +7,8 @@ export default {
         journey: 'Learning Trail',
         works: 'Works & Visuals',
         contact: 'Contact',
-        game: 'My Game'
+        game: 'My Game',
+        share: 'Stack Folio'
     },
 
     /** Chatbot */
@@ -139,6 +140,43 @@ export default {
         }
     },
 
+    /** Stack Folio / Folio Shelf (ShareListView / ShareDetail; source: docs/technical) */
+    share: {
+        title: 'Folio Shelf',
+        toolbarAria: 'Folio shelf filters and pagination',
+        listTotal: '{n} articles',
+        listFiltered: '{m} / {n} matched',
+        listProgressAria: 'List and filter status',
+        backToSection: 'Back to home',
+        searchPlaceholder: 'Search title or summary…',
+        searchAria: 'Filter by title or summary',
+        tagGroupAria: 'Filter by tag',
+        tagFilterLabel: 'Tag',
+        tagAll: 'All',
+        pagePrevAria: 'Previous page',
+        pageNextAria: 'Next page',
+        pageIndicator: '{current}/{total}',
+        emptyNone: 'No articles yet.',
+        emptyFiltered: 'No matches. Clear filters and try again.',
+        clearFilters: 'Clear filters',
+        readMore: 'Read article',
+        categories: {
+            integrations: 'Integrations',
+            general: 'General',
+            engineering: 'Frontend engineering',
+            architecture: 'Architecture & gateway',
+            visualization: 'Visualization & graphics'
+        },
+        loading: 'Loading…',
+        detailNotFound: 'Article not found.',
+        tocTitle: 'On this page',
+        tocToggleAria: 'Toggle table of contents',
+        tagsAria: 'Tags',
+        dateCaption: 'Updated',
+        pagePvCaption: 'Page views (Busuanzi)',
+        pagePvSuffix: ' views'
+    },
+
     /** FooterSection */
     footer: {
         appName: 'Dev Space',
@@ -172,6 +210,7 @@ export default {
                 title: 'On this site',
                 links: [
                     {text: 'GitHub', url: 'https://github.com/RCPawn'},
+                    {text: 'Stack Folio', url: '/share'},
                     {text: 'My Game', url: '/game'}
                 ]
             }
